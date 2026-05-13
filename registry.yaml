@@ -106,16 +106,17 @@ sources:
   # when copied to .external/ without the native install. The included subset
   # is prose-heavy; bin/ failures are swallowed in non-critical paths.
   #
-  # For the doctrine-critical patterns (plan-ceo-review, office-hours), see
-  # the spellbook-native reimplementations at skills/ceo-review/ and
-  # skills/office-hours/ — those are the canonical versions. These gstack-*
-  # aliases preserve Gary's originals for cross-reference and comparison.
+  # INACTIVE: the doctrine-critical patterns have spellbook-native
+  # reimplementations at skills/ceo-review/ and skills/office-hours/.
+  # Keeping the upstream source active adds brittle Claude-global assumptions
+  # and noisy aliases without improving the default harness.
   - repo: garrytan/gstack
     ref: main
     pin: b805aa0113040fb78228068ce808772299caf244
     layout: flat
     skills_path: .
     alias_prefix: "gstack-"
+    active: false
     include:
       - plan-ceo-review
       - office-hours

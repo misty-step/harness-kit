@@ -1,5 +1,5 @@
 # Spellbook Index
-# Generated: 2026-04-23T20:22:22Z
+# Generated: 2026-05-13T19:49:48Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -72,9 +72,9 @@ skills:
     source: first-party
     tags: [ai-powered,apps,availability,benchmarks,compare,compares,family,finds,latest,llm]
   - name: monitor
-    description: "Post-deploy signal watch. Poll healthcheck and configured signals through a grace window. Emit structured events. Escalate to /diagnose on trip, close clean on green. Thin watcher, not diagnostician. "
+    description: "Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, "
     source: first-party
-    tags: [a,clean,close,configured,diagnose,diagnostician,emit,escalate,events,grace]
+    tags: [a,after,change,ci,deploy,every,failures,healthchecks,local,logs]
   - name: office-hours
     description: "YC-partner-style interrogation of a raw idea. Six forcing questions before you shape anything: demand reality, status quo, desperate specificity, narrowest wedge, observation & surprise, future-fit. N"
     source: first-party

@@ -184,10 +184,11 @@ tailoring; it's decoration.
      and similar judgment protocols that carry no repo-specific command
      surface. Copy their directories verbatim. Tailoring them would be
      artificial.
-   - **Workflow skills** — `deliver`, `shape`, `implement`,
-     `code-review`, `ci`, `refactor`, `groom`, `qa`, `flywheel`,
-     `deploy`, `monitor`, `diagnose`, `settle`, `ship`, `yeet`,
-     `research`.
+   - **Workflow skills** — the software development lifecycle:
+     `research`, `groom`, `shape`, `implement`, `qa`, `demo`,
+     `code-review`, `refactor`, `ci`, `diagnose`, `monitor`,
+     `deliver`, `settle`, `ship`, `yeet`, `flywheel`, and
+     deploy-oriented skills when the repo has a deploy surface.
      **Rewrite each SKILL.md with this repo's commands, gates,
      conventions, and file paths embedded throughout.** Use the
      spellbook version as structural reference; fill every example,
@@ -230,9 +231,9 @@ tailoring; it's decoration.
      | settle | merge history, branch-protection rules, release tooling |
      | ship | squash-merge history (`git log --merges master`), drift contract (e.g. `docs/context/DRIFT-WATCHLIST.md`), PR templates, branch-naming conventions, `backlog.d/` + `backlog.d/_done/` layout |
      | yeet | commit history, `commitlint.config.*`, semver tooling |
-     | qa | test configs, critical-path routes, Playwright/E2E specs |
-     | demo | evidence scripts, demo capture tools |
-     | monitor | signal surfaces (Sentry/Canary/health), alerts |
+     | qa | test configs, smoke paths, critical user/API/CLI/library surfaces, existing manual QA evidence |
+     | demo | evidence scripts, README examples, release-note patterns, screenshot/terminal/API capture tools |
+     | monitor | signal surfaces: prod observability when present; otherwise logs, CI history, flaky tests, benchmark drift, local daemon output, or release health |
      | **shape** | `backlog.d/*.md`, recent shape docs, planning conventions, design-review lineage |
      | **refactor** | git churn (hot files), debt map, ARCHITECTURE.md, recent refactor PRs, named hotspots from repo brief |
      | **code-review** | AGENTS.md red flags, recent review threads, repo's philosophy bench, known anti-patterns |
@@ -307,7 +308,11 @@ tailoring; it's decoration.
      convergence.
    - **Domain skills (invented)** — greenfield additions like
      `/convex-migrate`, `/rust-unsafe-reviewer`. Only invent when you
-     can name the concrete repo characteristic demanding it.
+     can name the concrete repo characteristic demanding it. Every
+     invented skill ships with an eval seed under its own tree
+     (`evals/` or `tests/`) that captures at least one representative
+     invocation, expected artifact, and pass/fail grader. A skill that
+     cannot name how it will be evaluated is not ready to install.
 
 7. **Write `AGENTS.md`.** Project the repo brief + the coherent
    rewrite set into a router (not a manual). Suggested structure:
@@ -350,25 +355,25 @@ tailoring; it's decoration.
   `/groom` is not universal: backlog shape, lifecycle enforcement,
   priority scheme, and tracker surfaces are repo-specific.
   - **Always install** (orchestrators, foundational loop skills,
-    and judgment-only skills): `deliver`, `shape`, `implement`,
-    `code-review`, `ci`, `refactor`, `groom`, `flywheel`, `settle`,
-    `ship`, `yeet`, `diagnose`, `research`, `qa`, `demo`. **Never
-    skipped.** `/groom` owns backlog lifecycle; `/settle` leaves
-    branches merge-ready; `/ship` closes and lands them; `/flywheel`
-    composes the loop. `/ci`, `/diagnose`, `/research`, `/qa`, and
-    `/demo` are still tailored when their default infrastructure is
-    absent: name the repo's actual gate, debug surface, research
-    sources, QA path, and demo artifact. Exact-copy is valid only
+    and judgment-only skills): `research`, `groom`, `shape`,
+    `implement`, `qa`, `demo`, `code-review`, `refactor`, `ci`,
+    `diagnose`, `monitor`, `deliver`, `settle`, `ship`, `yeet`,
+    `flywheel`. **Never skipped.** `/groom` owns backlog lifecycle;
+    `/settle` leaves branches merge-ready; `/ship` closes and lands
+    them; `/flywheel` composes the loop. `/ci`, `/diagnose`,
+    `/research`, `/qa`, `/demo`, and `/monitor` are still tailored
+    when their default infrastructure is absent: name the repo's
+    actual gate, debug surface, research sources, QA path, demo
+    artifact, and observable signal path. Exact-copy is valid only
     when tailoring Spellbook itself.
-  - **Infrastructure-tied, skip only with named absence.** `deploy`
-    (no deploy target named in `vercel.json` / `fly.*.toml` /
-    `Dockerfile*` / `.github/workflows/*deploy*`), `monitor` (no signal
-    surfaces — Sentry, health endpoints, observability config).
-    Skipping requires naming the concrete missing file; "didn't seem
-    relevant" does not count. **Confusing an orchestrator's missing
-    leaf step with the orchestrator itself is the trap:** no `/deploy`
-    target does not justify skipping `/flywheel`; no `playwright.config`
-    does not justify skipping `/qa`.
+  - **Deploy-surface skills are evidence-tied.** `deploy` is installed
+    only when the repo has a real deploy target (`vercel.json`,
+    `fly.*.toml`, `Dockerfile*`, `.github/workflows/*deploy*`, or an
+    equivalent release mechanism named in the repo brief). No deploy
+    target does not justify skipping `/monitor`: every repo still has
+    signals to watch, even if they are CI failures, local daemon logs,
+    benchmark drift, flaky tests, release regressions, or agent-session
+    audit trails rather than production telemetry.
 - **Domain skills default to exclude.** Invent only when you can
   name the concrete repo characteristic demanding it. "We might want
   X" is not a name.
@@ -391,17 +396,15 @@ tailoring; it's decoration.
   2. **Always-install coverage:** every skill in the always-install
      tier (`deliver`, `shape`, `implement`, `code-review`, `ci`,
      `refactor`, `groom`, `flywheel`, `settle`, `ship`, `yeet`,
-     `diagnose`, `research`, `qa`, `demo`) resolves to a directory
+     `diagnose`, `monitor`, `research`, `qa`, `demo`) resolves to a directory
      under the shared skill root. Zero missing. If one is absent, the run
      failed — reinstall before declaring done.
-  3. **Excluded workflows:** only skills from the infrastructure-tied
-     tier (`deploy`, `monitor`) may be skipped, and each skip names
-     the concrete missing file (no `vercel.json`, no `fly.*.toml`,
-     no `Dockerfile*`, no `.github/workflows/*deploy*`, no Sentry
-     config, no `instrumentation.ts`, no health-check route —
-     concrete absence, not "didn't seem relevant"). An always-install
-     skill appearing in the skipped list is a critical regression.
-     `qa` and `demo` are always-install — never appear here.
+  3. **Excluded workflows:** only `deploy` may be skipped, and the skip
+     names the concrete missing deploy surface (no `vercel.json`, no
+     `fly.*.toml`, no `Dockerfile*`, no `.github/workflows/*deploy*`,
+     no release script or equivalent). An always-install skill appearing
+     in the skipped list is a critical regression. `qa`, `demo`, and
+     `monitor` are always-install — never appear here.
   4. **Agent installation:** grep every installed skill for
      `subagent_type:` references. Every referenced agent must resolve
      to a file in the repo's installed agent directory (usually

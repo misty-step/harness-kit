@@ -1,19 +1,31 @@
 ---
 name: monitor
 description: |
-  Post-deploy signal watch. Poll healthcheck and configured signals through
-  a grace window. Emit structured events. Escalate to /diagnose on trip,
-  close clean on green. Thin watcher, not diagnostician.
+  Watch project signals after a deploy, release, local run, CI change, or
+  repeated workflow. Every repo has a monitor path: production telemetry
+  when present; otherwise healthchecks, logs, CI failures, flaky tests,
+  benchmark drift, local daemon output, release regressions, or
+  agent-session audit trails. Emit structured events. Escalate to
+  /diagnose on trip, close clean on green. Thin watcher, not diagnostician.
   Use when: "monitor signals", "watch the deploy", "is the deploy ok",
-  "post-deploy watch", "signal watch", "grace window", "watch production".
+  "post-deploy watch", "signal watch", "watch production",
+  "watch CI", "watch logs", "watch benchmark drift", "is it healthy".
   Trigger: /monitor.
 argument-hint: "[<deploy-receipt-ref>] [--grace <duration>] [--config <path>]"
 ---
 
 # /monitor
 
-Watch signals after a deploy. Escalate to `/diagnose` on regression. Close
+Watch signals after a change. Escalate to `/diagnose` on regression. Close
 clean when signals stay green through the grace window.
+
+**Every repo has a monitor path.** A production app may watch healthchecks,
+logs, traces, and error rates. A CLI may watch CI failures, golden-command
+transcripts, and release regressions. A library may watch consumer builds,
+benchmark drift, flaky tests, and issue reports. A local daemon may watch
+its logs and readiness endpoint. Absence of Sentry, Prometheus, or a
+public deploy is not absence of monitoring; it means the signal source is
+different.
 
 This skill observes and escalates. It does not diagnose root cause
 (`/diagnose` does). It does not rollback (caller decides). It does not
@@ -36,9 +48,9 @@ noise lives here.
 
 | Input | Source | Default |
 |-------|--------|---------|
-| deploy receipt ref | positional arg from `/deploy` | required in outer loop; absent → healthcheck-only on `$SPELLBOOK_HEALTHCHECK_URL` |
+| deploy receipt ref | positional arg from `/deploy` | optional; when absent, use configured project signals |
 | grace window | `--grace` flag, else `.spellbook/monitor.yaml`, else built-in | 5 minutes |
-| signal config | `.spellbook/monitor.yaml` | healthcheck-only |
+| signal config | `.spellbook/monitor.yaml` | repo-specific signal path; absent → healthcheck-only if `$SPELLBOOK_HEALTHCHECK_URL` is set |
 | poll interval | config `poll_interval` | 30 seconds |
 
 ## Contract
@@ -141,8 +153,10 @@ signals:
 ```
 
 Absent config → healthcheck-only using the deploy receipt's `healthcheck`
-field. Absent receipt AND absent config → refuse to run, emit `phase.failed`
-with note `monitor: no signal source available`.
+field or `$SPELLBOOK_HEALTHCHECK_URL`. Absent receipt, config, and env
+healthcheck → refuse to run, emit `phase.failed` with note
+`monitor: no signal source available`. For tailored repos, this is a
+tailoring failure: the rewrite should name at least one signal path.
 
 Signal backend query syntax and response parsing live in
 `references/signals.md`.
@@ -193,10 +207,17 @@ More in `references/grace-window.md`.
 
 # Smoke test: zero-config, env healthcheck
 SPELLBOOK_HEALTHCHECK_URL=https://app.example.com/health /monitor
+
+# Local/library repo: config watches CI or benchmark artifacts
+/monitor --config .spellbook/monitor.yaml
 ```
 
 ## Gotchas
 
+- **Every repo has a signal path.** If there is no production telemetry,
+  tailor this skill toward the repo's real feedback surface: CI, logs,
+  release smoke, benchmark drift, flaky tests, local daemons, or
+  agent-session audit trails.
 - **One terminal event per invocation.** Never emit both `monitor.done` and
   `monitor.alert`. If the loop somehow trips after the deadline, trust the
   first terminal condition and exit.

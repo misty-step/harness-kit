@@ -28,12 +28,16 @@ JuliusBrussee/caveman, garrytan/gstack, openai/skills) are:
 1. Synced into `$SPELLBOOK/skills/.external/<alias>/` via `sync-external.sh`.
 2. Indexed by `scripts/generate-embeddings.py` for semantic search.
 
-But they are **not installed onto any harness's skill-discovery path.**
+Some are **not installed onto any harness's skill-discovery path.**
 `bootstrap.sh:271` only globally symlinks `GLOBAL_SKILLS=(tailor seed)`
 plus agents. `/tailor` currently picks only from the canonical `skills/`
 catalog. Net effect: `/jakub-make-interfaces-feel-better`,
 `/emil-emil-design-eng`, `/karpathy-*` don't resolve as slash commands
 in any repo today. They exist for embeddings-based discovery only.
+
+Note: `garrytan/gstack` is intentionally inactive in `registry.yaml`.
+Do not re-enable it as part of this ticket; the Spellbook-native
+distillations are the canonical source for those planning patterns.
 
 This shape closes that gap per-repo — not globally — and preserves the
 "externally managed" contract: externals update upstream, not by hand.
