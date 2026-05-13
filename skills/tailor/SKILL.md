@@ -336,9 +336,23 @@ tailoring; it's decoration.
 
 8. **Write per-harness settings.** Each harness has its own
    settings format and path; emit one variant per harness:
-   - `.claude/settings.local.json` (JSON, Claude Code)
-   - `.codex/config.toml` (TOML, Codex)
-   - `.pi/settings.json` (JSON, Pi)
+   - `.claude/settings.local.json` (JSON, Claude Code) — command
+     allowlist under `permissions.allow` (e.g. `"Bash(go test:*)"`).
+   - `.codex/config.toml` (TOML, Codex) — **no command
+     allowlist.** Codex's `[permissions]` key is a
+     `FilesystemPermissionsToml` struct (path scopes), not a
+     command array. Emitting `[permissions] allow = ["go run ..."]`
+     fails config load with `invalid type: string ..., expected
+     struct FilesystemPermissionsToml`. Command authorization is
+     driven by top-level `approval_policy` + `sandbox_mode` in
+     `~/.codex/config.toml`, not per-repo. Leave the per-repo
+     `.codex/config.toml` to MCP servers, `[skills]` roots, and
+     similar — and add a short comment block documenting why
+     command permissions are absent (see
+     `spellbook/.codex/config.toml` and
+     `worktrees/699b/teams-docs-bot/.codex/config.toml` for the
+     canonical phrasing).
+   - `.pi/settings.json` (JSON, Pi) — `skills[]` glob allowlist.
 
    Permissions allowlist (and any other per-harness toggles)
    derive from the tools actually in use. Merge additively with
