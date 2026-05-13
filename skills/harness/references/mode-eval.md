@@ -47,3 +47,40 @@ skills/<name>/evals/
 Invented repo-local skills created by `/tailor` must include at least one eval
 seed before installation. The seed can be small, but it must name the expected
 artifact and the grader that proves the skill helped.
+
+## Validator
+
+Run the structural validator before calling an eval suite ready:
+
+```bash
+python3 skills/harness/scripts/validate-evals.py
+```
+
+The validator checks every existing `skills/<name>/evals/` tree has:
+
+- `README.md`
+- at least one file under `cases/`
+- at least one file under `graders/`
+
+This is deliberately structural. It proves the eval has a rerunnable shape; it
+does not prove the grader is semantically strong.
+
+## Result artifacts
+
+When `/harness eval <skill>` runs a comparison, write a short markdown result
+under:
+
+```text
+skills/<name>/evals/results/<date>-<case>.md
+```
+
+Each result records:
+
+- baseline output path
+- skill output path
+- grader command or rubric used
+- verdict: `skill-wins`, `baseline-wins`, `tie`, or `invalid`
+- one paragraph explaining why
+
+Do not commit bulky transcripts unless they are small and useful. Prefer paths
+to `.evidence/` or `/tmp` artifacts for raw transcripts.

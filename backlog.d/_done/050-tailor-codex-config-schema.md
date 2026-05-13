@@ -1,7 +1,7 @@
 # Pin Codex `config.toml` schema in `/tailor`
 
 Priority: high
-Status: pending
+Status: done
 Estimate: S
 
 ## Goal

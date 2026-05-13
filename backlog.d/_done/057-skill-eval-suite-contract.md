@@ -1,7 +1,7 @@
 # Skill eval suite contract
 
 Priority: P1
-Status: pending
+Status: done
 Estimate: M
 
 ## Goal
@@ -20,18 +20,18 @@ and a grader that can be rerun after edits or model upgrades.
 
 ## Oracle
 
-- [ ] `skills/harness/references/mode-eval.md` defines the canonical eval
+- [x] `skills/harness/references/mode-eval.md` defines the canonical eval
       shape: task, transcript, outcome, graders.
-- [ ] `scripts/` or `skills/harness/scripts/` includes a small validator that
+- [x] `scripts/` or `skills/harness/scripts/` includes a small validator that
       checks each `skills/<name>/evals/` tree has a README, at least one case,
       and at least one grader.
-- [ ] `/harness eval <skill>` can run a baseline-vs-skill comparison and write
+- [x] `/harness eval <skill>` can run a baseline-vs-skill comparison and write
       a short result artifact under the skill's `evals/results/`.
-- [ ] `/tailor` refuses to install a domain-invented skill unless it includes
+- [x] `/tailor` refuses to install a domain-invented skill unless it includes
       an eval seed or explicitly records why no runnable eval exists yet.
-- [ ] At least three high-leverage skills (`tailor`, `code-review`, `qa`, or
+- [x] At least three high-leverage skills (`tailor`, `code-review`, `qa`, or
       `demo`) get initial eval cases proving the contract works.
-- [ ] `dagger call check --source=.` green.
+- [x] `dagger call check --source=.` green.
 
 ## Notes
 

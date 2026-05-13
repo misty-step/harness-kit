@@ -477,6 +477,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_skill_evals(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate structure for existing skill eval suites."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "skills/harness/scripts/validate-evals.py"])
+            .stdout()
+        )
+
+    @function
     async def check(
         self,
         source: Annotated[
@@ -516,6 +532,7 @@ print('skills/: no claims primitives found.')
             )
             tg.start_soon(run_gate, "check-deliver-composition", self.check_deliver_composition(source))
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))
+            tg.start_soon(run_gate, "check-skill-evals", self.check_skill_evals(source))
 
         # Format results
         lines = ["Spellbook CI Results", "=" * 40]

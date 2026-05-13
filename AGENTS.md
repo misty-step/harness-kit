@@ -11,7 +11,7 @@ to every harness); this file is the **spellbook-specific** index.
 | **Skills** | `skills/<name>/SKILL.md` + `references/` + `scripts/` | Judgment. <500-line SKILL.md; frontmatter-triggered. |
 | **Agents** | `agents/<name>.md` | Scoped personas with tool restrictions and model pins. |
 | **Harness configs** | `harnesses/{claude,codex,pi,factory,gemini,shared}/` | Per-harness hooks, settings, principles. `harnesses/shared/AGENTS.md` symlinks into every harness. |
-| **CI module** | `ci/src/spellbook_ci/main.py` | 12 Dagger gates + heal loop. Python 3.12. |
+| **CI module** | `ci/src/spellbook_ci/main.py` | 13 Dagger gates + heal loop. Python 3.12. |
 | **Bootstrap** | `bootstrap.sh` | Installs minimal globals (`GLOBAL_SKILLS=(tailor seed)` + all agents) via symlink OR download mode. Per-repo subsets are `/tailor` / `/seed`'s job. |
 | **Scripts** | `scripts/` | Shell + Python utilities: frontmatter check, index regen, embeddings, external sync, harness lint. |
 | **Backlog** | `backlog.d/NNN-*.md` (open), `backlog.d/_done/` (closed), `.spellbook/deliver/<ulid>/` (runtime state, gitignored) | Shaped work ready to build. Single source of truth; closure via `Closes-backlog:` trailers on squash-merge commits (handled by `/ship`). |
@@ -73,7 +73,7 @@ Stale training data lies about these — always read the file:
 
 ## Gate contract
 
-**The load-bearing gate is `dagger call check --source=.`** — 12 parallel
+**The load-bearing gate is `dagger call check --source=.`** — 13 parallel
 sub-gates, all must pass to ship:
 
 | Gate | What it enforces |
@@ -90,6 +90,7 @@ sub-gates, all must pass to ship:
 | `check-harness-install-paths` | No Claude-only install wording for `/seed` or `/tailor` |
 | `check-deliver-composition` | `skills/deliver/SKILL.md` composes atomic phase skills, never inlines |
 | `check-no-claims` | No `claims.sh` / `claim_acquire` / `claim_release` under `skills/` |
+| `check-skill-evals` | Existing `skills/<name>/evals/` suites have README, case, and grader files |
 
 **Self-heal:** `dagger call heal --source=. --model=gpt-4.1 --attempts=2`
 repairs one failing lint-style gate (yaml / shell / python / frontmatter).
@@ -147,7 +148,7 @@ Installed in this repo-local harness at `.agents/skills/<name>/` with
 | `/shape` | Solution-diamond divergence → `backlog.d/NNN-<slug>.md`. Output: shaped ticket (Priority / Estimate / Goal / Design / Oracle / Non-Goals). Cross-harness Red Line is mandatory. |
 | `/implement` | TDD atomic build. Green signal is `dagger call check --source=.`. Concrete test surfaces: `ci/tests/` (pytest), `skills/research/` (bun). |
 | `/code-review` | Marshal protocol with philosophy bench (ousterhout / carmack / grug / beck / critic). Tier 0 is Dagger gates — don't duplicate them. Cites `harnesses/shared/AGENTS.md` red flags verbatim. |
-| `/ci` | Owns the gate. Names all 12 sub-gates; knows heal semantics. Only skill permitted to invoke `dagger call check` directly. |
+| `/ci` | Owns the gate. Names all 13 sub-gates; knows heal semantics. Only skill permitted to invoke `dagger call check` directly. |
 | `/refactor` | Deletion-first. Past exemplars: `68e276b` (tailor −683 lines), `7ccd00d` (flywheel → 43 lines), `f91f1c4` (80 globals → 2). |
 | `/settle` | Git-native merge. GitHub PRs are optional. Verdict gate (`.githooks/pre-merge-commit`) on non-FF merges; escape `SPELLBOOK_NO_REVIEW=1`. Closes by `git mv backlog.d/NNN-*.md _done/`. |
 | `/yeet` | Conventional commits split. Observed types: `feat|fix|refactor|docs|chore|test|backlog|doctrine`. Special: `backlog(NNN): …`, `doctrine(harness): …`. Index regen folds into the skill commit; never a standalone `chore: regen`. |
