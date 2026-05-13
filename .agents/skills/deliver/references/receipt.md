@@ -29,12 +29,14 @@ additionally refuses force-adds of `receipt.json`.
     {"name": "shape",     "status": "ok"},
     {"name": "implement", "status": "ok"},
     {"name": "review",    "status": "dirty", "iteration": 3, "blocking_count": 2, "verdict_ref": "refs/verdicts/feat/023-review-score-feedback-loop"},
-    {"name": "ci",        "status": "ok", "gates_run": 12, "self_heals": 1},
-    {"name": "refactor",  "status": "ok"}
+    {"name": "ci",        "status": "ok", "gates_run": 13, "self_heals": 1},
+    {"name": "refactor",  "status": "ok"},
+    {"name": "qa",        "status": "ok", "evidence_dir": "<state-dir>/qa/"}
   ],
   "evidence": {
     "review_dir": "<state-dir>/review/",
     "ci_dir": "<state-dir>/ci/",
+    "qa_dir": "<state-dir>/qa/",
     "review_scores_line": ".groom/review-scores.ndjson:L<N>",
     "verdict_ref": "refs/verdicts/feat/023-review-score-feedback-loop"
   },
@@ -44,8 +46,9 @@ additionally refuses force-adds of `receipt.json`.
 }
 ```
 
-Note: no `qa_dir` field. There is no `/qa` phase in the spellbook
-clean loop.
+`qa_dir` holds Spellbook's non-browser QA evidence: gate receipt excerpts,
+skill eval output when relevant, symlink bridge checks, command
+transcripts, and any explicitly unverified paths.
 
 ## Exit Codes
 

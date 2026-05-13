@@ -147,24 +147,25 @@ Installed in this repo-local harness at `.agents/skills/<name>/` with
 | `/reflect` | Session retrospective; distills learnings into hook / rule / skill mutations. |
 | `/shape` | Solution-diamond divergence → `backlog.d/NNN-<slug>.md`. Output: shaped ticket (Priority / Estimate / Goal / Design / Oracle / Non-Goals). Cross-harness Red Line is mandatory. |
 | `/implement` | TDD atomic build. Green signal is `dagger call check --source=.`. Concrete test surfaces: `ci/tests/` (pytest), `skills/research/` (bun). |
+| `/qa` | Non-browser verification for this library: Dagger gate, skill eval suites, generated index drift, symlink bridge topology, and command-level smoke evidence. |
+| `/demo` | Evidence capture for library/harness changes: terminal transcripts, diff summaries, gate excerpts, and release-note blurbs rather than screenshots or videos. |
 | `/code-review` | Marshal protocol with philosophy bench (ousterhout / carmack / grug / beck / critic). Tier 0 is Dagger gates — don't duplicate them. Cites `harnesses/shared/AGENTS.md` red flags verbatim. |
 | `/ci` | Owns the gate. Names all 13 sub-gates; knows heal semantics. Only skill permitted to invoke `dagger call check` directly. |
 | `/refactor` | Deletion-first. Past exemplars: `68e276b` (tailor −683 lines), `7ccd00d` (flywheel → 43 lines), `f91f1c4` (80 globals → 2). |
+| `/diagnose` | Investigate gate failures, hook behavior, generated artifact drift, symlink topology, and harness regressions before editing. |
+| `/monitor` | Watch Spellbook signals: Dagger/CI regressions, stale backlog closure, skill eval drift, external registry drift, and config-schema breakage. |
 | `/settle` | Git-native merge. GitHub PRs are optional. Verdict gate (`.githooks/pre-merge-commit`) on non-FF merges; escape `SPELLBOOK_NO_REVIEW=1`. Closes by `git mv backlog.d/NNN-*.md _done/`. |
+| `/ship` | Final mile: archive backlog files into `_done/`, preserve `Closes-backlog:` / `Ships-backlog:` trailers, land the merge, and invoke bounded `/reflect`. |
 | `/yeet` | Conventional commits split. Observed types: `feat|fix|refactor|docs|chore|test|backlog|doctrine`. Special: `backlog(NNN): …`, `doctrine(harness): …`. Index regen folds into the skill commit; never a standalone `chore: regen`. |
-| `/deliver` | Inner-loop composer: `/shape` → `/implement` → clean loop of (`/code-review` + `/ci` + `/refactor`). **No `/qa`** — no UI here; `dagger call check` subsumes verification. Composition-lint-gated. |
+| `/deliver` | Inner-loop composer: `/shape` → `/implement` → clean loop of (`/code-review` + `/ci` + `/refactor` + `/qa`). Composition-lint-gated; no raw phase internals. |
+| `/flywheel` | Outer-loop orchestrator for Spellbook maintenance: pick work, run deliver/yeet/settle/ship/monitor, then continue from the shipped lifecycle result. |
 | `/harness` | Create / eval / lint / convert / sync / engineer / audit on the catalog. Names `scripts/check-frontmatter.py`, `scripts/generate-index.sh`, `scripts/check-harness-agnostic-installs.sh`, `scripts/lint-external-skills.sh`, `scripts/sync-external.sh`. |
 
-**Skipped workflow skills** (concrete absence):
+**Skipped skills** (concrete absence):
 
 | Skipped | Reason |
 |---|---|
-| `/qa` | No `playwright.config.*`, no E2E specs, no browser. Only browser-adjacent gate is `test-bun` on `skills/research/`. |
-| `/demo` | No evidence scripts, no Remotion, no TTS. No user-facing artifacts. |
 | `/deploy` | No `vercel.json`, no `fly.toml`, no `.github/workflows/*deploy*`, no `Dockerfile` for deploy. `bootstrap.sh` is library install, not deploy. |
-| `/monitor` | No Sentry, no health-check URL, no canary surface. |
-| `/diagnose` | No `.evidence/`, no postmortems dir, no observability tooling. |
-| `/flywheel` | Composes `/deploy` + `/monitor` + `/diagnose` — none present. |
 | `/a11y` | No UI / web surface. |
 | `/agent-readiness` | One-off audit, not a workflow skill. |
 | `/deps` | Minimal dep surface (`dagger-io` only). |
@@ -188,17 +189,19 @@ Installed at `.claude/agents/<name>.md`:
 | `carmack` | Direct implementation + shippability. "Focus is deciding what NOT to do." | Lens on scope discipline, over-engineered shapes. |
 | `grug` | Complexity demon hunter. | Lens on unnecessary scaffolding, semantic workflow DSLs. |
 | `beck` | TDD + simple design. "Red. Green. Refactor." | Lens on test-first discipline (limited utility for markdown-only changes). |
+| `cooper` | Classicist testing discipline. | Lens on internal mocks, fake-vs-mock boundaries, and behavior-level test design. |
 
 **Skipped agents** (no UI surface): `a11y-auditor`, `a11y-fixer`, `a11y-critic`.
 
 ## Operating loop
 
 ```
-backlog.d/NNN → /groom → /shape → /deliver → /settle → _done/
-                 └─ problem diamond   └─ solution diamond   └─ inner loop   └─ git-native merge
+backlog.d/NNN → /groom → /shape → /deliver → /settle → /ship → _done/
+                 └─ problem diamond   └─ solution diamond   └─ inner loop   └─ merge-ready   └─ close + reflect
 ```
 
-Outer-loop orchestration (`/flywheel`) is **not installed here** — this
-repo has no deploy/monitor/diagnose surface. To shape a new feature end-
-to-end: use `/shape` to produce `backlog.d/NNN-*.md`, then `/deliver` to
-reach merge-ready, then `/settle` to merge to `master`.
+Outer-loop orchestration (`/flywheel`) is installed here because Spellbook
+is the source repo for the harness loop. `/deploy` remains absent because
+there is no deploy target. To shape a new feature end-to-end: use `/shape`
+to produce `backlog.d/NNN-*.md`, `/deliver` to reach merge-ready,
+`/settle` to validate, and `/ship` to archive backlog state and reflect.

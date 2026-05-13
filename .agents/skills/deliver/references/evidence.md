@@ -11,9 +11,13 @@ evidence itself, only records pointers in the receipt.
 | `/code-review` | bench synthesis, thinktank output, cross-harness transcripts, verdict | `<state-dir>/review/` (gitignored). Also appends one JSON line to `.groom/review-scores.ndjson` (this file IS committed — see below). Writes `refs/verdicts/<branch>` via `scripts/lib/verdicts.sh`. |
 | `/ci` | `dagger call check` per-gate tails; `dagger call heal` traces when self-heal fired | `<state-dir>/ci/` (gitignored) |
 | `/refactor` | None durable (the diff speaks) | — |
+| `/qa` | non-browser verification notes: gate receipt excerpts, skill eval output when relevant, symlink bridge checks, command transcripts, unverified-path notes | `<state-dir>/qa/` (gitignored) |
 | `/implement` | None durable (test output transient) | — |
 
-There is no `/qa` row — no UI, no browser, no screenshot stream.
+There is no browser screenshot stream unless a future Spellbook surface
+adds a UI. `/qa` still records library/harness evidence because "tests
+passed" and "the changed surface was smoke-verified" are different
+claims.
 
 ## What IS Committed to Git
 
@@ -42,7 +46,7 @@ The `.githooks/pre-commit` hook actively blocks force-adds of
 ## Gitignore Convention
 
 `.spellbook/` is gitignored repo-wide. `/deliver` state (`state.json`,
-`receipt.json`, `review/`, `ci/`) lands under
+`receipt.json`, `review/`, `ci/`, `qa/`) lands under
 `.spellbook/deliver/<ulid>/`.
 
 If a phase emits something that should be permanent (a new backlog

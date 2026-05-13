@@ -1,4 +1,4 @@
-# Spellbook repo-local Codex config — emitted by /tailor 2026-04-20.
+# Spellbook repo-local Codex config — emitted by /tailor 2026-05-13.
 # Codex discovers skills in `.codex/skills/` via symlink bridges back to
 # `.agents/skills/`, the canonical shared root.
 

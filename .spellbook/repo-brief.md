@@ -1,5 +1,5 @@
 ---
-generated: 2026-04-20
+generated: 2026-05-13
 tailor-run: self-tailor (spellbook-on-spellbook)
 ---
 
@@ -24,14 +24,14 @@ its "runtime" is whichever harness reads the symlinked `SKILL.md` files.
 ## Stack & boundaries
 
 - **Skills** (`skills/<name>/SKILL.md`) — judgment, not procedure. <500
-  lines, frontmatter-triggered. 26 skills current.
+  lines, frontmatter-triggered. 29 skills current.
 - **Agents** (`agents/<name>.md`) — scoped personas with tool restrictions.
-  10 agents (philosophy bench: ousterhout, carmack, grug, beck, critic,
-  planner, builder; a11y triad).
+  11 agents (philosophy bench: ousterhout, carmack, grug, beck, cooper,
+  critic, planner, builder; a11y triad).
 - **Harnesses** (`harnesses/{claude,codex,pi,factory,gemini,shared}/`) — per-
   harness configs and hooks. `harnesses/shared/AGENTS.md` is THE principles
   file, symlinked to every harness.
-- **CI** (`ci/src/spellbook_ci/main.py`) — Dagger module, Python 3.12, 12
+- **CI** (`ci/src/spellbook_ci/main.py`) — Dagger module, Python 3.12, 13
   parallel gates, local-first. `dagger.json` names the module; `ci/sdk/` is
   the bundled Dagger Python SDK.
 - **Bootstrap** (`bootstrap.sh`) — two modes: symlink (local checkout) and
@@ -53,7 +53,7 @@ its "runtime" is whichever harness reads the symlinked `SKILL.md` files.
 
 ## Load-bearing gate
 
-**`dagger call check --source=.` IS the gate.** 12 parallel sub-gates:
+**`dagger call check --source=.` IS the gate.** 13 parallel sub-gates:
 
 | Gate | What it enforces |
 |---|---|
@@ -69,6 +69,7 @@ its "runtime" is whichever harness reads the symlinked `SKILL.md` files.
 | `check-harness-install-paths` | `scripts/check-harness-agnostic-installs.sh` — seed/tailor copy must not be Claude-only |
 | `check-deliver-composition` | `skills/deliver/SKILL.md` composes atomic phase skills via trigger syntax, never inlines |
 | `check-no-claims` | No `claims.sh` / `claim_acquire` / `claim_release` under `skills/` (dropped per backlog.d/032) |
+| `check-skill-evals` | Existing `skills/<name>/evals/` suites have README, case, and grader files |
 
 The gate is self-healing: `dagger call heal --source=. --model=gpt-4.1
 --attempts=2` spawns a Dagger `llm()` repair agent for one failing
@@ -132,10 +133,21 @@ Open in `backlog.d/`:
 - `031-harness-auto-tune-gepa.md` (parked until /flywheel produces ≥20 cycles of signal)
 - `046-curate-skill-triage.md` (legacy unmarked `curate` skill)
 - `047-tailor-external-skill-install.md` (three-mode install for external sources)
+- `048-code-review-pattern-catalog-convention.md`
+- `049-bounded-payload-discipline-reference.md`
+- `051-agents-md-three-layer-restructure.md`
+- `052-spellbook-config-contract.md`
+- `053-skill-quality-audit-mode.md`
+- `054-clean-context-philosophy-bench.md`
+- `055-mcp-first-integration-doctrine.md`
+- `056-agent-session-trace-lifecycle.md`
+- `058-work-ledger-mission-control.md`
 
-Active branch: `master`. `/tailor` and `/flywheel` have both shipped
-(see `_done/028`, `_done/029`); current work threads are offline evidence
-(024 → 025 → 027) and external-skill install (047).
+Active branch: `master`. `/tailor`, `/flywheel`, and skill-eval contracts
+have shipped (see `_done/028`, `_done/029`, `_done/057`); current work
+threads are offline evidence (024 → 025 → 027), external-skill install
+(047), AGENTS.md restructuring (051), and trace/ledger lifecycle work
+(056, 058).
 
 Hot files (recent churn):
 - `skills/tailor/SKILL.md` — the skill currently running.
@@ -214,15 +226,11 @@ Validated patterns the user has ratified:
 - `.agents/skills/curate/` pre-dates the `.spellbook` marker era; content
   references `scripts/generate-embeddings.py` which still exists. Preserve
   by default; flag for user before overwriting or removing.
-- `/flywheel` and `/diagnose` are installed as exact copies of the
-  catalog sources. Both are always-install tier: `/flywheel` is the
-  outer-loop orchestrator (spellbook is its source), `/diagnose` is
-  the merged investigate/audit/debug skill (the `/investigate` and
-  `/debug` names are reserved elsewhere in the harness ecosystem; the
-  capability consolidated into `/diagnose`). An exact-copy install is
-  a valid tailoring outcome for a repo that is itself the canonical
-  source.
-- Skipped with concrete absence: `/deploy` (no `vercel.json` /
-  `fly.*.toml` / deploy workflow), `/monitor` (no Sentry /
-  health-endpoint / observability config), `/qa` (no browser/E2E
-  surface), `/demo` (no demo pipeline).
+- `/qa`, `/demo`, `/monitor`, `/diagnose`, `/ship`, and `/flywheel` are
+  always-install tier in the current tailor contract. On Spellbook they
+  bind to non-app surfaces: Dagger gates, skill eval suites, generated
+  index drift, symlink bridge topology, command transcripts, CI/gate
+  regressions, backlog closure, and agent-session audit trails.
+- Skipped with concrete absence: `/deploy` only. There is no
+  `vercel.json`, `fly.*.toml`, deploy workflow, Dockerfile deploy target,
+  release script, or equivalent deploy surface.

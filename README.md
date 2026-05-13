@@ -1,6 +1,6 @@
 # Spellbook
 
-8 workflow skills, 7 agents, and harness infrastructure for AI-assisted
+29 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
 ## Quick Start
@@ -15,7 +15,7 @@ If you're running bootstrap from a temporary git worktree, it now prefers a
 stable checkout like `~/Development/spellbook` automatically. To intentionally
 point your harnesses at a specific checkout, set `SPELLBOOK_DIR=/path/to/spellbook`.
 
-## The 8 Skills
+## Core Workflow Skills
 
 | Skill | Purpose |
 |-------|---------|
@@ -23,17 +23,20 @@ point your harnesses at a specific checkout, set `SPELLBOOK_DIR=/path/to/spellbo
 | `/flywheel` | Outer-loop orchestrator: cycles of /deliver → /deploy → /monitor → /reflect |
 | `/code-review` | Parallel multi-agent review, auto-fix loop |
 | `/diagnose` | Investigate, triage, fix |
+| `/qa` | Verify the changed surface and capture evidence |
+| `/demo` | Show what changed with the right artifact for the change shape |
+| `/monitor` | Watch post-change signals and escalate regressions |
 | `/groom` | Backlog management, brainstorming, rethink, scaffold |
 | `/harness` | Skill engineering, primitive management, context lifecycle |
 | `/reflect` | Session retrospective, harness postmortem, operator coaching |
 | `/research` | Multi-source web research, delegation, think tank |
 | `/shape` | Spec/design → context packet output |
 
-## The 7 Agents
+## The 8 Core Agents
 
 **GAN triad:** planner (spec) → builder (implement) → critic (evaluate)
 
-**Design review bench:** ousterhout (depth), carmack (ship), grug (simplicity), beck (TDD)
+**Design review bench:** ousterhout (depth), carmack (ship), grug (simplicity), beck (TDD), cooper (classicist testing)
 
 ## Workflow
 
@@ -47,8 +50,8 @@ backlog.d/ → /groom → /shape → /deliver → ship
 
 ```
 spellbook/
-├── skills/        # 8 workflow skills
-├── agents/        # 7 agent definitions
+├── skills/        # Canonical skill catalog
+├── agents/        # Agent definitions
 ├── harnesses/     # Per-harness configs (claude/, codex/, pi/)
 │   └── shared/    # Common engineering principles
 ├── registry.yaml  # External skill sources (for embeddings)
@@ -64,7 +67,7 @@ spellbook/
 
 ## Principles
 
-- **8 skills, 7 agents** — resist expansion
+- **Thin skills, strong agents** — resist ceremony
 - **Gotchas > instructions** — enumerate what goes wrong
 - **Strip non-load-bearing scaffold** — stress-test after model upgrades
 - **Symlink, not copy** — bootstrap.sh links to local checkout when available

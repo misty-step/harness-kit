@@ -1,8 +1,10 @@
 # Clean Loop (spellbook)
 
-The clean loop runs `/code-review`, `/ci`, `/refactor` iteratively
-until all green, capped at **3 iterations**. There is no `/qa` phase —
-spellbook has no runtime UI; the Dagger gate subsumes verification.
+The clean loop runs `/code-review`, `/ci`, `/refactor`, and `/qa`
+iteratively until all green, capped at **3 iterations**. Spellbook's
+`/qa` path is non-browser library/harness verification: gate receipts,
+skill eval suites, generated artifact drift, symlink bridge topology, and
+command-level smoke evidence.
 
 ## Iteration Cap
 
@@ -26,8 +28,9 @@ A phase is **dirty** when:
 | Phase | Dirty signal |
 |---|---|
 | `/code-review` | Verdict ref `refs/verdicts/<branch>` missing, pointing at non-HEAD SHA (stale), or carrying `verdict: dont-ship`. Blocking findings in bench synthesis. "nit" / "consider" / "suggestion" severity is NOT dirty. |
-| `/ci` | Non-zero exit from `/ci`. Any of the 12 sub-gates red (`lint-yaml`, `lint-shell`, `lint-python`, `check-frontmatter`, `check-index-drift`, `check-vendored-copies`, `test-bun`, `check-exclusions`, `check-portable-paths`, `check-harness-install-paths`, `check-deliver-composition`, `check-no-claims`). `/ci` may self-heal lint-style gates via `dagger call heal` before reporting; only the post-heal result counts. |
+| `/ci` | Non-zero exit from `/ci`. Any of the 13 sub-gates red (`lint-yaml`, `lint-shell`, `lint-python`, `check-frontmatter`, `check-index-drift`, `check-vendored-copies`, `test-bun`, `check-exclusions`, `check-portable-paths`, `check-harness-install-paths`, `check-deliver-composition`, `check-no-claims`, `check-skill-evals`). `/ci` may self-heal lint-style gates via `dagger call heal` before reporting; only the post-heal result counts. |
 | `/refactor` | Non-zero exit. Clean refactor → green even if no-op. |
+| `/qa` | Non-zero exit. Missing evidence for the changed harness surface is dirty even when `/ci` is green. |
 
 ## Iteration Logic
 
@@ -41,7 +44,9 @@ A phase is **dirty** when:
 3. Run `/refactor` — skip for trivial diffs (<20 LOC, single file).
    On a branch, `/refactor` runs in feature-branch mode against
    `master...HEAD`.
-4. If all three green → exit 0, `merge_ready`. Else increment
+4. Run `/qa` → capture evidence. If dirty: fix or document the
+   unverified path, then loop.
+5. If all four green → exit 0, `merge_ready`. Else increment
    iteration counter and repeat from step 1.
 
 ## Escalation Protocol
@@ -69,7 +74,6 @@ A phase is **dirty** when:
 - Invent a 4th iteration.
 - Mask a dirty phase as green.
 - Push on cap-hit "so the human can see it".
-- Run `/qa` — the phase does not exist in this repo's clean loop.
 - Call `dagger call check` or `dagger call heal` directly — route
   through `/ci`. Inlining trips `check-deliver-composition` on the
   source SKILL.md and is a composition violation in spirit here too.

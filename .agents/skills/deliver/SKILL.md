@@ -3,10 +3,11 @@ name: deliver
 description: |
   Inner-loop composer for spellbook. Takes one backlog.d/ item (or open
   git-bug bug) to merge-ready code. Composes /shape → /implement →
-  {/code-review + /ci + /refactor} (clean loop) and stops. Does not push,
-  does not merge, does not deploy. Communicates with callers via exit code
-  plus <state-dir>/receipt.json — no stdout parsing. Every run also ends
-  with a tight operator-facing delivery brief plus a full /reflect session.
+  {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not
+  push, does not merge, does not deploy. Communicates with callers via exit
+  code plus <state-dir>/receipt.json — no stdout parsing. Every run also
+  ends with a tight operator-facing delivery brief plus a full /reflect
+  session.
   Use when: building a shaped ticket, "deliver this", "make it merge-ready",
   driving one backlog.d/NNN-*.md through review + CI.
   Trigger: /deliver.
@@ -25,9 +26,10 @@ This is the spellbook-tailored variant. It targets this repo's gate
 (`backlog.d/NNN-*.md` / `_done/`), this repo's base branch (`master`),
 and this repo's composition lint (`check-deliver-composition`).
 
-**No `/qa` phase here.** Spellbook is a CLI library — no browser, no UI,
-no Playwright. The Dagger gate subsumes verification; `/qa` is a no-op
-and is dropped from the clean loop entirely. See "Why no /qa" below.
+**`/qa` is part of the clean loop.** Spellbook has no browser UI, so QA is
+not Playwright. It verifies the library/harness surfaces that users
+actually consume: Dagger gate receipts, skill eval suites, generated
+artifact drift, symlink bridge topology, and command-level smoke evidence.
 
 ## Invariants
 
@@ -69,7 +71,7 @@ tests" note. It answers:
   harness, reduce gate drift, speed `dagger call check`?).
 - Value that lands for users of spellbook — downstream repos that
   bootstrap from `~/.claude`, `~/.codex`, `~/.pi`.
-- What was verified (which of the 12 sub-gates ran green; what
+- What was verified (which of the 13 sub-gates ran green; what
   `/code-review` synthesized) and what residual risk remains before
   merge.
 
@@ -99,10 +101,10 @@ brief.
 │                  harness; verdict ref under               │
 │                  refs/verdicts/<branch>                   │
 │  /ci           → audits Dagger module, runs the gate      │
-│                  (12 parallel sub-gates), self-heals lint │
+│                  (13 parallel sub-gates), self-heals lint │
 │                  drift; escalates logic failures          │
 │  /refactor     → diff-aware simplification of base...HEAD │
-│  (no /qa)      — CLI library; gate subsumes verification  │
+│  /qa           → non-browser harness/library evidence     │
 └──────────────────────────────────────────────────────────┘
     │ all green → merge-ready (exit 0)
     │ cap hit or hard fail → fail loud (exit 20/10)
@@ -119,30 +121,34 @@ brief.
 | review | `/code-review` | bench + thinktank + cross-harness review, verdict ref, `.groom/review-scores.ndjson` entry | — |
 | ci | `/ci` | audits `dagger.json`, runs the gate, self-heals lint gates, bounded heal via `dagger call heal` | `/ci` itself decides — do not pre-filter |
 | refactor | `/refactor` | diff-aware simplify on `master...HEAD` | trivial diffs (<20 LOC, single file) |
+| qa | `/qa` | verifies Spellbook's non-app surfaces and captures evidence | `/qa` itself decides — do not pre-filter |
 
 Each skill has its own contract and receipt. `/deliver` reads those
 receipts; it never re-implements the phase.
 
-### Why no /qa
+### What /qa means here
 
-Spellbook has no runtime UI — no React app, no HTTP service, no CLI
-binary end-users run. Artifacts are SKILL.md bodies, agent definitions,
-a Dagger module (`ci/src/spellbook_ci/main.py`), shell scripts, and
-git hooks. Browser-driven exploratory testing has nothing to exercise.
-The `dagger call check --source=.` gate covers the load-bearing
-behavioral contracts:
+Spellbook has no runtime UI — no React app, no HTTP service, no
+application binary end-users run. Artifacts are SKILL.md bodies, agent
+definitions, a Dagger module (`ci/src/spellbook_ci/main.py`), shell
+scripts, symlink bridges, and git hooks. `/qa` therefore runs a
+library/harness verification path, not browser exploration. It checks and
+records evidence for the changed surfaces:
 
 - YAML/shell/Python syntax (`lint-yaml`, `lint-shell`, `lint-python`)
 - SKILL.md frontmatter + line limits (`check-frontmatter`)
 - Derived-artifact drift (`check-index-drift`, `check-vendored-copies`)
-- Skill tests (`test-bun` for `skills/research/`)
+- Skill tests and eval contracts (`test-bun`, `check-skill-evals`)
 - Portable-path + harness-install invariants (`check-portable-paths`,
   `check-harness-install-paths`)
 - Composition lint for this very skill (`check-deliver-composition`)
 - Banned primitives (`check-no-claims`, `check-exclusions`)
+- Cross-harness bridges: `.claude/skills`, `.codex/skills`, `.pi/skills`
+  resolve to `.agents/skills`
 
-If a future spellbook ships a browsable dashboard, `/qa` re-enters the
-loop — but not today.
+The Dagger gate is still the load-bearing verification. `/qa` is the
+evidence and smoke layer around it: prove the changed harness surface is
+exercised, name what was not exercised, and hand the record to `/ship`.
 
 ## Cross-Cutting Invariants
 
