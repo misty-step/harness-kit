@@ -15,10 +15,8 @@ description: |
 # /tailor
 
 You're a tailor, not a wardrobe curator. Spellbook is a reference
-library — fabric bolts, pattern drafts, technique books. For this
-repo you *cut new garments* from that material, sized to fit in
-every seam. Sewing an extra inch onto an off-the-rack jacket is not
-tailoring; it's decoration.
+library; for this repo you cut new garments sized to fit. Sewing an
+extra inch onto an off-the-rack jacket is decoration, not tailoring.
 
 ## Shape of the work
 
@@ -34,8 +32,8 @@ tailoring; it's decoration.
    root plus any existing harness bridges such as `.claude/skills/`,
    `.claude/agents/`, `.codex/skills/`, or `.pi/skills/`. If any
    have content, classify each entry:
-   - **Tailor-owned** — has a `.spellbook` marker file with
-     `source: <name>`, `installed: <timestamp>`, and (newer runs)
+   - **Tailor-owned** — has a `.spellbook` marker with `source:
+     <name>`, `installed: <timestamp>`, and (newer runs)
      `installed-by: tailor`. Safe to replace or remove.
    - **Scaffolded** — marker says `installed-by: <skill>-scaffold`
      (e.g. `qa-scaffold`, `demo-scaffold`) or the content is a
@@ -82,9 +80,11 @@ tailoring; it's decoration.
    Short, dense, concrete. This is the single source of truth for
    "what is this repo" that every rewriter anchors to.
 
-   **Persist the brief to `.spellbook/repo-brief.md`** at the repo
-   root. Future runs read it to diff what's changed. Overwrite any
-   existing version.
+   **Persist the brief to `.spellbook/repo-brief.md`** at the repo root.
+   Future runs read it to diff changes. Overwrite any existing version.
+   If `.spellbook/` is gitignored, also write a tracked compatibility copy
+   at `.claude/.tailor/repo-brief.md` (or the repo's documented harness-state
+   path) with the same content. A breadcrumb to ignored state is not durable.
 
 5. **Pick.** Dispatch planner + critic subagents with the repo
    brief attached. Planner proposes a set following the picking
@@ -171,12 +171,12 @@ tailoring; it's decoration.
 
    | Path | Required by | Overwrite policy |
    |---|---|---|
-   | `scripts/lib/backlog.sh` | `/ship`, `/groom tidy`, any skill reconciling master against `backlog.d/` | Copy verbatim; merge additively with unrelated files; never overwrite an unmarked script |
-   | `scripts/lib/verdicts.sh` | `/ship`, `/settle` (git-native mode) | Copy verbatim; merge additively; never overwrite an unmarked script |
+   | `scripts/lib/backlog.sh` | `/ship`, `/groom tidy`, any skill reconciling master against `backlog.d/` | Copy verbatim when absent or tailor-marked; if unmarked and different, stop and ask `preserve / replace / diff` |
+   | `scripts/lib/verdicts.sh` | `/ship`, `/settle` (git-native mode) | Copy verbatim when absent or tailor-marked; if unmarked and different, stop and ask `preserve / replace / diff` |
 
-   Emit `.spellbook` markers alongside if the repo uses them for
-   scripts; otherwise content parity against spellbook is the drift
-   signal.
+   Emit `.spellbook` markers alongside copied scripts when the repo
+   accepts marker files there. An unmarked divergent script is an
+   ownership conflict, not a failed self-audit you silently fix.
 
    Three categories, different install rules:
 
@@ -443,12 +443,13 @@ tailoring; it's decoration.
      of pretending prose is enforcement.
   6. **Shared scripts present:** `scripts/lib/backlog.sh` and
      `scripts/lib/verdicts.sh` exist at the repo root and match
-     spellbook content. `/ship` and `/groom tidy` source
-     `backlog.sh`; `/ship` and `/settle` source `verdicts.sh`. A
-     missing or diverged library is a silent-sourcing failure at
-     call time. Also grep installed skills for retired
-     third-party tracker names — zero hits. Any residual reference
-     to a retired tracker is a stale-rewrite regression; the
+     spellbook content, unless an unmarked divergent file was
+     classified as `preserve` by the user and the final report names
+     the residual drift. `/ship` and `/groom tidy` source `backlog.sh`;
+     `/ship` and `/settle` source `verdicts.sh`. A missing library is
+     a silent-sourcing failure at call time. Also grep installed skills
+     for retired third-party tracker names — zero hits. Any residual
+     reference to a retired tracker is a stale-rewrite regression; the
      canonical tracker set is `backlog.d/` plus GitHub issues.
   7. **AGENTS.md debt map:** zero `(unfiled)` entries. Every P0 has
      a filed tracker ID.
@@ -479,7 +480,8 @@ tailoring; it's decoration.
   something unmarked, ask the user first. Tailor owns `AGENTS.md`
   (overwrite is fine; pre-existing AGENTS.md without a prior
   tailor run should prompt confirmation) and
-  `.spellbook/repo-brief.md` (always overwrite).
+  `.spellbook/repo-brief.md` (always overwrite, plus tracked
+  compatibility copy when `.spellbook/` is ignored).
 - **Settings merge, not overwrite.** When writing any harness
   settings file, merge with the existing file additively —
   user-added permissions entries survive. Only the entries this
@@ -495,6 +497,3 @@ a "repo notes" appendix is not tailored; rewrite the body itself.
 ## References
 
 - `references/focus-postmortem.md` — critic's rejection checklist.
-
-See also: `/seed` for the dumb-copy variant when you want something
-working fast and will curate by hand later.
