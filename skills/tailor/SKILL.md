@@ -113,17 +113,19 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
    not silently accept a fuzzy pick because the first pass looked
    plausible.
 
-6. **Install.** First reconcile, then write. **The shared skill root
-   is canonical; `.claude/skills/` is a bridge layer** — see
-   cross-harness install invariant below.
-
-   **Reconcile.** For each tailor-owned item inventoried in step 1
-   (has `.spellbook` marker with `installed-by: tailor`):
-   - Still in the new pick → replace with fresh rewrite.
-   - Not in the new pick → remove the skill/agent directory. This
-     is how `/tailor` self-heals canary-class fossils where the
-     prior pick no longer matches the repo's current needs.
-
+6. **Install.** First reconcile, then write. `/tailor` installs four
+   buckets: **workflow**, **universal**, **external**, and **agents**.
+   **The shared skill root is canonical; `.claude/skills/` is a bridge
+   layer** — see cross-harness install invariant below.
+   **Reconcile.** For each tailor-owned item from step 1 (marker
+   `installed-by: tailor`), drive actions by marker `category`:
+   - **Workflow** (`category: workflow`) — still in pick: replace with
+     fresh rewrite; dropped: remove directory.
+   - **Universal** (`category: universal`) — refresh from spellbook source.
+   - **External** (`category: external`) — still in pick: re-resolve shared-root
+     absolute symlink; dropped: remove symlink + sibling marker; never edit target.
+   - **Agent** (`category: agent`) — still in pick: refresh copy; dropped: remove
+     installed agent file/directory.
    For items without a `.spellbook` marker (unknown origin): do not
    touch without user confirmation. If a skill you're about to
    install collides with an unmarked existing skill of the same
@@ -131,9 +133,8 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
    `<shared-skill-root>/qa/` has no tailor marker — is it
    scaffolded, human-authored, or prior-era /tailor output?
    [preserve / replace / diff]".
-
    **Install shared, bridge per-harness.** Write every spellbook-
-   distributed skill to the shared skill root
+   distributed workflow or universal skill to the shared skill root
    (`.agent/skills/<name>/` or `.agents/skills/<name>/`, whichever
    this repo uses). Then create or refresh per-harness skill bridges
    back to that shared copy:
@@ -143,26 +144,26 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
      bridges, keep them pointed at the same shared skill root.
    - Do not duplicate spellbook-distributed skill trees across
      multiple harness-specific directories.
-
+   **External install mechanics are link-only.** For each picked alias, install
+   `<shared-skill-root>/<alias>` as an absolute symlink to
+   `$SPELLBOOK/skills/.external/<alias>/`, then bridge `.claude/skills/<alias>`,
+   `.codex/skills/<alias>`, and `.pi/skills/<alias>` back to shared root with
+   relative symlinks. Never copy or rewrite external content.
    Agents are different: install them into the repo's existing agent
    directory (today that is usually `.claude/agents/`) unless the
    repo already documents a shared-agent convention. Do not invent a
    second agent layout just because the skills are shared.
-
-   **Write `.spellbook` markers.** Every shared skill directory and
-   every installed agent directory or file updated by this run gets a
-   marker file at `<skill-or-agent>/.spellbook` with:
-
-   ```yaml
-   source: <primitive-name>
-   installed: <ISO-8601 timestamp>
-   installed-by: tailor
-   tailor-version: <git commit SHA of spellbook/skills/tailor>
-   category: universal | workflow | domain-invented
-   ```
-
-   Markers are how re-runs tell your output apart from human-
-   authored content.
+   **Write `.spellbook` markers.**
+   - Workflow/universal shared skills and installed agents use
+     `<skill-or-agent>/.spellbook` with `source`, `installed`,
+     `installed-by: tailor`, `tailor-version`, and
+     `category: universal | workflow | agent`.
+   - Externals use sibling `<shared-skill-root>/<alias>.spellbook`
+     (never inside target) with `source: <org>/<repo>`, `alias`,
+     `installed`, `installed-by`, `tailor-version`,
+     `category: external`, and `target`.
+   Sibling markers prevent per-repo timestamps from mutating the shared
+   upstream cache.
 
    **Shared scripts.** Tailored skills source shared shell helpers
    at a stable path. Install verbatim from `$SPELLBOOK/scripts/lib/`
@@ -178,7 +179,7 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
    accepts marker files there. An unmarked divergent script is an
    ownership conflict, not a failed self-audit you silently fix.
 
-   Three categories, different install rules:
+   Four buckets, different install rules:
 
    - **Universal skills** — `office-hours`, `ceo-review`, `reflect`,
      and similar judgment protocols that carry no repo-specific command
@@ -314,13 +315,16 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
      contradiction that the executor brief itself cannot resolve.
      Iterate until coherent. Up to 3 rounds; critic judges
      convergence.
-   - **Domain skills (invented)** — greenfield additions like
-     `/convex-migrate`, `/rust-unsafe-reviewer`. Only invent when you
-     can name the concrete repo characteristic demanding it. Every
-     invented skill ships with an eval seed under its own tree
-     (`evals/` or `tests/`) that captures at least one representative
-     invocation, expected artifact, and pass/fail grader. A skill that
-     cannot name how it will be evaluated is not ready to install.
+   - **External skills** — registry-backed aliases under
+     `$SPELLBOOK/skills/.external/<alias>/`. Install as symlinks plus
+     sibling markers. Web repos may pick frontend externals; non-
+     frontend repos pick zero. Stack-neutral guidance (`karpathy-*`,
+     `julius-caveman`) stays in scope.
+   - **Agents** — install `agents/<name>.md` into the repo's agent
+     directory. Copy/update content; do not rewrite as workflow prose.
+
+   **Domain inventions (optional) are workflow-owned, not external.**
+   If invented, ship an eval seed under `evals/` or `tests/`.
 
 7. **Write `AGENTS.md`.** Project the repo brief + the coherent
    rewrite set into a router (not a manual). Suggested structure:
@@ -415,12 +419,9 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
   1. **Workflow rewrites:** `diff` each installed workflow SKILL.md
      against the spellbook source. Byte-identical = rewriter
      dropped the ball. Go back and redo.
-  2. **Always-install coverage:** every skill in the always-install
-     tier (`deliver`, `shape`, `implement`, `code-review`, `ci`,
-     `refactor`, `groom`, `flywheel`, `settle`, `ship`, `yeet`,
-     `diagnose`, `monitor`, `research`, `qa`, `demo`) resolves to a directory
-     under the shared skill root. Zero missing. If one is absent, the run
-     failed — reinstall before declaring done.
+  2. **Always-install + external resolution:** always-install skills resolve
+     under the shared skill root. Every external sibling marker has a matching
+     live `readlink` target. Missing or broken entries fail the run.
   3. **Excluded workflows:** only `deploy` may be skipped, and the skip
      names the concrete missing deploy surface (no `vercel.json`, no
      `fly.*.toml`, no `Dockerfile*`, no `.github/workflows/*deploy*`,
