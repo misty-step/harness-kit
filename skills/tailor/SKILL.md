@@ -214,6 +214,12 @@ tailoring; it's decoration.
      to critic objections until it clears. Quality lives in this
      loop, not in post-hoc semantic lint rules.
 
+     **Preserve workflow contracts, not source mechanisms.** Before
+     rewriting a workflow skill, extract purpose, mandatory phases,
+     terminal artifact, refusal conditions, and destructive-action
+     boundaries. Mechanisms may change; dropping the source success
+     condition requires explicit planner + critic acceptance.
+
      **Every workflow skill gets a reading assignment.** Skills
      with clear command anchors get rewritten easily; abstract-
      process skills (shape, refactor, code-review, flywheel,
@@ -238,7 +244,7 @@ tailoring; it's decoration.
      | **refactor** | git churn (hot files), debt map, ARCHITECTURE.md, recent refactor PRs, named hotspots from repo brief |
      | **code-review** | AGENTS.md red flags, recent review threads, repo's philosophy bench, known anti-patterns |
      | **flywheel** | milestone tracker, issue IDs from repo brief, recent cycle reflections, deploy observables |
-     | **groom** | `backlog.d/` (or equivalent file-driven tracker), GitHub issues if in use, grooming cadence, prioritization scheme |
+     | **groom** | `backlog.d/` (or equivalent tracker), GitHub issues if in use, grooming cadence, prioritization scheme |
      | **implement** | test runner command, mocking boundaries, test config, recent TDD cycles, branch-naming convention (`<type>/<id>-<slug>`) |
      | **diagnose** | signal surfaces, `.evidence/`, postmortems, observability tooling |
      | **research** | prior research artifacts (`.claude/research/`, `docs/research/`, `.groom/`), stack manifest (`package.json` / `Cargo.toml` / `pyproject.toml`) for domain cues, open research threads in `backlog.d/`, repo-specific source/doc lists |
@@ -273,7 +279,7 @@ tailoring; it's decoration.
      | Skill | Must preserve |
      |---|---|
      | `/ship` | Names the repo's structured closing signal; archives each closing `backlog.d/<id>-*.md` file into `_done/` before merge or verifies it is already archived; preserves the closing signal into the landed commit/PR record when the repo's detector reads history; verifies the archive landed after merge; invokes `/reflect` with bounded scope (branch, merged SHA, closing IDs, reference IDs); routes harness edits to `harness/reflect-outputs`, never the protected branch; embeds the repo's merge strategy and doc-sync convention verbatim. Spellbook default: branch regex `^(feat\|fix\|chore\|refactor\|docs\|test\|perf)/(\d+)-`, trailers `Closes-backlog:` / `Ships-backlog:` + `Refs-backlog:`, `backlog_archive`, explicit squash body carrying trailers. |
-     | `/groom` | Always-on `tidy` step invokes the same lifecycle detector `/ship` relies on, reconciles active `backlog.d/` files against shipped closing signals, archives stale-active files through the same archive helper, and flags contradictions. Strategic-layer trigger vocabulary can stay universal; prioritization scheme, cadence, tracker surfaces, and lifecycle command are repo-specific. No retired third-party trackers. |
+     | `/groom` | Always-on `tidy` step invokes the same lifecycle detector `/ship` relies on, reconciles active tracker items against shipped closing signals, closes or archives stale-active work through the tracker-native operation, and flags contradictions. Strategic-layer trigger vocabulary can stay universal; prioritization scheme, cadence, tracker surfaces, lifecycle command, and output artifact are repo-specific. No retired third-party trackers. |
      | `/settle` | Polish-loop framing (CI → code-review → refactor until merge-ready); stops at merge-ready; hands off to `/ship`; checks or names the lifecycle gate that prevents a ready PR from referencing active-but-unarchived backlog work. |
      | `/flywheel` | Composition `pick → /shape → /implement → /yeet → /settle → /ship → /monitor → loop`; `/ship` owns closure (archive + reflect + harness routing); `/flywheel` does not archive tickets or invoke `/reflect` directly; it only consumes `/ship`'s final lifecycle result. |
      | `/implement` | Branch or context-packet creation produces whatever structured item reference `/ship` can later resolve. If the repo weakens Spellbook's default branch regex, the rewrite must update `/ship`, `/groom`, `/settle`, and `/flywheel` in the same tailor run and name the replacement detector. |
@@ -298,7 +304,9 @@ tailoring; it's decoration.
      contradiction check per gate-adjacent skill against the repo
      brief's gate statement or a sibling skill's statement. Any
      contradiction against repo brief or sibling skills → reject;
-     (3) **completeness** — byte-identical to spellbook source →
+     (3) **contract conservation** — after translating mechanisms,
+     does the rewrite still produce the terminal artifact and honor
+     mandatory phases? If no, reject; (4) **completeness** — byte-identical to spellbook source →
      reject. Critic sends only the failing executors back with
      specific objections. Passed skills freeze. Only changed skills go
      back to executors. Re-enter the planner only when the critic has
