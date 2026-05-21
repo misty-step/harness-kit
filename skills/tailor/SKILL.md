@@ -406,62 +406,42 @@ extra inch onto an off-the-rack jacket is decoration, not tailoring.
   named after the repo is the sewn-on-sleeve anti-pattern — the
   generic jacket with an appendix. Forbidden.
 
-  *Permitted:* stack-specific references under their own topic
-  (`references/elixir-observability.md`, `references/convex-
-  patterns.md`, `references/otp-supervision.md`). These carry
-  reusable content that's too deep for SKILL.md progressive
-  disclosure — not a repo appendix. If the name could apply to
-  another repo on the same stack, it's fine. If the name is this
-  repo, rewrite it into SKILL.md.
-- **Self-audit before declaring done.** Seven checks:
-  1. **Workflow rewrites:** `diff` each installed workflow SKILL.md
-     against the spellbook source. Byte-identical = rewriter
-     dropped the ball. Go back and redo.
-  2. **Always-install + external resolution:** always-install skills resolve
-     under the shared skill root. Every external sibling marker has a matching
-     live `readlink` target. Missing or broken entries fail the run.
-  3. **Excluded workflows:** only `deploy` may be skipped, and the skip
-     names the concrete missing deploy surface (no `vercel.json`, no
-     `fly.*.toml`, no `Dockerfile*`, no `.github/workflows/*deploy*`,
-     no release script or equivalent). An always-install skill appearing
-     in the skipped list is a critical regression. `qa`, `demo`, and
-     `monitor` are always-install — never appear here.
-  4. **Agent installation:** grep every installed skill for
-     `subagent_type:` references. Every referenced agent must resolve
-     to a file in the repo's installed agent directory (usually
-     `.claude/agents/`). A `/code-review` that dispatches
-     `ousterhout` + `carmack` + `grug` against nonexistent agent
-     files is a silent regression — the skill fails at call time.
-  5. **Backlog lifecycle coherence:** `/ship`, `/groom`, `/settle`,
-     `/flywheel`, `/implement`, and `/deliver` all name the same active
-     tracker, closed tracker, structured closing signal, archive operation,
-     and detector command. `/deliver` preserves the no-arg priority/status
-     pick.
-     Contradictions like "no trailers" in `/ship`
-     while `/groom` sweeps trailer history fail the run. If the repo
-     lacks a detector today, the tailor run must file a high-priority
-     backlog item and every lifecycle skill must name that gap instead
-     of pretending prose is enforcement.
-  6. **Shared scripts present:** `scripts/lib/backlog.sh` and
-     `scripts/lib/verdicts.sh` exist at the repo root and match
-     spellbook content, unless an unmarked divergent file was
-     classified as `preserve` by the user and the final report names
-     the residual drift. `/ship` and `/groom tidy` source `backlog.sh`;
-     `/ship` and `/settle` source `verdicts.sh`. A missing library is
-     a silent-sourcing failure at call time. Also grep installed skills
-     for retired third-party tracker names — zero hits. Any residual
-     reference to a retired tracker is a stale-rewrite regression; the
-     canonical tracker set is `backlog.d/` plus GitHub issues.
-  7. **AGENTS.md debt map:** zero `(unfiled)` entries. Every P0 has
-     a filed tracker ID.
-
-  Silent skip is the failure mode that ships B+ output when A is
-  the bar.
-- **Keep deterministic checks objective.** Self-audit is for
-  presence/absence regressions, exact-copy detection, missing
-  agents/scripts, and debt-map hygiene. Do not invent semantic
-  scorecards, file-size thresholds, or "rewrite depth" heuristics.
-  Planner → executor → critic owns semantic quality.
+  *Permitted:* stack-topic references (`references/elixir-observability.md`,
+  `references/convex-patterns.md`, `references/otp-supervision.md`) that
+  carry reusable depth too large for SKILL.md. If the name could apply to
+  another repo on the same stack, it is fine; if the name is this repo,
+  rewrite it into SKILL.md.
+- **Post-install acceptance audit before declaring done.** After install,
+  run `skills/tailor/scripts/collect-post-tailor-evidence.py <repo-root>`.
+  The collector writes `.spellbook/tailor/audit/<run-id>/evidence.json`
+  plus supporting grep/readlink artifacts. It gathers facts only:
+  byte-identical workflow skills, missing always-install skills (especially
+  `/trace`), broken bridges, unresolved agent refs, hardcoded user paths,
+  deploy vocabulary when the repo brief says no deploy target, gate phrase
+  drift, lifecycle facts, repo-brief debt hygiene, and shared-script sync.
+  It exits nonzero only when evidence cannot be collected.
+- **Acceptance is subagent judgment.** Dispatch a critic with the repo brief,
+  `AGENTS.md`, evidence packet, artifact directory, rewritten workflow
+  SKILL.md files, source Spellbook workflow paths, and the planner's rewrite
+  brief when available. The critic reviews the installed harness as a set:
+  depth (wrong if applied to another same-stack repo), cohesion (same gate,
+  tracker, closure signal, archive operation, work store, detector), contract
+  conservation, install integrity, and stale-context drift.
+- **Persist the verdict.** Write the critic's decision to
+  `.spellbook/tailor/audit/<run-id>/verdict.json` with `status`,
+  `blockers[]`, `evidence_refs[]`, `repair` directives, `residual_risk[]`,
+  and reviewer identities. A `/tailor audit` rerun creates a new audit
+  directory; it never mutates old evidence or verdicts.
+- **Repair and re-audit.** If the verdict fails, repair only blocking
+  findings, rerun the collector, and redispatch critique. Route `ousterhout`
+  for lifecycle/gate cohesion or shallow rewrites, `carmack` for audit bloat,
+  and `beck` for test/eval contract drift. After three failed rounds, surface
+  the conflict to the user; do not silently call the run successful.
+- **Keep deterministic checks objective.** The collector is a fact packet,
+  not a semantic judge. No numeric scores, rewrite-depth percentages,
+  file-size thresholds, prose regex verdicts, or deterministic green override.
+  Byte-identical workflow content is enough evidence to fail; never enough
+  evidence to pass. Subagents own bespoke-fit judgment.
 - Preserve self-containment. When you copy or rewrite a skill, its
   `references/` and `scripts/` stay with it.
 - **Cross-harness install.** Spellbook-distributed skills live in a
