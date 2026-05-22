@@ -4,9 +4,8 @@ description: |
   Dialectical premise-and-alternatives audit for a plan, spec, or context packet.
   Four moves: premise challenge (is this the right problem?), mandatory
   structurally-distinct alternatives, cross-model outside voice, user-ratified
-  convergence. Named for Gary Tan's plan-ceo-review pattern; operationalizes
-  the AGENTS.md "Diverge Before You Converge" doctrine at the plan-review
-  stage.
+  convergence. Operationalizes the AGENTS.md "Diverge Before You Converge"
+  doctrine at the plan-review stage.
   Use when: about to commit to a plan/spec/design, reviewing a ticket before
   shape, when "is this the right problem" would be useful, or any time a
   proposal smells like a symptom fix instead of a root-cause fix.
@@ -121,6 +120,6 @@ reframe the premise, or abandon. Silence is not consent.
   → ratified plan.
 - **`/groom`** surfaces themes; its synthesis protocol includes a premise
   challenge. If `/groom` already reframed, `/ceo-review` picks up from there.
-- **gstack reference:** `gstack-plan-ceo-review` preserves Gary Tan's
-  original for comparison. This skill is the spellbook-native version,
-  self-contained and integrated with our workflow.
+- **Pattern provenance:** This is the spellbook-native version of the
+  dialectical plan-review pattern, self-contained and integrated with our
+  workflow.

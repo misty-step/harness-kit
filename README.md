@@ -46,6 +46,9 @@ backlog.d/ → /groom → /shape → /deliver → ship
                                   /deliver → /deploy → /monitor → /reflect → next)
 ```
 
+For a deeper map of the repository architecture, encoded assumptions, operating
+loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
+
 ## Structure
 
 ```

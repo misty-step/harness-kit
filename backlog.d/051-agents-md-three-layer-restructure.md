@@ -35,7 +35,7 @@ Reshape `harnesses/shared/AGENTS.md` into three explicitly-signposted layers so 
 
 ### Provenance
 
-Derived from /groom session 2026-04-23 processing agent-harness clippings. Must-reads: "A good AGENTS.md is a model upgrade" (AuggieBench study of 2500+ repos), "How to really stop your agents from making the same mistakes" (Gary Tan / Skillify), "Coding Models Are Doing Too Much", "Multi-Agents What's Actually Working", Compound Engineering v3.
+Derived from /groom session 2026-04-23 processing agent-guidance clippings. Must-reads: "A good AGENTS.md is a model upgrade" (AuggieBench study of 2500+ repos), "How to really stop your agents from making the same mistakes" (Skillify), "Coding Models Are Doing Too Much", "Multi-Agents What's Actually Working", Compound Engineering v3.
 
 ### Framing correction
 

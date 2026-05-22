@@ -14,6 +14,7 @@ to every harness); this file is the **spellbook-specific** index.
 | **CI module** | `ci/src/spellbook_ci/main.py` | 13 Dagger gates + heal loop. Python 3.12. |
 | **Bootstrap** | `bootstrap.sh` | Installs minimal globals (`GLOBAL_SKILLS=(tailor seed)` + all agents) via symlink OR download mode. Per-repo subsets are `/tailor` / `/seed`'s job. |
 | **Scripts** | `scripts/` | Shell + Python utilities: frontmatter check, index regen, embeddings, external sync, harness lint. |
+| **Repo-local harness** | `.agents/skills/<name>/` (canonical), `.claude/.codex/.pi` bridges | The harness used to build Spellbook itself. Version-controlled source, not scratch. |
 | **Backlog** | `backlog.d/NNN-*.md` (open), `backlog.d/_done/` (closed), `.spellbook/deliver/<ulid>/` (runtime state, gitignored) | Shaped work ready to build. Single source of truth; closure via `Closes-backlog:` trailers on squash-merge commits (handled by `/ship`). |
 
 ## Ground-truth pointers
@@ -68,6 +69,11 @@ Stale training data lies about these — always read the file:
   Raw `dagger call check`, direct bench-agent dispatch, or inlined
   phase internals inside `skills/deliver/SKILL.md` fail
   `check-deliver-composition`.
+- **Repo-local harness directories are first-class source.** The canonical
+  root is `.agents/skills/`; `.claude/`, `.codex/`, and `.pi/` are bridge
+  dirs. They are hidden only by Unix naming convention, not by ownership:
+  searches and reviews must use hidden-aware commands such as
+  `rg --hidden -g '!.git/**'` and must include these directories.
 - **`harnesses/claude/settings.json` is COPIED by bootstrap**, not
   symlinked (Claude mutates it at runtime). Changes require re-bootstrap.
 

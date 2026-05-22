@@ -20,7 +20,7 @@
 #   alias_prefix:  "prefix-"             REQUIRED for non-default sources. Prepended
 #                                        to every alias to avoid cross-source
 #                                        collisions. Convention: short source tag
-#                                        (e.g. "anthropic-", "gstack-", "vercel-").
+#                                        (e.g. "anthropic-", "vercel-").
 #   allow_floating: true                 optional. Permit a non-immutable ref
 #                                        (main/HEAD/branch). Default: refuse.
 #   embeddings:    true | false          default true. Include in embeddings index.
@@ -30,10 +30,9 @@
 # ALIAS_PREFIX DOCTRINE
 # Every non-default source MUST declare alias_prefix. External libraries have
 # heterogeneous naming conventions and silent collisions are load-bearing bugs.
-# The prefix scopes the source's namespace: e.g. gstack's `office-hours` becomes
-# `gstack-office-hours`, invoked as `/gstack-office-hours`. Two sources may share
-# a prefix only if their skill name sets are provably disjoint (e.g. the two
-# vercel-labs repos share `vercel-`). Same prefix + same skill name = fatal at sync.
+# The prefix scopes the source's namespace. Two sources may share a prefix only
+# if their skill name sets are provably disjoint (e.g. the two vercel-labs repos
+# share `vercel-`). Same prefix + same skill name = fatal at sync.
 
 sources:
   - repo: phrazzld/spellbook
@@ -96,43 +95,6 @@ sources:
     skills_path: skills
     alias_prefix: "julius-"
     include: [caveman]
-
-  # Gary Tan's gstack — dialectical product/planning skills (YC-partner style).
-  #
-  # CONTAINMENT CAVEAT: gstack hardcodes `~/.claude/skills/gstack/bin/...` in
-  # ~1,400 places and expects a global `gstack` CLI install via `bin/setup`.
-  # Skills NOT in the include list below depend on that bin/ infrastructure
-  # (browse daemon, Chromium extension, QA runners) and will silently no-op
-  # when copied to .external/ without the native install. The included subset
-  # is prose-heavy; bin/ failures are swallowed in non-critical paths.
-  #
-  # INACTIVE: the doctrine-critical patterns have spellbook-native
-  # reimplementations at skills/ceo-review/ and skills/office-hours/.
-  # Keeping the upstream source active adds brittle Claude-global assumptions
-  # and noisy aliases without improving the default harness.
-  - repo: garrytan/gstack
-    ref: main
-    pin: b805aa0113040fb78228068ce808772299caf244
-    layout: flat
-    skills_path: .
-    alias_prefix: "gstack-"
-    active: false
-    include:
-      - plan-ceo-review
-      - office-hours
-      - autoplan
-      - investigate
-      - retro
-      - review
-      - checkpoint
-      - learn
-      - cso
-      - plan-design-review
-      - plan-devex-review
-      - plan-eng-review
-      - document-release
-      - design-consultation
-      - design-html
 
   # OpenAI .curated — skip SaaS-credentialed skills unless the operator uses them.
   - repo: openai/skills

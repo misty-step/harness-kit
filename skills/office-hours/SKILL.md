@@ -3,9 +3,9 @@ name: office-hours
 description: |
   YC-partner-style interrogation of a raw idea. Six forcing questions before
   you shape anything: demand reality, status quo, desperate specificity,
-  narrowest wedge, observation & surprise, future-fit. Named for Gary Tan's
-  office-hours pattern; operationalizes the AGENTS.md "Diverge Before You
-  Converge" doctrine at the ideation stage — problem-diamond, pre-/shape.
+  narrowest wedge, observation & surprise, future-fit. Operationalizes the
+  AGENTS.md "Diverge Before You Converge" doctrine at the ideation stage —
+  problem-diamond, pre-/shape.
   Use when: user arrives with a rough idea, backlog item is fuzzy, you can't
   already write a one-sentence goal with a testable outcome, or the phrase
   "what should we build" would be useful.
@@ -115,6 +115,6 @@ tactical patch — name it as such.
   hours surfaces absent demand reality, do not shape — the work isn't ready.
 - **`/ceo-review`** is the post-shape counterpart. Office hours sharpens
   the *problem*; CEO review challenges the *plan*.
-- **gstack reference:** `gstack-office-hours` preserves Gary Tan's original.
-  This is the spellbook-native version, self-contained and integrated with
-  our workflow.
+- **Pattern provenance:** This is the spellbook-native version of the
+  demand-reality interview pattern, self-contained and integrated with our
+  workflow.
