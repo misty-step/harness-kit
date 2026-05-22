@@ -148,7 +148,7 @@ records evidence for the changed surfaces:
 - Composition lint for this very skill (`check-deliver-composition`)
 - Banned primitives (`check-no-claims`, `check-exclusions`)
 - Cross-harness bridges: `.claude/skills`, `.codex/skills`, `.pi/skills`
-  resolve to `.agents/skills`
+  resolve to canonical repo-local skills under `.agents/skills`
 
 The Dagger gate is still the load-bearing verification. `/qa` is the
 evidence and smoke layer around it: prove the changed harness surface is

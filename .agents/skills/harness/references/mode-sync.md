@@ -33,7 +33,7 @@ Load-bearing schema fields:
   multiple entries for the same `repo`.
 - `include:`/`exclude:` — allow/deny specific skill names.
 - `alias_prefix: "tag-"` — **required** for every non-default source.
-  Short tag (`anthropic-`, `vercel-`, `gstack-`). Installed skill's
+  Short tag (`anthropic-`, `vercel-`). Installed skill's
   invocation becomes `/<prefix><name>`.
 - `allow_floating: true` — opt-in to a non-pinned `ref`. Default is
   refuse.
@@ -73,8 +73,7 @@ tomorrow.
 3. Run `./scripts/lint-external-skills.sh --strict`. If the upstream
    skill hardcodes `~/.claude/…` or `/Users/…` or tree-escapes, either
    `exclude:` that skill or document the containment caveat in
-   `registry.yaml` (see the `gstack-` CONTAINMENT CAVEAT comment for
-   canonical form).
+   `registry.yaml`.
 4. After first successful sync, read the installed
    `skills/.external/<alias>/.sync-meta.json`, copy the `sha` to
    `pin:` in `registry.yaml`, and remove `allow_floating: true`.
@@ -96,12 +95,9 @@ Before pulling an external source in, classify it:
 
 - **Portable** — self-contained, resolves via `$SCRIPT_DIR`, no
   global installs. Copy as-is. Lint clean.
-- **Toolkit** — depends on a native CLI or daemon (`gstack-`
-  hardcodes `~/.claude/skills/gstack/bin/…`). Curate + native-
-  reimplement the doctrine-critical patterns (see
-  `skills/ceo-review/`, `skills/office-hours/` as reimpls of gstack
-  patterns). Keep the `gstack-*` aliases for cross-reference; treat
-  them as read-only.
+- **Toolkit** — depends on a native CLI or daemon. Reject the source unless
+  the native install path is part of the contract, or reimplement the
+  doctrine-critical pattern as a first-party skill.
 - **Runtime-dependent** — relies on a harness-specific feature.
   Reject unless you can replace with filesystem-layer equivalents.
 

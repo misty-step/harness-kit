@@ -4,7 +4,7 @@ Priority: P1
 Status: pending
 Estimate: L
 Aliases: agent roster, delegation receipts, provider bench
-Supersedes: `backlog.d/062-provider-delegation-receipts.md`
+Supersedes: `backlog.d/068-provider-delegation-receipts.md`
 
 ## Goal
 
