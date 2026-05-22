@@ -103,6 +103,28 @@ preserve them):
 If the prompt to the subagent would be mostly "do this exact sed command,"
 don't spawn the subagent — run the sed command.
 
+### Provider roster and receipts
+
+When a repo defines `.spellbook/agents.yaml`, treat it as the local roster
+for external coding-agent providers. The human-facing agent remains the
+lead manager: it selects lanes, dispatches bounded work, compares outputs,
+and synthesizes the final answer.
+
+- For non-trivial design, implementation, research, review, or UI work,
+  consult the roster and prefer at least two provider lanes when provider
+  diversity or fresh context would materially improve confidence.
+- Keep direct solo work for the carve-outs above: mechanical edits,
+  already-decided typing, short known-path reads, and pre-diagnosed small
+  fixes.
+- Record each meaningful provider lane as a sanitized delegation receipt
+  in `.spellbook/traces/delegations.jsonl` through the repo's receipt
+  script. Evidence references point to paths or ids, never raw transcripts.
+- Provider CLIs are tools, not a new workflow engine. Do not build hidden
+  ranking, process supervision, kill switches, or semantic orchestration
+  around the roster unless a shaped ticket explicitly asks for it.
+- Runtime traces and provider session/auth artifacts stay local and
+  ignored. Committed examples may live under `.spellbook/examples/`.
+
 ### Prompt subagents with positive framing
 
 Anthropic's specific guidance: *"positive examples of desired voice

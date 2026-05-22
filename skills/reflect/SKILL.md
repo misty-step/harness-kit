@@ -17,6 +17,11 @@ argument-hint: "[distill|calibrate|coach|tune-repo|append|cycle] [context]"
 
 Structured reflection that improves both the harness and the operator.
 
+If `.spellbook/agents.yaml` exists, include `.spellbook/traces/` delegation
+receipts in the evidence set when they are relevant. Reflection should convert
+provider-lane results and failure modes into backlog, harness, or coaching
+outputs without inventing hidden rankings.
+
 Every finding becomes one of three things:
 - a codified artifact
 - a concrete coaching note

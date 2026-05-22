@@ -28,6 +28,8 @@ One command. Executive authority. No approval gates.
 3. **Reviewability is the product.** A stack of three focused commits beats
    one 2,000-line "wip" commit, every time. Split on semantic boundaries
    even if the tree was built in one session.
+   Provider-roster receipts can inform classification when present, but
+   `/yeet` does not launch new provider lanes; it packages completed work.
 4. **Never lose work.** Untracked scratch that might be the user's in-flight
    thinking gets moved, not deleted, unless it's unambiguous debris.
 5. **Conventional Commits, always.** Type, optional scope, imperative subject.

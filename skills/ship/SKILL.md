@@ -35,6 +35,10 @@ into the repo. One command from "green" to "shipped and learned from."
 5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
    `/settle` already proved the branch clean. If `/settle` wasn't run,
    refuse and route the operator back.
+6. **Roster receipts are evidence, not merge authority.** In repos with
+   `.spellbook/agents.yaml`, include delegation receipts in `/reflect`
+   context when present, but do not dispatch providers during final-mile
+   merge work.
 
 ## Prerequisites
 

@@ -20,6 +20,9 @@ You are the executive orchestrator.
 - Keep query framing, source weighting, and final synthesis on the lead model.
 - Delegate source retrieval and specialized analysis to focused subagents/tools.
 - Run multi-source fanout in parallel for independent evidence streams.
+- When `.spellbook/agents.yaml` exists, treat it as the external coding-agent
+  roster for repo-aware research lanes. Probe availability, choose bounded
+  provider tasks, and record meaningful lanes with the receipt tool.
 
 ## Absorbed Skills
 

@@ -20,6 +20,11 @@ coating** — skills, agents, hooks, lint gates. Reviews anchor to
 do the automated first pass, dispatch human-judgment reviewers in parallel,
 synthesize, fix blockers, loop.
 
+When `.spellbook/agents.yaml` exists, use it as the source of truth for the
+Cross-harness tier. Pick at least one non-lead available provider for
+meaningful diffs, preserve the internal philosophy bench, and record external
+provider lanes as delegation receipts.
+
 ## What Gets Reviewed Here
 
 Almost every diff in this repo is one of:
@@ -47,7 +52,7 @@ Before spawning any reviewer, run (or confirm the caller ran):
 dagger call check --source=.
 ```
 
-The 12 parallel gates catch everything mechanical. Named gates (see
+The 14 parallel gates catch everything mechanical. Named gates (see
 `.spellbook/repo-brief.md` for the full table):
 
 - `lint-yaml`, `lint-shell` (shellcheck), `lint-python` (py_compile)
@@ -100,7 +105,7 @@ See `references/internal-bench.md` for lens detail and prompt guidance.
 |---|---|---|
 | Philosophy bench | 3-5 Explore sub-agents with named lenses | Agent tool, tailored prompts. Read-only. |
 | Thinktank review | 10 reviewers across 8 model providers | `thinktank review` CLI. See `references/thinktank-review.md` |
-| Cross-harness | Codex + Gemini CLIs (skip whichever you are) | See `references/cross-harness.md` |
+| Cross-harness | Available non-lead providers from `.spellbook/agents.yaml` | See `references/cross-harness.md` |
 
 Parallel dispatch only — sequential here wastes wall time. Thinktank gotcha:
 wait for the process to exit, or for `trace/summary.json` to reach `complete`
@@ -255,7 +260,7 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - **Reviewing the whole repo.** Review the diff, not the catalog. Scope is
   `git diff $BASE...HEAD`.
 - **Skipping tiers for speed.** Philosophy bench alone is same-model depth,
-  not diversity. Thinktank + cross-harness (Codex, Gemini) provide real
+  not diversity. Thinktank + roster-driven cross-harness review provide real
   foundation diversity. Same-model self-critique is theater
   (see AGENTS.md "Diverge Before You Converge").
 - **Misreading a live Thinktank run.** `review.md`, `summary.md`, and

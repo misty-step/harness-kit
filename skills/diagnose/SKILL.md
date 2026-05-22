@@ -20,6 +20,10 @@ Find root cause. Fix it. Prove it works.
 You are the executive orchestrator.
 - Keep hypothesis ranking, root-cause proof, and fix selection on the lead model.
 - Delegate bounded evidence gathering and implementation to focused subagents.
+- When `.spellbook/agents.yaml` exists and the failure has multiple plausible
+  causes or unfamiliar subsystems, use roster providers as fresh-context
+  investigators. Record meaningful external lanes; keep root-cause verdict on
+  the lead model.
 - Run parallel hypothesis probes when multiple plausible causes exist.
 
 ## Routing

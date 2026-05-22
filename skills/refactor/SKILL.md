@@ -18,6 +18,10 @@ Reduce complexity without reducing correctness. Favor fewer states, clearer
 names, stronger invariants, better tests, and current docs. Deletion first,
 then consolidation, then abstraction, then mechanical cleanup.
 
+When `.spellbook/agents.yaml` exists, use the provider roster for fresh-context
+calibration on high-risk simplifications or architecture-level refactors. Keep
+mechanical cleanup inline; record meaningful external lanes as receipts.
+
 ## Branch-Aware Routing
 
 Detect the current branch and primary branch first:

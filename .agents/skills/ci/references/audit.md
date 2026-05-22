@@ -1,7 +1,7 @@
 # CI Audit Rubric — Spellbook
 
 Spellbook's pipeline exists and is healthy: `dagger call check --source=.`
-is defined by `ci/src/spellbook_ci/main.py` with 12 parallel gates. An
+is defined by `ci/src/spellbook_ci/main.py` with 14 parallel gates. An
 audit here does **not** ask "should we have CI" — it asks "does the gate
 set still cover what's being added to the repo?"
 

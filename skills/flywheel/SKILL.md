@@ -27,6 +27,9 @@ encode the invariants that aren't inferable from the leaf names.
 
 - Flywheel composes. Phase logic lives in the leaf skill. Flywheel has none.
 - State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
+- Provider-roster behavior lives in the leaf workflow skills. If the repo has
+  `.spellbook/agents.yaml`, `/flywheel` expects roster receipts to appear in
+  phase evidence, but it does not dispatch providers directly.
 - `/ship` owns closure: squash-merge, backlog archive, `/reflect`, and
   applying reflect's outputs. Flywheel does not invoke `/reflect` directly.
 - Ship before deploy. Always.

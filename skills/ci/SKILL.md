@@ -34,6 +34,9 @@ not address review comments (→ `/settle`), does not ship.
 
 1. **Audit before run.** A weak pipeline passing is worse than a strong
    one failing. Inventory coverage before trusting green.
+   When `.spellbook/agents.yaml` exists, roster lanes may investigate red
+   gates or weak coverage, but `/ci` remains the canonical gate owner and
+   `dagger call check` remains the proof.
 2. **Dagger-mandatory, auto-scaffolded.** Missing `dagger.json` is a gap
    the skill closes itself, not a blocker that halts work. Scaffold a
    TypeScript Dagger module, fold every existing gate into `check()`,

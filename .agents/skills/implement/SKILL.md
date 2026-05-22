@@ -4,7 +4,7 @@ description: |
   Atomic TDD build skill for the Spellbook repo. Takes a context packet
   (shaped ticket from /shape or backlog.d/<id>-*.md) and produces code +
   tests on a feature branch. Red -> Green -> Refactor. "Green" here
-  means `dagger call check --source=.` exits 0 — the 12-gate load-bearing
+  means `dagger call check --source=.` exits 0 — the 14-gate load-bearing
   gate. Does not shape, review, QA, or ship — single concern: spec to
   green gate. Use when: "implement this spec", "build this", "TDD this",
   after /shape has produced a context packet.
@@ -24,6 +24,11 @@ Spec in, green gate out. One packet, one feature branch, one concern.
   command (pytest, bun test, shellcheck) is a sub-gate of that one gate.
 - Cross-harness parity is a Red Line. If the change touches
   `skills/<name>/SKILL.md`, it works on Claude, Codex, AND Pi.
+- For non-trivial builds in repos with `.spellbook/agents.yaml`, consult the
+  provider roster before choosing the builder lane. Prefer a bounded external
+  provider attempt in a separate worktree when it can run safely; record the
+  attempt as a delegation receipt. Mechanical or already-decided small fixes
+  may stay inline.
 
 ## Contract
 
@@ -45,7 +50,7 @@ See `references/context-packet.md` for the full shape.
 **Output.**
 - Code + tests on a feature branch (`<type>/<slug>` from current branch;
   `<type>` in `{feat, fix, chore, docs, refactor}`; base is `master`)
-- `dagger call check --source=.` exits 0 (all 12 sub-gates green)
+- `dagger call check --source=.` exits 0 (all 14 sub-gates green)
 - Working tree clean (no debug prints, no scratch files)
 - Commits in repo convention — one logical unit per commit, semantic
   prefix matching current branch type
@@ -143,7 +148,7 @@ See `references/tdd-loop.md` for the full cycle and skip rules.
 Before exiting, confirm (run the commands — don't trust the builder):
 
 - [ ] Every oracle command exits 0
-- [ ] `dagger call check --source=.` exits 0 (all 12 sub-gates)
+- [ ] `dagger call check --source=.` exits 0 (all 14 sub-gates)
 - [ ] Pre-commit hook exits 0 on the last commit (it regenerates
   `index.yaml` and runs `check-harness-agnostic-installs.sh`). If
   `index.yaml` was regenerated, the hook's amend counts as a success

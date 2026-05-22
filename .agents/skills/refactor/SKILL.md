@@ -6,7 +6,7 @@ description: |
   here overwhelmingly means DELETE — scaffold, pass-throughs, regex-over-prose,
   semantic workflow DSLs, procedural bloat that a strong model doesn't need.
   The gate is `dagger call check --source=.`. A refactor that breaks any of
-  the 12 sub-gates is a regression.
+  the 14 sub-gates is a regression.
   Use when: "refactor this", "simplify this diff", "cut this down", "reduce
   complexity", "thin harness", "pay down debt".
   Trigger: /refactor.
@@ -29,7 +29,7 @@ at all?"
 
 ## The gate is load-bearing
 
-`dagger call check --source=.` runs 12 parallel sub-gates (see repo brief).
+`dagger call check --source=.` runs 14 parallel sub-gates (see repo brief).
 A refactor must leave them all green:
 
 - `check-frontmatter` — line limits on SKILL.md, required fields
@@ -47,6 +47,10 @@ A refactor must leave them all green:
 
 If a "simplification" breaks one of these, you deleted load-bearing wall.
 Revert, don't patch.
+
+When `.spellbook/agents.yaml` exists, use the provider roster for fresh-context
+calibration on high-risk simplifications or architecture-level refactors. Keep
+mechanical cleanup inline; record meaningful external lanes as receipts.
 
 Fallback for failing lint-style gates only: `dagger call heal
 --source=. --model=gpt-4.1 --attempts=2`. Heal fixes yaml/shell/python/

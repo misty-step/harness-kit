@@ -102,7 +102,7 @@ output. These are smells — you are writing for an intelligent agent.
    verify `index.yaml` contains the new entry.
 3. If the skill interacts with install mechanics, also run
    `scripts/check-harness-agnostic-installs.sh`.
-4. Run `dagger call check --source=.` for the full 12-gate preflight
+4. Run `dagger call check --source=.` for the full 14-gate preflight
    before opening a PR.
 5. If it's a workflow skill with a clear delta, add an `evals/`
    directory with a representative prompt and run `/harness eval`.

@@ -27,6 +27,8 @@ Executive authority. No approval gates.
 3. **Reviewability is the product.** Three focused commits beat one
    2,000-line "wip". Split on semantic boundaries even when the tree was
    built in one session.
+   Provider-roster receipts can inform classification when present, but
+   `/yeet` does not launch new provider lanes; it packages completed work.
 4. **Never lose work.** Untracked scratch that might be in-flight thinking
    gets moved, not deleted, unless it's unambiguous debris.
 5. **Conventional Commits, matched to this repo's log.** Spellbook has no

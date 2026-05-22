@@ -10,8 +10,9 @@ to every harness); this file is the **spellbook-specific** index.
 |---|---|---|
 | **Skills** | `skills/<name>/SKILL.md` + `references/` + `scripts/` | Judgment. <500-line SKILL.md; frontmatter-triggered. |
 | **Agents** | `agents/<name>.md` | Scoped personas with tool restrictions and model pins. |
+| **Provider roster** | `.spellbook/agents.yaml` + `.spellbook/examples/` | External coding-agent providers, dispatch commands, receipt fixtures. Runtime receipts live in ignored `.spellbook/traces/`. |
 | **Harness configs** | `harnesses/{claude,codex,pi,factory,gemini,shared}/` | Per-harness hooks, settings, principles. `harnesses/shared/AGENTS.md` symlinks into every harness. |
-| **CI module** | `ci/src/spellbook_ci/main.py` | 13 Dagger gates + heal loop. Python 3.12. |
+| **CI module** | `ci/src/spellbook_ci/main.py` | 14 Dagger gates + heal loop. Python 3.12. |
 | **Bootstrap** | `bootstrap.sh` | Installs minimal globals (`GLOBAL_SKILLS=(tailor seed)` + all agents) via symlink OR download mode. Per-repo subsets are `/tailor` / `/seed`'s job. |
 | **Scripts** | `scripts/` | Shell + Python utilities: frontmatter check, index regen, embeddings, external sync, harness lint. |
 | **Backlog** | `backlog.d/NNN-*.md` (open), `backlog.d/_done/` (closed), `.spellbook/deliver/<ulid>/` (runtime state, gitignored) | Shaped work ready to build. Single source of truth; closure via `Closes-backlog:` trailers on squash-merge commits (handled by `/ship`). |
@@ -24,6 +25,11 @@ Stale training data lies about these — always read the file:
   enforces, which are healable.
 - **`harnesses/shared/AGENTS.md`** — the principles file. Red flags,
   doctrine, anti-patterns. Cited verbatim by `/code-review`.
+- **`.spellbook/agents.yaml`** — local provider roster for external
+  coding-agent lanes. Workflow skills consult it for non-trivial
+  research, design, implementation, review, QA, and reflection work.
+- **`scripts/probe-agent-roster.py` / `scripts/record-delegation.py`** —
+  validate provider availability and record sanitized delegation receipts.
 - **`bootstrap.sh:271`** — `GLOBAL_SKILLS=(tailor seed)`. Anything you
   thought was globally symlinked but isn't in this list: it isn't.
 - **`.githooks/pre-commit`** — what runs automatically on every commit
@@ -44,6 +50,10 @@ Stale training data lies about these — always read the file:
   setting, lint — must work on Claude Code, Codex, AND Pi. Anchoring a
   design on one harness's unique feature is a bug. Prior art:
   `harnesses/pi/settings.json:skills[]` globs.
+- **Roster-first for non-trivial work.** The human-facing agent remains
+  the lead, but workflow skills should consult `.spellbook/agents.yaml`
+  before meaningful research, design, implementation, review, QA, or
+  reflection lanes, then record external provider attempts as receipts.
 - **Thin harness, strong models.** Don't compensate for weak models with
   scaffold. `skills/flywheel/SKILL.md` (43 lines) is the reference.
 - **Skills are self-contained.** No `../..`, no `$REPO_ROOT/…` sourcing.
@@ -73,7 +83,7 @@ Stale training data lies about these — always read the file:
 
 ## Gate contract
 
-**The load-bearing gate is `dagger call check --source=.`** — 13 parallel
+**The load-bearing gate is `dagger call check --source=.`** — 14 parallel
 sub-gates, all must pass to ship:
 
 | Gate | What it enforces |
@@ -91,6 +101,7 @@ sub-gates, all must pass to ship:
 | `check-deliver-composition` | `skills/deliver/SKILL.md` composes atomic phase skills, never inlines |
 | `check-no-claims` | No `claims.sh` / `claim_acquire` / `claim_release` under `skills/` |
 | `check-skill-evals` | Existing `skills/<name>/evals/` suites have README, case, and grader files |
+| `check-agent-roster` | `.spellbook/agents.yaml`, receipt fixtures, and trace ignore policy stay valid |
 
 **Self-heal:** `dagger call heal --source=. --model=gpt-4.1 --attempts=2`
 repairs one failing lint-style gate (yaml / shell / python / frontmatter).
