@@ -18,6 +18,11 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 - Trust the context packet. Do not reshape. Do not re-plan.
 - If the packet is incomplete, **fail loudly** — do not invent the spec.
+- For non-trivial builds in repos with `.spellbook/agents.yaml`, consult the
+  provider roster before choosing the builder lane. Prefer a bounded external
+  provider attempt in a separate worktree when it can run safely; record the
+  attempt as a delegation receipt. Mechanical or already-decided small fixes
+  may stay inline.
 
 ## Contract
 

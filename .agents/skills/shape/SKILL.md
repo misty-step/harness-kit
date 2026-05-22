@@ -48,6 +48,9 @@ Accept a raw idea, a `backlog.d/NNN-*.md` to refine, or an observation
 - Dispatch parallel Explore subagents only when the context is genuinely
   uncharted. For a scoped skill tweak, skip — the three-file read above
   already beats a subagent round-trip.
+- If `.spellbook/agents.yaml` exists and the shape is M+ effort, consult the
+  provider roster for a heterogeneous second voice before converging. Use the
+  lead model for synthesis; record meaningful external lanes as receipts.
 
 ### Phase 2 — Problem Challenge
 
@@ -115,8 +118,8 @@ failure mode per option, you have one option.
 Give each the shape summary + repo-brief. Proceed only after blocking
 concerns are addressed. **Philosophy bench is persona diversity, not
 foundation diversity.** For genuinely novel designs, also consult a
-cross-model second voice (Thinktank / Gemini / fresh-context subagent) —
-same-model self-debate collapses to consensus.
+cross-model second voice (provider roster / Thinktank / fresh-context
+subagent) — same-model self-debate collapses to consensus.
 
 ### Phase 4 — Cross-Harness Check (Red Line)
 

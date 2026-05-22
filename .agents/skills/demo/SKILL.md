@@ -44,6 +44,9 @@ You are the executive orchestrator.
 - For polished artifacts (GIF / video / launch), delegate planning,
   capture, and critique to separate focused subagents. Cold reviewer for
   final quality judgment — self-grading is worthless.
+- When `.spellbook/agents.yaml` exists and the artifact is external-facing or
+  product-sensitive, prefer a roster provider for either planning or cold
+  critique. Record meaningful external lanes as receipts.
 
 ## Shape detection (always step one)
 

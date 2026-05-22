@@ -27,6 +27,9 @@ Then report ship-ready and hand the operator off to `/ship`.
 3. **Executive orchestrator.** Keep review-comment disposition, risk
    tradeoffs, and ship-readiness judgment on the lead model. Delegate
    bounded fixes and evidence gathering to focused subagents.
+   In repos with `.spellbook/agents.yaml`, let `/code-review`, `/refactor`,
+   or `/diagnose` use roster lanes for non-trivial evidence or fixes; `/settle`
+   consumes their receipts rather than dispatching providers directly.
 4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
    If polish isn't converging by then, escalate rather than thrash.
 5. **Fresh-eyes self-review is load-bearing.** The final gate is reading

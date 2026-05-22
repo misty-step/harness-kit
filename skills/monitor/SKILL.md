@@ -39,6 +39,9 @@ You are a thin watcher.
 - On trip: emit one `monitor.alert` event with payload, exit, hand off.
 - On clean: emit one `monitor.done` event, exit.
 - Never analyze why a signal tripped. Never attempt remediation.
+- Provider roster lanes are not part of steady-state polling. If a trip needs
+  investigation, hand off to `/diagnose`, which may consult
+  `.spellbook/agents.yaml`.
 
 Signal query syntax (Datadog PromQL, Grafana HTTP, log greps) lives in
 `references/signals.md`. Judgment about what constitutes a real trip vs

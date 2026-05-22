@@ -23,6 +23,10 @@ decides whether to deploy. Humans merge.
 
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a "best effort" pass.
+- If the repo defines `.spellbook/agents.yaml`, begin by probing the provider
+  roster and let phase skills use it for non-trivial lanes. `/deliver` records
+  pointers to provider receipts; it does not implement provider orchestration
+  itself.
 
 ## Closeout Contract
 

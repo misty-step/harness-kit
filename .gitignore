@@ -15,3 +15,8 @@ skills/.external/
 # Narrow pattern: only .spellbook/deliver/, preserving commit-eligible configs
 # like .spellbook/deploy.yaml that other skills (e.g. /deploy) expect in-tree.
 .spellbook/deliver/
+
+# Delegation receipt stream: append-only runtime JSONL written by the lead
+# agent while using the provider roster. Config and examples under
+# .spellbook/ remain commit-eligible.
+.spellbook/traces/*.jsonl

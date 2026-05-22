@@ -63,4 +63,3 @@ that matches the actual direction: a shared harness primitive library.
 Keep `.spellbook/` as the legacy state directory until a later migration ticket
 proves it can be renamed without breaking tailored repos. The product can
 rebrand before local state paths do.
-

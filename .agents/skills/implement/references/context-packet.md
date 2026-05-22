@@ -30,7 +30,7 @@ Good:
 ```
 - [ ] `cd ci && python -m pytest tests/test_heal_support.py` exits 0
 - [ ] `dagger call check-frontmatter --source=.` exits 0
-- [ ] `dagger call check --source=.` exits 0 (all 12 sub-gates)
+- [ ] `dagger call check --source=.` exits 0 (all 14 sub-gates)
 - [ ] `skills/implement/SKILL.md` exists and is < 500 lines
 - [ ] `rg "TODO" skills/implement/` returns no matches
 ```

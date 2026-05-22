@@ -15,6 +15,11 @@ Multi-provider, multi-harness code review. You are the marshal — read the diff
 select reviewers, craft prompts, dispatch everything in parallel, synthesize
 results, fix blockers, loop until clean.
 
+When `.spellbook/agents.yaml` exists, use it as the source of truth for the
+Cross-harness tier. Pick at least one non-lead available provider for
+meaningful diffs, preserve the internal philosophy bench, and record external
+provider lanes as delegation receipts.
+
 ## Marshal Protocol
 
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
@@ -36,7 +41,7 @@ results, fix blockers, loop until clean.
    |------|------|-----|
    | Internal bench | 3-5 Explore sub-agents with philosophy lenses | Agent tool, tailored prompts |
    | Thinktank review | 10 agents, 8 model providers | `thinktank review` CLI. See `references/thinktank-review.md` |
-   | Cross-harness | Codex + Gemini CLIs (skip whichever you are) | See `references/cross-harness.md` |
+   | Cross-harness | Available non-lead providers from `.spellbook/agents.yaml` | See `references/cross-harness.md` |
 
    Thinktank-specific rule: wait for the process to exit, or for
    `trace/summary.json` to reach `complete` or `degraded` with a

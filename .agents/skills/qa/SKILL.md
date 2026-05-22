@@ -34,6 +34,9 @@ You are the executive orchestrator.
   on the lead model.
 - Delegate drive-the-app execution and evidence capture to focused
   subagents.
+- When `.spellbook/agents.yaml` exists and QA involves UI, workflow, or
+  ambiguous product judgment, prefer a fresh provider lane for either
+  execution or independent verification. Record meaningful external lanes.
 - When the same agent both executed and judged, dispatch an independent
   verifier before signing off on "pass".
 

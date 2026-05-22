@@ -62,4 +62,3 @@ mode, and context budget.
 `harnesses/shared/AGENTS.md` should carry the general routing rule. Skills
 should carry workflow-specific delegation recipes. Domain skills should carry
 domain-specific reviewer lenses.
-

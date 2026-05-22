@@ -59,7 +59,7 @@ When writing the `## Oracle` section of a shape:
 ## Oracle
 
 - [ ] `dagger call check --source=.` green with the new `check-<name>`
-      sub-gate included in the 12-gate count
+      sub-gate included in the 14-gate count
 - [ ] pre-commit hook on `./.githooks/pre-commit` rejects a staged
       violation (script: `scripts/test-hook-rejects-<case>.sh`)
 - [ ] symlink-install into a foreign project succeeds: skill invokes

@@ -493,6 +493,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_agent_roster(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate agent roster config, receipt fixtures, and trace ignore policy."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "scripts/check-agent-roster.py"])
+            .stdout()
+        )
+
+    @function
     async def check(
         self,
         source: Annotated[
@@ -533,6 +549,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-deliver-composition", self.check_deliver_composition(source))
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))
             tg.start_soon(run_gate, "check-skill-evals", self.check_skill_evals(source))
+            tg.start_soon(run_gate, "check-agent-roster", self.check_agent_roster(source))
 
         # Format results
         lines = ["Spellbook CI Results", "=" * 40]

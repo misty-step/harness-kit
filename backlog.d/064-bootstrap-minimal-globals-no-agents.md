@@ -39,4 +39,3 @@ This is the mechanical first step behind the dynamic-delegation pivot.
 This can land before the full content migration. It makes the default install
 match the desired direction immediately, while the richer philosophy-lens work
 continues in 061 and 063.
-

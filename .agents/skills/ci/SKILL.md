@@ -2,7 +2,7 @@
 name: ci
 description: |
   Run and strengthen spellbook's Dagger gates. The gate is
-  `dagger call check --source=.` — 12 parallel sub-gates covering lint,
+  `dagger call check --source=.` — 14 parallel sub-gates covering lint,
   frontmatter, index drift, vendored copies, bun tests, exclusions,
   portable paths, harness-agnostic installs, deliver composition, and
   the no-claims regression guard. Bounded self-heal via
@@ -18,7 +18,7 @@ argument-hint: "[--audit-only|--run-only]"
 # /ci
 
 Confidence in correctness for the spellbook repo. The load-bearing gate
-is `dagger call check --source=.` — 12 parallel sub-gates defined in
+is `dagger call check --source=.` — 14 parallel sub-gates defined in
 `ci/src/spellbook_ci/main.py`. Green from that call is what "CI passed"
 means here. No GitHub Actions. No hosted runner. Local-first by design.
 
@@ -53,6 +53,9 @@ does not address review comments (→ `/settle`), does not ship.
 5. **Composition is enforced, not encouraged.** `/deliver` cannot call
    `dagger call check` directly — `check-deliver-composition` fails the
    build if it does. `/ci` is the only skill allowed to own the gate.
+6. **Roster lanes can investigate, not certify.** When `.spellbook/agents.yaml`
+   exists, provider lanes may inspect red gates or weak coverage, but
+   `dagger call check --source=.` remains the proof.
 
 ## The 12 Gates
 
@@ -295,8 +298,8 @@ When a gate fails because pre-commit didn't run (staged via
 
 ```markdown
 ## /ci Report
-Audit: 0 gaps (all 12 gates green and current).
-Run: dagger call check --source=. — 12/12 pass in 3m44s.
+Audit: 0 gaps (all 14 gates green and current).
+Run: dagger call check --source=. — 14/14 pass in 3m44s.
 Final: green.
 ```
 
@@ -308,7 +311,7 @@ Failure:
 Classification: self-healable (lint-style)
 Action: ran `dagger call heal --source=. --model=gpt-4.1 --attempts=2`.
   Attempt 1: auto-quoted $DIR in generate-embeddings.sh. Gate passed.
-  Full pipeline re-run: 12/12 pass.
+  Full pipeline re-run: 14/14 pass.
 Final: green.
 ```
 

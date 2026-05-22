@@ -47,6 +47,10 @@ artifact drift, symlink bridge topology, and command-level smoke evidence.
   (or the human's) call.
 - **Never merge.** `gh pr merge` and `scripts/land.sh` are human
   decisions.
+- If the repo defines `.spellbook/agents.yaml`, begin by probing the provider
+  roster and let phase skills use it for non-trivial lanes. `/deliver` records
+  pointers to provider receipts; it does not implement provider orchestration
+  itself.
 
 ## Closeout Contract
 

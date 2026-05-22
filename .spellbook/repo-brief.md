@@ -53,7 +53,7 @@ its "runtime" is whichever harness reads the symlinked `SKILL.md` files.
 
 ## Load-bearing gate
 
-**`dagger call check --source=.` IS the gate.** 13 parallel sub-gates:
+**`dagger call check --source=.` IS the gate.** 14 parallel sub-gates:
 
 | Gate | What it enforces |
 |---|---|
@@ -70,6 +70,7 @@ its "runtime" is whichever harness reads the symlinked `SKILL.md` files.
 | `check-deliver-composition` | `skills/deliver/SKILL.md` composes atomic phase skills via trigger syntax, never inlines |
 | `check-no-claims` | No `claims.sh` / `claim_acquire` / `claim_release` under `skills/` (dropped per backlog.d/032) |
 | `check-skill-evals` | Existing `skills/<name>/evals/` suites have README, case, and grader files |
+| `check-agent-roster` | `.spellbook/agents.yaml`, receipt fixtures, and trace ignore policy stay valid |
 
 The gate is self-healing: `dagger call heal --source=. --model=gpt-4.1
 --attempts=2` spawns a Dagger `llm()` repair agent for one failing
@@ -211,7 +212,7 @@ Validated patterns the user has ratified:
    unit of shaped work. `_done/` for closed.
 3. **Double diamond by default.** Diverge before converge twice —
    `/groom` for problem, `/shape` for solution.
-4. **Cross-model second voice.** Thinktank / Gemini / fresh-context
+4. **Cross-model second voice.** Provider roster / Thinktank / fresh-context
    subagent with a different foundation, not same-model self-debate.
 
 ## Harness-local notes (this run)

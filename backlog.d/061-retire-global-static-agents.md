@@ -90,4 +90,3 @@ The philosophy is useful. The global installation mechanism is not.
 
 These belong close to the workflow that needs them, not in every user's global
 agent list.
-

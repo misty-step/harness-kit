@@ -24,7 +24,7 @@ Plain `/settle` stops at merge-ready. `/land` continues through the merge.
 
 - **Base branch:** `master`. Topic: `feat/*`, `fix/*`, `chore/*`, `docs/*`,
   `refactor/*`.
-- **The single shipping gate:** `dagger call check --source=.` (12 parallel
+- **The single shipping gate:** `dagger call check --source=.` (14 parallel
   sub-gates). Without this green, settle refuses. No exceptions.
 - **Verdict gate:** non-FF merges into `master` trip
   `.githooks/pre-merge-commit`, which requires a ship/conditional verdict ref
@@ -62,6 +62,9 @@ Executive orchestrator:
 - Parallel fanout for independent fixes; serialize when fixes share files.
 - Compose `/ci`, `/code-review`, `/refactor`; never reimplement their
   domain contracts inline.
+- In repos with `.spellbook/agents.yaml`, let `/code-review`, `/refactor`,
+  or `/diagnose` use roster lanes for non-trivial evidence or fixes; `/settle`
+  consumes their receipts rather than dispatching providers directly.
 
 ## Mode detection
 
@@ -85,7 +88,7 @@ review-finding triage.
 1. **Conflicts.** `git fetch origin`, rebase or merge against `master`,
    resolve.
 2. **Gate.** Invoke `/ci`. The gate is `dagger call check --source=.` —
-   12 sub-gates run in parallel. Read the actual failure output. Never
+   14 sub-gates run in parallel. Read the actual failure output. Never
    lower a threshold, skip a gate, or mark a failure "expected." If a
    lint-class gate fails (yaml/shell/python/frontmatter), consider
    `dagger call heal --source=. --model=gpt-4.1 --attempts=2` — bounded

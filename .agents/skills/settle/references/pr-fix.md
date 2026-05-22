@@ -39,7 +39,7 @@ git fetch origin
 
 ## Gate failure diagnosis
 
-The gate is `dagger call check --source=.`. 12 sub-gates, parallel. Read
+The gate is `dagger call check --source=.`. 14 sub-gates, parallel. Read
 the actual failure output — don't guess from the gate name.
 
 ### Root-cause categories
@@ -165,7 +165,7 @@ fails, address the gap. Do not proceed to Phase 2.
 ## Exit criteria
 
 - [ ] No merge conflicts against `master`.
-- [ ] `dagger call check --source=.` green (12/12 sub-gates).
+- [ ] `dagger call check --source=.` green (14/14 sub-gates).
 - [ ] Every `/code-review` finding fixed, deferred with an issue, or
       rejected with specific reasoning.
 - [ ] `verdict_check_landable "$branch"` returns 0.

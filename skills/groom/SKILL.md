@@ -37,6 +37,11 @@ You are the executive orchestrator. Keep synthesis, prioritization, and
 decision authority on the lead model. Delegate investigation and evidence
 gathering to focused subagents in parallel.
 
+When `.spellbook/agents.yaml` exists, consult the provider roster before
+strategic fanout. Prefer at least one external provider lane for unfamiliar
+domains, major prioritization calls, or backlog items that will drive
+implementation. Record meaningful provider lanes with the repo receipt tool.
+
 ## The Always-On Loop
 
 Phase-gated. Each phase completes before the next begins.

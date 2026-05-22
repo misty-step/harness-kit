@@ -28,7 +28,7 @@ hand-edit derived artifacts.
 |--------|-----------|
 | Create a new skill or agent | `references/mode-create.md` |
 | Eval a skill vs baseline | `references/mode-eval.md` |
-| Lint a skill (12-gate preflight) | `references/mode-lint.md` |
+| Lint a skill (14-gate preflight) | `references/mode-lint.md` |
 | Convert agent ↔ skill (across harnesses) | `references/mode-convert.md` |
 | Sync external sources via `registry.yaml` | `references/mode-sync.md` |
 | Design harness improvements (hooks, gates, codification) | `references/mode-engineer.md` |
@@ -44,13 +44,14 @@ sync, engineer, audit)"
   `agents/<name>.md`. `harnesses/shared/AGENTS.md` is THE principles
   file and is symlinked (not copied) to every harness dir by
   `bootstrap.sh`.
-- **`dagger call check --source=.` is the gate.** Twelve parallel
+- **`dagger call check --source=.` is the gate.** Fourteen parallel
   sub-gates (named by function in `ci/src/spellbook_ci/main.py`):
   `lint-yaml`, `lint-shell`, `lint-python`, `check-frontmatter`,
   `check-index-drift`, `check-vendored-copies`, `test-bun`,
   `check-exclusions`, `check-portable-paths`,
   `check-harness-install-paths`, `check-deliver-composition`,
-  `check-no-claims`. Any new mechanism you add must survive all twelve.
+  `check-no-claims`, `check-skill-evals`, `check-agent-roster`. Any new
+  mechanism you add must survive all fourteen.
 - **`scripts/check-frontmatter.py`** enforces SKILL.md ≤ 500 lines and
   required `name` + `description` fields (agents require the same two;
   no line cap). Missing or malformed frontmatter fails the gate.
@@ -119,6 +120,10 @@ These govern every `/harness create|lint|eval`. They are the same
 standard enforced by the Dagger gate where a gate exists, by prose
 review otherwise.
 
+0. **Roster-aware workflows.** Core workflow skills should name where they
+   consult `.spellbook/agents.yaml` for non-trivial provider lanes, while
+   keeping schema details and receipt mechanics centralized in the roster
+   scripts and shared AGENTS doctrine.
 1. **One skill = one domain, 1–3 workflows.** Five workflows is a
    refactor signal. 26 skills is the current steady state — justify
    additions against description tax.

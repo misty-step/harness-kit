@@ -22,6 +22,9 @@ encode the invariants that aren't inferable from the leaf names.
 
 - Flywheel composes. Phase logic lives in the leaf skill.
 - State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
+- Provider-roster behavior lives in the leaf workflow skills. If the repo has
+  `.spellbook/agents.yaml`, `/flywheel` expects roster receipts to appear in
+  phase evidence, but it does not dispatch providers directly.
 - Land before deploy. Always.
 - Reflect's mutations (backlog + harness branch) land before the cycle
   closes. Harness edits never touch main.

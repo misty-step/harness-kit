@@ -69,4 +69,3 @@ On this machine, Antigravity-related state exists under:
 Observed directories include `plugins/`, `skills/`, `global_skills/`,
 `global_workflows/`, `mcp_config.json`, and `settings.json`. Treat these as
 implementation evidence to verify, not as a public contract by themselves.
-

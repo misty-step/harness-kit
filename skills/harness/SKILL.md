@@ -40,6 +40,10 @@ If no argument, ask: "What do you want to do? (create, eval, lint, convert, sync
 These principles govern every mode. They are the quality standard for skills
 this harness creates, evaluates, and lints.
 
+0. **Roster-aware workflows.** Core workflow skills should name where they
+   consult `.spellbook/agents.yaml` for non-trivial provider lanes, while
+   keeping schema details and receipt mechanics centralized in the roster
+   scripts and shared AGENTS doctrine.
 1. **One skill = one domain, 1-3 workflows.** A skill that spans multiple
    domains should be split. Three workflows is healthy. Five is a refactor signal.
 2. **Token budget: 3,000 target, 5,000 ceiling.** Every token competes for
