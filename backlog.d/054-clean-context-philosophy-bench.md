@@ -1,7 +1,7 @@
 # Clean-context dispatch for philosophy bench + critic
 
 Priority: P2
-Status: pending
+Status: superseded by 061 and 063
 Estimate: S
 
 ## Goal
@@ -24,6 +24,18 @@ When `/code-review` dispatches the philosophy bench (ousterhout, carmack, grug, 
 - [ ] `dagger call check --source=.` green.
 
 ## Notes
+
+### Supersession note
+
+This ticket preserves the old assumption that the philosophy bench is a static
+set of installed persona files. The cleaner direction is now tracked in:
+
+- `backlog.d/061-retire-global-static-agents.md`
+- `backlog.d/063-dynamic-delegation-skill-contract.md`
+
+The useful part of this ticket still stands: reviewers should get clean,
+artifact-focused context. That requirement should move into `/code-review`'s
+dynamic delegation contract rather than into global agent files.
 
 ### Provenance
 

@@ -126,6 +126,9 @@ Tracked shapes (open, `backlog.d/NNN-*.md`):
 | Harness auto-tune (GEPA) | adaptive harness tuning — parked until ≥20 flywheel cycles produce signal | `backlog.d/031-harness-auto-tune-gepa.md` |
 | Legacy `curate` skill triage | `.agents/skills/curate/` + `.claude/skills/curate/` predate `.spellbook` markers | `backlog.d/046-curate-skill-triage.md` |
 | `/tailor` external-skill install | externals declared in `registry.yaml` aren't on any harness skill-discovery path; three-mode install (copy / rewrite / symlink) | `backlog.d/047-tailor-external-skill-install.md` |
+| Repo-grounded acceptance | workflow success must cite live repo evidence and repo-fit checks, not just structural validation | `backlog.d/065-repo-grounded-acceptance-contract.md` |
+| Prompt-debt reflection loop | repeated corrections should become shaped codification proposals through `/reflect` / `/monitor` | `backlog.d/066-prompt-debt-reflection-loop.md` |
+| Client-facing package boundary | Spellbook is operator substrate, not the raw enterprise onboarding/control package | `backlog.d/067-positioning-boundary-for-client-facing-packages.md` |
 
 Hot files (recent churn — check `git log` before editing):
 - `skills/tailor/SKILL.md` — actively evolving on `feat/tailor-harden`.

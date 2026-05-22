@@ -1,12 +1,16 @@
 # Project: Spellbook
 
 ## Vision
-Portable primitive library that makes AI coding agents reliably excellent across any harness.
+Portable harness primitive library that makes AI coding agents reliably
+excellent across any runtime without locking the operator into static
+personas or a bespoke orchestration layer.
 
 **North Star:** Every recurring workflow pattern a senior engineer uses is captured as a tested,
-composable primitive — so any agent (Claude, Codex, Gemini, Pi) can execute it first-try.
+composable primitive — so any strong agent can adapt it to Claude Code, Codex,
+Antigravity, Pi, or the next harness first-try.
 **Target User:** Senior+ engineers running multi-agent workflows across multiple repos.
-**Current Focus:** Spellbook architecture — flat skills, manifest-driven activation via `/focus`, agent definitions.
+**Current Focus:** Rebrand, remove global static agents, and make skills +
+AGENTS.md the durable layer for dynamic task-specific delegation.
 **Key Differentiators:** Agent-agnostic (works across harnesses), manifest-driven (`.spellbook.yaml`),
 research-backed (web + multi-model validation before codifying).
 
@@ -15,20 +19,20 @@ research-backed (web + multi-model validation before codifying).
 | Term | Definition |
 |------|-----------|
 | Skill | A markdown-first module (SKILL.md + optional references/) that gives agents domain expertise |
-| Agent | A markdown persona definition that gives subagents specialized review/analysis capabilities |
+| Delegation guidance | Natural-language guidance that tells the lead agent when to spawn task-specific subagents, what responsibilities to assign, what evidence to require, and what philosophical lenses to apply |
 | Collection | Named group of skills in collections.yaml (payments, web, agent, infra, etc.) |
-| Harness | An AI agent runtime (Claude Code, Codex, Gemini CLI, Factory, Pi) |
+| Harness | An AI agent runtime (Claude Code, Codex, Antigravity CLI/IDE, Pi) |
 | Manifest | `.spellbook.yaml` — declares which primitives a project needs |
-| Focus | Meta-skill that reads manifests and pulls primitives from GitHub |
+| Tailor | Meta-skill that reads a target repo, picks primitives, rewrites workflow skills, and projects harness-specific entrypoints |
 | DMI | Disable-model-invocation — user-only skills that cost zero budget |
 | Delivery pipeline | groom → deliver (shape → implement → review + ci + refactor + qa) → merge |
 
 ## Active Focus
 
-- **Milestone:** Spellbook Architecture — flat skills, manifest-driven activation, agent definitions
-- **Key work:** Rename from agent-skills, flatten core/packs → skills/, add /focus, bootstrap, collections
-- **Theme:** Make the library distributable via manifest + GitHub pull, not symlinks
-- **Recent:** Core/packs flattened to skills/, focus meta-skill, collections.yaml, index.yaml, bootstrap.sh
+- **Milestone:** Harness library reset — rebrand, dynamic delegation, Antigravity migration
+- **Key work:** Pick the new name, stop installing global agents, convert static persona files into reusable lenses inside skills and AGENTS.md, add Antigravity CLI/IDE projections
+- **Theme:** Skills and repo guidance are durable; static global subagent catalogs are not
+- **Recent:** Restored the repo under `~/Development/spellbook`; backlog pivoted toward Antigravity and dynamic subagent management
 
 ## Quality Bar
 
@@ -36,6 +40,7 @@ research-backed (web + multi-model validation before codifying).
 - [ ] All descriptions ≤1024 chars with trigger phrases
 - [ ] Skills compose — orchestrators call primitives, never reimplement
 - [ ] Agent-agnostic — no Claude-specific assumptions leak into skill bodies
+- [ ] Static personas become lenses and delegation rubrics unless a runtime requires a projection
 - [ ] Retro patterns flow back into skill definitions
 
 ## Patterns to Follow
