@@ -25,7 +25,7 @@ dagger call check --source=. guards the catalog and harness contracts
 
 ## Source Of Truth
 
-Spellbook has four primary source surfaces.
+Spellbook has five primary source surfaces.
 
 | Surface | Path | Owns |
 |---|---|---|

@@ -10,7 +10,7 @@ to every harness); this file is the **spellbook-specific** index.
 |---|---|---|
 | **Skills** | `skills/<name>/SKILL.md` + `references/` + `scripts/` | Judgment. <500-line SKILL.md; frontmatter-triggered. |
 | **Agents** | `agents/<name>.md` | Scoped personas with tool restrictions and model pins. |
-| **Harness configs** | `harnesses/{claude,codex,pi,factory,gemini,shared}/` | Per-harness hooks, settings, principles. `harnesses/shared/AGENTS.md` symlinks into every harness. |
+| **Harness configs** | `harnesses/{claude,codex,pi,shared}/` | Per-harness hooks, settings, principles. `harnesses/shared/AGENTS.md` symlinks into every harness. |
 | **CI module** | `ci/src/spellbook_ci/main.py` | 13 Dagger gates + heal loop. Python 3.12. |
 | **Bootstrap** | `bootstrap.sh` | Installs minimal globals (`GLOBAL_SKILLS=(tailor seed)` + all agents) via symlink OR download mode. Per-repo subsets are `/tailor` / `/seed`'s job. |
 | **Scripts** | `scripts/` | Shell + Python utilities: frontmatter check, index regen, embeddings, external sync, harness lint. |
