@@ -84,6 +84,8 @@ tests" note. It answers:
 - Why merge-readiness now is useful (delta to open debts in
   `backlog.d/` — e.g. does this close 023, unblock 025, reduce gate
   latency?).
+- What exact end-user behavior changed; for Spellbook-internal work, what
+  developer/operator behavior changed.
 - What alternatives to the implemented design existed.
 - Why the implemented design is best under current constraints — or,
   if it is not clearly best, a plain admission plus why it was still
@@ -96,6 +98,21 @@ tests" note. It answers:
 - What was verified (which of the 14 sub-gates ran green; what
   `/code-review` synthesized) and what residual risk remains before
   merge.
+
+Every merge-ready brief includes:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior changed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+If any phase cannot fill this with live evidence, `/deliver` is not
+merge-ready. "Gate passed" is necessary evidence, not the whole acceptance
+argument.
 
 `/reflect` stays mandatory. The brief explains the delivered result;
 `/reflect` captures the learnings, harness changes, and backlog
@@ -305,7 +322,7 @@ These are the recent-churn surfaces; expect most work here:
   gated; `check-frontmatter` is blocking).
 - `skills/<name>/references/*.md` — deep content; no
   `references/<repo-name>.md` sidecars (spellbook's own anti-pattern).
-- `ci/src/spellbook_ci/main.py` — Dagger module, where all 12 gates
+- `ci/src/spellbook_ci/main.py` — Dagger module, where all 14 gates
   live. Test locally with `dagger call check --source=.` (via `/ci`,
   not directly here).
 - `bootstrap.sh` — two modes (symlink / download) that both install

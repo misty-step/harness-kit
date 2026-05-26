@@ -29,6 +29,21 @@ lead-only refactoring is limited to mechanical command execution, emergency
 unblocks, explicit user-forbidden delegation, or fewer than two available
 roster members.
 
+## Deslop Pass
+
+When invoked after implementation or review, run a behavior-preserving deslop
+pass before broader refactoring. Remove:
+
+- unnecessary AI-style comments and restatements of obvious code
+- defensive checks or try/catch blocks that are abnormal for trusted internal
+  paths
+- casts, optionality, and fallback branches that paper over unclear invariants
+- deeply nested code that can become early returns or a smaller model
+- bespoke helpers or wrappers that duplicate canonical local utilities
+
+Keep behavior unchanged unless fixing a clear bug. If cleanup would alter
+behavior, stop and route the finding back through `/shape` or `/implement`.
+
 ## Branch-Aware Routing
 
 Detect the current branch and primary branch first:
@@ -162,6 +177,13 @@ Target: <branch or scope>
 
 ### Verification
 [tests/lint/assessment results]
+
+### Completion Gate
+- Exact developer/operator behavior changed:
+- Live evidence that proves it:
+- Exact command/path exercised:
+- Repo-fit check:
+- Residual unverified paths:
 
 ### Residual Risks
 [what remains and why]

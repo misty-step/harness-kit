@@ -27,6 +27,23 @@ The skill's job is to route to the right shape, then either defer to a
 project-local QA skill that encodes this repo's actual paths, or run a
 quick protocol on the fly.
 
+## Completion Gate
+
+Every QA pass/fail report includes:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior verified:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+For internal libraries or harness changes, replace end-user behavior with the
+developer/operator behavior under test. Adjacent unit tests are supporting
+evidence only; QA must name the running surface it actually exercised.
+
 ## Execution Stance
 
 You are the executive orchestrator.

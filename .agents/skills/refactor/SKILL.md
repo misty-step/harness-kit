@@ -59,6 +59,21 @@ lead-only refactoring is limited to mechanical command execution, emergency
 unblocks, explicit user-forbidden delegation, or an explicit waiver when
 fewer than two roster members are available.
 
+## Deslop pass
+
+When invoked after implementation or review, run a behavior-preserving deslop
+pass before broader refactoring. Remove:
+
+- unnecessary AI-style comments and restatements of obvious code
+- defensive checks or try/catch blocks that are abnormal for trusted internal
+  paths
+- casts, optionality, and fallback branches that paper over unclear invariants
+- deeply nested code that can become early returns or a smaller model
+- bespoke helpers or wrappers that duplicate canonical local utilities
+
+Keep behavior unchanged unless fixing a clear bug. If cleanup would alter
+behavior, stop and route the finding through `/shape` or `/implement`.
+
 Fallback for failing lint-style gates only: `dagger call heal
 --source=. --model=gpt-4.1 --attempts=2`. Heal fixes yaml/shell/python/
 frontmatter. It does **not** cover composition, portable-paths,
@@ -181,7 +196,7 @@ named hot files:
   bottom (`GLOBAL_SKILLS=(tailor seed)` plus all agents). Watch for
   duplicate path-resolution blocks and mode-specific branches that
   can collapse.
-- `ci/src/spellbook_ci/main.py` — 12 gates. New gate = new Python
+- `ci/src/spellbook_ci/main.py` — 14 gates. New gate = new Python
   function. Repeated shell-out boilerplate across gates is the
   consolidation target.
 - `harnesses/shared/AGENTS.md` — symlinked to every harness.
@@ -263,6 +278,13 @@ Base: <branch> (feature only)
 
 ### Verification
 [dagger call check result; any gate-specific assessment]
+
+### Completion Gate
+- Exact developer/operator behavior changed:
+- Live evidence that proves it:
+- Exact command/path exercised:
+- Repo-fit check:
+- Residual unverified paths:
 
 ### Residual risks
 [what remains, why it waited]

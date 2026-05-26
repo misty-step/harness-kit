@@ -219,6 +219,38 @@ coherent with scope? Does the persona add structural guarantees a
 general-purpose ad-hoc subagent wouldn't? Named agents exist for structural
 reasons (shared AGENTS.md) — if it's just prose, it should be ad-hoc.
 
+## Thermo / Deslop Lens
+
+For meaningful diffs, add the Cursor-kit style structural lens before a Ship
+verdict:
+
+- look for the code-judo move that deletes branches, helpers, modes, or layers
+  while preserving behavior
+- treat new ad-hoc conditionals in busy flows as design findings, not style nits
+- force wrappers, casts, optionality churn, magic fallbacks, and bespoke helpers
+  to justify themselves
+- flag AI slop: unnecessary comments, abnormal defensive try/catch, internal
+  mocks, `any` casts, deep nesting, and codegen residue
+
+Route behavior-preserving cleanup to `/refactor`; block Ship when the slop or
+spaghetti makes the changed behavior harder to reason about.
+
+## Completion Gate
+
+Every Ship or Conditional verdict includes:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior changed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+For Spellbook-internal diffs, replace end-user behavior with the
+developer/operator behavior that changed.
+
 ## Review Scoring
 
 After the final verdict, append one JSON line to `.groom/review-scores.ndjson`

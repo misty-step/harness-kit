@@ -117,6 +117,39 @@ After review passes, if diff > 200 LOC net:
 - Simplify complex conditionals
 - Remove compatibility shims with no real users
 
+## Thermo / Deslop Lens
+
+For meaningful implementation diffs, apply a harsh maintainability lens before
+issuing a Ship verdict:
+
+- structural simplification beats local polish; look for a code-judo move that
+  deletes branches, helpers, modes, or layers while preserving behavior
+- new ad-hoc conditionals in busy flows are design findings, not style nits
+- thin wrappers, casts, optionality churn, magic fallbacks, and bespoke helpers
+  need to earn their keep
+- files pushed toward giant-module territory require decomposition rationale
+- AI slop is review debt: unnecessary comments, abnormal defensive
+  try/catch, internal mocks, `any` casts, deep nesting, and codegen residue
+
+Route behavior-preserving cleanup to `/refactor`; block Ship when the slop or
+spaghetti makes the changed behavior harder to reason about.
+
+## Completion Gate
+
+Every Ship or Conditional verdict must include:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior changed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+If there is no end-user behavior because the diff is internal, say so and name
+the developer/operator behavior that changed instead.
+
 ## Review Scoring
 
 After the final verdict, append one JSON line to `.groom/review-scores.ndjson`

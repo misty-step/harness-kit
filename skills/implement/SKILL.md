@@ -52,7 +52,7 @@ See `references/context-packet.md` for the full shape.
 - All tests green (new + existing)
 - Working tree clean (no debug prints, no scratch files)
 - Commits in repo convention — one logical unit per commit
-- Final message: branch ref + oracle checklist status
+- Final message: branch ref + oracle checklist status + Completion Gate
 
 **Stops at:** green tests + clean tree. Does not run `/code-review`,
 `/qa`, `/ci`, or open a PR.
@@ -104,8 +104,20 @@ then escalate.
 ### 5. Hand off
 
 Output: feature branch name, commit list, oracle checklist (which commands
-pass), residual risks. Do not run review, do not merge, do not push unless
-the packet explicitly says so.
+pass), Completion Gate, residual risks. Do not run review, do not merge, do
+not push unless the packet explicitly says so.
+
+```markdown
+## Completion Gate
+- Exact end-user behavior changed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+For internal-only changes, replace "end-user" with the developer/operator
+behavior the implementation changes.
 
 ## Scoping Judgment (what the model must decide)
 

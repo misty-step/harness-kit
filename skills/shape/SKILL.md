@@ -37,6 +37,10 @@ codebase area (files, patterns, constraints), another to search for prior art
 (how do other projects solve this? check codebase first, then /research).
 Synthesize their findings before proceeding.
 
+If `.spellbook/agents.yaml` exists and the shape is M+ effort, dispatch at
+least two roster-backed provider lanes before converging. Use the lead model
+for synthesis; record meaningful external lanes as delegation receipts.
+
 If `exemplars.md` exists at project root, read it. Include relevant exemplar
 techniques in the context packet with specific files to study during build.
 

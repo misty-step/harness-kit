@@ -80,6 +80,9 @@ Stale training data lies about these — always read the file:
   explicit user-directed scratch/deletion decision. This is especially
   strict in worktrees because archiving a dirty worktree can destroy
   uncommitted work.
+  Native Codex/Claude/Pi subagents are not a substitute for this roster in
+  Spellbook runs; use them only for scratch lanes, mechanical carve-outs,
+  unavailable roster providers, or an explicit operator waiver.
 - **Thin harness, strong models.** Don't compensate for weak models with
   scaffold. `skills/flywheel/SKILL.md` (43 lines) is the reference.
 - **Skills are self-contained.** No `../..`, no `$REPO_ROOT/…` sourcing.
@@ -165,6 +168,8 @@ Tracked shapes (open, `backlog.d/NNN-*.md`):
 | Repo-grounded acceptance | workflow success must cite live repo evidence and repo-fit checks, not just structural validation | `backlog.d/065-repo-grounded-acceptance-contract.md` |
 | Prompt-debt reflection loop | repeated corrections should become shaped codification proposals through `/reflect` / `/monitor` | `backlog.d/066-prompt-debt-reflection-loop.md` |
 | Client-facing package boundary | Spellbook is operator substrate, not the raw enterprise onboarding/control package | `backlog.d/067-positioning-boundary-for-client-facing-packages.md` |
+| SDLC workflow map | re-check whether lifecycle phases are split correctly across workflow skills and whether instrument/observe is underrepresented | `backlog.d/069-sdlc-workflow-map-audit.md` |
+| Observability coverage loop | make instrumentation, telemetry, tracing, and evidence coverage a first-class repo health surface across app and non-app repos | `backlog.d/070-observability-coverage-loop.md` |
 
 Hot files (recent churn — check `git log` before editing):
 - `skills/tailor/SKILL.md` — actively evolving on `feat/tailor-harden`.

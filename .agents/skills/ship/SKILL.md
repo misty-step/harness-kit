@@ -66,6 +66,10 @@ Assert at start; refuse with a clear reason on any miss.
   operator-provided/current-session local gate receipts from `/ci` or the
   repo's documented gate. Do not require a PR or verdict solely to land a
   locally verified git-native branch. A `dont-ship` verdict still blocks.
+- Acceptance evidence exists for this exact HEAD: exact behavior changed,
+  live evidence, command/path exercised, repo-fit check, and residual
+  unverified paths. `/ship` carries this evidence into the final report and
+  `/reflect` packet.
 
 ## Process
 

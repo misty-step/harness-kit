@@ -61,6 +61,8 @@ The delivery brief must answer:
   and any waiver/exception. Ground this in
   `scripts/summarize-delegations.py --format text` plus receipt ids or
   evidence paths, not raw transcripts.
+- What exact end-user behavior changed; for internal-only work, what
+  developer/operator behavior changed.
 - What value the ticket adds, and why making it merge-ready is useful and
   important now.
 - What alternatives to the implemented design existed.
@@ -70,6 +72,21 @@ The delivery brief must answer:
 - What value the change creates for developers and operators.
 - What value the change creates for users or customers once it ships.
 - What was verified, and what residual risk remains before merge or deploy.
+
+Every merge-ready brief includes this block:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior changed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unverified paths:
+```
+
+If any phase cannot fill the block with live evidence, `/deliver` is not
+merge-ready. "Gate passed" is necessary evidence, not the whole acceptance
+argument.
 
 `/reflect` remains mandatory. Do not collapse reflection into the delivery
 brief. The brief explains the delivered result; `/reflect` captures the

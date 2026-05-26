@@ -35,6 +35,22 @@ repo doesn't have `.evidence/` or a video pipeline. The repo not
 having those surfaces doesn't mean there's nothing to show. It means
 the demo path here is a different path.
 
+## Completion Gate
+
+Every demo outcome, including "no artifact needed," answers:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior shown:
+- Live evidence or artifact:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unshown paths:
+```
+
+For internal changes, the demo may be a PR/release-note sentence, but it still
+names the developer/operator behavior that changed.
+
 ## Execution Stance
 
 You are the executive orchestrator.

@@ -66,7 +66,8 @@ portable than creating a new tool.
 
 Use whatever exists locally, in this order:
 
-1. repo-local reflect, trace, and work-ledger artifacts;
+1. repo-local reflect, review scores, delegation receipts, trace, and
+   work-ledger artifacts;
 2. harness session index or history summaries;
 3. durable memory notes;
 4. Chronicle summaries only as workflow context, never as exposed personal

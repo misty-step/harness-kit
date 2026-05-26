@@ -177,10 +177,18 @@ Output:
 - Commit list (with semantic prefixes)
 - Oracle checklist (which commands passed)
 - `dagger call check --source=.` receipt (pass/fail per sub-gate)
+- Completion Gate:
+  - Exact end-user behavior changed
+  - Live evidence that proves it
+  - Exact command/path/route exercised
+  - Repo-fit check
+  - Residual unverified paths
 - Residual risks
 
 Do not run review, do not merge, do not push unless the packet
 explicitly says so. The flywheel's outer loop pushes; builders don't.
+For Spellbook-internal diffs, replace end-user behavior with the
+developer/operator behavior the implementation changes.
 
 ## Scoping judgment (what the model must decide)
 

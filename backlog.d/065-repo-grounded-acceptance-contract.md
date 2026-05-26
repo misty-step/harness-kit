@@ -34,6 +34,9 @@ generic, stale, or untested against the changed executable path.
 - [ ] `skills/qa/SKILL.md` names "repo-fit evidence" explicitly: app shape,
       live path chosen, concrete command/URL/tool call, artifact location, and
       why adjacent tests were or were not enough.
+- [ ] `skills/ship/SKILL.md` refuses to land merge-ready work that lacks
+      acceptance evidence for the exact HEAD, and carries accepted evidence
+      refs into the final report and `/reflect` packet.
 - [ ] `skills/tailor/SKILL.md` adds a post-install acceptance section that
       compares generated skills against live repo language, commands, docs,
       shared skill root, bridge topology, and known user corrections from

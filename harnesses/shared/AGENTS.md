@@ -123,6 +123,11 @@ and synthesizes the final answer.
 - For substantive design, implementation, research, review, QA, diagnosis,
   backlog, reflection, or harness work, dispatch two or more roster lanes
   before the lead produces artifacts or claims completion.
+- Native harness subagents do not satisfy the roster requirement. They are
+  scratch helpers for local bounded work. If the repo has
+  `.spellbook/agents.yaml`, substantive lanes must be roster-backed provider
+  attempts unless the roster is unavailable or the operator explicitly waives
+  it.
 - Keep direct solo work only for the carve-outs above. If direct work was
   used, name the exception or waiver in the final evidence.
 - Record each meaningful provider lane as a sanitized delegation receipt
@@ -133,6 +138,9 @@ and synthesizes the final answer.
   around the roster unless a shaped ticket explicitly asks for it.
 - Runtime traces and provider session/auth artifacts stay local and
   ignored. Committed examples may live under `.spellbook/examples/`.
+- End-of-run roster reports distinguish roster-backed provider lanes from
+  native subagents and direct-lead exceptions. Do not collapse them under the
+  generic word "subagent."
 
 ### End-of-run roster report
 

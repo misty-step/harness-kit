@@ -31,6 +31,13 @@ This skill observes and escalates. It does not diagnose root cause
 (`/diagnose` does). It does not rollback (caller decides). It does not
 page humans (outer loop decides).
 
+Monitoring also includes observability coverage. A repo with no product
+analytics still has signals: agent traces, provider receipts, workflow ledger
+events, CI history, command transcripts, logs, benchmark outputs, and release
+smoke artifacts. If a change creates behavior that cannot be observed after
+ship, flag that as a monitor finding and route it to `/reflect` or `/groom`
+as instrumentation debt.
+
 ## Execution Stance
 
 You are a thin watcher.
