@@ -176,8 +176,9 @@ signals:
 Absent config → healthcheck-only using the deploy receipt's `healthcheck`
 field or `$SPELLBOOK_HEALTHCHECK_URL`. Absent receipt, config, and env
 healthcheck → refuse to run, emit `phase.failed` with note
-`monitor: no signal source available`. For tailored repos, this is a
-tailoring failure: the rewrite should name at least one signal path.
+`monitor: no signal source available`. For repos with a vendored harness, this
+is a harness failure: the local config or skill copy should name at least one
+signal path.
 
 Signal backend query syntax and response parsing live in
 `references/signals.md`.
@@ -236,7 +237,7 @@ SPELLBOOK_HEALTHCHECK_URL=https://app.example.com/health /monitor
 ## Gotchas
 
 - **Every repo has a signal path.** If there is no production telemetry,
-  tailor this skill toward the repo's real feedback surface: CI, logs,
+  point this skill at the repo's real feedback surface: CI, logs,
   release smoke, benchmark drift, flaky tests, local daemons, or
   agent-session audit trails.
 - **One terminal event per invocation.** Never emit both `monitor.done` and

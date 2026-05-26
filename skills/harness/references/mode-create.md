@@ -40,8 +40,8 @@ that's not a skill, that's a task description.
   The table IS the skill; prose around it explains edge cases only.
 - `skills/settle/SKILL.md` — judgment encoded as mode detection.
   Two modes, different recovery paths per mode.
-- `skills/tailor-skills/SKILL.md` — 90 lines. "Moves" section shows
-  how to encode sequential steps the model still has judgment over.
+- `skills/diagnose/SKILL.md` — phase protocol with concrete stop conditions
+  and escalation paths.
 
 **External exemplars (installed under `skills/.external/`):**
 - `anthropic-skill-creator` — the "theory of mind" framing:

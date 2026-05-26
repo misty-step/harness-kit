@@ -6,14 +6,6 @@
   "defaultThinkingLevel": "xhigh",
   "hideThinkingBlock": false,
   "skills": [
-    "!/Users/phaedrus/.agents/skills/**",
-    "!skills/**",
-    "+skills/llm-communication",
-    "+skills/organic-reflection",
-    "+skills/skill-builder",
-    "+skills/prompt-context-engineering",
-    "+skills/web-search",
-    "+skills/github-cli-hygiene",
-    "+skills/agentic-bootstrap"
+    "+skills/**"
   ]
 }

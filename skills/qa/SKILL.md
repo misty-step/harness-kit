@@ -73,8 +73,6 @@ path; the path determines the tools.
 
 Signals to read (any of these; stop when you have enough):
 
-- `.spellbook/repo-brief.md` — if present, its "Stack & boundaries"
-  section is the spine. Use it.
 - `package.json` — `"bin"` field → CLI. `"main"` + no bin + no
   framework deps → library. `next` / `remix` / `astro` / `vite` +
   framework routes → browser web app. `express` / `fastify` /
@@ -177,12 +175,11 @@ across tools, read `references/evidence-capture.md`.
    (input JSON, output JSON, server logs).
 5. Classify P0/P1/P2.
 
-## Tailoring guidance (for `/tailor` rewriters)
+## Repo guidance
 
-When `/tailor` rewrites this skill for a specific repo, the rewriter's
-job is **not** to copy the full shape matrix above. It is to **name the
-single QA path that applies to THIS codebase**, with the actual commands,
-URLs, route list, endpoint list, or tool-call list embedded.
+When a repo vendors or specializes this skill, the local guidance should
+**name the single QA path that applies to THIS codebase**, with the actual
+commands, URLs, route list, endpoint list, or tool-call list embedded.
 
 - If this repo is a Next.js app, the rewrite's body is browser-walk
   instructions with the actual golden-path routes named, the actual

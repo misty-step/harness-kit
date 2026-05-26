@@ -22,8 +22,8 @@ research-backed (web + multi-model validation before codifying).
 | Delegation guidance | Natural-language guidance that tells the lead agent when to spawn task-specific subagents, what responsibilities to assign, what evidence to require, and what philosophical lenses to apply |
 | Collection | Named group of skills in collections.yaml (payments, web, agent, infra, etc.) |
 | Harness | An AI agent runtime (Claude Code, Codex, Antigravity CLI/IDE, Pi) |
-| Manifest | `.spellbook.yaml` — declares which primitives a project needs |
-| Tailor | Meta-skill that reads a target repo, picks primitives, rewrites workflow skills, and projects harness-specific entrypoints |
+| Manifest | `.spellbook.yaml` — optional project-local harness config |
+| Seed | Skill that vendors the system-wide Spellbook harness into a repo when checked-in local copies are worth the complexity |
 | DMI | Disable-model-invocation — user-only skills that cost zero budget |
 | Delivery pipeline | groom → deliver (shape → implement → review + ci + refactor + qa) → merge |
 

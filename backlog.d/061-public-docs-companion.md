@@ -122,7 +122,7 @@ source-derived so Spellbook does not inherit a second manual content system.
    - "Choose the first workflow worth automating"
    - "Turn a raw idea into a shaped ticket"
    - "Ship a repo change with review and gates"
-   - "Install a repo-local harness with `/tailor`"
+   - "Install the system-wide harness with `bootstrap.sh`"
    - "Audit an AI workflow for evals, monitoring, and approval points"
 6. Add visual polish appropriate for a public technical docs site:
    restrained layout, excellent typography, high-contrast diagrams,

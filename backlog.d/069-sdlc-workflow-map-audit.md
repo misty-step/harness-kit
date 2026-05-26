@@ -26,7 +26,7 @@ that should be carried by existing skills instead of becoming new skills.
 - [ ] For each phase, name the owning skill, inputs, outputs, evidence, and
       whether the boundary is too broad, too narrow, or right-sized.
 - [ ] Explicitly evaluate whether instrument/observe belongs in `/implement`,
-      `/qa`, `/monitor`, `/tailor`, a new skill, or a shared contract.
+      `/qa`, `/monitor`, `/seed`, a new skill, or a shared contract.
 - [ ] Compare the audit against at least one real shipped Spellbook cycle and
       one downstream app repo cycle.
 - [ ] Emit at most three follow-up backlog items, each with an oracle.

@@ -70,7 +70,7 @@ next /flywheel cycle picks up the PR as a backlog item
 - [ ] `harness-tuner` agent exists and is invoked by `/flywheel` step 9
 - [ ] Proposed edits land on `harness/auto-tune` branch, never main
 - [ ] ≥3 tuner-generated PRs over 30 days show measurable improvement
-      (A/B via `/tailor`-style eval or human verdict)
+      (A/B via harness eval or human verdict)
 
 ## Non-Goals
 

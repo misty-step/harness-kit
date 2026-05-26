@@ -1,5 +1,5 @@
 # Spellbook Index
-# Generated: 2026-05-26T16:36:12Z
+# Generated: 2026-05-26T20:32:18Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -56,7 +56,7 @@ skills:
     source: first-party
     tags: [a,always-on,backlog,brainstorm,every,fans,grooming,happens,in,interrogate]
   - name: harness
-    description: "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"tailor is wrong\", \"AGENTS.md "
+    description: "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS."
     source: first-party
     tags: [agents,bootstrap,build,configs,doctrine,evals,gates,harness,improve,is]
   - name: implement
@@ -92,9 +92,9 @@ skills:
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
   - name: seed
-    description: "Install a default harness into this repo. Copy most spellbook primitives (skills, agents, philosophy bench) into a repo-local shared skill layer with no filtering or tailoring, then bridge harness-spe"
+    description: "Vendor the system-wide Spellbook harness into the current repo when a project needs checked-in local copies instead of relying on global bootstrap symlinks. Copies first-party skills and agents into a"
     source: first-party
-    tags: [a,agents,bench,bridge,copy,default,filtering,harness,harness-spe,install]
+    tags: [a,agents,bootstrap,checked-in,copies,current,first-party,global,harness,instead]
   - name: settle
     description: "Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Doe"
     source: first-party
@@ -107,10 +107,6 @@ skills:
     description: "Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply"
     source: first-party
     tags: [a,apply,archive,backlog,branch,closes-backlog,commit,docs,final,merge]
-  - name: tailor
-    description: "Install or refresh a repo-local Spellbook harness. Detect the repo, choose useful primitives, rewrite workflow skills to fit the repo, preserve existing user harness work, and verify the installed har"
-    source: first-party
-    tags: [a,choose,detect,existing,fit,har,harness,install,installed,or]
   - name: yeet
     description: "End-to-end \"ship it to the remote\" in one command. Reads the whole worktree, understands what's in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pus"
     source: first-party

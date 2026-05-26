@@ -3,7 +3,7 @@ name: harness
 description: |
   Build and repair Spellbook primitives: skills, shared doctrine, provider
   roster, harness configs, gates, evals, bootstrap, and sync logic. Use for
-  "improve the harness", "tailor is wrong", "AGENTS.md is stale", "skill
+  "improve the harness", "bootstrap is wrong", "AGENTS.md is stale", "skill
   health", "eval skill", "sync primitives", "roster defaults".
   Trigger: /harness, /skill, /primitive.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
@@ -38,8 +38,8 @@ Mutate the harness. Keep it thin.
   bridges.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
   only.
-- Tailored harnesses are bespoke, not merely small: as small as they should be,
-  no smaller.
+- System bootstrap exposes the full first-party skill catalog; repo-local
+  vendoring is exceptional and must earn its complexity.
 - Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
   shaped ticket explicitly asks.
 
@@ -62,6 +62,7 @@ available providers.
 ## Gotchas
 
 - Stale AGENTS prose is worse than missing prose.
-- Byte-identical workflow skills from Spellbook are usually failed tailoring.
+- Duplicated repo-local skill copies are usually stale context unless a repo
+  needs checked-in vendored harness state.
 - Regexes over agent prose are usually the wrong boundary.
 - If a rule matters, enforce it outside prose.

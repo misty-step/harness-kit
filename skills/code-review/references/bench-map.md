@@ -48,7 +48,7 @@ Constraints:
 
 ## Override Mechanics
 
-There is no per-repo override file yet (deferred — see backlog `/tailor`).
+There is no per-repo override file yet.
 
 Manual overrides for a single review are fair game: the marshal may swap a
 reviewer or add an ad-hoc agent if the diff has concerns the map doesn't

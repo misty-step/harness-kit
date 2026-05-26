@@ -18,7 +18,9 @@ Minimum viable shape:
 
 - NOT building new `/deploy` or `/monitor` skills. Those exist; this gives them a config input instead of inference.
 - NOT requiring the schema for inner-loop work (`/deliver`, `/shape`, `/implement`, `/code-review`). Inner loop continues to work without `.spellbook/`.
-- NOT auto-generating `.spellbook/` at bootstrap. Downstream repos opt in; `/tailor` may grow to scaffold it later (separate concern).
+- NOT auto-generating `.spellbook/` at bootstrap. Downstream repos opt in;
+  `/seed` may grow to scaffold it during explicit repo-local vendoring
+  (separate concern).
 - NOT a runtime config system with reloads, namespaces, or env layering. Single flat read at skill-invocation time.
 
 ## Oracle
@@ -54,7 +56,8 @@ Schemas attract bikeshed. Mitigation: land the minimum keys that misty-step and 
 
 ### Composition with other backlog items
 
-- Complements 050 (tailor Codex config.toml schema) — both establish write-time schemas for tailored configs.
+- Complements the repo-local harness config work: schemas define explicit inputs
+  without requiring generated repo-specific skill copies.
 - Independent of 051 (AGENTS.md restructure) but lands better after 051 so `.spellbook/` rationale can be documented cleanly in the restructured L3 routing layer.
 - Does NOT depend on 023–027 (review-score, offline evidence, Dagger merge gate). Those are orthogonal.
 

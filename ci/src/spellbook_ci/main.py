@@ -346,7 +346,7 @@ print('No hardcoded user paths found.')
             Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
         ],
     ) -> str:
-        """Reject Claude-only install instructions for seed/tailor."""
+        """Reject stale or Claude-only install instructions."""
         return await (
             _lint_container(source)
             .with_exec(["bash", "scripts/check-harness-agnostic-installs.sh"])

@@ -30,8 +30,9 @@ demo artifact, and shipped change.
       JSONL index, PR body links, or another explicitly named store.
 - [ ] `/ship` requires a final work record linking the shipped commit to
       the trace artifact or records why no transcript was available.
-- [ ] `/tailor` installs or rewrites the trace primitive as part of the
-      always-core lifecycle once the primitive exists.
+- [ ] Bootstrap exposes the trace primitive system-wide once it exists; `/seed`
+      vendors any repo-local trace config when checked-in harness state is
+      explicitly requested.
 - [ ] The design names redaction rules and refuses to persist obvious
       secrets (`*_TOKEN`, API keys, credentials, private customer data).
 - [ ] `dagger call check --source=.` green.

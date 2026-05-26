@@ -26,8 +26,8 @@ which important paths are still invisible to agents and operators?
 - [ ] Extend `.spellbook/monitor.yaml` schema planning so repos can declare
       non-healthcheck signal sources such as delegation receipts, workflow
       events, evidence directories, local logs, and analytics coverage files.
-- [ ] Teach `/tailor` to name a repo's dominant observability surfaces in the
-      generated repo brief or project-local monitor skill.
+- [ ] Teach `/monitor` and `/seed` to name a repo's dominant observability
+      surfaces in repo-local config or vendored monitor guidance.
 - [ ] Teach `/qa` or `/implement` to flag newly changed behavior with no
       observable signal as instrumentation debt.
 - [ ] Provide one product-repo example and one Spellbook/library example.

@@ -9,9 +9,9 @@ Estimate: M
 Make `/research` resilient under normal runtime faults: concurrent cache
 writes, hung providers, optional synthesis failures, and empty dedupe results.
 
-The Conviction tailor PR review surfaced generated `skills/research/` defects
-that are upstream Spellbook defects because the generated files are copied from
-`skills/research/src/`.
+The Conviction repo-local harness review surfaced `skills/research/` defects
+that are upstream Spellbook defects because target repos consume the canonical
+`skills/research/` implementation.
 
 ## Non-Goals
 
@@ -38,6 +38,6 @@ that are upstream Spellbook defects because the generated files are copied from
 
 ## Notes
 
-Downstream tailored repos should not patch generated TypeScript copies. The
-canonical runtime behavior belongs in Spellbook's `skills/research/` source and
-its Bun test suite.
+Downstream repos should not patch vendored TypeScript copies. The canonical
+runtime behavior belongs in Spellbook's `skills/research/` source and its Bun
+test suite.

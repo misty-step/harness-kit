@@ -17,14 +17,9 @@ matches() {
   grep -nE "$pattern" "$@" >/dev/null
 }
 
-if matches 'into \.claude/ with no filtering or tailoring' \
+if matches 'into \.claude/ with no filtering' \
   skills/seed/SKILL.md index.yaml; then
   fail "seed must not describe repo installs as Claude-only"
-fi
-
-if matches 'per-repo set of skills and agents in \.claude/' \
-  skills/tailor/SKILL.md index.yaml; then
-  fail "tailor must not describe repo installs as Claude-only"
 fi
 
 if matches 'Copy every skill in .+ into `?\.claude/skills/' \
@@ -37,14 +32,22 @@ if ! matches 'shared skill root|shared repo-local skill layer|shared skill layer
   fail "seed must name the shared skill root as the canonical install target"
 fi
 
-if ! matches 'shared skill root|shared repo-local skill layer|shared skill layer' \
-  skills/tailor/SKILL.md; then
-  fail "tailor must name the shared skill root as the canonical install target"
+if ! matches '\.claude/skills/.+symlink|\.claude/skills/.+bridge|bridge layer' \
+  skills/seed/SKILL.md; then
+  fail "seed must describe .claude/skills as a bridge, not the source of truth"
 fi
 
-if ! matches '\.claude/skills/.+symlink|\.claude/skills/.+bridge|bridge layer' \
-  skills/seed/SKILL.md skills/tailor/SKILL.md; then
-  fail "seed/tailor must describe .claude/skills as a bridge, not the source of truth"
+if matches 'GLOBAL_SKILLS=\(tailor seed\)|minimal global|/tailor or /seed|per-repo via /tailor' \
+  bootstrap.sh README.md AGENTS.md CODEBASE.md; then
+  fail "global install docs/scripts must not describe the retired minimal tailor/seed model"
+fi
+
+if ! matches 'All first-party skills are installed system-wide' bootstrap.sh; then
+  fail "bootstrap must report the all-first-party-skills system-wide install contract"
+fi
+
+if ! matches '\+skills/\*\*' harnesses/pi/settings.json; then
+  fail "Pi settings must allow all globally installed first-party skills"
 fi
 
 if [ "${#failures[@]}" -gt 0 ]; then
@@ -55,4 +58,4 @@ if [ "${#failures[@]}" -gt 0 ]; then
   exit 1
 fi
 
-echo "harness install paths are shared-root first."
+echo "harness install paths are cross-harness and global-skill first."

@@ -11,10 +11,10 @@ The shortest accurate mental model is:
 skills + agents + shared doctrine
         |
         v
-bootstrap installs minimal globals
+bootstrap installs every first-party skill system-wide
         |
         v
-/tailor or /seed installs repo-local subsets
+optional /seed vendors local copies when a repo needs checked-in harness state
         |
         v
 backlog.d work flows through /groom -> /shape -> /deliver -> /settle -> /ship
@@ -31,7 +31,7 @@ Spellbook has five primary source surfaces.
 |---|---|---|
 | Skills | `skills/<name>/SKILL.md` with optional `references/`, `scripts/`, `evals/` | Workflow judgment and triggerable agent guidance. |
 | Agents | `agents/<name>.md` | Reusable personas such as planner, builder, critic, and the review bench. |
-| Repo-local harness | `.agents/skills/` | The canonical, version-controlled harness used to build Spellbook itself. |
+| Repo-local harness | `.agents/skills/` | Source-backed links exposing the canonical catalog to local harnesses. |
 | Harness configs | `harnesses/{claude,codex,pi,shared}/` | Per-runtime settings plus shared doctrine. |
 | Work queue | `backlog.d/NNN-*.md` and `backlog.d/_done/` | Shaped work, status, oracle, and closure history. |
 
@@ -39,14 +39,12 @@ Generated or runtime surfaces are deliberately secondary:
 
 - `index.yaml` is generated from skills and agents by `scripts/generate-index.sh`.
   Do not edit it by hand.
-- `.agents/skills/` is source, not scratch. It is hidden only by Unix naming
-  convention; audits must use hidden-aware searches such as
+- `.agents/skills/` links to `skills/` in this repo. It is hidden only by Unix
+  naming convention; audits must use hidden-aware searches such as
   `rg --hidden -g '!.git/**'`.
 - `.claude/`, `.codex/`, and `.pi/` are runtime bridge directories.
 - `.spellbook/deliver/<ulid>/` is runtime state for `/deliver`; it is
   agent-written, gitignored, and blocked from forced commits.
-- `.spellbook/repo-brief.md` is `/tailor`'s durable rewrite spine for this
-  repo.
 - `skills/.external/` is a local cache populated from `registry.yaml`; it is
   not redistributable source.
 
@@ -83,18 +81,19 @@ Spellbook's primary portability layer is the filesystem: the same `SKILL.md`
 and agent markdown files can be discovered by multiple harnesses. Runtime
 features are wrappers around that layer, not the architecture.
 
-`bootstrap.sh` installs only a minimal global set:
+`bootstrap.sh` installs the full first-party catalog system-wide:
 
-- global skills: `/tailor` and `/seed`
+- global skills: every `skills/*/SKILL.md`
 - global agents: every `agents/*.md`
 
-Every other skill is installed per target repo by `/tailor` or `/seed`.
-This prevents a machine-wide skill catalog from pretending every repo needs
-every primitive.
+Local bootstrap prefers symlinks to a stable checkout so skill edits propagate
+immediately. Remote bootstrap downloads a GitHub archive and copies full skill
+directories, including references, scripts, and evals. Claude settings are
+copied, not symlinked, because Claude mutates `settings.json` at runtime.
 
-Local bootstrap prefers symlinks to a stable checkout. Remote bootstrap
-downloads the same minimal global set from GitHub. Claude settings are copied,
-not symlinked, because Claude mutates `settings.json` at runtime.
+`/seed` remains as an explicit repo-local vendoring path for projects that need
+checked-in harness state, offline operation, or reviewable local copies. It is
+not the default way to consume Spellbook.
 
 ### Registry And Externals
 
@@ -188,12 +187,12 @@ The backlog is markdown in Git. Verdicts, evidence, and traces are moving
 toward Git-native storage. GitHub PRs can exist, but they are not supposed to
 be the only source of truth for the workflow.
 
-### Minimal Global Install
+### System-Wide Install
 
-Machine-wide install is intentionally small. `/tailor` and `/seed` are the
-entry points; repo-local installation decides which other primitives belong.
-This encodes the belief that harness quality is repo-specific, not a global
-dump of every available skill.
+Machine-wide install intentionally exposes the whole first-party catalog. A
+good harness is simple: one canonical skill catalog, one bootstrap path, and
+repo-local vendoring only when a project has a concrete reason to carry local
+copies.
 
 ### Tests Prove Executed Paths
 
@@ -213,12 +212,11 @@ curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.s
 Set `SPELLBOOK_DIR=/path/to/spellbook` when you want global harness symlinks to
 point at a specific checkout instead of the stable default search path.
 
-For a new or existing repo that should consume Spellbook:
-
-1. Run `/tailor` when you want repo-specific skill selection and rewriting.
-2. Run `/seed` when you want a fast default shared skill layer.
-3. Treat `.agents/skills/` as the canonical repo-local shared skill root, with
-   `.claude/skills/`, `.codex/skills/`, and Pi config as bridges.
+For a new or existing repo that should consume Spellbook, bootstrap is normally
+enough. Run `/seed` only when the repo needs checked-in local copies, offline
+operation, or a reviewable vendored harness layer. Treat `.agents/skills/` as
+the optional repo-local shared skill root, with `.claude/skills/`,
+`.codex/skills/`, and Pi config as bridges.
 
 For Spellbook development:
 
@@ -271,19 +269,11 @@ The active backlog clusters into five themes.
 - `backlog.d/055-mcp-first-integration-doctrine.md`: document when external
   integrations should start with MCP.
 
-### Sync, Legacy, And Future Automation
+### Sync And Future Automation
 
 - `backlog.d/026-multi-machine-sync.md`: sync verdict refs across machines.
 - `backlog.d/031-harness-auto-tune-gepa.md`: parked until enough real
   `/flywheel` cycle data exists.
-- `backlog.d/046-curate-skill-triage.md`: decide the fate of legacy unmarked
-  `/curate` skill copies.
-
-### Stale Or Reconciled State
-
-- `backlog.d/059-tailor-durable-brief-and-ownership-conflicts.md` is marked
-  fixed but still lives in the active backlog. It should be archived or
-  otherwise reconciled by the normal closure workflow.
 
 ## Known Sharp Edges
 

@@ -65,7 +65,7 @@ Spellbook is strongest for:
 - pilot teams already comfortable with git, local gates, markdown specs, and
   agentic delivery loops;
 - consulting delivery teams using a shared harness behind the scenes;
-- repo maintainers who need cross-harness skills, tailoring, and review
+- repo maintainers who need cross-harness skills, system-wide harness setup, and review
   discipline.
 
 Spellbook is weak as a direct handoff for:

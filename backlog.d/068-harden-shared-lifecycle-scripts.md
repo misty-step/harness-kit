@@ -7,9 +7,9 @@ Estimate: S
 ## Goal
 
 Make the shared shell helpers fail closed and preserve exact JSON payloads when
-they are copied into target repos by `/tailor`.
+they are used directly or vendored into target repos.
 
-The Conviction tailor PR review found two script-level hazards that are
+The Conviction repo-local harness review found two script-level hazards that are
 Spellbook bugs, not downstream repo bugs:
 
 - `scripts/lib/verdicts.sh` falls back to `HEAD` when the requested branch or
@@ -41,6 +41,6 @@ Spellbook bugs, not downstream repo bugs:
 
 ## Notes
 
-This should be fixed in Spellbook because `/tailor` copies these helpers into
-target repos. Patching only the generated Conviction copies would leave the
-next tailored repo with the same fail-open behavior.
+This should be fixed in Spellbook because bootstrap and `/seed` expose these
+helpers to target repos. Patching only the generated Conviction copies would
+leave the canonical source with the same fail-open behavior.

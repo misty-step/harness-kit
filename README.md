@@ -1,13 +1,14 @@
 # Spellbook
 
-28 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
+27 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
 ## Quick Start
 
 ```bash
 # Bootstrap (one-time per machine)
-# Symlinks if local checkout exists, downloads from GitHub otherwise
+# Installs all first-party skills system-wide; symlinks if local checkout
+# exists, downloads from GitHub otherwise
 curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash
 ```
 

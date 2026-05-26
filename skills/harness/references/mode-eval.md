@@ -44,9 +44,9 @@ skills/<name>/evals/
   graders/<grader>       # command, rubric, or script used to judge outcome
 ```
 
-Invented repo-local skills created by `/tailor` must include at least one eval
-seed before installation. The seed can be small, but it must name the expected
-artifact and the grader that proves the skill helped.
+Invented repo-local skills must include at least one eval seed before
+installation. The seed can be small, but it must name the expected artifact and
+the grader that proves the skill helped.
 
 ## Validator
 

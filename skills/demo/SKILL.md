@@ -202,10 +202,10 @@ from shape; pick the surface from audience.
 | Team Slack / internal post | Timely visual update; lossy over time |
 | Customer email / launch post | External polished path |
 
-## Tailoring guidance
+## Repo guidance
 
-When `/tailor` rewrites this skill for a specific repo, the rewriter's
-job is to **name the actual demo path for THAT codebase.** Concretely:
+When a repo vendors or specializes this skill, the local guidance should
+**name the actual demo path for THAT codebase.** Concretely:
 
 - Pick the default artifact shape(s) for this repo's dominant change
   type — e.g., "Next.js app; defaults are screenshot (single change) or
@@ -223,11 +223,9 @@ job is to **name the actual demo path for THAT codebase.** Concretely:
   commit trailers. Do not manufacture a video pipeline the repo
   doesn't need.
 
-An exact-copy install is a valid tailoring outcome only for a repo
-that is itself the canonical source. Silent skip of `/demo` at
-`/tailor` time is a regression — the skill is always installed; the
-per-invocation determination of "what shape" is the skill's job, not
-`/tailor`'s.
+An exact-copy vendored copy is valid only for a repo that is itself the
+canonical source. For ordinary repos, either rely on the system-wide skill or
+add concrete local demo defaults that earn the checked-in copy.
 
 ## Gotchas
 

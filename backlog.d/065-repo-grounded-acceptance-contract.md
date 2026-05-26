@@ -6,7 +6,7 @@ Estimate: M
 
 ## Goal
 
-Make every review, delivery, tailoring, and QA workflow prove two things before
+Make every review, delivery, repo-local vendoring, and QA workflow prove two things before
 it can claim success:
 
 1. the workflow used live repo evidence rather than generic harness knowledge;
@@ -21,10 +21,10 @@ generic, stale, or untested against the changed executable path.
 - Do not add a new orchestration layer or semantic workflow database.
 - Do not lower any gate or replace `dagger call check --source=.`.
 - Do not require every small edit to run every phase. The contract applies when
-  the workflow claims review, delivery, tailoring, or QA success.
+  the workflow claims review, delivery, repo-local vendoring, or QA success.
 - Do not encode repo-specific stack doctrine in Spellbook. Spellbook defines
-  the evidence shape; tailored repo skills supply the concrete commands,
-  files, and acceptance gates.
+  the evidence shape; repo-local config or vendored skills supply the concrete
+  commands, files, and acceptance gates.
 
 ## Oracle
 
@@ -37,13 +37,13 @@ generic, stale, or untested against the changed executable path.
 - [ ] `skills/ship/SKILL.md` refuses to land merge-ready work that lacks
       acceptance evidence for the exact HEAD, and carries accepted evidence
       refs into the final report and `/reflect` packet.
-- [ ] `skills/tailor/SKILL.md` adds a post-install acceptance section that
-      compares generated skills against live repo language, commands, docs,
-      shared skill root, bridge topology, and known user corrections from
+- [ ] `skills/seed/SKILL.md` adds a post-install acceptance section that
+      compares vendored harness state against live repo language, commands,
+      docs, shared skill root, bridge topology, and known user corrections from
       session history.
 - [ ] `skills/deliver/SKILL.md` treats "valid but not repo-fit" as dirty:
-      if review, QA, or tailor evidence says the output is generic, stale, or
-      unexercised, `/deliver` exits with remaining work instead of
+      if review, QA, or repo-local vendoring evidence says the output is
+      generic, stale, or unexercised, `/deliver` exits with remaining work instead of
       merge-ready.
 - [ ] `harnesses/shared/AGENTS.md` gets a compact always-on rule:
       "validates is not acceptance; name the live repo evidence and the

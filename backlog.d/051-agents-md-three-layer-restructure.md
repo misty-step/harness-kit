@@ -43,7 +43,7 @@ Initial research recommendation was "compress 400 → 150 lines." That target wa
 
 ### Axe-sharpening exemption
 
-Infra:feature ratio as an axe-sharpening signal doesn't apply to spellbook — spellbook IS the axe, so harness work is feature work. The real validation metric is downstream: does `/tailor` generate meaningfully better per-repo configs from a clearer source? This restructure is the proving ground for that hypothesis. If the layered AGENTS.md improves agent behavior measurably in spellbook itself, it validates the upstream-source-quality → /tailor-output-quality chain, which is the core thesis spellbook is here to test.
+Infra:feature ratio as an axe-sharpening signal doesn't apply to spellbook — spellbook IS the axe, so harness work is feature work. The real validation metric is downstream: does the system-wide harness produce better agent behavior in real repos without bespoke generated scaffolding? This restructure is the proving ground for that hypothesis.
 
 ### What Layer 3 routing tables actually look like
 
@@ -61,10 +61,11 @@ Exact set TBD during implementation; goal is 3–5 tables covering the most comm
 
 ### Downstream leverage
 
-A signposted global AGENTS.md lets downstream repos (misty-step, cerberus, bitterblossom) write their own AGENTS.md as strictly "layer 4: what makes this repo different" — repo-specific build commands, framework conventions, voice/persona. Clears the current ambiguity about which universal principles to restate (answer: none, they're in the global layer). `/tailor` can codify this division by generating layer-4 scaffolds that reference layers 1–3 instead of duplicating them.
+A signposted global AGENTS.md lets downstream repos (misty-step, cerberus, bitterblossom) write their own AGENTS.md as strictly "layer 4: what makes this repo different" — repo-specific build commands, framework conventions, voice/persona. Clears the current ambiguity about which universal principles to restate: none, they're in the global layer.
 
 ### Related
 
 - Cooper agent (PR #120, `f904439`) added "no internal mocks" to the Testing subsection. This restructure promotes it to a first-class L1 section.
-- Complements 050-tailor-codex-config-schema — both are about making the upstream source material tighter for /tailor consumption.
+- Complements the global-harness bootstrap pivot by making the always-loaded
+  source material tighter.
 - Candidates from same /groom session explicitly dropped or deferred: skills/audit-resolver (wrong problem), skillify 10-step audit (no downstream demand yet), acceptance-example lineage (cosmetic), clean-context philosophy-bench review (local polish only, fold in if bench work surfaces later), MCP-first integration guidance (defer until first MCP integration lands or downstream pain voiced).

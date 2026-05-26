@@ -19,7 +19,7 @@ entry IDs on every finding.
 
 - Prescribe the catalog's *content* — that is per-repo and evolves.
 - Ship a pre-populated catalog for every downstream repo. The
-  initial population happens per-repo during `/tailor` or manually
+  initial population happens during explicit repo-local vendoring or manually
   after the first few `/reflect cycle` runs.
 - Replace language-specific lint rules. The catalog captures
   *semantic* rules (template invariants, test-scaffolding pitfalls,
@@ -45,11 +45,10 @@ entry IDs on every finding.
       finding → add entry; eventually the pattern gets codified as a
       lint/check/CI lane → entry gains an `Enforcement:` line but
       remains in the catalog as reference"
-- [ ] `/tailor` (`skills/tailor/SKILL.md`) is updated to offer, as
-      part of installing `/code-review` into a consuming repo, the
-      option to copy `review-patterns-template.md` renamed to
-      `review-patterns.md` — and to leave the file out if the repo
-      already has one
+- [ ] `/seed` is updated to offer, as part of vendoring `/code-review` into a
+      consuming repo, the option to copy `review-patterns-template.md` renamed
+      to `review-patterns.md` — and to leave the file out if the repo already
+      has one
 - [ ] The canary repo's `#029` ("code-review pattern catalog") lands
       as the first consumer implementation; the spellbook convention
       is validated against it
@@ -164,10 +163,9 @@ scaffold and three illustrative placeholder entries.
 Add the `Context loading` section above. Update any critic-dispatch
 prompt templates embedded in the skill to pass the catalog through.
 
-*Commit 3 — `refactor(tailor): offer review-patterns.md on /tailor install`.*
-Small edit to `skills/tailor/SKILL.md` so `/tailor` copies the
-template (renamed) on first install if absent, and leaves existing
-catalogs untouched.
+*Commit 3 — `refactor(seed): offer review-patterns.md when vendoring`.*
+Small edit to `skills/seed/SKILL.md` so `/seed` copies the template (renamed)
+on first vendored install if absent, and leaves existing catalogs untouched.
 
 **Risk list.**
 

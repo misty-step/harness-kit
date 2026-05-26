@@ -75,8 +75,9 @@ quality matters, it is probably wrong.
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
   Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
-- Tailored harnesses use `.agents/skills/` as the shared repo-local skill root
-  with per-harness bridges.
+- System bootstrap installs every first-party skill into each detected harness.
+  `.agents/skills/` is the optional repo-local vendored root with per-harness
+  bridges.
 - Unknown or unmarked harness artifacts are user-owned. Preserve or ask.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 

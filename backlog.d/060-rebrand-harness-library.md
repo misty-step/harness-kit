@@ -9,7 +9,7 @@ Estimate: M
 Choose and execute a new name for this repo before the next architecture pass
 lands. The current "Spellbook" name still points at a fantasy metaphor and at
 static catalogs of spells/agents. The project is becoming a practical shared
-harness library: skills, repo guidance, projections, and tailoring for multiple
+harness library: skills, repo guidance, projections, and bootstrap support for multiple
 agent runtimes.
 
 The rebrand should make that product shape obvious.
@@ -36,8 +36,8 @@ The rebrand should make that product shape obvious.
 - [ ] The repo identity, package names, generated index headers, hook messages,
       and Dagger module names are renamed or explicitly deferred with a tracked
       migration reason.
-- [ ] At least one downstream repo is seeded or tailored after the rename to
-      prove the old name is not required by generated harness artifacts.
+- [ ] At least one downstream repo is bootstrapped or seeded after the rename to
+      prove the old name is not required by harness artifacts.
 - [ ] `dagger call check --source=.` passes.
 
 ## Notes
@@ -61,5 +61,5 @@ that matches the actual direction: a shared harness primitive library.
 ### Compatibility contract
 
 Keep `.spellbook/` as the legacy state directory until a later migration ticket
-proves it can be renamed without breaking tailored repos. The product can
+proves it can be renamed without breaking existing repos. The product can
 rebrand before local state paths do.

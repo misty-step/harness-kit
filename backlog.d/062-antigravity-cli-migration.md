@@ -30,8 +30,8 @@ as the future Google harness.
       documents the split between CLI and IDE paths.
 - [ ] `bootstrap.sh` detects Antigravity CLI/IDE installs and reports what it
       would link or copy. Any mutation is conservative and reversible.
-- [ ] `/seed` and `/tailor` know how to project selected skills into
-      Antigravity skill/plugin locations.
+- [ ] `bootstrap.sh` and `/seed` know how to expose skills in Antigravity
+      skill/plugin locations.
 - [ ] Gemini CLI docs and config remain only as legacy import/migration support.
 - [ ] `README.md`, `project.md`, `AGENTS.md`, and active harness docs name
       Antigravity instead of Gemini CLI as the Google first-class target.

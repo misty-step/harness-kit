@@ -6,9 +6,9 @@ Estimate: S
 
 ## Goal
 
-Fix small but real defects in copied skill references so `/tailor` does not
-install stale commands, unsafe examples, malformed snippets, or inconsistent
-phase names into downstream repos.
+Fix small but real defects in skill references so bootstrap and `/seed` do not
+expose stale commands, unsafe examples, malformed snippets, or inconsistent
+phase names to downstream repos.
 
 ## Non-Goals
 
@@ -39,6 +39,7 @@ phase names into downstream repos.
 
 ## Notes
 
-These are upstream quality defects because `/tailor` copies the same references
-into target repos. Downstream repos may patch generated copies for an active PR,
-but the durable fix is in Spellbook.
+These are upstream quality defects because downstream repos consume the same
+references through the system-wide harness or explicit `/seed` vendoring.
+Downstream repos may patch local copies for an active PR, but the durable fix is
+in Spellbook.

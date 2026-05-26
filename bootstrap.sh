@@ -14,6 +14,14 @@ set -euo pipefail
 REPO="phrazzld/spellbook"
 RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REMOTE_TMP=""
+REMOTE_SPELLBOOK=""
+
+cleanup_remote_tmp() {
+  [ -z "$REMOTE_TMP" ] && return 0
+  rm -rf "$REMOTE_TMP"
+}
+trap cleanup_remote_tmp EXIT
 
 info()  { printf '\033[0;34m%s\033[0m\n' "$*"; }
 ok()    { printf '\033[0;32m%s\033[0m\n' "$*"; }
@@ -264,12 +272,15 @@ verify_no_broken_spellbook_symlinks() {
 
 discover_local() {
   local agent
-  # Minimal globals: only /tailor and /seed are symlinked into harness skills
-  # dirs. Every other primitive lives in spellbook and is copied per-repo by
-  # /tailor or /seed. Agents remain globally available — they're lightweight
-  # and used by many workflows.
-  GLOBAL_SKILLS=(tailor seed)
+  local skill
+  GLOBAL_SKILLS=()
   GLOBAL_AGENTS=()
+
+  for skill in "$SPELLBOOK"/skills/*; do
+    [ -d "$skill" ] || continue
+    [ -f "$skill/SKILL.md" ] || continue
+    GLOBAL_SKILLS+=("$(basename "$skill")")
+  done
 
   for agent in "$SPELLBOOK"/agents/*.md; do
     [ -f "$agent" ] || continue
@@ -278,17 +289,30 @@ discover_local() {
 }
 
 discover_remote() {
-  # Minimal globals, same as discover_local. No need to list remote catalog.
-  GLOBAL_SKILLS=(tailor seed)
+  REMOTE_TMP="$(mktemp -d)"
+  local archive="$REMOTE_TMP/spellbook.tar.gz"
+  curl -sfL "https://github.com/$REPO/archive/refs/heads/master.tar.gz" -o "$archive" \
+    || { err "Failed to download spellbook archive"; exit 1; }
+  tar -xzf "$archive" -C "$REMOTE_TMP" \
+    || { err "Failed to extract spellbook archive"; exit 1; }
+  REMOTE_SPELLBOOK="$REMOTE_TMP/spellbook-master"
+  is_spellbook_checkout "$REMOTE_SPELLBOOK" \
+    || { err "Downloaded archive is not a spellbook checkout"; exit 1; }
+
+  local skill agent
+  GLOBAL_SKILLS=()
   GLOBAL_AGENTS=()
 
-  local names
-  names=$(curl -sf "https://api.github.com/repos/$REPO/contents/agents" | \
-    python3 -c "import sys,json; [print(f['name'].removesuffix('.md')) for f in json.load(sys.stdin) if f['name'].endswith('.md')]" 2>/dev/null) \
-    || { err "Failed to list remote agents"; exit 1; }
-  while IFS= read -r name; do
-    [ -n "$name" ] && GLOBAL_AGENTS+=("$name")
-  done <<< "$names"
+  for skill in "$REMOTE_SPELLBOOK"/skills/*; do
+    [ -d "$skill" ] || continue
+    [ -f "$skill/SKILL.md" ] || continue
+    GLOBAL_SKILLS+=("$(basename "$skill")")
+  done
+
+  for agent in "$REMOTE_SPELLBOOK"/agents/*.md; do
+    [ -f "$agent" ] || continue
+    GLOBAL_AGENTS+=("$(basename "$agent" .md)")
+  done
 }
 
 SPELLBOOK="$(resolve_spellbook_dir || true)"
@@ -358,9 +382,8 @@ link_local() {
   local agents_dir="$harness_dir/agents"
 
   info "  Linking skills..."
-  # Per-entry symlinks for the minimal global set (tailor, seed). Remove any
-  # prior whole-dir symlink from earlier bootstrap generations that mirrored
-  # the full catalog.
+  # Per-entry symlinks make all first-party skills globally available while
+  # preserving user-owned files in the harness skill dir.
   if [ -L "$skills_dir" ]; then
     rm -f "$skills_dir"
   fi
@@ -425,28 +448,25 @@ download_skill() {
   local skills_dir="$1"
   local name="$2"
   local target="$skills_dir/$name"
-  mkdir -p "$target/references"
 
-  curl -sfL "$RAW/skills/$name/SKILL.md" -o "$target/SKILL.md" || { err "Failed: $name/SKILL.md"; return 1; }
+  [ -n "$REMOTE_SPELLBOOK" ] || { err "Remote checkout not available"; return 1; }
+  [ -d "$REMOTE_SPELLBOOK/skills/$name" ] || { err "Failed: missing skill $name"; return 1; }
 
-  # Best-effort: download references via GitHub API
-  local refs
-  refs=$(curl -sf "https://api.github.com/repos/$REPO/contents/skills/$name/references" 2>/dev/null | \
-    python3 -c "import sys,json; [print(f['name']) for f in json.load(sys.stdin) if f['type']=='file']" 2>/dev/null) || true
-  if [ -n "$refs" ]; then
-    echo "$refs" | while read -r fname; do
-      curl -sfL "$RAW/skills/$name/references/$fname" -o "$target/references/$fname" 2>/dev/null || true
-    done
-  fi
-
+  rm -rf "$target"
+  mkdir -p "$(dirname "$target")"
+  cp -R "$REMOTE_SPELLBOOK/skills/$name" "$target"
   ok "  $name → $target"
 }
 
 download_agent() {
   local agents_dir="$1"
   local name="$2"
+
+  [ -n "$REMOTE_SPELLBOOK" ] || { err "Remote checkout not available"; return 1; }
+  [ -f "$REMOTE_SPELLBOOK/agents/$name.md" ] || { err "Failed: agent $name"; return 1; }
+
   mkdir -p "$agents_dir"
-  curl -sfL "$RAW/agents/$name.md" -o "$agents_dir/$name.md" || { err "Failed: agent $name"; return 1; }
+  cp "$REMOTE_SPELLBOOK/agents/$name.md" "$agents_dir/$name.md"
   ok "  $name → $agents_dir/$name.md"
 }
 
@@ -525,7 +545,7 @@ ok "Done. Installed to $installed harness(es)."
 echo
 info "Skills (${#GLOBAL_SKILLS[@]}): ${GLOBAL_SKILLS[*]}"
 info "Agents (${#GLOBAL_AGENTS[@]}): ${GLOBAL_AGENTS[*]}"
-info "(Other primitives live in \$SPELLBOOK/skills/ — install per-repo via /tailor or /seed.)"
+info "All first-party skills are installed system-wide for each detected harness."
 echo
 if [ -n "$SPELLBOOK" ]; then
   info "Mode: symlink (edits in $SPELLBOOK propagate instantly)"

@@ -1,4 +1,4 @@
-# Spellbook repo-local Codex config — emitted by /tailor 2026-05-13.
+# Spellbook repo-local Codex config.
 # Codex discovers skills in `.codex/skills/` via symlink bridges back to
 # `.agents/skills/`, the canonical shared root.
 
@@ -7,9 +7,9 @@ name = "spellbook"
 description = "Harness library: skills, agents, configs for Claude Code / Codex / Pi"
 
 [skills]
-# Filesystem-level selectivity: every symlink under .codex/skills/ is
-# discovered. See bootstrap.sh:271 for what's globally installed;
-# this repo's local subset lives in .agents/skills/ via /tailor.
+# Filesystem-level discovery: every symlink under .codex/skills/ is
+# discovered. In this repo, .agents/skills/ links to the canonical skills/
+# catalog, so the repo-local harness exposes every first-party skill.
 roots = [".codex/skills", ".agents/skills"]
 
 # Command allowlist lives in .claude/settings.local.json (Claude Code's
