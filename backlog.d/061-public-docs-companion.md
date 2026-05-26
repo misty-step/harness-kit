@@ -3,6 +3,7 @@
 Priority: P1
 Status: pending
 Estimate: L
+Depends on: 067-positioning-boundary-for-client-facing-packages.md
 
 ## Goal
 
@@ -16,6 +17,13 @@ without opening the repo.
 This is public-facing packaging for Spellbook as implementation
 infrastructure, not a replacement for the repo or a Brandt-specific handoff
 package.
+
+The unit is deliberately narrow: a static docs companion and deterministic
+docs checks. It is not a client onboarding product, enterprise admin surface,
+or governed-workflow package. `067-positioning-boundary-for-client-facing-
+packages.md` should land first or in the same branch so the public site cannot
+accidentally imply that Spellbook itself provides RBAC, spend governance,
+procurement-ready onboarding, or an incident dashboard.
 
 ## Problem Challenge
 
@@ -96,20 +104,36 @@ the durable documentation companion.
 Chosen: Option B. It teaches first, indexes second, and keeps the catalog
 source-derived so Spellbook does not inherit a second manual content system.
 
+### Option D: Boundary-first docs slice
+
+Land the positioning boundary (`067`) first, then implement the docs companion
+as a constrained generated catalog plus one beginner path. Defer richer
+workflow pages until the source-derived catalog and public-safe positioning
+are mechanically enforced.
+
+Failure mode: safer but less useful as a handoff if it stops at reference.
+
+Chosen refinement: keep Option B, but sequence it boundary-first. The MVP is
+Option B's static docs site with enough narrative to teach from zero to one,
+and enough generated catalog machinery to prevent drift.
+
 ## Design
 
-1. Add a static docs app under `docs/` or `site/` using a minimal generator
-   that can be built locally and hosted as static HTML. Prefer the smallest
-   stack that supports generated pages, routing, search, and clean visual
-   polish without a server.
-2. Add a catalog extraction step that reads canonical repo sources:
+1. Add a no-server static docs generator under `scripts/`, with a thin
+   command such as `scripts/build-docs-site.sh`. There is no existing JS docs
+   framework scaffold in this repo; default to Python + templates unless the
+   implementation discovers a better already-present local pattern.
+2. Emit deterministic static HTML under a single output root such as
+   `docs/site/`. Generated files must carry a "do not edit" marker and be
+   stable across repeated builds from the same checkout.
+3. Add a catalog extraction step that reads canonical repo sources:
    `skills/*/SKILL.md`, `agents/*.md`, `index.yaml`,
    `harnesses/shared/AGENTS.md`, `ci/src/spellbook_ci/main.py`,
    `.githooks/*`, `bootstrap.sh`, and open `backlog.d` items.
-3. Render generated reference pages for every skill and agent:
+4. Render generated reference pages for every skill and agent:
    purpose, trigger, when to use, inputs/outputs where present, related
    workflows, source path, and expected evidence.
-4. Hand-author the teaching spine:
+5. Hand-author the teaching spine using a Diataxis-shaped IA:
    - Spellbook in 60 seconds
    - What is a harness?
    - Skills, agents, gates, traces, oracles, and workflows
@@ -117,20 +141,56 @@ source-derived so Spellbook does not inherit a second manual content system.
    - Inner loop: `/shape` -> `/deliver` -> `/ci` -> `/qa`
    - Outer loop: `/flywheel` -> `/monitor` -> `/reflect`
    - Governance: evals, approvals, observability, safety boundaries
-   - Client handoff: what a team gets and how they operate it
-5. Include example workflows as first-class pages, not buried snippets:
+   - Positioning boundary: what Spellbook is and is not
+6. Include example workflows as first-class pages, not buried snippets:
    - "Choose the first workflow worth automating"
    - "Turn a raw idea into a shaped ticket"
    - "Ship a repo change with review and gates"
    - "Install the system-wide harness with `bootstrap.sh`"
    - "Audit an AI workflow for evals, monitoring, and approval points"
-6. Add visual polish appropriate for a public technical docs site:
+7. Add a small client-side catalog index with filters for area, primitive
+   type, workflow role, and harness relevance. The search/filter source is a
+   generated manifest, not hand-maintained JSON.
+8. Add visual polish appropriate for a public technical docs site:
    restrained layout, excellent typography, high-contrast diagrams,
    simple interactive filters, and workflow cards. Avoid marketing-page
    hero bloat; the first screen should immediately explain Spellbook.
-7. Include an AI/agent-readable surface such as `llms.txt` or a compact
+9. Include an AI/agent-readable surface such as `llms.txt` or a compact
    generated manifest so coding agents can consume the docs without
    scraping the whole site.
+
+## Information Architecture
+
+Top-level sections:
+
+1. `Start` — one-sentence positioning, "Spellbook in 60 seconds", and the
+   zero-to-one path for a reader who does not know AI ops.
+2. `Concepts` — harness, skill, agent, gate, oracle, trace, roster, workflow.
+3. `Workflows` — five concrete walkthroughs with expected inputs, decisions,
+   evidence, and failure handling.
+4. `Reference` — generated skill and agent pages, CI gate map, bootstrap
+   behavior, and cross-harness notes.
+5. `Governance` — evals, traces, approvals, least-privilege tool boundaries,
+   rollback, escalation, and what Spellbook does not provide.
+
+Every concept and workflow page should end with a short "what to verify"
+checklist and links to the source files that make the claim true.
+
+## Implementation Surface
+
+Likely files:
+
+- `scripts/build-docs-site.sh`
+- `scripts/build-docs-site.py`
+- `scripts/check-docs-site.sh`
+- `docs/site/**` generated static output
+- `ci/src/spellbook_ci/main.py` for `check-docs-site`
+- Optional: a one-line README pointer to the generated docs command
+
+The implementation should avoid adding package-manager state just to build
+docs. If a richer frontend stack becomes necessary, shape that as a follow-up
+with a specific reason; the MVP is static HTML/CSS/JS generated from repo
+sources.
 
 ## Cross-Harness
 
@@ -149,10 +209,15 @@ remain canonical.
 
 - [ ] A local command builds the static site from a clean checkout and
       writes only deterministic output.
+- [ ] Re-running the docs build twice from the same checkout produces no git
+      diff after the first build.
 - [ ] Every `skills/*/SKILL.md` and `agents/*.md` has exactly one generated
       reference page with a source link.
 - [ ] The docs build fails when a skill or agent exists without a generated
       page, or when a generated page points at a missing source file.
+- [ ] `scripts/check-docs-site.sh` fails on a deliberately missing generated
+      skill page, a duplicate generated primitive page, and a stale source
+      link fixture.
 - [ ] The site includes at least five workflow walkthroughs listed in the
       design section.
 - [ ] A non-specialist first-run path explains Spellbook, harnesses,
@@ -161,6 +226,10 @@ remain canonical.
       approvals, least-privilege tool boundaries, and rollback/escalation.
 - [ ] The catalog exposes client-safe positioning without copying private
       Daybook prose verbatim.
+- [ ] The docs site includes a generated `llms.txt` or equivalent compact
+      agent-readable manifest.
+- [ ] `ci/src/spellbook_ci/main.py` includes the docs check in
+      `dagger call check --source=.`.
 - [ ] `dagger call check --source=.` passes after adding the site and any
       new docs checks.
 
@@ -173,9 +242,15 @@ remain canonical.
 - No Brandt-specific package in this ticket.
 - No new harness runtime mechanism; this is documentation plus build-time
   verification.
+- No JS framework, bundler, package manager, or design-system dependency unless
+  the implementer proves the static generator cannot meet the oracle.
+- No manually maintained duplicate reference pages for skills or agents.
+- No claim that Spellbook provides enterprise RBAC, spend controls,
+  procurement workflows, or incident dashboards.
 
 ## Related
 
 - Supports: `backlog.d/051-agents-md-three-layer-restructure.md`
+- Depends on: `backlog.d/067-positioning-boundary-for-client-facing-packages.md`
 - Related: `backlog.d/056-agent-session-trace-lifecycle.md`
 - Related: `backlog.d/058-work-ledger-mission-control.md`
