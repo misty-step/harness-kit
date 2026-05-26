@@ -1,9 +1,9 @@
 {
   "lastChangelogVersion": "0.55.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.3-codex",
+  "defaultProvider": "openrouter",
+  "defaultModel": "moonshotai/kimi-k2.6",
   "theme": "dark",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "hideThinkingBlock": false,
   "skills": [
     "!/Users/phaedrus/.agents/skills/**",

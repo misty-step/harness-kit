@@ -3,11 +3,12 @@
 # Covers the "create new skill, commit, it should appear" case.
 # Bootstrap is fast (<1s) and idempotent.
 
-skill_changed() {
-  git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q 'skills/\|agents/'
+bootstrap_relevant_changed() {
+  git diff --name-only HEAD~1 HEAD 2>/dev/null |
+    grep -q '^\(skills/\|agents/\|harnesses/\|\.githooks/\|bootstrap\.sh$\)'
 }
 
-skill_changed || exit 0
+bootstrap_relevant_changed || exit 0
 
-echo "[post-commit] Skill/agent content changed — re-linking"
+echo "[post-commit] Spellbook harness content changed — re-linking"
 ./bootstrap.sh

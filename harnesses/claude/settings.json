@@ -41,7 +41,7 @@
       "Bash(curl -s https://api.x.ai/:*)",
       "Bash(curl -s https://api.exa.ai/:*)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "bypassPermissions"
   },
   "enabledMcpjsonServers": [],
   "hooks": {
@@ -115,6 +115,7 @@
       }
     }
   },
-  "effortLevel": "high",
+  "model": "claude-opus-4-7",
+  "effortLevel": "xhigh",
   "skipDangerousModePermissionPrompt": true
 }

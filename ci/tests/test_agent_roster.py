@@ -1,4 +1,5 @@
 import json
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -79,6 +80,52 @@ class ReceiptTests(unittest.TestCase):
         for receipt in receipts:
             validate_receipt(receipt)
 
+    def test_probe_executes_side_effect_free_command(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            bin_dir = Path(tmp)
+            tool = bin_dir / "fake-agent"
+            tool.write_text("#!/usr/bin/env sh\nexit 7\n")
+            tool.chmod(tool.stat().st_mode | stat.S_IXUSR)
+            roster = {
+                "version": 1,
+                "providers": {
+                    provider: {
+                        "tier": (
+                            "primary"
+                            if provider in {"codex", "claude", "pi"}
+                            else "conditional"
+                        ),
+                        "kind": "cli",
+                        "probe": "fake-agent --version",
+                        "dispatch": "fake-agent run",
+                        "output": "text",
+                        "permissions": "default",
+                        "worktree": "recommended",
+                        "notes": "fixture",
+                    }
+                    for provider in ROSTER_PROVIDER_IDS
+                },
+            }
+            roster["providers"]["manual"]["tier"] = "manual"
+            roster["providers"]["manual"]["kind"] = "manual"
+            roster["providers"]["manual"]["probe"] = "manual"
+            roster["providers"]["manual"]["dispatch"] = "manual"
+            roster["providers"]["manual"]["output"] = "manual-summary"
+            roster["providers"]["manual"]["worktree"] = "not_applicable"
+
+            receipts = build_probe_receipts(
+                roster,
+                path_env=str(bin_dir),
+                lead_harness="codex",
+                lead_provider="codex",
+                input_ref=".spellbook/agents.yaml",
+                objective="probe fixture",
+            )
+
+        automated = [r for r in receipts if r["provider_target"] != "manual"]
+        self.assertTrue(automated)
+        self.assertTrue(all(r["provider_status"] == "error" for r in automated))
+
     def test_manual_and_cli_attempts_share_schema(self) -> None:
         cli = build_attempt_receipt(
             provider_target="codex",
@@ -156,7 +203,36 @@ class ReceiptTests(unittest.TestCase):
 
         self.assertEqual(summary["providers"]["codex"]["succeeded"], 1)
         self.assertEqual(summary["providers"]["claude"]["rejected"], 1)
+        self.assertEqual(summary["provider_statuses"]["codex"]["available"], 1)
         self.assertEqual(summary["lead_verdicts"]["accepted"], 1)
+        self.assertEqual(summary["worktrees"]["wt-a"], 1)
+
+    def test_summarize_receipts_filters_by_backlog_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "delegations.jsonl"
+            for backlog_ref, provider in (
+                ("backlog.d/001-one.md", "codex"),
+                ("backlog.d/002-two.md", "claude"),
+            ):
+                append_receipt(
+                    path,
+                    build_attempt_receipt(
+                        provider_target=provider,
+                        provider_status="available",
+                        attempt_status="succeeded",
+                        objective="lane",
+                        input_ref=backlog_ref,
+                        backlog_ref=backlog_ref,
+                        evidence_refs=[".evidence/lane.txt"],
+                        lead_verdict="accepted",
+                        worktree_id=provider,
+                    ),
+                )
+
+            summary = summarize_receipts(path, backlog_ref="backlog.d/001-one.md")
+
+        self.assertEqual(summary["total"], 1)
+        self.assertEqual(set(summary["providers"]), {"codex"})
 
 
 class FixtureSyntaxTests(unittest.TestCase):

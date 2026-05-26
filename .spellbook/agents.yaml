@@ -1,59 +1,94 @@
 version: 1
+defaults:
+  permissions: yolo
+  reasoning: provider-default
+  worktree: recommended
+  smoke_timeout_s: 30
 providers:
   codex:
     tier: primary
     kind: cli
     probe: codex --version
-    dispatch: codex exec
+    dispatch: codex exec --dangerously-bypass-approvals-and-sandbox --model gpt-5.5 --config model_reasoning_effort="medium"
     output: json
-    permissions: workspace-write via harness policy
+    model: gpt-5.5
+    reasoning: medium
+    permissions: dangerous bypass approvals and sandbox
     worktree: recommended
+    smoke: codex exec --dangerously-bypass-approvals-and-sandbox --model gpt-5.5 --config model_reasoning_effort="medium"
     notes: OpenAI Codex CLI; prefer non-interactive exec for isolated attempts.
   claude:
     tier: primary
     kind: cli
     probe: claude --version
-    dispatch: claude -p
+    dispatch: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-7 --effort xhigh
     output: json
-    permissions: explicit permission-mode flag
+    model: claude-opus-4-7
+    reasoning: xhigh
+    permissions: dangerous skip permissions plus bypass permission mode
     worktree: recommended
+    smoke: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-7 --effort xhigh
     notes: Claude Code CLI; use print mode and structured output when possible.
   pi:
     tier: primary
     kind: cli
     probe: pi --version
-    dispatch: pi -p
+    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
     output: json
-    permissions: explicit tools list
+    model: openrouter/moonshotai/kimi-k2.6
+    reasoning: xhigh
+    permissions: full read bash edit write grep find ls tool list
     worktree: recommended
-    notes: Pi coding agent; use text, JSON, or RPC mode depending on task.
+    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    notes: Pi coding agent; default to a current SOTA open-weight lane and revisit the model regularly.
   agy:
     tier: conditional
     kind: cli
     probe: agy --help
-    dispatch: agy --print
+    dispatch: agy --print --dangerously-skip-permissions --print-timeout 10m
     output: text
-    permissions: explicit permission flag when needed
+    model: gemini-3.5-flash
+    reasoning: medium
+    permissions: dangerous skip permissions
     worktree: recommended
+    smoke: agy --print --dangerously-skip-permissions --print-timeout 2m
     notes: Google Anti-Gravity CLI; smoke-test locally before relying on output.
   cursor-agent:
     tier: conditional
     kind: cli
     probe: cursor-agent --version
-    dispatch: cursor-agent -p
+    dispatch: cursor-agent -p --yolo --sandbox disabled --trust --approve-mcps --model composer-2.5
     output: text
-    permissions: provider policy
+    model: composer-2.5
+    reasoning: max mode off
+    permissions: yolo force with sandbox disabled and trusted workspace
     worktree: recommended
+    smoke: cursor-agent -p --yolo --sandbox disabled --trust --approve-mcps --model composer-2.5
     notes: Cursor CLI path; enable only when the binary is installed and tested.
   grok-build:
     tier: conditional
     kind: cli
     probe: grok --version
-    dispatch: grok -p -m grok-build-0.1
+    dispatch: grok --model grok-4.3 --permission-mode bypassPermissions --always-approve --effort max --reasoning-effort xhigh -p
     output: text
-    permissions: provider policy
+    model: grok-4.3
+    reasoning: max effort with xhigh reasoning effort
+    permissions: bypass permissions plus always approve
     worktree: recommended
-    notes: xAI Grok Build beta; official binary name is grok.
+    smoke: grok --model grok-4.3 --permission-mode bypassPermissions --always-approve --effort max --reasoning-effort xhigh -p
+    notes: xAI Grok CLI; local Grok Build entitlement may fail, so default to the working Grok CLI model.
+  opencode:
+    tier: conditional
+    kind: cli
+    probe: opencode --version
+    dispatch: opencode run --model openrouter/deepseek/deepseek-v4-pro --variant max --format json
+    output: text
+    model: openrouter/deepseek/deepseek-v4-pro
+    reasoning: max variant
+    permissions: global permission allow in opencode config
+    worktree: recommended
+    smoke: opencode run --model openrouter/deepseek/deepseek-v4-pro --variant max --format json
+    notes: OpenCode CLI; complementary SOTA open-weight lane to Pi's Kimi default.
   manual:
     tier: manual
     kind: manual

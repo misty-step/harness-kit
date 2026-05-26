@@ -24,6 +24,7 @@ ROSTER_PROVIDER_IDS = {
     "agy",
     "cursor-agent",
     "grok-build",
+    "opencode",
     "manual",
 }
 
@@ -203,12 +204,30 @@ def _probe_status(provider_id: str, provider: dict[str, Any], path_env: str | No
         return "manual"
 
     try:
-        binary = shlex.split(provider["probe"])[0]
+        command = shlex.split(provider["probe"])
     except ValueError:
         return "error"
+    if not command:
+        return "error"
+    binary = command[0]
     search_path = path_env if path_env is not None else os.environ.get("PATH", "")
     if not shutil.which(binary, path=search_path):
         return "unavailable"
+    env = os.environ.copy()
+    env["PATH"] = search_path
+    try:
+        completed = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            env=env,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return "error"
+    if completed.returncode != 0:
+        return "error"
     return "available"
 
 
@@ -311,17 +330,28 @@ def read_receipts(path: Path) -> list[dict[str, Any]]:
     return receipts
 
 
-def summarize_receipts(path: Path) -> dict[str, Any]:
+def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
     receipts = read_receipts(path)
+    if backlog_ref:
+        receipts = [receipt for receipt in receipts if receipt["backlog_ref"] == backlog_ref]
     provider_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    provider_statuses: dict[str, Counter[str]] = defaultdict(Counter)
     verdicts: Counter[str] = Counter()
+    worktrees: Counter[str] = Counter()
     for receipt in receipts:
         provider_counts[receipt["provider_target"]][receipt["attempt_status"]] += 1
+        provider_statuses[receipt["provider_target"]][receipt["provider_status"]] += 1
         verdicts[receipt["lead_verdict"]] += 1
+        worktrees[receipt["worktree_id"]] += 1
     return {
         "total": len(receipts),
+        "backlog_ref": backlog_ref,
         "providers": {provider: dict(counts) for provider, counts in provider_counts.items()},
+        "provider_statuses": {
+            provider: dict(counts) for provider, counts in provider_statuses.items()
+        },
         "lead_verdicts": dict(verdicts),
+        "worktrees": dict(worktrees),
     }
 
 
