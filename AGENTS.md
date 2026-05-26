@@ -46,6 +46,14 @@ raw transcripts.
 - Open high-signal debt starts at `backlog.d/023-*.md`; do not mirror the debt
   table here. Read the directory.
 
+## Positioning
+
+Before answering whether to hand this repo to a client, enterprise,
+department, executive, procurement reviewer, security reviewer, or
+nontechnical team, read `docs/positioning.md`. Spellbook is implementation
+substrate for technical operators, not the buyer-facing governed workflow
+package or admin-control plane.
+
 ## Root Skills
 
 Use these for harness work:
