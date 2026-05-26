@@ -35,10 +35,20 @@ into the repo. One command from "green" to "shipped and learned from."
 5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
    `/settle` already proved the branch clean. If `/settle` wasn't run,
    refuse and route the operator back.
-6. **Roster receipts are evidence, not merge authority.** In repos with
-   `.spellbook/agents.yaml`, include delegation receipts in `/reflect`
-   context when present, but do not dispatch providers during final-mile
-   merge work.
+6. **Roster receipts are required evidence.** In repos with
+   `.spellbook/agents.yaml`, verify that `/settle` or the documented
+   landability evidence includes two or more roster-member receipts or an
+   explicit exception before final-mile merge work.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/ship` does not normally dispatch
+providers; it verifies upstream roster receipts and includes them in
+`/reflect`. If final-mile work surfaces substantive judgment, route back to
+`/settle` or dispatch two or more roster members before proceeding. Direct
+lead-only shipping is limited to mechanical git operations, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
 
 ## Prerequisites
 
@@ -242,6 +252,12 @@ Emit a single block covering:
 - Reflect outputs grouped by category: backlog mutations applied, harness
   proposals on `harness/reflect-outputs`, retro notes, coaching.
 - Harness branch name.
+- Roster delegation report: provider lanes used upstream and in final-mile
+  work, why each was dispatched, parallel/split/competing-worktree pattern,
+  provider_status and attempt_status totals, lead_verdict totals, accepted
+  synthesis, rejected or failed lanes, and any waiver/exception. Prefer
+  `scripts/summarize-delegations.py --format text` scoped to the closing
+  backlog ref when receipts exist.
 - Residual risk or follow-ups, if any.
 
 ## Refuse Conditions

@@ -20,10 +20,17 @@ coating** — skills, agents, hooks, lint gates. Reviews anchor to
 do the automated first pass, dispatch human-judgment reviewers in parallel,
 synthesize, fix blockers, loop.
 
-When `.spellbook/agents.yaml` exists, use it as the source of truth for the
-Cross-harness tier. Pick at least one non-lead available provider for
-meaningful diffs, preserve the internal philosophy bench, and record external
-provider lanes as delegation receipts.
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/code-review` starts by probing the
+roster and dispatching two or more non-lead roster members for independent
+review lanes. The internal philosophy bench and Thinktank are additive; they
+do not replace the roster floor. Give reviewers the diff, acceptance criteria,
+and risk lens, not the author's reasoning. The lead marshal synthesizes
+findings, verifies fixes, records receipts, and only works directly for
+mechanical command execution, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are
+available.
 
 ## What Gets Reviewed Here
 
@@ -105,7 +112,7 @@ See `references/internal-bench.md` for lens detail and prompt guidance.
 |---|---|---|
 | Philosophy bench | 3-5 Explore sub-agents with named lenses | Agent tool, tailored prompts. Read-only. |
 | Thinktank review | 10 reviewers across 8 model providers | `thinktank review` CLI. See `references/thinktank-review.md` |
-| Cross-harness | Available non-lead providers from `.spellbook/agents.yaml` | See `references/cross-harness.md` |
+| Cross-harness | Two or more available non-lead providers from `.spellbook/agents.yaml` | See `references/cross-harness.md` |
 
 Parallel dispatch only — sequential here wastes wall time. Thinktank gotcha:
 wait for the process to exit, or for `trace/summary.json` to reach `complete`

@@ -22,6 +22,16 @@ receipts in the evidence set when they are relevant. Reflection should convert
 provider-lane results and failure modes into backlog, harness, or coaching
 outputs without inventing hidden rankings.
 
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/reflect` uses two or more roster
+members for substantive postmortem, coaching, or harness-tuning analysis.
+Use lanes to surface independent failure interpretations and improvement
+proposals; the lead owns synthesis, codification choices, and receipts.
+Direct lead-only reflection is limited to mechanical summary formatting,
+emergency unblocks, explicit user-forbidden delegation, or an explicit waiver
+when fewer than two roster members are available.
+
 Every finding becomes one of three things:
 - a codified artifact
 - a concrete coaching note

@@ -20,10 +20,17 @@ Find root cause. Fix it. Prove it works.
 You are the executive orchestrator.
 - Keep hypothesis ranking, root-cause proof, and fix selection on the lead model.
 - Delegate bounded evidence gathering and implementation to focused subagents.
-- When `.spellbook/agents.yaml` exists and the failure has multiple plausible
-  causes or unfamiliar subsystems, use roster providers as fresh-context
-  investigators. Record meaningful external lanes; keep root-cause verdict on
-  the lead model.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/diagnose` starts by probing the
+roster and dispatching two or more available roster members for independent
+evidence or hypothesis lanes before selecting a fix. Use separate lanes for
+competing root causes, reproduction, config/service checks, or proposed fix
+validation. The lead agent owns the root-cause verdict, fix choice, proof,
+and receipts. Direct lead-only diagnosis is limited to mechanical command
+execution, emergency unblocks, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available.
 - Run parallel hypothesis probes when multiple plausible causes exist.
 
 ## Routing
@@ -66,9 +73,10 @@ External service issues are usually config, not code. Check in order:
 
 ### Quick investigation (default)
 
-Spawn a single **Explore** subagent to gather evidence. Tell it to investigate
-the symptoms, reproduce the issue, trace data flow, and report back with root
-cause + evidence + proposed fix. It should NOT implement the fix — just report.
+Spawn at least two roster-backed **Explore** lanes to gather evidence. Tell
+them to investigate the symptoms, reproduce the issue, trace data flow, and
+report back with root cause + evidence + proposed fix. They should NOT
+implement the fix — just report.
 You review, decide if root cause is proven, then dispatch a **builder** for
 the fix or dig deeper.
 

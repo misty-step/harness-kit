@@ -23,10 +23,17 @@ decides whether to deploy. Humans merge.
 
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a "best effort" pass.
-- If the repo defines `.spellbook/agents.yaml`, begin by probing the provider
-  roster and let phase skills use it for non-trivial lanes. `/deliver` records
-  pointers to provider receipts; it does not implement provider orchestration
-  itself.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/deliver` begins by probing the roster
+and requires every substantive phase to show two or more roster-member
+receipts or an explicit exception. `/deliver` remains a composer, not a
+provider scheduler: phase skills dispatch their own lanes, while `/deliver`
+checks that the floor was met before it calls the work merge-ready. Direct
+lead-only delivery is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
 
 ## Closeout Contract
 
@@ -44,6 +51,12 @@ paragraphs or 4-6 flat bullets.
 
 The delivery brief must answer:
 - What ticket was worked and what changed.
+- What roster lanes ran: providers dispatched and why, whether they ran in
+  parallel or as competing worktree attempts, what each did well or poorly,
+  what was accepted into the final synthesis, what failed or was rejected,
+  and any waiver/exception. Ground this in
+  `scripts/summarize-delegations.py --format text` plus receipt ids or
+  evidence paths, not raw transcripts.
 - What value the ticket adds, and why making it merge-ready is useful and
   important now.
 - What alternatives to the implemented design existed.

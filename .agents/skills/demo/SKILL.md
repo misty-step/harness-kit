@@ -44,9 +44,16 @@ You are the executive orchestrator.
 - For polished artifacts (GIF / video / launch), delegate planning,
   capture, and critique to separate focused subagents. Cold reviewer for
   final quality judgment — self-grading is worthless.
-- When `.spellbook/agents.yaml` exists and the artifact is external-facing or
-  product-sensitive, prefer a roster provider for either planning or cold
-  critique. Record meaningful external lanes as receipts.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/demo` uses two or more roster members
+for substantive artifact planning, capture critique, or external-facing
+release evidence. Use one lane for capture plan and another for cold quality
+review. The lead owns audience fit, sufficiency, and receipts. Direct
+lead-only demo work is limited to mechanical capture commands, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when fewer
+than two roster members are available.
 
 ## Shape detection (always step one)
 

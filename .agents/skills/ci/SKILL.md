@@ -53,11 +53,20 @@ does not address review comments (→ `/settle`), does not ship.
 5. **Composition is enforced, not encouraged.** `/deliver` cannot call
    `dagger call check` directly — `check-deliver-composition` fails the
    build if it does. `/ci` is the only skill allowed to own the gate.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, the lead agent uses two or more roster
+lanes for audit, failure diagnosis, and gate-strengthening judgment. The lead
+may run exact validation commands and apply mechanical repairs directly after
+the lane decision is made. Direct lead-only CI work is limited to mechanical
+command execution, emergency unblocks, explicit user-forbidden delegation, or
+an explicit waiver when fewer than two roster members are available.
 6. **Roster lanes can investigate, not certify.** When `.spellbook/agents.yaml`
    exists, provider lanes may inspect red gates or weak coverage, but
    `dagger call check --source=.` remains the proof.
 
-## The 12 Gates
+## The 14 Gates
 
 Defined in `ci/src/spellbook_ci/main.py`, run in parallel by
 `check(source)`:

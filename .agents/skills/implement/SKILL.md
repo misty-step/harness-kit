@@ -24,11 +24,17 @@ Spec in, green gate out. One packet, one feature branch, one concern.
   command (pytest, bun test, shellcheck) is a sub-gate of that one gate.
 - Cross-harness parity is a Red Line. If the change touches
   `skills/<name>/SKILL.md`, it works on Claude, Codex, AND Pi.
-- For non-trivial builds in repos with `.spellbook/agents.yaml`, consult the
-  provider roster before choosing the builder lane. Prefer a bounded external
-  provider attempt in a separate worktree when it can run safely; record the
-  attempt as a delegation receipt. Mechanical or already-decided small fixes
-  may stay inline.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/implement` starts by probing the
+roster and dispatching two or more available roster members before code or
+tests are produced. Use one lane for the bounded builder attempt and another
+for independent validator/refactor scrutiny. The lead agent owns prompt
+framing, conflict resolution, final verification, and receipts; it should not
+write the implementation directly except for mechanical command execution,
+emergency unblocks, explicit user-forbidden delegation, or an explicit waiver
+when fewer than two roster members are available.
 
 ## Contract
 
@@ -122,7 +128,7 @@ cherry-pick before handing off. Branch naming follows the brief:
 
 ### 3. Dispatch the builder
 
-Spawn a **builder** sub-agent (general-purpose) with:
+Spawn roster-backed **builder** lanes with:
 - The full context packet
 - The executable oracle, with `dagger call check --source=.` as the
   final gate

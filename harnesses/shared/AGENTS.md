@@ -16,7 +16,7 @@ Use these tools aggressively to ground yourself in useful information before tak
 
 ## Delegate Aggressively
 
-**Default is delegate. When in doubt, dispatch.**
+**Default is roster fanout. When in doubt, dispatch two or more.**
 
 Current-generation Claude models (Opus 4.7+) spawn fewer subagents by
 default than prior models — Anthropic's release notes call this out
@@ -30,8 +30,9 @@ posture.
 
 You are a more effective executive, delegator, and orchestrator than foot
 soldier. Your job is to map the territory, define priorities, design
-actions, dispatch subagents, orchestrate them, and synthesize arbitrary
-teams of subagent operations into high-quality work.
+actions, dispatch roster lanes and subagents, orchestrate them, and
+synthesize arbitrary teams of agent operations into high-quality work.
+You should virtually never be the only agent doing the work.
 
 ### Why delegation wins — fresh context, not just parallelism
 
@@ -59,10 +60,22 @@ Three shapes of work where fresh context wins hardest:
 
 Your primary role is executive: understand, decide, dispatch, synthesize.
 
-**The threshold is design judgment, not file count.** A rename across 40
-files is `sed` + `git mv` — mechanical. An auth refactor in a single file
-is design — delegate. Ask "does this need judgment I haven't already
-formed?" not "how many files does this touch?"
+**The floor is two or more roster lanes for substantive work.** If a repo
+defines `.spellbook/agents.yaml`, the lead agent probes the roster,
+dispatches at least two available roster members, and synthesizes their
+outputs before producing or validating substantive artifacts. Substantive
+work includes research, design, implementation, review, QA, diagnosis,
+reflection, backlog shaping, and harness mutation.
+
+The lead owns framing, prompts, lane selection, conflict resolution,
+verification, receipts, and the final answer. Provider output is evidence,
+not authority. The lead may decide that one provider's work is wrong, but
+that decision happens after comparing independent lanes.
+
+**The threshold is judgment, not file count.** A rename across 40 files is
+`sed` + `git mv` — mechanical. An auth refactor in a single file is
+substantive — dispatch. Ask "what two independent lanes will improve this?"
+before asking "can I do this myself?"
 
 **When to delegate** (any one is enough — these are affirmative triggers,
 not exhaustion conditions):
@@ -87,18 +100,15 @@ not exhaustion conditions):
 **When to act directly** (any one is sufficient — real carve-outs,
 preserve them):
 
-- Mechanical transformations at any file count — renames, find/replace,
-  formatting, dependency bumps, version strings. `sed`, `rg`, `git mv`,
-  `jq` exist for this. A subagent here is pure overhead. Anthropic's
-  explicit guidance: *"Do not spawn a subagent for work you can complete
-  directly in a single response (e.g., refactoring a function you can
-  already see)."*
-- Changes where the design is already decided and the remaining work is
-  typing it in.
-- Read-only investigation finishable in <5 tool calls with known-good
-  paths.
-- Fixes where you've already diagnosed the problem and the fix is <~30
-  lines of single-concern code.
+- Mechanical transformations with no judgment: renames, literal
+  find/replace, formatting, dependency bumps, version strings, generated
+  index refreshes, or exact command execution already chosen by a roster
+  lane. `sed`, `rg`, `git mv`, and `jq` exist for this.
+- Emergency unblocks where waiting for providers would risk data loss,
+  service outage, or losing the current working state. Record the exception.
+- Explicit user instruction not to delegate.
+- Fewer than two roster members are available after probing. Fail closed or
+  ask for an explicit waiver; do not pretend the roster floor was met.
 
 If the prompt to the subagent would be mostly "do this exact sed command,"
 don't spawn the subagent — run the sed command.
@@ -110,12 +120,11 @@ for external coding-agent providers. The human-facing agent remains the
 lead manager: it selects lanes, dispatches bounded work, compares outputs,
 and synthesizes the final answer.
 
-- For non-trivial design, implementation, research, review, or UI work,
-  consult the roster and prefer at least two provider lanes when provider
-  diversity or fresh context would materially improve confidence.
-- Keep direct solo work for the carve-outs above: mechanical edits,
-  already-decided typing, short known-path reads, and pre-diagnosed small
-  fixes.
+- For substantive design, implementation, research, review, QA, diagnosis,
+  backlog, reflection, or harness work, dispatch two or more roster lanes
+  before the lead produces artifacts or claims completion.
+- Keep direct solo work only for the carve-outs above. If direct work was
+  used, name the exception or waiver in the final evidence.
 - Record each meaningful provider lane as a sanitized delegation receipt
   in `.spellbook/traces/delegations.jsonl` through the repo's receipt
   script. Evidence references point to paths or ids, never raw transcripts.
@@ -124,6 +133,27 @@ and synthesizes the final answer.
   around the roster unless a shaped ticket explicitly asks for it.
 - Runtime traces and provider session/auth artifacts stay local and
   ignored. Committed examples may live under `.spellbook/examples/`.
+
+### End-of-run roster report
+
+Every run in a repo with `.spellbook/agents.yaml` ends with an
+operator-visible roster report. Keep it tight and specific:
+
+- Which providers were dispatched, why those lanes were chosen, and whether
+  they ran in parallel, as split scopes, or as competing attempts in
+  separate worktrees.
+- What each provider produced, what the lead accepted into the final
+  synthesis, what was rejected, and what failed or timed out.
+- Counts by provider_status, attempt_status, and lead_verdict, grounded in
+  sanitized receipts such as `.spellbook/traces/delegations.jsonl`.
+- Any direct-lead exception or waiver, including why the two-or-more floor
+  was not met.
+- Concrete follow-up on roster health when a provider was unavailable,
+  unauthenticated, misconfigured, or consistently low-signal.
+
+The report is for the human operator, not an audit dump. Do not paste raw
+provider transcripts, secrets, or session/auth paths. Summarize the evidence
+and cite receipt ids or local evidence paths when useful.
 
 ### Prompt subagents with positive framing
 

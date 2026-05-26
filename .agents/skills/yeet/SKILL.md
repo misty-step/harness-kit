@@ -27,13 +27,23 @@ Executive authority. No approval gates.
 3. **Reviewability is the product.** Three focused commits beat one
    2,000-line "wip". Split on semantic boundaries even when the tree was
    built in one session.
-   Provider-roster receipts can inform classification when present, but
-   `/yeet` does not launch new provider lanes; it packages completed work.
+   Provider-roster receipts are part of classification evidence when present.
+   If classification requires substantive judgment and no receipts exist,
+   dispatch two or more roster members before packaging completed work.
 4. **Never lose work.** Untracked scratch that might be in-flight thinking
    gets moved, not deleted, unless it's unambiguous debris.
 5. **Conventional Commits, matched to this repo's log.** Spellbook has no
    `commitlint.config.*` — conventions are by example. `git log -20` is the
    source of truth.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/yeet` uses two or more roster members
+for substantive worktree classification, commit-boundary design, or risky
+cleanup decisions. The lead owns final staging, commit messages, and receipts.
+Direct lead-only yeet work is limited to mechanical git commands, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when fewer
+than two roster members are available.
 
 ## Modes
 

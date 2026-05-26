@@ -28,7 +28,7 @@ A phase is **dirty** when:
 | Phase | Dirty signal |
 |---|---|
 | `/code-review` | Verdict ref `refs/verdicts/<branch>` missing, pointing at non-HEAD SHA (stale), or carrying `verdict: dont-ship`. Blocking findings in bench synthesis. "nit" / "consider" / "suggestion" severity is NOT dirty. |
-| `/ci` | Non-zero exit from `/ci`. Any of the 13 sub-gates red (`lint-yaml`, `lint-shell`, `lint-python`, `check-frontmatter`, `check-index-drift`, `check-vendored-copies`, `test-bun`, `check-exclusions`, `check-portable-paths`, `check-harness-install-paths`, `check-deliver-composition`, `check-no-claims`, `check-skill-evals`). `/ci` may self-heal lint-style gates via `dagger call heal` before reporting; only the post-heal result counts. |
+| `/ci` | Non-zero exit from `/ci`. Any of the 14 sub-gates red (`lint-yaml`, `lint-shell`, `lint-python`, `check-frontmatter`, `check-index-drift`, `check-vendored-copies`, `test-bun`, `check-exclusions`, `check-portable-paths`, `check-harness-install-paths`, `check-deliver-composition`, `check-no-claims`, `check-skill-evals`, `check-agent-roster`). `/ci` may self-heal lint-style gates via `dagger call heal` before reporting; only the post-heal result counts. |
 | `/refactor` | Non-zero exit. Clean refactor → green even if no-op. |
 | `/qa` | Non-zero exit. Missing evidence for the changed harness surface is dirty even when `/ci` is green. |
 

@@ -27,11 +27,14 @@ Stale training data lies about these — always read the file:
 - **`harnesses/shared/AGENTS.md`** — the principles file. Red flags,
   doctrine, anti-patterns. Cited verbatim by `/code-review`.
 - **`.spellbook/agents.yaml`** — local provider roster for external
-  coding-agent lanes. Workflow skills consult it for non-trivial
-  research, design, implementation, review, QA, and reflection work.
-- **`scripts/probe-agent-roster.py` / `scripts/record-delegation.py`** —
-  validate provider availability and record sanitized delegation receipts.
-- **`bootstrap.sh:271`** — `GLOBAL_SKILLS=(tailor seed)`. Anything you
+  coding-agent lanes. Workflow skills use it as the default execution
+  floor: two or more roster members for research, design, implementation,
+  review, QA, diagnosis, reflection, and other substantive work.
+- **`scripts/probe-agent-roster.py` / `scripts/record-delegation.py` /
+  `scripts/summarize-delegations.py`** — validate provider health, record
+  sanitized delegation receipts, and produce the operator-facing roster
+  report.
+- **`bootstrap.sh`** — `GLOBAL_SKILLS=(tailor seed)`. Anything you
   thought was globally symlinked but isn't in this list: it isn't.
 - **`.githooks/pre-commit`** — what runs automatically on every commit
   (index regen, harness-agnostic install wording, `.spellbook/deliver/`
@@ -51,10 +54,24 @@ Stale training data lies about these — always read the file:
   setting, lint — must work on Claude Code, Codex, AND Pi. Anchoring a
   design on one harness's unique feature is a bug. Prior art:
   `harnesses/pi/settings.json:skills[]` globs.
-- **Roster-first for non-trivial work.** The human-facing agent remains
-  the lead, but workflow skills should consult `.spellbook/agents.yaml`
-  before meaningful research, design, implementation, review, QA, or
-  reflection lanes, then record external provider attempts as receipts.
+- **Roster-mandatory for substantive work.** The human-facing agent
+  remains the lead manager, but it should virtually never work alone.
+  When `.spellbook/agents.yaml` exists, workflow skills dispatch two or
+  more available roster members for research, design, implementation,
+  review, QA, diagnosis, reflection, and other substantive work, then
+  record provider attempts as receipts. Direct lead-agent execution is
+  reserved for narrow mechanical exceptions, emergency unblocks, explicit
+  user-forbidden delegation, or an explicit waiver when fewer than two
+  roster members are available.
+- **Every run ends with a roster report.** If `.spellbook/agents.yaml`
+  exists, final operator-facing output includes a tight roster delegation
+  report: providers dispatched and why, whether lanes were parallelized or
+  run as competing worktree attempts, provider_status and attempt_status
+  totals, lead_verdict totals, what was accepted into the final synthesis,
+  what failed or was rejected, and any waiver/exception. Use
+  `.spellbook/traces/delegations.jsonl` plus
+  `scripts/summarize-delegations.py --format text` as the factual base;
+  never paste raw provider transcripts.
 - **Thin harness, strong models.** Don't compensate for weak models with
   scaffold. `skills/flywheel/SKILL.md` (43 lines) is the reference.
 - **Skills are self-contained.** No `../..`, no `$REPO_ROOT/…` sourcing.
@@ -107,7 +124,7 @@ sub-gates, all must pass to ship:
 | `check-deliver-composition` | `skills/deliver/SKILL.md` composes atomic phase skills, never inlines |
 | `check-no-claims` | No `claims.sh` / `claim_acquire` / `claim_release` under `skills/` |
 | `check-skill-evals` | Existing `skills/<name>/evals/` suites have README, case, and grader files |
-| `check-agent-roster` | `.spellbook/agents.yaml`, receipt fixtures, and trace ignore policy stay valid |
+| `check-agent-roster` | `.spellbook/agents.yaml`, receipt fixtures, trace ignore policy, roster report helper, and core skill delegation floors stay valid |
 
 **Self-heal:** `dagger call heal --source=. --model=gpt-4.1 --attempts=2`
 repairs one failing lint-style gate (yaml / shell / python / frontmatter).
@@ -170,7 +187,7 @@ Installed in this repo-local harness at `.agents/skills/<name>/` with
 | `/qa` | Non-browser verification for this library: Dagger gate, skill eval suites, generated index drift, symlink bridge topology, and command-level smoke evidence. |
 | `/demo` | Evidence capture for library/harness changes: terminal transcripts, diff summaries, gate excerpts, and release-note blurbs rather than screenshots or videos. |
 | `/code-review` | Marshal protocol with philosophy bench (ousterhout / carmack / grug / beck / critic). Tier 0 is Dagger gates — don't duplicate them. Cites `harnesses/shared/AGENTS.md` red flags verbatim. |
-| `/ci` | Owns the gate. Names all 13 sub-gates; knows heal semantics. Only skill permitted to invoke `dagger call check` directly. |
+| `/ci` | Owns the gate. Names all 14 sub-gates; knows heal semantics. Only skill permitted to invoke `dagger call check` directly. |
 | `/refactor` | Deletion-first. Past exemplars: `68e276b` (tailor −683 lines), `7ccd00d` (flywheel → 43 lines), `f91f1c4` (80 globals → 2). |
 | `/diagnose` | Investigate gate failures, hook behavior, generated artifact drift, symlink topology, and harness regressions before editing. |
 | `/monitor` | Watch Spellbook signals: Dagger/CI regressions, stale backlog closure, skill eval drift, external registry drift, and config-schema breakage. |

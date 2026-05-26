@@ -20,10 +20,18 @@ You are the executive orchestrator.
 - Keep synthesis, prioritization, and recommendation decisions on the lead model.
 - Delegate investigation and evidence gathering to focused subagents.
 - Run independent investigators in parallel by default.
-- When `.spellbook/agents.yaml` exists, consult the provider roster before
-  strategic fanout. Prefer at least one external provider lane for unfamiliar
-  domains, major prioritization calls, or backlog items that will drive
-  implementation. Record meaningful provider lanes with the repo receipt tool.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/groom` starts by probing the roster
+and dispatching two or more available roster members for investigation before
+the lead mutates backlog state or recommends priorities. Use lanes for
+backlog drift, premise challenge, technical hotspots, product opportunity,
+or external context. The lead agent keeps synthesis and prioritization; do
+not delegate final backlog judgment. Direct lead-only grooming is limited to
+mechanical ticket moves, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are
+available.
 
 ## Modes
 

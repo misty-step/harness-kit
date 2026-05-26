@@ -28,6 +28,7 @@ Build and maintain the infrastructure that makes agents effective.
 | Sync primitives from spellbook to project | `references/mode-sync.md` |
 | Design harness improvements | `references/mode-engineer.md` |
 | Audit skill health and usage | `references/mode-audit.md` |
+| Choose open-model roster defaults | `references/open-model-roster.md` |
 
 If first argument matches a mode name, read the corresponding reference.
 If no argument, ask: "What do you want to do? (create, eval, lint, convert, sync, engineer, audit)"
@@ -40,10 +41,10 @@ If no argument, ask: "What do you want to do? (create, eval, lint, convert, sync
 These principles govern every mode. They are the quality standard for skills
 this harness creates, evaluates, and lints.
 
-0. **Roster-aware workflows.** Core workflow skills should name where they
-   consult `.spellbook/agents.yaml` for non-trivial provider lanes, while
-   keeping schema details and receipt mechanics centralized in the roster
-   scripts and shared AGENTS doctrine.
+0. **Roster floor workflows.** Core workflow skills name the two-or-more
+   roster-member floor for substantive work when `.spellbook/agents.yaml`
+   exists, while keeping schema details and receipt mechanics centralized in
+   the roster scripts and shared AGENTS doctrine.
 1. **One skill = one domain, 1-3 workflows.** A skill that spans multiple
    domains should be split. Three workflows is healthy. Five is a refactor signal.
 2. **Token budget: 3,000 target, 5,000 ceiling.** Every token competes for
@@ -64,6 +65,7 @@ this harness creates, evaluates, and lints.
    (mode detection — GitHub-PR vs git-native — is the core judgment).
 7. **Mode-bloat gate.** >4 modes with inline content is a lint failure.
    Extract to references/ or split the skill.
+
 8. **Self-contained.** Every file the skill needs lives under
    `skills/<name>/`. Scripts source libs from `$SCRIPT_DIR/lib/…`, not
    `$REPO_ROOT/…`. State roots (cycles, locks, backlog) resolve from the
@@ -88,6 +90,17 @@ this harness creates, evaluates, and lints.
     copy-paste examples + guardrails) and
     `skills/.external/anthropic-skill-creator/SKILL.md`
     (colleague-voice throughout).
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/harness` starts substantive catalog,
+doctrine, lint, eval, conversion, or sync work by dispatching two or more
+available roster members. Use lanes for cross-harness parity, simplicity,
+gate impact, and regression risk. The lead owns the final harness mutation,
+verification, and receipts. Direct lead-only harness work is limited to
+mechanical command execution, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are
+available.
 
 ## Gotchas
 

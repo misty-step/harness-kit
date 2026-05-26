@@ -27,6 +27,15 @@ alternatives, and a cross-model outside voice before committing.
 
 Skip trivial plans. CEO-review catches expensive misdirection, not typos.
 
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/ceo-review` uses two or more roster
+members before convergence: one lane attacks the premise, another develops
+structurally distinct alternatives or an outside-model critique. The lead owns
+ratification questions, synthesis, and receipts. Direct lead-only review is
+limited to mechanical formatting, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available.
+
 ## The Four Moves
 
 ### 1. Premise Challenge

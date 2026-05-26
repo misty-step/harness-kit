@@ -33,6 +33,7 @@ hand-edit derived artifacts.
 | Sync external sources via `registry.yaml` | `references/mode-sync.md` |
 | Design harness improvements (hooks, gates, codification) | `references/mode-engineer.md` |
 | Audit skill health and consolidation | `references/mode-audit.md` |
+| Choose open-model roster defaults | `references/open-model-roster.md` |
 
 If no argument, ask: "What do you want to do? (create, eval, lint, convert,
 sync, engineer, audit)"
@@ -78,8 +79,8 @@ sync, engineer, audit)"
   Use `--strict` in CI; advisory by default.
 - **`bootstrap.sh` has two modes.** Symlink mode (local checkout found
   via `resolve_spellbook_dir` — honors `$SPELLBOOK_DIR`, then known
-  locations; worktrees fall through to `$HOME/Development/spellbook`
-  etc.) symlinks `skills/tailor` and `skills/seed` into each detected
+  canonical locations; worktrees fall through unless explicitly selected)
+  symlinks `skills/tailor` and `skills/seed` into each detected
   harness's skills dir, plus all `agents/*.md` into the harness agents
   dir. Download mode (`curl | bash`) pulls the same minimal set from
   GitHub. `harnesses/claude/settings.json` is COPIED and sanitized
@@ -120,10 +121,10 @@ These govern every `/harness create|lint|eval`. They are the same
 standard enforced by the Dagger gate where a gate exists, by prose
 review otherwise.
 
-0. **Roster-aware workflows.** Core workflow skills should name where they
-   consult `.spellbook/agents.yaml` for non-trivial provider lanes, while
-   keeping schema details and receipt mechanics centralized in the roster
-   scripts and shared AGENTS doctrine.
+0. **Roster floor workflows.** Core workflow skills name the two-or-more
+   roster-member floor for substantive work when `.spellbook/agents.yaml`
+   exists, while keeping schema details and receipt mechanics centralized in
+   the roster scripts and shared AGENTS doctrine.
 1. **One skill = one domain, 1–3 workflows.** Five workflows is a
    refactor signal. 26 skills is the current steady state — justify
    additions against description tax.
@@ -153,10 +154,22 @@ review otherwise.
    not a Python interpreter. Phase-0/Phase-N flowcharts, exit-code
    routing tables, and deterministic scoring scripts inside SKILL.md
    are smells. Strip to invariants + a paragraph of "shape of the
+
    work." The agent fills sequencing.
 9. **No `references/<repo-name>.md` sidecars.** Repo-specific body
    content belongs in SKILL.md itself. Stack-topic references
    (`references/convex-patterns.md`) are fine.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/harness` starts substantive catalog,
+doctrine, lint, eval, conversion, or sync work by dispatching two or more
+available roster members. Use lanes for cross-harness parity, simplicity,
+gate impact, and regression risk. The lead owns the final harness mutation,
+verification, and receipts. Direct lead-only harness work is limited to
+mechanical command execution, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are
+available.
 
 ## Composition discipline (the `/deliver` rule)
 

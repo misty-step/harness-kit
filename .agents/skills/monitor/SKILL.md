@@ -40,8 +40,15 @@ You are a thin watcher.
 - On clean: emit one `monitor.done` event, exit.
 - Never analyze why a signal tripped. Never attempt remediation.
 - Provider roster lanes are not part of steady-state polling. If a trip needs
-  investigation, hand off to `/diagnose`, which may consult
-  `.spellbook/agents.yaml`.
+  investigation, hand off to `/diagnose`, which uses `.spellbook/agents.yaml`
+  as its two-or-more roster-member floor.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/monitor` uses two or more roster
+members for substantive incident interpretation, regression analysis, or
+follow-up shaping. Pure polling remains mechanical; investigations route to
+`/diagnose` and inherit its roster floor.
 
 Signal query syntax (Datadog PromQL, Grafana HTTP, log greps) lives in
 `references/signals.md`. Judgment about what constitutes a real trip vs

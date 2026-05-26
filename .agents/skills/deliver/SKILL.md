@@ -47,10 +47,17 @@ artifact drift, symlink bridge topology, and command-level smoke evidence.
   (or the human's) call.
 - **Never merge.** `gh pr merge` and `scripts/land.sh` are human
   decisions.
-- If the repo defines `.spellbook/agents.yaml`, begin by probing the provider
-  roster and let phase skills use it for non-trivial lanes. `/deliver` records
-  pointers to provider receipts; it does not implement provider orchestration
-  itself.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/deliver` begins by probing the roster
+and requires every substantive phase to show two or more roster-member
+receipts or an explicit exception. `/deliver` remains a composer, not a
+provider scheduler: phase skills dispatch their own lanes, while `/deliver`
+checks that the floor was met before it calls the work merge-ready. Direct
+lead-only delivery is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
 
 ## Closeout Contract
 
@@ -63,6 +70,12 @@ The brief is not a file inventory, not a raw changelog, not a "green
 tests" note. It answers:
 
 - What `backlog.d/NNN-*.md` (or `git-bug` id) was worked; what changed.
+- What roster lanes ran: providers dispatched and why, whether they ran in
+  parallel or as competing worktree attempts, what each did well or poorly,
+  what was accepted into the final synthesis, what failed or was rejected,
+  and any waiver/exception. Ground this in
+  `scripts/summarize-delegations.py --format text` plus receipt ids or
+  evidence paths, not raw transcripts.
 - Why merge-readiness now is useful (delta to open debts in
   `backlog.d/` — e.g. does this close 023, unblock 025, reduce gate
   latency?).
@@ -75,7 +88,7 @@ tests" note. It answers:
   harness, reduce gate drift, speed `dagger call check`?).
 - Value that lands for users of spellbook — downstream repos that
   bootstrap from `~/.claude`, `~/.codex`, `~/.pi`.
-- What was verified (which of the 13 sub-gates ran green; what
+- What was verified (which of the 14 sub-gates ran green; what
   `/code-review` synthesized) and what residual risk remains before
   merge.
 
@@ -105,7 +118,7 @@ brief.
 │                  harness; verdict ref under               │
 │                  refs/verdicts/<branch>                   │
 │  /ci           → audits Dagger module, runs the gate      │
-│                  (13 parallel sub-gates), self-heals lint │
+│                  (14 parallel sub-gates), self-heals lint │
 │                  drift; escalates logic failures          │
 │  /refactor     → diff-aware simplification of base...HEAD │
 │  /qa           → non-browser harness/library evidence     │

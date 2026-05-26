@@ -48,9 +48,16 @@ A refactor must leave them all green:
 If a "simplification" breaks one of these, you deleted load-bearing wall.
 Revert, don't patch.
 
-When `.spellbook/agents.yaml` exists, use the provider roster for fresh-context
-calibration on high-risk simplifications or architecture-level refactors. Keep
-mechanical cleanup inline; record meaningful external lanes as receipts.
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/refactor` starts by probing the
+roster and dispatching two or more available roster members before choosing
+or applying a simplification. Use one lane to map complexity and another to
+challenge behavior-preservation risk; add a builder lane for the selected
+change. The lead agent owns the final cut, proof, and receipts. Direct
+lead-only refactoring is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
 
 Fallback for failing lint-style gates only: `dagger call heal
 --source=. --model=gpt-4.1 --attempts=2`. Heal fixes yaml/shell/python/

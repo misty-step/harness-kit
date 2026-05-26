@@ -31,6 +31,16 @@ reach `/shape`.
 Skip for small, well-understood work. Office hours is for moments where the
 idea is not yet an idea.
 
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/office-hours` uses two or more roster
+members for substantive premise interrogation: one lane challenges demand and
+status quo, another challenges wedge and future-fit. The lead asks the user
+the final questions and synthesizes the sharpened problem. Direct lead-only
+office-hours work is limited to mechanical note formatting, explicit
+user-forbidden delegation, or an explicit waiver when fewer than two roster
+members are available.
+
 ## The Six Forcing Questions
 
 Ask each, in order. Record the answers.

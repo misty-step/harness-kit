@@ -34,9 +34,10 @@ not address review comments (→ `/settle`), does not ship.
 
 1. **Audit before run.** A weak pipeline passing is worse than a strong
    one failing. Inventory coverage before trusting green.
-   When `.spellbook/agents.yaml` exists, roster lanes may investigate red
-   gates or weak coverage, but `/ci` remains the canonical gate owner and
-   `dagger call check` remains the proof.
+   When `.spellbook/agents.yaml` exists, probe the roster and dispatch two
+   or more available roster members for CI-audit, red-gate investigation,
+   or weak-coverage analysis before changing gate policy. `/ci` remains the
+   canonical gate owner and `dagger call check` remains the proof.
 2. **Dagger-mandatory, auto-scaffolded.** Missing `dagger.json` is a gap
    the skill closes itself, not a blocker that halts work. Scaffold a
    TypeScript Dagger module, fold every existing gate into `check()`,
@@ -59,6 +60,15 @@ not address review comments (→ `/settle`), does not ship.
 5. **No quality lowering, ever.** Thresholds, lint rules, type strictness,
    coverage floors are load-bearing walls. Raising the floor is fine;
    lowering it to make CI pass is forbidden.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, the lead agent uses two or more roster
+lanes for audit, failure diagnosis, and gate-strengthening judgment. The lead
+may run exact validation commands and apply mechanical repairs directly after
+the lane decision is made. Direct lead-only CI work is limited to mechanical
+command execution, emergency unblocks, explicit user-forbidden delegation, or
+an explicit waiver when fewer than two roster members are available.
 6. **Bounded self-heal.** See `references/self-heal.md` for the fix-vs-
    escalate decision. Algorithm and logic failures escalate.
 

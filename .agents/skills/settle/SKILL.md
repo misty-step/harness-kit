@@ -62,9 +62,18 @@ Executive orchestrator:
 - Parallel fanout for independent fixes; serialize when fixes share files.
 - Compose `/ci`, `/code-review`, `/refactor`; never reimplement their
   domain contracts inline.
-- In repos with `.spellbook/agents.yaml`, let `/code-review`, `/refactor`,
-  or `/diagnose` use roster lanes for non-trivial evidence or fixes; `/settle`
-  consumes their receipts rather than dispatching providers directly.
+- In repos with `.spellbook/agents.yaml`, require `/code-review`,
+  `/refactor`, or `/diagnose` to produce two or more roster-member receipts
+  or an explicit exception before `/settle` calls the branch ship-ready.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/settle` verifies that each
+substantive polish loop used two or more roster members or recorded a valid
+exception. It sequences leaf skills; leaf skills own dispatch. Direct
+lead-only settle work is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when fewer
+than two roster members are available.
 
 ## Mode detection
 

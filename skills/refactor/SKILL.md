@@ -18,9 +18,16 @@ Reduce complexity without reducing correctness. Favor fewer states, clearer
 names, stronger invariants, better tests, and current docs. Deletion first,
 then consolidation, then abstraction, then mechanical cleanup.
 
-When `.spellbook/agents.yaml` exists, use the provider roster for fresh-context
-calibration on high-risk simplifications or architecture-level refactors. Keep
-mechanical cleanup inline; record meaningful external lanes as receipts.
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/refactor` starts by probing the
+roster and dispatching two or more available roster members before choosing
+or applying a simplification. Use one lane to map complexity and another to
+challenge behavior-preservation risk; add a builder lane for the selected
+change. The lead agent owns the final cut, proof, and receipts. Direct
+lead-only refactoring is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
 
 ## Branch-Aware Routing
 

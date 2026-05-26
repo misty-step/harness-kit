@@ -34,9 +34,17 @@ You are the executive orchestrator.
   on the lead model.
 - Delegate drive-the-app execution and evidence capture to focused
   subagents.
-- When `.spellbook/agents.yaml` exists and QA involves UI, workflow, or
-  ambiguous product judgment, prefer a fresh provider lane for either
-  execution or independent verification. Record meaningful external lanes.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/qa` starts by probing the roster and
+dispatching two or more available roster members for execution and
+independent verification before declaring pass/fail. Use one lane to drive
+the running surface and another to verify evidence, edge cases, and product
+judgment. The lead agent owns scope, severity, final verdict, and receipts.
+Direct lead-only QA is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
 - When the same agent both executed and judged, dispatch an independent
   verifier before signing off on "pass".
 

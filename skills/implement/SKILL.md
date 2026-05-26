@@ -18,11 +18,17 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 - Trust the context packet. Do not reshape. Do not re-plan.
 - If the packet is incomplete, **fail loudly** — do not invent the spec.
-- For non-trivial builds in repos with `.spellbook/agents.yaml`, consult the
-  provider roster before choosing the builder lane. Prefer a bounded external
-  provider attempt in a separate worktree when it can run safely; record the
-  attempt as a delegation receipt. Mechanical or already-decided small fixes
-  may stay inline.
+
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/implement` starts by probing the
+roster and dispatching two or more available roster members before code or
+tests are produced. Use one lane for the bounded builder attempt and another
+for independent validator/refactor scrutiny. The lead agent owns prompt
+framing, conflict resolution, final verification, and receipts; it should not
+write the implementation directly except for mechanical command execution,
+emergency unblocks, explicit user-forbidden delegation, or fewer than two
+available roster members.
 
 ## Contract
 
@@ -70,7 +76,7 @@ cherry-pick before handing off.
 
 ### 3. Dispatch the builder
 
-Spawn a **builder** sub-agent (general-purpose) with:
+Spawn roster-backed **builder** lanes with:
 - The full context packet
 - The executable oracle
 - The TDD mandate (see below)

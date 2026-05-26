@@ -48,9 +48,17 @@ Accept a raw idea, a `backlog.d/NNN-*.md` to refine, or an observation
 - Dispatch parallel Explore subagents only when the context is genuinely
   uncharted. For a scoped skill tweak, skip — the three-file read above
   already beats a subagent round-trip.
-- If `.spellbook/agents.yaml` exists and the shape is M+ effort, consult the
-  provider roster for a heterogeneous second voice before converging. Use the
-  lead model for synthesis; record meaningful external lanes as receipts.
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/shape` starts by probing the roster
+and dispatching two or more available roster members before converging on a
+problem frame or solution. Use one lane to map repo constraints and another
+for prior-art or premise challenge; add more lanes when product, technical,
+or customer-risk perspectives diverge. The lead agent owns synthesis,
+questions to the user, final context-packet wording, and receipts. Direct
+lead-only shaping is limited to mechanical packet formatting, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
 
 ### Phase 2 — Problem Challenge
 

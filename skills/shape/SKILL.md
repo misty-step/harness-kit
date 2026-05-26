@@ -20,15 +20,22 @@ the unit of specification that precedes implementation.
 
 Accept: raw idea, backlog.d/ item, issue ID, or observation.
 
+## Delegation Floor
+
+When `.spellbook/agents.yaml` exists, `/shape` starts by probing the roster
+and dispatching two or more available roster members before converging on a
+problem frame or solution. Use one lane to map repo constraints and another
+for prior-art or premise challenge; add more lanes when product, technical,
+or customer-risk perspectives diverge. The lead agent owns synthesis,
+questions to the user, final context-packet wording, and receipts. Direct
+lead-only shaping is limited to mechanical packet formatting, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
+
 Spawn parallel sub-agents to gather context fast: one to map the relevant
 codebase area (files, patterns, constraints), another to search for prior art
 (how do other projects solve this? check codebase first, then /research).
 Synthesize their findings before proceeding.
-
-If `.spellbook/agents.yaml` exists and the shape is M+ effort, consult the
-provider roster for a heterogeneous second voice before converging. Use the
-lead model for synthesis; record meaningful external lanes as delegation
-receipts.
 
 If `exemplars.md` exists at project root, read it. Include relevant exemplar
 techniques in the context packet with specific files to study during build.
@@ -103,7 +110,7 @@ If you can't write an oracle, the goal isn't clear enough. Go back to Phase 2.
 ## Gotchas
 
 - **Premise unchallenged:** A shape request accepts the stated framing by default. Before Phase 2, five-whys the goal. If the request says "feature X," name the underlying user outcome — the best path to it may not be X. A solid shape of the wrong problem is the failure mode this skill exists to prevent, not cause.
-- **Alternatives-in-name-only:** Three "options" that are the same idea in three outfits is one option. Real divergence means structurally distinct approaches — typically one minimal-viable, one ideal, and one that inverts a load-bearing assumption. If you can't articulate how each would fail differently, go back. For M+ effort, the philosophy bench (ousterhout/carmack/grug) is persona diversity, not foundation diversity — also invoke `/research` or consult the provider roster for genuinely heterogeneous signal.
+- **Alternatives-in-name-only:** Three "options" that are the same idea in three outfits is one option. Real divergence means structurally distinct approaches — typically one minimal-viable, one ideal, and one that inverts a load-bearing assumption. If you can't articulate how each would fail differently, go back. For M+ effort, the philosophy bench (ousterhout/carmack/grug) is persona diversity, not foundation diversity — also use `/research` and the roster floor for genuinely heterogeneous signal.
 - **Vague oracles:** "It should work" is not an oracle. "These 3 tests pass and this endpoint returns 200" is. See `references/executable-oracles.md`.
 - **Checkbox oracles:** Prose checklists drift. Write oracles as commands that return pass/fail, not prose that requires interpretation.
 - **Speccing after building:** A context packet written after implementation is documentation, not specification. Spec first.
