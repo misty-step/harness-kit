@@ -6,33 +6,35 @@ Estimate: M
 
 ## Goal
 
-Make every substantial workflow skill explicit about how the lead agent should
-decide whether to spawn subagents, how to scope them, and how to verify their
-work. This replaces static global personas with workflow-local delegation
-contracts.
+Make every substantial workflow skill explicit that the lead agent is an
+agent manager first: when a provider roster exists, the workflow dispatches
+two or more roster members before substantive work is produced or validated.
+The skill also states how to scope those lanes, how to record receipts, and
+how the lead verifies the result.
 
 ## Non-Goals
 
-- Do not require subagents for every workflow. Many edits are faster and safer
-  when handled locally.
 - Do not hard-code Claude, Codex, Antigravity, or Pi-specific subagent syntax
   into generic skill bodies. Runtime-specific invocation details belong in
   harness projections or short references.
 - Do not add a semantic workflow engine.
 - Do not create one giant delegation reference that every skill blindly imports.
+- Do not force roster lanes for pure mechanical command execution, emergency
+  unblocks, explicit user-forbidden delegation, or fewer than two available
+  roster members. Those are exceptions, not alternate defaults.
 
 ## Oracle
 
-- [ ] Each substantial workflow skill has a `## Delegation` or equivalent
+- [ ] Each substantial workflow skill has a `## Delegation Floor` or equivalent
       section with:
-      - when to delegate;
-      - when to keep work local;
-      - suggested subagent responsibilities;
+      - two or more roster members as the default floor when a roster exists;
+      - the narrow exception set for direct lead-agent work;
+      - suggested roster-lane responsibilities;
       - context boundary;
       - output/evidence contract;
       - verification responsibility retained by the lead agent.
 - [ ] `/harness` lint or audit mode flags substantial workflow skills that
-      lack a delegation section or explicit skip rationale.
+      lack a delegation floor or explicit exception rationale.
 - [ ] Runtime-specific references explain how to express dynamic delegation in
       Claude Code, Codex, Antigravity CLI, and Pi without changing the core
       skill semantics.
@@ -44,13 +46,15 @@ contracts.
 
 ### Contract shape
 
-Good dynamic delegation guidance is concrete without becoming a static persona:
+Good dynamic delegation guidance is concrete without becoming a static persona
+or workflow engine:
 
 ```text
-For a security-sensitive diff, spawn a fresh-context reviewer whose only job is
-to trace attacker-controlled input to sensitive sinks. Give it the diff, the
-threat model, and the acceptance criteria. Ask for findings with file/line,
-exploitability, and a minimal fix. Do not give it the author's reasoning.
+For a security-sensitive diff, probe the roster and dispatch at least two
+independent reviewers. One traces attacker-controlled input to sensitive sinks.
+Another challenges the fix strategy and tests. Give both the diff, threat
+model, and acceptance criteria. Ask for findings with file/line,
+exploitability, and minimal fixes. Do not give them the author's reasoning.
 ```
 
 That is better than globally installing `security-reviewer.md` forever. The

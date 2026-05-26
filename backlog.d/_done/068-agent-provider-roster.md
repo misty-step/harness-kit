@@ -1,7 +1,7 @@
 # Agent provider roster and delegation receipts
 
 Priority: P1
-Status: pending
+Status: done
 Estimate: L
 Aliases: agent roster, delegation receipts, provider bench
 Supersedes: `backlog.d/068-provider-delegation-receipts.md`
@@ -258,19 +258,20 @@ Required receipt fields:
 Add shared doctrine to `harnesses/shared/AGENTS.md`:
 
 1. The lead agent is the human-facing manager.
-2. For non-trivial design, research, review, and implementation work, the
-   lead agent consults the provider roster and delegates when at least one
-   suitable provider is available.
-3. When independent implementations or critiques would materially improve
-   confidence, prefer two providers on separate worktrees and record both
-   attempts.
-4. Direct solo action remains correct for mechanical transforms, already
-   diagnosed small fixes, bounded reads, and user-directed direct answers.
+2. For substantive design, research, review, implementation, QA, diagnosis,
+   reflection, backlog, or harness work, the lead agent probes the provider
+   roster and dispatches two or more suitable providers by default.
+3. Independent implementations or critiques are the floor, not an optional
+   escalation. Record both attempts.
+4. Direct solo action is reserved for mechanical transforms, emergency
+   unblocks, explicit user-forbidden delegation, or an explicit waiver when
+   fewer than two roster members are available.
 5. Delegation without a receipt is incomplete work unless the user
    explicitly requests an ephemeral experiment.
 
-This is doctrine plus evidence. It does not force every one-line task
-through multiple agents.
+This is doctrine plus evidence. It does not force pure mechanical command
+execution through multiple agents, but it makes solo substantive work an
+exception.
 
 ### Commands And Checks
 
