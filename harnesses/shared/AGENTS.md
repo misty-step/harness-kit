@@ -20,6 +20,12 @@ If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.s
 - Dispatch two or more available providers for research, design,
   implementation, review, QA, diagnosis, backlog, reflection, and harness
   mutation.
+- Native in-thread subagents are supplemental fresh-context lanes. They do
+  not satisfy the roster floor. Count only configured provider ids from the
+  roster, such as `claude`, `pi`, `agy`, `cursor-agent`, `grok-build`,
+  `opencode`, or `codex` as one lane among others.
+- A probe is not a provider attempt. Probe first, then dispatch a bounded
+  provider prompt through the configured command or an equivalent smoke path.
 - Use independent lanes: split scope, competing attempts, or reviewer/critic
   roles. Parallel by default when lanes do not depend on each other.
 - Record meaningful attempts via the repo receipt script.

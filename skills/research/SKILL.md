@@ -32,6 +32,11 @@ evidence inputs, not substitutes for lead synthesis. Record meaningful
 external attempts with the repo receipt tool. Direct lead-only research is
 limited to mechanical lookup, emergency unblocks, explicit user-forbidden
 delegation, or an explicit waiver when fewer than two roster members are available.
+Do not check only the repo-local path. Run the resolver-backed probe, which
+falls back from repo roster to the system Spellbook roster:
+`python3 $SPELLBOOK_ROOT/scripts/probe-agent-roster.py`.
+Native in-thread subagents are useful for fresh context, but they are not
+external roster members. They do not count toward the two-provider floor.
 
 ## Absorbed Skills
 

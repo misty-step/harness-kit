@@ -49,6 +49,12 @@ If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.s
 substantive harness work and record receipts. Direct work is for mechanical
 commands, emergency unblocks, explicit user waivers, or fewer than two
 available providers.
+Do not treat a missing repo-local roster as a waiver. Run the resolver-backed
+probe, which falls back to the system Spellbook roster:
+`python3 $SPELLBOOK_ROOT/scripts/probe-agent-roster.py`.
+Native in-thread subagents may supplement the investigation, but they do not
+satisfy the roster floor. Count only configured provider ids in receipts and
+final roster reports.
 
 ## Quality Bar
 

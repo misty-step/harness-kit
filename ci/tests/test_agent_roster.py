@@ -18,6 +18,7 @@ from agent_roster import (  # noqa: E402
     build_probe_receipts,
     load_roster,
     summarize_receipts,
+    resolve_roster_path,
     validate_receipt,
     validate_roster,
 )
@@ -57,6 +58,41 @@ class RosterValidationTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "secret-like"):
             validate_roster(roster)
+
+    def test_roster_resolution_uses_system_fallback_when_repo_roster_is_absent(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            system_home = root / "system-spellbook"
+            repo.mkdir()
+            system_home.mkdir()
+            system_roster = system_home / "agents.yaml"
+            system_roster.write_text("version: 1\nproviders: {}\n")
+
+            self.assertEqual(
+                resolve_roster_path(repo=repo, system_home=system_home),
+                system_roster,
+            )
+
+    def test_roster_resolution_prefers_repo_roster_over_system_roster(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            system_home = root / "system-spellbook"
+            local_dir = repo / ".spellbook"
+            local_dir.mkdir(parents=True)
+            system_home.mkdir()
+            local_roster = local_dir / "agents.yaml"
+            system_roster = system_home / "agents.yaml"
+            local_roster.write_text("version: 1\nproviders: {}\n")
+            system_roster.write_text("version: 1\nproviders: {}\n")
+
+            self.assertEqual(
+                resolve_roster_path(repo=repo, system_home=system_home),
+                local_roster,
+            )
 
 
 class ReceiptTests(unittest.TestCase):

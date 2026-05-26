@@ -362,22 +362,31 @@ def system_spellbook_dir() -> Path:
     return Path.home() / ".spellbook"
 
 
-def default_roster_path() -> Path:
-    configured = os.environ.get("SPELLBOOK_ROSTER") or os.environ.get(
+def resolve_roster_path(
+    *,
+    repo: Path | None = None,
+    system_home: Path | None = None,
+    configured: str | None = None,
+) -> Path:
+    configured = configured or os.environ.get("SPELLBOOK_ROSTER") or os.environ.get(
         "SPELLBOOK_ROSTER_PATH"
     )
     if configured:
         return Path(configured).expanduser()
 
-    local = repo_root() / ".spellbook" / "agents.yaml"
+    local = (repo if repo is not None else repo_root()) / ".spellbook" / "agents.yaml"
     if local.exists():
         return local
 
-    system = system_spellbook_dir() / "agents.yaml"
+    system = (system_home if system_home is not None else system_spellbook_dir()) / "agents.yaml"
     if system.exists():
         return system
 
     return local
+
+
+def default_roster_path() -> Path:
+    return resolve_roster_path()
 
 
 def default_receipt_path() -> Path:

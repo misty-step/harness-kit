@@ -36,6 +36,7 @@ CORE_WORKFLOW_SKILLS = [
 def validate_delegation_floor() -> None:
     missing = []
     weak = []
+    ambiguous = []
     for root in (Path("skills"), Path(".agents/skills")):
         if not root.exists():
             continue
@@ -52,14 +53,38 @@ def validate_delegation_floor() -> None:
             )
             if "two or more" not in text or not has_roster_contract:
                 weak.append(str(path))
+            if skill in {"shape", "research", "harness"}:
+                lowered = text.lower()
+                if "native in-thread subagents" not in lowered or "do not" not in lowered:
+                    ambiguous.append(str(path))
 
     errors = []
     if missing:
         errors.append("missing delegation floor: " + ", ".join(missing))
     if weak:
         errors.append("weak delegation floor: " + ", ".join(weak))
+    if ambiguous:
+        errors.append(
+            "ambiguous roster/subagent boundary: " + ", ".join(ambiguous)
+        )
     if errors:
         raise SystemExit("; ".join(errors))
+
+
+def validate_shared_roster_doctrine() -> None:
+    path = Path("harnesses/shared/AGENTS.md")
+    text = path.read_text().lower()
+    required = [
+        "native in-thread subagents",
+        "satisfy the roster floor",
+        "configured provider ids",
+        "a probe is not a provider attempt",
+    ]
+    missing = [phrase for phrase in required if phrase not in text]
+    if missing:
+        raise SystemExit(
+            f"{path}: missing roster doctrine phrase(s): {', '.join(missing)}"
+        )
 
 
 def main() -> int:
@@ -70,6 +95,7 @@ def main() -> int:
 
     validate_roster(load_roster(roster_path))
     validate_delegation_floor()
+    validate_shared_roster_doctrine()
     receipts = read_receipts(fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")

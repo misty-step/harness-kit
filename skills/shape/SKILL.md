@@ -31,6 +31,9 @@ questions to the user, final context-packet wording, and receipts. Direct
 lead-only shaping is limited to mechanical packet formatting, emergency
 unblocks, explicit user-forbidden delegation, or fewer than two available
 roster members.
+Native in-thread subagents can add fresh-context signal, but they do not
+satisfy the roster floor. At least two real provider ids must be dispatched
+or waived explicitly.
 
 Spawn parallel sub-agents to gather context fast: one to map the relevant
 codebase area (files, patterns, constraints), another to search for prior art
