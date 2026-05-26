@@ -35,8 +35,12 @@ Mutate Spellbook's harness. Keep it thin.
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
 - Skills stay self-contained: scripts/references under the skill; state roots
   from invoking repo.
+- Repo-local skill root is `.agents/skills/`; harness-specific skill dirs are
+  bridges.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
   only.
+- Tailored harnesses are bespoke, not merely small: as small as they should be,
+  no smaller.
 - Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
   shaped ticket explicitly asks.
 
