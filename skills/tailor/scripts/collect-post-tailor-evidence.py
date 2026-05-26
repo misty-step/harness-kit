@@ -44,6 +44,14 @@ WORKFLOW_SKILLS = set(ALWAYS_INSTALL + ["deploy"])
 LIFECYCLE_SKILLS = ["groom", "ship", "settle", "trace", "flywheel", "implement", "deliver"]
 GATE_SURFACES = ["ci", "implement", "deliver", "settle", "ship", "qa", "monitor"]
 HARNESS_SKILL_DIRS = [".claude/skills", ".codex/skills", ".pi/skills"]
+AGENTS_REQUIRED_SECTIONS = [
+    "Stack & boundaries",
+    "Gate contract",
+    "Lifecycle",
+    "Known debt",
+    "Harness index",
+    "Invariants",
+]
 TEXT_SUFFIXES = {
     ".md",
     ".txt",
@@ -262,6 +270,32 @@ def repo_brief_facts(roots: Roots) -> dict[str, Any]:
     }
 
 
+def agents_md_facts(roots: Roots) -> dict[str, Any]:
+    path = roots.repo / "AGENTS.md"
+    if not path.is_file():
+        return {"path": rel(path, roots.repo), "exists": False}
+    text = read_text(path)
+    headings = [
+        line.removeprefix("##").strip()
+        for line in text.splitlines()
+        if line.startswith("## ") and not line.startswith("###")
+    ]
+    words = re.findall(r"\b[\w'-]+\b", text)
+    missing = [section for section in AGENTS_REQUIRED_SECTIONS if section not in headings]
+    return {
+        "path": rel(path, roots.repo),
+        "exists": True,
+        "top_level_headings": headings,
+        "top_level_heading_count": len(headings),
+        "word_count": len(words),
+        "required_sections": AGENTS_REQUIRED_SECTIONS,
+        "missing_required_sections": missing,
+        "too_many_headings": len(headings) > 6,
+        "too_many_words": len(words) > 650,
+        "has_unfiled_debt": bool(re.search(r"\(unfiled\)", text, re.I)),
+    }
+
+
 def lifecycle_facts(roots: Roots) -> dict[str, list[dict[str, Any]]]:
     if not roots.shared_skills:
         return {}
@@ -371,6 +405,7 @@ def collect(roots: Roots) -> dict[str, Any]:
             "unfiled_hits": grep(re.compile(r"\(unfiled\)", re.I), [roots.repo / "AGENTS.md"], roots.repo),
             "debt_ids": sorted(set(re.findall(r"\b\d{3}-[a-z0-9-]+\.md\b", read_text(roots.repo / "AGENTS.md") if (roots.repo / "AGENTS.md").is_file() else ""))),
         },
+        "agents_md": agents_md_facts(roots),
         "shared_scripts": shared_script_status(roots),
         "workflow_byte_identical": byte_identical,
     }

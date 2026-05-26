@@ -1,5 +1,5 @@
 # Spellbook Index
-# Generated: 2026-05-26T16:12:06Z
+# Generated: 2026-05-26T16:16:18Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -56,9 +56,9 @@ skills:
     source: first-party
     tags: [a,always-on,backlog,brainstorm,every,fans,grooming,happens,in,interrogate]
   - name: harness
-    description: "Build, maintain, evaluate, and optimize the agent harness — skills, agents, hooks, CLAUDE.md, AGENTS.md, and enforcement infrastructure. Use when: \"create a skill\", \"update skill\", \"improve the harn"
+    description: "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"tailor is wrong\", \"AGENTS.md "
     source: first-party
-    tags: [a,agent,agents,build,claude,create,enforcement,evaluate,harn,harness]
+    tags: [agents,bootstrap,build,configs,doctrine,evals,gates,harness,improve,is]
   - name: implement
     description: "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red → Green → Refactor. Does not shape, review, QA, or ship — single concern: spec t"
     source: first-party
@@ -112,9 +112,9 @@ skills:
     source: first-party
     tags: [a,apply,archive,backlog,branch,closes-backlog,commit,docs,final,merge]
   - name: tailor
-    description: "Tailor this repository's harness. Explore the repo, read prior session history, browse the spellbook catalog, and install a per-repo set of skills into a shared repo-local skill layer, with harness-sp"
+    description: "Install or refresh a repo-local Spellbook harness. Detect the repo, choose useful primitives, rewrite workflow skills to fit the repo, preserve existing user harness work, and verify the installed har"
     source: first-party
-    tags: [a,browse,catalog,explore,harness,harness-sp,history,install,layer,of]
+    tags: [a,choose,detect,existing,fit,har,harness,install,installed,or]
   - name: yeet
     description: "End-to-end \"ship it to the remote\" in one command. Reads the whole worktree, understands what's in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pus"
     source: first-party

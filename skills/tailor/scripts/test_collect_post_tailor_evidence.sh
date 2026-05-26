@@ -126,8 +126,23 @@ DOC
   cat > "$REPO_DIR/AGENTS.md" <<'DOC'
 # AGENTS
 
-Known debt: (unfiled)
+## Stack & boundaries
+CLI.
+
+## Gate contract
 The gate is `dagger call check --source=.`
+
+## Lifecycle
+backlog.d to _done.
+
+## Known debt
+069-runtime.md
+
+## Harness index
+ci, deliver, ship.
+
+## Invariants
+No deploy target.
 DOC
 
   git -C "$REPO_DIR" add .
@@ -163,6 +178,7 @@ test_captures_broken_symlink_and_byte_identity() {
 
 test_captures_lifecycle_and_portable_path_facts() {
   setup_repo
+  printf '\nKnown debt: (unfiled)\n' >> "$REPO_DIR/AGENTS.md"
   local evidence
   python3 "$COLLECTOR" "$REPO_DIR" --spellbook-root "$SPELLBOOK_DIR" --run-id facts >/tmp/tailor-evidence-path.txt
   evidence="$REPO_DIR/$(cat /tmp/tailor-evidence-path.txt)"
@@ -173,9 +189,20 @@ test_captures_lifecycle_and_portable_path_facts() {
   teardown_repo
 }
 
+test_captures_concise_agents_facts() {
+  setup_repo
+  local evidence
+  python3 "$COLLECTOR" "$REPO_DIR" --spellbook-root "$SPELLBOOK_DIR" --run-id agents >/tmp/tailor-evidence-path.txt
+  evidence="$REPO_DIR/$(cat /tmp/tailor-evidence-path.txt)"
+  assert_json "captures concise AGENTS sections" "$evidence" "data['agents_md']['missing_required_sections'] == [] and data['agents_md']['too_many_headings'] is False"
+  assert_json "captures AGENTS size budget" "$evidence" "data['agents_md']['too_many_words'] is False"
+  teardown_repo
+}
+
 test_collects_stable_json_shape
 test_captures_broken_symlink_and_byte_identity
 test_captures_lifecycle_and_portable_path_facts
+test_captures_concise_agents_facts
 
 if [ "$FAIL" -gt 0 ]; then
   echo "$FAIL failed, $PASS passed"
