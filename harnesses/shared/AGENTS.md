@@ -14,7 +14,7 @@ decide, verify, report, and leave the workspace clean.
 
 ## Roster
 
-If `.spellbook/agents.yaml` exists:
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`):
 
 - Probe it before substantive work.
 - Dispatch two or more available providers for research, design,

@@ -17,7 +17,7 @@ results, fix blockers, loop until clean.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/code-review` starts by probing the
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/code-review` starts by probing the
 roster and dispatching two or more non-lead roster members for independent
 review lanes. The internal philosophy bench and Thinktank are additive; they
 do not replace the roster floor. Give reviewers the diff, acceptance criteria,

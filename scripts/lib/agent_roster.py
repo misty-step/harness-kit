@@ -355,11 +355,38 @@ def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
     }
 
 
+def system_spellbook_dir() -> Path:
+    configured = os.environ.get("SPELLBOOK_HOME")
+    if configured:
+        return Path(configured).expanduser()
+    return Path.home() / ".spellbook"
+
+
 def default_roster_path() -> Path:
-    return repo_root() / ".spellbook" / "agents.yaml"
+    configured = os.environ.get("SPELLBOOK_ROSTER") or os.environ.get(
+        "SPELLBOOK_ROSTER_PATH"
+    )
+    if configured:
+        return Path(configured).expanduser()
+
+    local = repo_root() / ".spellbook" / "agents.yaml"
+    if local.exists():
+        return local
+
+    system = system_spellbook_dir() / "agents.yaml"
+    if system.exists():
+        return system
+
+    return local
 
 
 def default_receipt_path() -> Path:
+    configured = os.environ.get("SPELLBOOK_RECEIPTS") or os.environ.get(
+        "SPELLBOOK_RECEIPT_PATH"
+    )
+    if configured:
+        return Path(configured).expanduser()
+
     return repo_root() / ".spellbook" / "traces" / "delegations.jsonl"
 
 

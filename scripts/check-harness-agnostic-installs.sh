@@ -46,6 +46,15 @@ if ! matches 'All first-party skills are installed system-wide' bootstrap.sh; th
   fail "bootstrap must report the all-first-party-skills system-wide install contract"
 fi
 
+if ! matches 'install_system_roster|~/.spellbook/agents.yaml|\\$HOME/.spellbook' bootstrap.sh; then
+  fail "bootstrap must install the provider roster into a system-wide Spellbook location"
+fi
+
+if ! matches 'SPELLBOOK_ROSTER|system_spellbook_dir|\\.spellbook.*agents.yaml' \
+  scripts/lib/agent_roster.py; then
+  fail "roster helpers must fall back to a system-wide roster when repo-local roster is absent"
+fi
+
 if ! matches '\+skills/\*\*' harnesses/pi/settings.json; then
   fail "Pi settings must allow all globally installed first-party skills"
 fi

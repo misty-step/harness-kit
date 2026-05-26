@@ -7,8 +7,8 @@ software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
 ```bash
 # Bootstrap (one-time per machine)
-# Installs all first-party skills system-wide; symlinks if local checkout
-# exists, downloads from GitHub otherwise
+# Installs all first-party skills and the provider roster system-wide; symlinks
+# if a local checkout exists, downloads from GitHub otherwise
 curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash
 ```
 
@@ -60,7 +60,7 @@ spellbook/
 ├── harnesses/     # Per-harness configs (claude/, codex/, pi/)
 │   └── shared/    # Common engineering principles
 ├── registry.yaml  # External skill sources (for embeddings)
-└── bootstrap.sh   # Discovers skills/agents from filesystem, symlinks to harness dirs
+└── bootstrap.sh   # Discovers skills/agents/roster, symlinks to system harness dirs
 ```
 
 ## Adding a Skill

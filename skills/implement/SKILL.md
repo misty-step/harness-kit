@@ -21,7 +21,7 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/implement` starts by probing the
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/implement` starts by probing the
 roster and dispatching two or more available roster members before code or
 tests are produced. Use one lane for the bounded builder attempt and another
 for independent validator/refactor scrutiny. The lead agent owns prompt

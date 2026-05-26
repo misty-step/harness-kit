@@ -24,7 +24,7 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/diagnose` starts by probing the
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/diagnose` starts by probing the
 roster and dispatching two or more available roster members for independent
 evidence or hypothesis lanes before selecting a fix. Use separate lanes for
 competing root causes, reproduction, config/service checks, or proposed fix

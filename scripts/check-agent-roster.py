@@ -47,7 +47,10 @@ def validate_delegation_floor() -> None:
             if "## Delegation Floor" not in text:
                 missing.append(str(path))
                 continue
-            if "two or more" not in text or ".spellbook/agents.yaml" not in text:
+            has_roster_contract = (
+                "provider roster is available" in text or ".spellbook/agents.yaml" in text
+            )
+            if "two or more" not in text or not has_roster_contract:
                 weak.append(str(path))
 
     errors = []

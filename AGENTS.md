@@ -22,7 +22,8 @@ disk; do not restate obvious filesystem facts.
 
 ## Roster Floor
 
-`.spellbook/agents.yaml` is the provider roster. For substantive research,
+The provider roster is repo-local at `.spellbook/agents.yaml` when present and
+system-wide at `~/.spellbook/agents.yaml` otherwise. For substantive research,
 design, implementation, QA, diagnosis, review, backlog, reflection, or harness
 work:
 
@@ -60,7 +61,8 @@ the active skill with a role, scope, output shape, and boundaries.
 ## Hot Paths
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
-- `.spellbook/agents.yaml` — provider roster and default commands.
+- `.spellbook/agents.yaml` / `~/.spellbook/agents.yaml` — provider roster and
+  default commands.
 - `scripts/check-agent-roster.py` — roster + delegation-floor gate.
 - `scripts/record-delegation.py` / `scripts/summarize-delegations.py` —
   receipt capture and operator report.

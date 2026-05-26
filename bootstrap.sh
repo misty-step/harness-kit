@@ -270,6 +270,42 @@ verify_no_broken_spellbook_symlinks() {
   return "$broken"
 }
 
+install_system_file() {
+  local src="$1"
+  local dest="$2"
+  local label="$3"
+
+  [ -e "$src" ] || { warn "    missing $label"; return 0; }
+  mkdir -p "$(dirname "$dest")"
+  rm -rf "$dest"
+  if [ -n "$SPELLBOOK" ]; then
+    ln -sfn "$src" "$dest"
+  else
+    cp -R "$src" "$dest"
+  fi
+  ok "    $label"
+}
+
+install_system_roster() {
+  local source_root="${SPELLBOOK:-$REMOTE_SPELLBOOK}"
+  local system_dir="$HOME/.spellbook"
+
+  info "Installing system roster..."
+  install_system_file "$source_root/.spellbook/agents.yaml" \
+    "$system_dir/agents.yaml" "agents.yaml"
+  install_system_file "$source_root/.spellbook/examples" \
+    "$system_dir/examples" "examples/"
+  install_system_file "$source_root/scripts/probe-agent-roster.py" \
+    "$system_dir/scripts/probe-agent-roster.py" "scripts/probe-agent-roster.py"
+  install_system_file "$source_root/scripts/record-delegation.py" \
+    "$system_dir/scripts/record-delegation.py" "scripts/record-delegation.py"
+  install_system_file "$source_root/scripts/summarize-delegations.py" \
+    "$system_dir/scripts/summarize-delegations.py" "scripts/summarize-delegations.py"
+  install_system_file "$source_root/scripts/lib/agent_roster.py" \
+    "$system_dir/scripts/lib/agent_roster.py" "scripts/lib/agent_roster.py"
+  echo
+}
+
 discover_local() {
   local agent
   local skill
@@ -495,6 +531,8 @@ else
   info "Mode: download from GitHub"
 fi
 echo
+
+install_system_roster
 
 installed=0
 

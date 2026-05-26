@@ -23,8 +23,9 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-If the current repository contains `.spellbook/agents.yaml`, `/research`
-starts by probing the roster and dispatching two or more available roster
+If a provider roster is available (repo `.spellbook/agents.yaml` or system
+`~/.spellbook/agents.yaml`), `/research` starts by probing the roster and
+dispatching two or more available roster
 members for independent research lanes. Use lanes with distinct sources,
 methods, or model families; web search, Thinktank, and provider CLIs are
 evidence inputs, not substitutes for lead synthesis. Record meaningful

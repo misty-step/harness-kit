@@ -42,7 +42,7 @@ into the repo. One command from "green" to "shipped and learned from."
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/ship` does not normally dispatch
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/ship` does not normally dispatch
 providers; it verifies upstream roster receipts and includes them in
 `/reflect`. If final-mile work surfaces substantive judgment, route back to
 `/settle` or dispatch two or more roster members before proceeding. Direct

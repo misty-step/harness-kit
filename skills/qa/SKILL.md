@@ -56,7 +56,7 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/qa` starts by probing the roster and
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/qa` starts by probing the roster and
 dispatching two or more available roster members for execution and
 independent verification before declaring pass/fail. Use one lane to drive
 the running surface and another to verify evidence, edge cases, and product

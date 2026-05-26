@@ -17,14 +17,14 @@ argument-hint: "[distill|calibrate|coach|tune-repo|append|cycle] [context]"
 
 Structured reflection that improves both the harness and the operator.
 
-If `.spellbook/agents.yaml` exists, include `.spellbook/traces/` delegation
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), include `.spellbook/traces/` delegation
 receipts in the evidence set when they are relevant. Reflection should convert
 provider-lane results and failure modes into backlog, harness, or coaching
 outputs without inventing hidden rankings.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/reflect` uses two or more roster
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/reflect` uses two or more roster
 members for substantive postmortem, coaching, or harness-tuning analysis.
 Use lanes to surface independent failure interpretations and improvement
 proposals; the lead owns synthesis, codification choices, and receipts.

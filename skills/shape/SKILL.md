@@ -22,7 +22,7 @@ Accept: raw idea, backlog.d/ item, issue ID, or observation.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/shape` starts by probing the roster
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/shape` starts by probing the roster
 and dispatching two or more available roster members before converging on a
 problem frame or solution. Use one lane to map repo constraints and another
 for prior-art or premise challenge; add more lanes when product, technical,
@@ -37,7 +37,7 @@ codebase area (files, patterns, constraints), another to search for prior art
 (how do other projects solve this? check codebase first, then /research).
 Synthesize their findings before proceeding.
 
-If `.spellbook/agents.yaml` exists and the shape is M+ effort, dispatch at
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`) and the shape is M+ effort, dispatch at
 least two roster-backed provider lanes before converging. Use the lead model
 for synthesis; record meaningful external lanes as delegation receipts.
 

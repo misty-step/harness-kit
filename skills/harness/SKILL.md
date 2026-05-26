@@ -45,7 +45,7 @@ Mutate the harness. Keep it thin.
 
 ## Delegation Floor
 
-If `.spellbook/agents.yaml` exists, dispatch two or more providers for
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), dispatch two or more providers for
 substantive harness work and record receipts. Direct work is for mechanical
 commands, emergency unblocks, explicit user waivers, or fewer than two
 available providers.

@@ -38,7 +38,7 @@ One command. Executive authority. No approval gates.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/yeet` uses two or more roster members
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/yeet` uses two or more roster members
 for substantive worktree classification, commit-boundary design, or risky
 cleanup decisions. The lead owns final staging, commit messages, and receipts.
 Direct lead-only yeet work is limited to mechanical git commands, emergency

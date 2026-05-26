@@ -6,7 +6,7 @@ model accessed via API.
 
 ## Roster Selection
 
-If `.spellbook/agents.yaml` exists, it is the source of truth. Probe the roster,
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), it is the source of truth. Probe the roster,
 skip the provider/harness you are currently using, then dispatch bounded
 read-only review lanes to available providers with review-capable commands. For
 meaningful lanes, write sanitized delegation receipts through the repo receipt

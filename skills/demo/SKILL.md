@@ -63,7 +63,7 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/demo` uses two or more roster members
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/demo` uses two or more roster members
 for substantive artifact planning, capture critique, or external-facing
 release evidence. Use one lane for capture plan and another for cold quality
 review. The lead owns audience fit, sufficiency, and receipts. Direct

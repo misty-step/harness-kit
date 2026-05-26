@@ -11,7 +11,7 @@ The shortest accurate mental model is:
 skills + agents + shared doctrine
         |
         v
-bootstrap installs every first-party skill system-wide
+bootstrap installs every first-party skill and the provider roster system-wide
         |
         v
 optional /seed vendors local copies when a repo needs checked-in harness state
@@ -85,11 +85,15 @@ features are wrappers around that layer, not the architecture.
 
 - global skills: every `skills/*/SKILL.md`
 - global agents: every `agents/*.md`
+- global roster: `~/.spellbook/agents.yaml` plus roster helper scripts under
+  `~/.spellbook/scripts/`
 
 Local bootstrap prefers symlinks to a stable checkout so skill edits propagate
 immediately. Remote bootstrap downloads a GitHub archive and copies full skill
 directories, including references, scripts, and evals. Claude settings are
 copied, not symlinked, because Claude mutates `settings.json` at runtime.
+Roster helpers prefer a repo-local `.spellbook/agents.yaml` when present, then
+fall back to the system `~/.spellbook/agents.yaml` installed by bootstrap.
 
 `/seed` remains as an explicit repo-local vendoring path for projects that need
 checked-in harness state, offline operation, or reviewable local copies. It is
@@ -190,9 +194,9 @@ be the only source of truth for the workflow.
 ### System-Wide Install
 
 Machine-wide install intentionally exposes the whole first-party catalog. A
-good harness is simple: one canonical skill catalog, one bootstrap path, and
-repo-local vendoring only when a project has a concrete reason to carry local
-copies.
+good harness is simple: one canonical skill catalog, one provider roster, one
+bootstrap path, and repo-local vendoring only when a project has a concrete
+reason to carry local copies.
 
 ### Tests Prove Executed Paths
 

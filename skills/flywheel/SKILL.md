@@ -41,7 +41,7 @@ encode the invariants that aren't inferable from the leaf names.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/flywheel` verifies that each
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/flywheel` verifies that each
 substantive lifecycle phase used two or more roster members or recorded a
 valid exception. It remains the outer-loop manager; leaf skills own dispatch.
 

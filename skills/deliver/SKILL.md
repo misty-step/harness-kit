@@ -30,7 +30,7 @@ decides whether to deploy. Humans merge.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/deliver` begins by probing the roster
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/deliver` begins by probing the roster
 and requires every substantive phase to show two or more roster-member
 receipts or an explicit exception. `/deliver` remains a composer, not a
 provider scheduler: phase skills dispatch their own lanes, while `/deliver`

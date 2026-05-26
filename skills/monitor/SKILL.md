@@ -52,7 +52,7 @@ You are a thin watcher.
 
 ## Delegation Floor
 
-When `.spellbook/agents.yaml` exists, `/monitor` uses two or more roster
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/monitor` uses two or more roster
 members for substantive incident interpretation, regression analysis, or
 follow-up shaping. Pure polling remains mechanical; investigations route to
 `/diagnose` and inherit its roster floor.
