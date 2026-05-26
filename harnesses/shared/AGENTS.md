@@ -339,6 +339,12 @@ Context windows compact. The harness must be resilient to all of it.
   tested, plans changed — all get written before the next action.
 - **Don't batch synthesis.** Synthesis that happens only at session end is
   synthesis lost on crash. Capture in flight.
+- **Clean-tree closeout is load-bearing.** Before claiming a workflow,
+  delivery, ship, yeet, or harness run is complete, run
+  `git status --short --untracked-files=all`. Any visible path means the
+  run is still open. Classify each path and commit it, delete it, move it
+  outside the repo, or add a durable ignore rule. Never leave untracked or
+  uncommitted work in a disposable worktree; archived worktrees can erase it.
 - **Recovery over prevention.** Crashes, interrupts, compactions will happen.
   The design goal is that they cost zero. Build for the assumption that any
   given session is the last one.

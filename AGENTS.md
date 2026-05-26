@@ -72,6 +72,14 @@ Stale training data lies about these — always read the file:
   `.spellbook/traces/delegations.jsonl` plus
   `scripts/summarize-delegations.py --format text` as the factual base;
   never paste raw provider transcripts.
+- **Clean tree is the completion contract.** A run is not done while
+  `git status --short --untracked-files=all` shows any path. Every file
+  must be committed, deleted, moved out of the repo, or covered by a
+  durable ignore rule before the agent claims completion. Treat untracked
+  `backlog.d/NNN-*.md` files as signal by default; commit them or make an
+  explicit user-directed scratch/deletion decision. This is especially
+  strict in worktrees because archiving a dirty worktree can destroy
+  uncommitted work.
 - **Thin harness, strong models.** Don't compensate for weak models with
   scaffold. `skills/flywheel/SKILL.md` (43 lines) is the reference.
 - **Skills are self-contained.** No `../..`, no `$REPO_ROOT/…` sourcing.

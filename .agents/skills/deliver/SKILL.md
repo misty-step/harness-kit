@@ -42,6 +42,11 @@ artifact drift, symlink bridge topology, and command-level smoke evidence.
 - **Fail loud.** A dirty phase is a dirty phase — do not mask it, do not
   retry past the cap, do not write `status: merge_ready` when anything
   is red.
+- **Clean closeout is part of merge-readiness.** Before writing
+  `merge_ready` or presenting delivery as complete,
+  `git status --short --untracked-files=all` must be empty or every
+  visible path must be classified into a follow-up commit, deletion,
+  move-out, durable ignore, or explicit handoff.
 - **Base branch is `master`.** Not `main`. HEAD-detection must match.
 - **Never push.** Delivery ≠ shipping. `git push` is the outer loop's
   (or the human's) call.

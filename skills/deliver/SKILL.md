@@ -23,6 +23,10 @@ decides whether to deploy. Humans merge.
 
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a "best effort" pass.
+- Clean closeout is part of merge-readiness. Before writing `merge_ready` or
+  presenting delivery as complete, `git status --short --untracked-files=all`
+  must be empty or every visible path must be classified into a follow-up
+  commit, deletion, move-out, durable ignore, or explicit handoff.
 
 ## Delegation Floor
 
