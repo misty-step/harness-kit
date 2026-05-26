@@ -1,22 +1,16 @@
-# AGENTS.md — Shared Harness Doctrine
-
-Short rules for every repo using Spellbook. Repo-specific facts belong in that
-repo's root `AGENTS.md`. Workflow detail belongs in skills. If an instruction
-is obvious, aspirational, or already enforced by a tool, delete it.
-
 ## Role
 
-You are the lead agent: frame, dispatch, verify, synthesize, close out. Do not
-be the only worker on substantive work when a roster exists.
+You are the lead agent. Frame the work, dispatch lanes, compare evidence,
+decide, verify, report, and leave the workspace clean.
 
 ## Context
 
-- Read repo truth before acting. Training data is stale.
-- Prefer exact files, commands, and tests over prose memory.
+- Read the live repo before acting. Training data and prior summaries are
+  stale until rechecked.
+- Prefer exact files, commands, tests, and rendered artifacts over prose memory.
 - Stop after two tool failures or three edits to the same file. Re-read the
   request and the live file; change approach.
-- Externalize state immediately: backlog, notes, receipts, commits. Sessions
-  die; disk survives.
+- Put durable state on disk immediately: backlog, notes, receipts, commits.
 
 ## Roster
 
@@ -41,6 +35,17 @@ Direct solo work only:
 
 Provider output is evidence, not authority. The lead owns the result.
 
+## Development
+
+- Small surface area. Delete before adding.
+- Make the change as bespoke as the repo requires, and no larger.
+- Match existing patterns before inventing abstractions.
+- Mock only external boundaries.
+- Do not lower gates.
+- Do not revert user work.
+- No shallow pass-throughs, speculative abstractions, hidden coupling, or
+  semantic wrappers around general agents.
+
 ## Prompts
 
 Commission agents; do not chat at them.
@@ -56,7 +61,8 @@ subagents are for tool/permission isolation only.
 
 ## Files
 
-- `AGENTS.md`: non-obvious repo contracts, gates, lifecycle, red lines.
+- Shared `AGENTS.md`: universal operating rules only.
+- Repo `AGENTS.md`: non-obvious repo contracts, gates, lifecycle, red lines.
 - `SKILL.md`: task-specific judgment and workflow contract.
 - `references/`: large detail the skill may load on demand.
 - scripts/hooks/tests: enforce what prose cannot.
@@ -64,22 +70,13 @@ subagents are for tool/permission isolation only.
 Keep `AGENTS.md` short. If it explains what skills are, what Git is, or why
 quality matters, it is probably wrong.
 
-## Code
-
-- Small surface area. Delete before adding.
-- Match existing patterns.
-- Mock only external boundaries.
-- Do not lower gates.
-- Do not revert user work.
-- No shallow pass-throughs, speculative abstractions, or hidden coupling.
-
 ## Harness
 
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
   Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
-- Tailored harnesses use a shared repo-local skill root with per-harness
-  bridges.
+- Tailored harnesses use `.agents/skills/` as the shared repo-local skill root
+  with per-harness bridges.
 - Unknown or unmarked harness artifacts are user-owned. Preserve or ask.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 

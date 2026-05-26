@@ -26,13 +26,14 @@ different criteria to each.
 
 | Category | Default | Critic criteria |
 |---|---|---|
-| Universal (office-hours, ceo-review, reflect, …) | **include** | 1 only |
-| Workflow (deliver, ci, qa, groom, flywheel, …) | **include unless infrastructure missing** | 1, 2 |
+| Universal (reflect, …) | **include when still useful verbatim** | 1 only |
+| Workflow (deliver, ci, qa, groom, flywheel, …) | **include for SDLC coverage; tailor where commands/contracts vary** | 1, 2 |
 | Domain (invented: `/convex-migrate` etc.) | **exclude unless concrete** | 1, 2, 3, 4 |
 
-A workflow skill with present infrastructure (real CI, real tests,
-real deploy) passes the critic automatically. Criterion 4 exists to
-reject speculative domain inventions, not workflow inclusion.
+A workflow skill with a real lifecycle surface (tests, review, CI, release,
+monitoring, backlog, or deploy) should land unless it would be empty ceremony.
+Criterion 4 exists to reject speculative domain inventions, not workflow
+coverage.
 
 ## 1. Does this duplicate a truly global skill?
 

@@ -12,7 +12,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "lib"))
 from agent_roster import load_roster, read_receipts, validate_roster  # noqa: E402
 
 CORE_WORKFLOW_SKILLS = [
-    "ceo-review",
     "ci",
     "code-review",
     "deliver",
@@ -23,7 +22,6 @@ CORE_WORKFLOW_SKILLS = [
     "harness",
     "implement",
     "monitor",
-    "office-hours",
     "qa",
     "refactor",
     "reflect",

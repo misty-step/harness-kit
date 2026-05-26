@@ -11,26 +11,30 @@ description: |
 
 # /tailor
 
-Install a small, repo-specific harness. Not a catalog dump. Not a generic
-AGENTS generator.
+Install a bespoke repo harness. As small as it should be, no smaller. Not a
+catalog dump. Not a generic AGENTS generator.
 
 ## Contract
 
-1. **Inventory.** Read the repo: stack, gate, lifecycle, tracker, hot paths,
-   prior harness. Resolve the shared skill root: existing `.agent/skills/`,
-   then `.agents/skills/`, else create `.agents/skills/`.
-2. **Brief.** Write `.spellbook/repo-brief.md`: purpose, stack, gate,
-   lifecycle, invariants, debt, terminology, user corrections. If `.spellbook/`
-   is ignored, also write tracked `.claude/.tailor/repo-brief.md`.
+1. **Inventory.** Read the repo: stack, domain, gate, lifecycle, tracker, hot
+   paths, prior harness. The shared skill root is `.agents/skills/`. If a repo
+   has legacy `.agent/skills/`, migrate deliberately or ask before touching it.
+2. **Context.** Dispatch exploration lanes, then synthesize the repo's purpose,
+   stack, gate, lifecycle, invariants, debt, terminology, and user corrections.
+   Persist `.spellbook/repo-brief.md` only when it will be reused by subagents
+   or future runs. If `.spellbook/` is ignored and the brief is load-bearing,
+   also write tracked `.claude/.tailor/repo-brief.md`.
 3. **Pick.** Use roster lanes: planner proposes portfolio; critic rejects
    shallow or incoherent picks. Domain inventions need concrete repo evidence.
 4. **Reconcile.** Marker-owned artifacts may be replaced. Unknown/unmarked
    artifacts are user-owned: preserve or ask `preserve / replace / diff`.
-5. **Install.** Write shared skills once; bridge `.claude/skills/`,
+5. **Install.** Write shared skills once to `.agents/skills/`; bridge `.claude/skills/`,
    `.codex/skills/`, `.pi/skills/` back to the shared root. Copy shared scripts
    only when absent or tailor-owned. Merge settings additively.
-6. **Rewrite.** Workflow skills embed this repo's commands, gate, tracker,
-   signals, refusal conditions. Source skill is reference, not template.
+6. **Adapt.** Workflow skills cover the SDLC. Preserve universal judgment where
+   the source already fits; tailor command-bearing and high-variance surfaces
+   with this repo's gate, tracker, lifecycle, signals, refusal conditions, and
+   file paths. Source skill is reference, not template.
 7. **Audit.** Run `skills/tailor/scripts/collect-post-tailor-evidence.py`.
    Dispatch critic on evidence + installed harness. Persist verdict. Repair
    blockers and rerun. Do not declare success before clean verdict.
@@ -40,9 +44,11 @@ AGENTS generator.
 
 - **Workflow:** `research`, `groom`, `shape`, `implement`, `qa`, `demo`,
   `code-review`, `refactor`, `ci`, `diagnose`, `monitor`, `deliver`,
-  `settle`, `ship`, `yeet`, `flywheel`. Always install and tailor.
-- **Universal:** judgment protocols such as `office-hours`, `ceo-review`,
-  `reflect`. Copy verbatim unless repo evidence says otherwise.
+  `settle`, `ship`, `yeet`, `flywheel`. Install by default. Tailor only where
+  repo-specific commands, lifecycle, gates, or domain language materially
+  change the contract.
+- **Universal:** cross-repo judgment protocols such as `reflect`. Copy
+  verbatim unless repo evidence says otherwise.
 - **External:** registry aliases under `$SPELLBOOK/skills/.external/<alias>`.
   Install as absolute symlink at shared root plus sibling `<alias>.spellbook`.
   Marker fields: `source`, `alias`, `target`, `category: external`. Marker is

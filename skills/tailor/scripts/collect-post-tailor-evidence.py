@@ -120,7 +120,7 @@ def build_roots(args: argparse.Namespace) -> Roots:
     repo = git_root(Path(args.repo_root_option or args.repo_root))
     spellbook = discover_spellbook(Path(__file__), args.spellbook_root)
     shared = resolve_repo_path(repo, args.shared_skill_root) if args.shared_skill_root else first_existing(
-        [repo / ".agent" / "skills", repo / ".agents" / "skills"]
+        [repo / ".agents" / "skills", repo / ".agent" / "skills"]
     )
     agents = resolve_repo_path(repo, args.agent_root) if args.agent_root else first_existing(
         [repo / ".agents" / "agents", repo / ".claude" / "agents", repo / "agents"]

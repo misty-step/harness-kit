@@ -1,6 +1,6 @@
 # Spellbook
 
-29 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
+28 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
 ## Quick Start
@@ -25,6 +25,7 @@ point your harnesses at a specific checkout, set `SPELLBOOK_DIR=/path/to/spellbo
 | `/diagnose` | Investigate, triage, fix |
 | `/qa` | Verify the changed surface and capture evidence |
 | `/demo` | Show what changed with the right artifact for the change shape |
+| `/design` | Artifact-backed critique and polish for hierarchy, typography, layout, and taste |
 | `/monitor` | Watch post-change signals and escalate regressions |
 | `/groom` | Backlog management, brainstorming, rethink, scaffold |
 | `/harness` | Skill engineering, primitive management, context lifecycle |

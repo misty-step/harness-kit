@@ -3,9 +3,8 @@ name: groom
 description: |
   Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate,
   research, and simplify in a single loop. Tidy is not a mode — it happens
-  every time. Strategic-layer work fans out parallel subagents: /office-hours
-  on raw items, /ceo-review on shaped packets, a technical-review bench on
-  code hotspots, /research for external context.
+  every time. Strategic-layer work fans out parallel interrogation,
+  design-critique, technical-review, and research lanes.
   Use when: "groom", "what should we build", "rethink this", "biggest
   opportunity", "backlog", "prioritize", "backlog session".
   Trigger: /groom, /backlog, /rethink, /moonshot, /scaffold.
@@ -24,7 +23,8 @@ invocation runs the full loop:
 
 1. **Always tidies** — closes shipped tickets, reorders by priority, flags stale items.
 2. **Always brainstorms** — opens the aperture on what could be on the backlog that isn't.
-3. **Always interrogates** — challenges the premise of top items; invokes `/ceo-review` and the technical-review bench.
+3. **Always interrogates** — challenges the premise of top items with ad-hoc
+   roster lanes and the technical-review bench.
 4. **Always investigates** — dispatches Explore subagents against code hotspots.
 5. **Always researches** — delegates to `/research` for outside context on unfamiliar territory.
 6. **Always simplifies** — favors deletion and consolidation over addition.
@@ -171,17 +171,18 @@ The interesting work. Dispatched in parallel for fresh-context judgment.
 A groom run that ran fewer than three of these perspectives has failed
 the fanout goal.
 
-### Premise challenge — `/office-hours` on raw items
+### Premise challenge — raw items
 
 For the top 3 **unshaped** items (fuzzy goal, missing oracle):
-- Invoke `/office-hours` with the ticket text as context.
+- Dispatch an ad-hoc interrogation lane with the ticket text as context.
 - Capture the six forcing-question answers.
 - If demand reality is absent, propose demotion to `.groom/BACKLOG.md`.
 
-### CEO review — `/ceo-review` on shaped packets
+### Design challenge — shaped packets
 
 For the top 1-2 **shaped** packets (clear goal + oracle + sequence):
-- Invoke `/ceo-review` with the ticket text and any context packet.
+- Dispatch an ad-hoc design-critique lane with the ticket text and context
+  packet.
 - Capture the premise verdict, mandatory alternatives, outside voice.
 - If premise is reframed, rewrite the ticket or split into alternatives.
 
@@ -312,8 +313,8 @@ Conventions" — do not duplicate it here.
 - **Invoked by:** `/flywheel` at the start of each cycle to pick the next
   item. `/flywheel` reads `/groom`'s emitted top-of-backlog and proceeds.
 - **Invokes:**
-  - `/office-hours` — premise interrogation on raw items.
-  - `/ceo-review` — dialectical audit on shaped packets.
+  - Ad-hoc interrogation lane — premise challenge on raw items.
+  - Ad-hoc design-critique lane — dialectical audit on shaped packets.
   - `/research` — external context for unfamiliar domains.
   - Technical-review bench agents (`ousterhout`, `carmack`, `grug`, `beck`).
   - Explore subagents — codebase hotspot scans.

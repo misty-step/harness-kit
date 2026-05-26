@@ -1,5 +1,5 @@
 # Spellbook Index
-# Generated: 2026-05-26T16:16:18Z
+# Generated: 2026-05-26T16:34:10Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -15,10 +15,6 @@ skills:
     description: "Pick the right browser automation tool for a given task — across web and Electron apps, from CI tests to autonomous agents. Browser automation in 2026 is a testing pyramid: deterministic Playwright "
     source: first-party
     tags: [2026,a,across,agents,apps,automation,autonomous,browser,ci,deterministic]
-  - name: ceo-review
-    description: "Dialectical premise-and-alternatives audit for a plan, spec, or context packet. Four moves: premise challenge (is this the right problem?), mandatory structurally-distinct alternatives, cross-model ou"
-    source: first-party
-    tags: [a,alternatives,audit,challenge,context,cross-model,dialectical,four,is,mandatory]
   - name: ci
     description: "Audit a repo's CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absen"
     source: first-party
@@ -43,6 +39,10 @@ skills:
     description: "Analyze, test, and upgrade dependencies. One curated PR, not 47 version bumps. Reachability analysis, behavioral diffs, risk assessment. Package-manager agnostic. Use when: \"upgrade deps\", \"dependency"
     source: first-party
     tags: [47,agnostic,analysis,analyze,assessment,behavioral,bumps,curated,dependencies,dependency]
+  - name: design
+    description: "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, informat"
+    source: first-party
+    tags: [an,artifact-backed,better,critique,dashboard,density,design,existing,feel,game]
   - name: diagnose
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause → pattern analysis → hypothesis test → fix. Use"
     source: first-party
@@ -52,7 +52,7 @@ skills:
     source: first-party
     tags: [archive,backlog,closure,composes,flywheel,harness,implement,in,invok,item]
   - name: groom
-    description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel su"
+    description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel in"
     source: first-party
     tags: [a,always-on,backlog,brainstorm,every,fans,grooming,happens,in,interrogate]
   - name: harness
@@ -75,10 +75,6 @@ skills:
     description: "Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, "
     source: first-party
     tags: [a,after,change,ci,deploy,every,failures,healthchecks,local,logs]
-  - name: office-hours
-    description: "YC-partner-style interrogation of a raw idea. Six forcing questions before you shape anything: demand reality, status quo, desperate specificity, narrowest wedge, observation & surprise, future-fit. O"
-    source: first-party
-    tags: [a,anything,before,demand,desperate,forcing,future-fit,idea,interrogation,narrowest]
   - name: qa
     description: "Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for librari"
     source: first-party
