@@ -14,7 +14,7 @@ clients, departments, procurement, security reviewers, or executives.
 # Bootstrap (one-time per machine)
 # Installs all first-party skills and the provider roster system-wide; symlinks
 # if a local checkout exists, downloads from GitHub otherwise
-curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash
+curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 ```
 
 If you're running bootstrap from a temporary git worktree, it now prefers a

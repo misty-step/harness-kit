@@ -9,9 +9,9 @@ set -euo pipefail
 #
 # Local mode is preferred. Remote is the fallback for fresh machines.
 #
-# Run: curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash
+# Run: curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 
-REPO="phrazzld/spellbook"
+REPO="misty-step/spellbook"
 RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_TMP=""

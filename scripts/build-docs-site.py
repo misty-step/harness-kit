@@ -344,7 +344,7 @@ def page_shell(title: str, current: str, body: str) -> str:
 
 def source_link(source: str, current: str) -> str:
     _ = current
-    return f'<a href="https://github.com/phrazzld/spellbook/blob/master/{source}">{esc(source)}</a>'
+    return f'<a href="https://github.com/misty-step/spellbook/blob/master/{source}">{esc(source)}</a>'
 
 
 def card(title: str, text: str, href: str = "", icon: str = "", current: str = "index.html") -> str:
@@ -440,7 +440,7 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
       <h2>{esc(copy['backlog_title'])}</h2>
       <p>{esc(copy['backlog_copy'])}</p>
       <ul class="compact">
-        {''.join(f'<li><a href="https://github.com/phrazzld/spellbook/blob/master/{esc(item["source"])}">{esc(item["title"])}</a> <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
+        {''.join(f'<li><a href="https://github.com/misty-step/spellbook/blob/master/{esc(item["source"])}">{esc(item["title"])}</a> <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
       </ul>
     </section>
 """
@@ -674,7 +674,7 @@ def render_bootstrap() -> str:
       </div>
       <div class="quicksteps">
         <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
-        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script and installs the global harness links.</p></article>
+        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script and installs the global harness links.</p></article>
         <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Spellbook skills after install.</p></article>
       </div>
     </section>

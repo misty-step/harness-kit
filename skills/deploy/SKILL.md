@@ -131,7 +131,7 @@ exists (as `deploy_receipts[]`). Also write to
   "action": "deployed",
   "timestamp": "2026-04-15T14:32:10Z",
   "duration_seconds": 94,
-  "operator": "phrazzld"
+  "operator": "misty-step"
 }
 ```
 

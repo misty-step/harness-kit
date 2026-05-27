@@ -210,7 +210,7 @@ exercised that exact path.
 For a new machine:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash
+curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 ```
 
 Set `SPELLBOOK_DIR=/path/to/spellbook` when you want global harness symlinks to

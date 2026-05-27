@@ -35,7 +35,7 @@
 # share `vercel-`). Same prefix + same skill name = fatal at sync.
 
 sources:
-  - repo: phrazzld/spellbook
+  - repo: misty-step/spellbook
     default: true
     layout: flat
     skills_path: skills

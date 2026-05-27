@@ -31,7 +31,7 @@ REGISTRY="$REPO_ROOT/registry.yaml"
 EXTERNAL_ROOT="$REPO_ROOT/skills/.external"
 CHECKOUT_ROOT="$EXTERNAL_ROOT/_checkouts"
 
-LOCAL_SOURCE="phrazzld/spellbook"
+LOCAL_SOURCE="misty-step/spellbook"
 
 MODE="sync"          # sync | check
 ALLOW_FLOATING=0     # 1 to permit branch/HEAD refs

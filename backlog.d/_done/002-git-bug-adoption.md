@@ -60,7 +60,7 @@ atomic claims so two agents never work the same issue.
 - Coordination: `git update-ref refs/claims/<id> $HASH ""` is atomic CAS within shared .git.
   All worktrees see claims instantly. For multi-machine: push-gate the ref.
 - Research: https://github.com/git-bug/git-bug
-- 2026-03-28: GitHub Issues cleared across all active phrazzld + misty-step repos
+- 2026-03-28: GitHub Issues cleared across all active legacy personal + misty-step repos
   (~1,630 issues closed). backlog.d/ is now the sole active backlog surface.
   Bridge still functional for optional sync. 50 archived repos untouched (read-only).
 
