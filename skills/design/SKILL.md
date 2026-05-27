@@ -9,9 +9,10 @@ description: |
   a one-sentence intent. Triggers on "make this look better", "improve the
   design", "more tasteful", "better hierarchy", "polish the UI",
   "critique this screen", "reimagine this page", "layout", "typography",
-  "visual design", "aesthetic", "design pass", "art direction".
+  "visual design", "aesthetic", "design pass", "art direction",
+  "scaffold design", "generate design skill".
   Trigger: /design.
-argument-hint: "[audit|redesign|polish|critique] <artifact-or-surface>"
+argument-hint: "[audit|redesign|polish|critique|scaffold] <artifact-or-surface>"
 ---
 
 # /design
@@ -28,6 +29,16 @@ is evidence, not generic advice:
 Refuse to make a final design judgment from code alone when a rendered surface
 can be inspected. If rendering is impossible, mark the design unverified.
 
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system
+`~/.spellbook/agents.yaml`), use two or more roster members for substantive
+redesign, external-facing polish, or final critique of visible UI changes. Use
+one lane for proposed direction or implementation and another for cold review.
+Direct lead-only design work is limited to mechanical capture, emergency
+unblocks, explicit user-forbidden delegation, tiny one-off critiques, or fewer
+than two available roster members.
+
 ## Routing
 
 | Intent | Action |
@@ -35,9 +46,16 @@ can be inspected. If rendering is impossible, mark the design unverified.
 | `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. |
 | `/design polish` | Apply the smallest coherent improvement set, then verify render. |
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
+| `/design scaffold` | Read `references/scaffold.md` and generate project-local design guidance for recurring UI work. |
 
 Use `/a11y` for WCAG compliance, `/qa` for behavior verification, `/demo` for
 evidence packaging, and `/shape` when the product direction itself is unsettled.
+For recurring UI work, use the references:
+
+- `references/design-system.md` for token and component-system judgment.
+- `references/taste-layer.md` for aesthetic direction and anti-generic critique.
+- `references/interface-polish.md` for micro-polish checks.
+- `references/ui-surface-routing.md` for workflow composition.
 
 ## Critique Shape
 
@@ -73,6 +91,8 @@ For each direction, name what it sacrifices. Recommend one.
 - Change the fewest surfaces that can create a coherent improvement.
 - Do not add a framework, animation system, or design token layer for a one-off
   surface.
+- Scaffold a project-local design skill before enforcing tokens or component
+  grammar across recurring UI surfaces.
 - Prefer clearer hierarchy and better content structure over decoration.
 - Preserve domain truth; design polish must not launder weak claims.
 - After visible changes, verify desktop and mobile render and report evidence.

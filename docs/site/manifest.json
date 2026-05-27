@@ -241,7 +241,7 @@
       "source": "skills/deps/SKILL.md"
     },
     {
-      "description": "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, information architecture, interaction feel, content structure, brand fit, taste, or aesthetic quality. Requires a screenshot, live URL, rendered artifact, or explicit file plus a one-sentence intent. Triggers on \"make this look better\", \"improve the design\", \"more tasteful\", \"better hierarchy\", \"polish the UI\", \"critique this screen\", \"reimagine this page\", \"layout\", \"typography\", \"visual design\", \"aesthetic\", \"design pass\", \"art direction\". Trigger: /design.",
+      "description": "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, information architecture, interaction feel, content structure, brand fit, taste, or aesthetic quality. Requires a screenshot, live URL, rendered artifact, or explicit file plus a one-sentence intent. Triggers on \"make this look better\", \"improve the design\", \"more tasteful\", \"better hierarchy\", \"polish the UI\", \"critique this screen\", \"reimagine this page\", \"layout\", \"typography\", \"visual design\", \"aesthetic\", \"design pass\", \"art direction\", \"scaffold design\", \"generate design skill\". Trigger: /design.",
       "icon": "catalog",
       "id": "skill:design",
       "kind": "skill",

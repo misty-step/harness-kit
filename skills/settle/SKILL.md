@@ -14,7 +14,7 @@ argument-hint: "[PR-number|branch-name]"
 # /settle
 
 Take a feature branch from "works" to ship-ready. Iterate `/ci` →
-`/code-review` → `/refactor` until all four exit gates pass in one pass.
+`/code-review` → `/refactor` until all exit gates pass in one pass.
 Then report ship-ready and hand the operator off to `/ship`.
 
 ## Stance
@@ -57,8 +57,8 @@ Assert at start; refuse with a clear reason on any miss.
 
 ## The Polish Loop
 
-Run the six steps in order. If any step produces changes, return to step 2
-(`/ci`). The loop exits only when all four exit gates pass in the same
+Run the seven steps in order. If any step produces changes, return to step 2
+(`/ci`). The loop exits only when all exit gates pass in the same
 iteration without requiring further changes.
 
 ### 1. Assert preconditions
@@ -117,7 +117,28 @@ Exit criterion: one `/refactor` pass in this iteration produced no
 applied changes (or the changes it applied were already reverified by a
 subsequent loop).
 
-### 5. Self-review hindsight
+### 5. Design / accessibility check for UI diffs
+
+Check whether the diff touches UI surfaces. Prefer
+`scripts/detect-ui-surfaces.sh --base <repo-default-base>` when available
+(Spellbook's base is `master`); otherwise inspect changed paths for UI files
+(`*.tsx`, `*.jsx`, `*.vue`, `*.svelte`, stylesheets, `app/**`, `pages/**`,
+`components/**`, stories, tokens, and theme config). If UI surfaces are
+present, the branch needs design and accessibility evidence before it is
+ship-ready. If the detector cannot resolve the base ref, inspect
+`git diff --name-only` manually instead of treating the detector failure as
+"no UI":
+
+- `/design` verifies visual intent, hierarchy, density, typography, and taste
+  against a rendered artifact or records a repo-fit waiver when rendering is
+  impossible.
+- `/a11y` verifies keyboard, focus, labels, contrast, and screen-reader risks
+  for the affected surface.
+
+If either phase finds blocking issues or produces changes, commit the fix and
+return to step 2. Non-UI branches skip this step.
+
+### 6. Self-review hindsight
 
 Read the full branch diff one last time with fresh eyes:
 
@@ -136,7 +157,7 @@ If anything non-trivial surfaces, fix it and return to step 2. The
 self-review gate is not optional — it is the last defense against
 same-model blind spots.
 
-### 6. Verdict-ref check (if supported)
+### 7. Verdict-ref check (if supported)
 
 If the repo uses verdict refs (`scripts/lib/verdicts.sh` exists), confirm
 the current verdict at `refs/verdicts/<branch>` reads `ship` or
@@ -155,12 +176,13 @@ Repos without `scripts/lib/verdicts.sh` skip this step.
 
 ## Exit Criteria
 
-The loop exits and `/settle` reports **ship-ready** only when all four
-gates pass in the *same* iteration:
+The loop exits and `/settle` reports **ship-ready** only when all gates pass
+in the *same* iteration:
 
 - [ ] `/ci` green (all gates, no pending checks)
 - [ ] `/code-review` verdict `ship` or `conditional` (no open blockers)
 - [ ] `/refactor` ran and applied no further changes this iteration
+- [ ] UI diffs have design/a11y evidence or an explicit repo-fit waiver
 - [ ] Self-review hindsight pass produced no follow-ups
 - [ ] (If applicable) verdict ref is fresh and not `dont-ship`
 
@@ -207,7 +229,7 @@ These are hard non-goals. Surface them to the operator if asked.
 | Review input | `fetch-pr-reviews.sh <PR>` + `/code-review` | `/code-review` only |
 | Verdict proof | approving review on PR + verdict ref (if supported) | verdict ref only |
 
-Both modes run the same six-step loop. PR mode adds remote-checks and
+Both modes run the same loop. PR mode adds remote-checks and
 reviewer-comment sources to the existing gates.
 
 ## Refuse Conditions

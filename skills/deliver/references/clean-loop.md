@@ -1,7 +1,8 @@
 # Clean Loop
 
-The clean loop runs `/code-review`, `/ci`, `/refactor`, `/qa` iteratively
-until all green, capped at **3 iterations**.
+The clean loop runs `/code-review`, `/ci`, `/refactor`, conditional
+`/design` + `/a11y`, and `/qa` iteratively until all green, capped at
+**3 iterations**.
 
 ## Iteration Cap
 
@@ -25,6 +26,8 @@ A phase is **dirty** when:
 | `/code-review` | Receipt verdict contains `blocking` findings (severity ≥ blocking). "nit" / "consider" / "suggestion" is NOT dirty. |
 | `/ci` | Non-zero exit from `/ci`. Any dagger check red. |
 | `/refactor` | Non-zero exit. Clean refactor → green even if no-op. |
+| `/design` | UI surface is present and design findings are unresolved, or no rendered-artifact evidence / waiver exists for a UI diff. |
+| `/a11y` | UI surface is present and critical/serious accessibility findings remain unresolved. |
 | `/qa` | P0 or P1 findings in its receipt. P2 does NOT block; gets recorded in receipt `remaining_work` for human attention. |
 
 ## Iteration Logic
@@ -34,9 +37,18 @@ A phase is **dirty** when:
 2. Run `/ci` → capture receipt. If dirty: fix (a phase that hard-fails
    structurally — e.g. missing tool — is exit 10, not dirty).
 3. Run `/refactor` — skip for trivial diffs (<20 LOC, single file).
-4. Run `/qa` — skip when the diff has no user-facing surface (pure
+4. Check whether the diff touches UI surfaces. Prefer
+   `scripts/detect-ui-surfaces.sh --base <repo-default-base>` when available
+   (Spellbook's base is `master`); otherwise use the same path patterns
+   manually (`*.tsx`, `*.jsx`, `*.vue`, `*.svelte`, stylesheets, `app/**`,
+   `pages/**`, `components/**`, stories, tokens, and theme config). If UI
+   surfaces are present, run `/design` and `/a11y` before deciding the branch is
+   clean. Record rendered evidence or an explicit repo-fit waiver. If the
+   detector cannot resolve the base ref, inspect `git diff --name-only`
+   manually instead of treating the detector failure as "no UI".
+5. Run `/qa` — skip when the diff has no user-facing surface (pure
    library / infra / refactor).
-5. If all four green → exit 0, `merge_ready`. Else increment iteration
+6. If all phases are green → exit 0, `merge_ready`. Else increment iteration
    counter and repeat from step 1.
 
 ## Escalation Protocol
@@ -60,3 +72,6 @@ A phase is **dirty** when:
 - Push on cap-hit "so the human can see it"
 - Run `/qa` unconditionally on library-only diffs (judgment: if no
   runtime surface, skip)
+- Treat `ui_surface:true` as a routing signal, not a verdict. `/design` and
+  `/a11y` still own findings and evidence.
+- Treat a detector error as unknown, not clean. Fall back to path inspection.

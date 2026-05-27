@@ -114,12 +114,13 @@ let the outer loop own the final session-level shipping brief.
   /implement        → TDD build on feature branch
     │
     ▼
-┌── CLEAN LOOP (max 3 iterations) ─────────────┐
-│  /code-review    → critic + bench             │
-│  /ci             → dagger audit + run         │
-│  /refactor       → diff-aware simplify        │
-│  /qa             → browser-driven exploratory │
-│  capture evidence → see references/evidence.md│
+┌── CLEAN LOOP (max 3 iterations) ──────────────┐
+│  /code-review     → critic + bench             │
+│  /ci              → dagger audit + run         │
+│  /refactor        → diff-aware simplify        │
+│  /design + /a11y  → only when UI surfaces exist│
+│  /qa              → running-surface evidence   │
+│  capture evidence → see references/evidence.md │
 └──────────────────────────────────────────────┘
     │ all green → merge-ready (exit 0)
     │ cap hit or hard fail → fail loud (exit 20/10)
@@ -137,6 +138,7 @@ let the outer loop own the final session-level shipping brief.
 | ci | `/ci` | dagger audit + green pipeline | `/ci` itself decides — do not pre-filter |
 | hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, or DRY hardening evidence | no phase issued a blocking hardening requirement, or an explicit waiver is recorded |
 | refactor | `/refactor` | diff-aware simplification | trivial diffs (<20 LOC, single file) |
+| design | `/design` + `/a11y` | visual intent, taste, and accessibility evidence | no UI paths by detector or equivalent diff inspection |
 | qa | `/qa` | browser-driven exploratory test, evidence | no user-facing surface (pure library/refactor) |
 
 Each skill has its own contract and receipt. `/deliver` reads those
