@@ -258,7 +258,7 @@ PATTERNS = [
 ]
 
 GLOBS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.py']
-SKIP = {'hooks/', 'coverage/', 'dist/', '.next/', 'node_modules/'}
+SKIP = {'hooks/', 'coverage/', 'dist/', '.next/', 'node_modules/', 'ci/'}
 
 findings = []
 for g in GLOBS:
@@ -509,12 +509,28 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_docs_site(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate generated public docs site output and drift checks."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "scripts/check-docs-site.sh", "--self-test"])
+            .stdout()
+        )
+
+    @function
     async def check(
         self,
         source: Annotated[
             dagger.Directory,
             DefaultPath("/"),
-            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+            Ignore([".git", "__pycache__", ".venv", "skills/.external"]),
             Doc("Repo source directory"),
         ],
     ) -> str:
@@ -550,6 +566,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))
             tg.start_soon(run_gate, "check-skill-evals", self.check_skill_evals(source))
             tg.start_soon(run_gate, "check-agent-roster", self.check_agent_roster(source))
+            tg.start_soon(run_gate, "check-docs-site", self.check_docs_site(source))
 
         # Format results
         lines = ["Spellbook CI Results", "=" * 40]

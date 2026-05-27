@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Auto-regenerate committed derived artifacts when SKILL.md files change.
-# index.yaml stays in sync automatically. Embeddings are local cache only.
+# Auto-regenerate committed derived artifacts from staged source changes.
+# index.yaml and docs/site stay in sync automatically. Embeddings are local cache only.
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
@@ -26,16 +26,38 @@ if [ -n "$deliver_state_hits" ]; then
   exit 1
 fi
 
-skill_changed() {
-  git diff --cached --name-only | grep -q 'skills/.*/SKILL\.md\|agents/.*\.md'
+staged_paths() {
+  git diff --cached --name-only
 }
 
-skill_changed || exit 0
+skill_changed() {
+  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md)$'
+}
 
-# --- index.yaml: always regenerate (cheap, local) ---
-echo "[pre-commit] Skill content changed — regenerating index.yaml"
-bash "$REPO_ROOT/scripts/generate-index.sh" > /dev/null
-git add "$REPO_ROOT/index.yaml"
+docs_input_changed() {
+  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md|AGENTS\.md|harnesses/shared/AGENTS\.md|docs/copy/|docs/positioning\.md|backlog\.d/.*\.md|bootstrap\.sh|ci/src/spellbook_ci/main\.py|scripts/build-docs-site\.py|scripts/check-docs-site\.py)$'
+}
+
+changed=0
+
+if skill_changed; then
+  changed=1
+  echo "[pre-commit] Skill content changed — regenerating index.yaml"
+  bash "$REPO_ROOT/scripts/generate-index.sh" > /dev/null
+  git add "$REPO_ROOT/index.yaml"
+fi
+
+if docs_input_changed; then
+  changed=1
+  echo "[pre-commit] Docs source changed — regenerating docs/site"
+  bash "$REPO_ROOT/scripts/build-docs-site.sh" > /dev/null
+  git add "$REPO_ROOT/docs/site"
+
+  echo "[pre-commit] Verifying generated docs/site"
+  bash "$REPO_ROOT/scripts/check-docs-site.sh" --self-test
+fi
+
+[ "$changed" -eq 1 ] || exit 0
 
 echo "[pre-commit] Verifying shared-root install wording"
 bash "$REPO_ROOT/scripts/check-harness-agnostic-installs.sh"

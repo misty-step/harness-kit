@@ -1,0 +1,596 @@
+{
+  "backlog": [
+    {
+      "source": "backlog.d/023-review-score-feedback-loop.md",
+      "title": "Close the review score \u2192 skill evolution feedback loop"
+    },
+    {
+      "source": "backlog.d/024-offline-evidence-storage.md",
+      "title": "Offline evidence and artifact storage in Git"
+    },
+    {
+      "source": "backlog.d/025-dagger-merge-gate.md",
+      "title": "Dagger as merge gate \u2014 replace GitHub Actions CI"
+    },
+    {
+      "source": "backlog.d/026-multi-machine-sync.md",
+      "title": "Multi-machine sync for claims and verdicts"
+    },
+    {
+      "source": "backlog.d/027-end-to-end-offline-validation.md",
+      "title": "End-to-end offline validation test"
+    },
+    {
+      "source": "backlog.d/031-harness-auto-tune-gepa.md",
+      "title": "GEPA-style harness auto-tune from cycle events"
+    },
+    {
+      "source": "backlog.d/048-code-review-pattern-catalog-convention.md",
+      "title": "`/code-review` pattern-catalog convention"
+    },
+    {
+      "source": "backlog.d/049-bounded-payload-discipline-reference.md",
+      "title": "Bounded-payload discipline reference (shared skill note)"
+    },
+    {
+      "source": "backlog.d/051-agents-md-three-layer-restructure.md",
+      "title": "AGENTS.md three-layer restructure + routing tables"
+    },
+    {
+      "source": "backlog.d/052-spellbook-config-contract.md",
+      "title": "`.spellbook/*.yaml` repo-local config contract for `/flywheel`"
+    },
+    {
+      "source": "backlog.d/053-skill-quality-audit-mode.md",
+      "title": "`/groom audit` \u2014 skill quality coverage audit"
+    },
+    {
+      "source": "backlog.d/054-clean-context-philosophy-bench.md",
+      "title": "Clean-context dispatch for philosophy bench + critic"
+    },
+    {
+      "source": "backlog.d/055-mcp-first-integration-doctrine.md",
+      "title": "MCP-first integration doctrine"
+    },
+    {
+      "source": "backlog.d/056-agent-session-trace-lifecycle.md",
+      "title": "Agent session trace lifecycle"
+    },
+    {
+      "source": "backlog.d/058-work-ledger-mission-control.md",
+      "title": "Work ledger mission-control view"
+    },
+    {
+      "source": "backlog.d/060-rebrand-harness-library.md",
+      "title": "Rebrand the shared harness library"
+    },
+    {
+      "source": "backlog.d/061-retire-global-static-agents.md",
+      "title": "Retire global static agents in favor of dynamic delegation guidance"
+    },
+    {
+      "source": "backlog.d/062-antigravity-cli-migration.md",
+      "title": "Migrate Gemini support to Antigravity CLI and IDE"
+    },
+    {
+      "source": "backlog.d/063-dynamic-delegation-skill-contract.md",
+      "title": "Add a dynamic delegation contract to workflow skills"
+    },
+    {
+      "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
+      "title": "Repo-grounded acceptance contract for workflow skills"
+    },
+    {
+      "source": "backlog.d/066-prompt-debt-reflection-loop.md",
+      "title": "Prompt-debt reflection loop"
+    },
+    {
+      "source": "backlog.d/067-positioning-boundary-for-client-facing-packages.md",
+      "title": "Positioning boundary for client-facing packages"
+    },
+    {
+      "source": "backlog.d/068-harden-shared-lifecycle-scripts.md",
+      "title": "Harden shared lifecycle scripts"
+    },
+    {
+      "source": "backlog.d/069-harden-research-skill-runtime.md",
+      "title": "Harden research skill runtime behavior"
+    },
+    {
+      "source": "backlog.d/069-sdlc-workflow-map-audit.md",
+      "title": "SDLC workflow map audit"
+    },
+    {
+      "source": "backlog.d/070-clean-copied-skill-reference-quality.md",
+      "title": "Clean copied skill reference quality"
+    },
+    {
+      "source": "backlog.d/070-observability-coverage-loop.md",
+      "title": "Observability coverage loop"
+    },
+    {
+      "source": "backlog.d/072-bounded-roster-lane-dispatch.md",
+      "title": "Bounded roster lane dispatch"
+    },
+    {
+      "source": "backlog.d/073-mechanical-hardening-evidence-gates.md",
+      "title": "Mechanical hardening evidence gates"
+    }
+  ],
+  "copy_source": "docs/copy/site.json",
+  "do_not_edit": true,
+  "gates": [
+    "check-agent-roster",
+    "check-deliver-composition",
+    "check-docs-site",
+    "check-exclusions",
+    "check-frontmatter",
+    "check-harness-install-paths",
+    "check-index-drift",
+    "check-no-claims",
+    "check-portable-paths",
+    "check-skill-evals",
+    "check-vendored-copies",
+    "lint-python",
+    "lint-shell",
+    "lint-yaml",
+    "test-bun"
+  ],
+  "generated_by": "scripts/build-docs-site.py",
+  "icons": [
+    "build",
+    "catalog",
+    "learn",
+    "operate",
+    "plan",
+    "repair",
+    "review",
+    "ship",
+    "specialist",
+    "verify"
+  ],
+  "primitives": [
+    {
+      "description": "Accessibility audit, remediation, and verification. WCAG 2.2 AA compliance. Three-agent protocol: audit (find issues) \u2192 remediate (fix them) \u2192 critique (verify fixes). Use when: \"accessibility audit\", \"a11y\", \"WCAG\", \"screen reader\", \"keyboard navigation\", \"contrast check\", \"aria fix\", \"accessibility sprint\", \"audit accessibility\", \"fix accessibility\", \"a11y issues\", \"a11y check\". Trigger: /a11y",
+      "icon": "catalog",
+      "id": "skill:a11y",
+      "kind": "skill",
+      "name": "a11y",
+      "page": "reference/skills/a11y.html",
+      "role": "Support",
+      "source": "skills/a11y/SKILL.md"
+    },
+    {
+      "description": "Assess and improve codebase readiness for AI coding agents. Dispatches parallel subagents to evaluate style, testing, docs, architecture, CI, observability, security, and dev environment. Produces a scored report with prioritized remediation. Then executes the highest-impact fixes. Use when: \"agent readiness\", \"is this codebase agent-ready\", \"readiness report\", \"make this codebase agent-friendly\", \"agent-ready assessment\", \"readiness audit\", \"prepare for agents\". Trigger: /agent-readiness, /readiness.",
+      "icon": "catalog",
+      "id": "skill:agent-readiness",
+      "kind": "skill",
+      "name": "agent-readiness",
+      "page": "reference/skills/agent-readiness.html",
+      "role": "Support",
+      "source": "skills/agent-readiness/SKILL.md"
+    },
+    {
+      "description": "Pick the right browser automation tool for a given task \u2014 across web and Electron apps, from CI tests to autonomous agents. Browser automation in 2026 is a testing pyramid: deterministic Playwright E2E at the base, AI-assisted helpers in the middle, persona-driven exploratory agents on top, and continuous QA agents against staging/production on top of that. Findings flow down (discoveries harden into deterministic tests), not up. Encodes the pyramid, the four-layer tool taxonomy (driver/mode/wrapper/ infra), the three distinct Playwright surfaces, and the load-bearing gotchas (agent() token trap, Spectron deprecation, runtime vs authoring- time AI, when selectors beat AI and when they don't). Use for: \"automate the browser\", \"script this flow\", \"test this web app\", \"test this electron app\", \"scrape this site\", \"should I use Playwright or Stagehand\", \"which browser tool\", \"browser agent\", \"exploratory QA\", \"persona testing\", \"continuous QA\", \"synthetic monitoring\", \"puppet this UI\", \"headless chrome\", \"visual regression\", \"E2E tests\", \"self-healing tests\", \"autonomous QA\". Trigger: /browser.",
+      "icon": "catalog",
+      "id": "skill:browser",
+      "kind": "skill",
+      "name": "browser",
+      "page": "reference/skills/browser.html",
+      "role": "Support",
+      "source": "skills/browser/SKILL.md"
+    },
+    {
+      "description": "Audit a repo's CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness \u2014 lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"dagger check\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
+      "icon": "verify",
+      "id": "skill:ci",
+      "kind": "skill",
+      "name": "ci",
+      "page": "reference/skills/ci.html",
+      "role": "Verify",
+      "source": "skills/ci/SKILL.md"
+    },
+    {
+      "description": "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this code\", \"review my changes\". Trigger: /code-review, /review, /critique.",
+      "icon": "review",
+      "id": "skill:code-review",
+      "kind": "skill",
+      "name": "code-review",
+      "page": "reference/skills/code-review.html",
+      "role": "Review",
+      "source": "skills/code-review/SKILL.md"
+    },
+    {
+      "description": "Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape \u2192 /implement \u2192 {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does not deploy. Communicates with callers via exit code + receipt.json \u2014 no stdout parsing. Every run also ends with a tight operator-facing brief plus a full /reflect session. Use when: building a shaped ticket, \"deliver this\", \"make it merge-ready\", driving one backlog item through review + CI + QA. Trigger: /deliver.",
+      "icon": "operate",
+      "id": "skill:deliver",
+      "kind": "skill",
+      "name": "deliver",
+      "page": "reference/skills/deliver.html",
+      "role": "Orchestrate",
+      "source": "skills/deliver/SKILL.md"
+    },
+    {
+      "description": "Capture and share what changed \u2014 every app has a demo path; the format depends on the change and the audience. The spectrum runs from a release-notes blurb (\"no demo needed, here's what moved\") through a curl + JSON paste, a terminal recording, a screenshot, a GIF, up to a polished narrated launch video. Pick the path that fits the change shape (UI / API / CLI / library / agent tool / internal-only), the audience (PR reviewer / team Slack / external customer), and the time budget. Also scaffolds a project-local demo skill for repos with recurring polished-capture needs. Use when: \"make a demo\", \"generate demo\", \"record walkthrough\", \"launch video\", \"PR evidence\", \"upload screenshots\", \"demo artifacts\", \"make a video\", \"demo this feature\", \"create a walkthrough\", \"show what changed\", \"paste the output\", \"release notes blurb\", \"scaffold demo\", \"generate demo skill\". Trigger: /demo.",
+      "icon": "catalog",
+      "id": "skill:demo",
+      "kind": "skill",
+      "name": "demo",
+      "page": "reference/skills/demo.html",
+      "role": "Support",
+      "source": "skills/demo/SKILL.md"
+    },
+    {
+      "description": "Ship merged code to a deploy target. Thin router \u2014 detects target from repo config, dispatches to platform-specific recipe, captures a structured receipt (sha, version, URL, rollback handle), stops when the target reports healthy. Does not monitor (\u2192 /monitor), does not triage (\u2192 /diagnose), does not decide when to deploy. Use when: \"deploy\", \"ship this\", \"ship to prod\", \"release\", \"push to staging\", \"deploy this branch\", \"release cut\". Trigger: /deploy, /ship-it, /release.",
+      "icon": "catalog",
+      "id": "skill:deploy",
+      "kind": "skill",
+      "name": "deploy",
+      "page": "reference/skills/deploy.html",
+      "role": "Support",
+      "source": "skills/deploy/SKILL.md"
+    },
+    {
+      "description": "Analyze, test, and upgrade dependencies. One curated PR, not 47 version bumps. Reachability analysis, behavioral diffs, risk assessment. Package-manager agnostic. Use when: \"upgrade deps\", \"dependency audit\", \"check for updates\", \"outdated packages\", \"security audit deps\", \"update dependencies\", \"vulnerable dependencies\", \"deps\". Trigger: /deps.",
+      "icon": "catalog",
+      "id": "skill:deps",
+      "kind": "skill",
+      "name": "deps",
+      "page": "reference/skills/deps.html",
+      "role": "Support",
+      "source": "skills/deps/SKILL.md"
+    },
+    {
+      "description": "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, information architecture, interaction feel, content structure, brand fit, taste, or aesthetic quality. Requires a screenshot, live URL, rendered artifact, or explicit file plus a one-sentence intent. Triggers on \"make this look better\", \"improve the design\", \"more tasteful\", \"better hierarchy\", \"polish the UI\", \"critique this screen\", \"reimagine this page\", \"layout\", \"typography\", \"visual design\", \"aesthetic\", \"design pass\", \"art direction\". Trigger: /design.",
+      "icon": "catalog",
+      "id": "skill:design",
+      "kind": "skill",
+      "name": "design",
+      "page": "reference/skills/design.html",
+      "role": "Support",
+      "source": "skills/design/SKILL.md"
+    },
+    {
+      "description": "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause \u2192 pattern analysis \u2192 hypothesis test \u2192 fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, \"diagnose\", \"why is this broken\", \"debug this\", \"production down\", \"is production ok\", \"audit stripe\", \"log issues\". Trigger: /diagnose.",
+      "icon": "repair",
+      "id": "skill:diagnose",
+      "kind": "skill",
+      "name": "diagnose",
+      "page": "reference/skills/diagnose.html",
+      "role": "Repair",
+      "source": "skills/diagnose/SKILL.md"
+    },
+    {
+      "description": "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: \"flywheel\", \"run the outer loop\", \"next N items\", \"overnight queue\", \"cycle\". Trigger: /flywheel.",
+      "icon": "operate",
+      "id": "skill:flywheel",
+      "kind": "skill",
+      "name": "flywheel",
+      "page": "reference/skills/flywheel.html",
+      "role": "Operate",
+      "source": "skills/flywheel/SKILL.md"
+    },
+    {
+      "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode \u2014 it happens every time. Strategic-layer work fans out parallel interrogation, design-critique, technical-review, and research lanes. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\". Trigger: /groom, /backlog, /rethink, /moonshot, /scaffold.",
+      "icon": "plan",
+      "id": "skill:groom",
+      "kind": "skill",
+      "name": "groom",
+      "page": "reference/skills/groom.html",
+      "role": "Plan",
+      "source": "skills/groom/SKILL.md"
+    },
+    {
+      "description": "Agent-driven test hardening for functions, specs, and acceptance surfaces: property testing, mutation testing, acceptance mutation, CRAP/SCRAP risk, and structural DRY analysis. Use when: \"property test this\", \"mutation test\", \"CRAP analysis\", \"DRY analysis\", \"harden tests\", \"find weak tests\", \"kill surviving mutants\", \"acceptance mutation\", \"uncle bob hardening\". Trigger: /hardening.",
+      "icon": "catalog",
+      "id": "skill:hardening",
+      "kind": "skill",
+      "name": "hardening",
+      "page": "reference/skills/hardening.html",
+      "role": "Support",
+      "source": "skills/hardening/SKILL.md"
+    },
+    {
+      "description": "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness, /skill, /primitive.",
+      "icon": "repair",
+      "id": "skill:harness",
+      "kind": "skill",
+      "name": "harness",
+      "page": "reference/skills/harness.html",
+      "role": "Maintain",
+      "source": "skills/harness/SKILL.md"
+    },
+    {
+      "description": "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red \u2192 Green \u2192 Refactor. Does not shape, review, QA, or ship \u2014 single concern: spec to green tests. Use when: \"implement this spec\", \"build this\", \"TDD this\", \"code this up\", \"write the code for this ticket\", after /shape has produced a context packet. Trigger: /implement, /build (alias).",
+      "icon": "build",
+      "id": "skill:implement",
+      "kind": "skill",
+      "name": "implement",
+      "page": "reference/skills/implement.html",
+      "role": "Build",
+      "source": "skills/implement/SKILL.md"
+    },
+    {
+      "description": "Four behavioral guidelines to reduce common LLM coding mistakes: surface assumptions, prefer simplicity, make surgical changes, drive by verifiable goals. Distilled from Andrej Karpathy's observations on where LLM agents silently fail. Reference inline when facing a judgment call about scope, simplicity, assumptions, or success criteria. Use when: \"am I overcomplicating this\", \"should I refactor this adjacent code\", \"what are my assumptions\", \"how do I verify success\", \"/karpathy\", \"/principles\".",
+      "icon": "catalog",
+      "id": "skill:karpathy-guidelines",
+      "kind": "skill",
+      "name": "karpathy-guidelines",
+      "page": "reference/skills/karpathy-guidelines.html",
+      "role": "Support",
+      "source": "skills/karpathy-guidelines/SKILL.md"
+    },
+    {
+      "description": "Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces ranked recommendations. Use when: \"which model\", \"compare models\", \"find a model\", \"model research\", \"best model for\", \"cheapest model\", \"tool calling models\", \"model selection\", \"upgrade model\", \"swap model\", \"fallback models\", \"model chain\".",
+      "icon": "catalog",
+      "id": "skill:model-research",
+      "kind": "skill",
+      "name": "model-research",
+      "page": "reference/skills/model-research.html",
+      "role": "Support",
+      "source": "skills/model-research/SKILL.md"
+    },
+    {
+      "description": "Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, flaky tests, benchmark drift, local daemon output, release regressions, or agent-session audit trails. Emit structured events. Escalate to /diagnose on trip, close clean on green. Thin watcher, not diagnostician. Use when: \"monitor signals\", \"watch the deploy\", \"is the deploy ok\", \"post-deploy watch\", \"signal watch\", \"watch production\", \"watch CI\", \"watch logs\", \"watch benchmark drift\", \"is it healthy\". Trigger: /monitor.",
+      "icon": "operate",
+      "id": "skill:monitor",
+      "kind": "skill",
+      "name": "monitor",
+      "page": "reference/skills/monitor.html",
+      "role": "Operate",
+      "source": "skills/monitor/SKILL.md"
+    },
+    {
+      "description": "Verify a running app works \u2014 every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; \"tests pass\" is not QA. Use when: \"run QA\", \"test this\", \"verify the feature\", \"exploratory test\", \"check the app\", \"QA this PR\", \"smoke test\", \"capture evidence\", \"manual testing\", \"scaffold qa\", \"generate qa skill\". Trigger: /qa.",
+      "icon": "verify",
+      "id": "skill:qa",
+      "kind": "skill",
+      "name": "qa",
+      "page": "reference/skills/qa.html",
+      "role": "Verify",
+      "source": "skills/qa/SKILL.md"
+    },
+    {
+      "description": "Branch-aware simplification and refactoring workflow. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan the full codebase, research prior art, and identify the highest-impact simplification opportunity. Use when: \"refactor this\", \"simplify this diff\", \"clean this up\", \"reduce complexity\", \"pay down tech debt\", \"make this easier to maintain\", \"make this more elegant\", \"reduce the number of states\", \"clarify naming\". Trigger: /refactor.",
+      "icon": "repair",
+      "id": "skill:refactor",
+      "kind": "skill",
+      "name": "refactor",
+      "page": "reference/skills/refactor.html",
+      "role": "Improve",
+      "source": "skills/refactor/SKILL.md"
+    },
+    {
+      "description": "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Distills learnings into hooks/rules/skills, mutates the backlog from evidence, and emits harness-tuning suggestions to a branch. Learning engine of the outer loop. Use when: \"done\", \"wrap up\", \"what did we learn\", \"retro\", \"reflect\", \"calibrate\", \"how could I have asked better\", \"prompt better\", \"teach me from this session\", \"what should I learn from this\", \"reflect on cycle\", \"cycle postmortem\", post-/flywheel critique. Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.",
+      "icon": "learn",
+      "id": "skill:reflect",
+      "kind": "skill",
+      "name": "reflect",
+      "page": "reference/skills/reflect.html",
+      "role": "Learn",
+      "source": "skills/reflect/SKILL.md"
+    },
+    {
+      "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"session analysis\", \"check readwise\", \"saved articles\", \"reading list\", \"highlights\", \"what are people saying\", \"X search\", \"social sentiment\", \"trending\".",
+      "icon": "catalog",
+      "id": "skill:research",
+      "kind": "skill",
+      "name": "research",
+      "page": "reference/skills/research.html",
+      "role": "Explore",
+      "source": "skills/research/SKILL.md"
+    },
+    {
+      "description": "Vendor the system-wide Spellbook harness into the current repo when a project needs checked-in local copies instead of relying on global bootstrap symlinks. Copies first-party skills and agents into a repo-local shared skill layer, then bridges harness-specific entrypoints back to that shared copy. Use when: \"seed this repo\", \"vendor spellbook here\", \"initialize the agent here\", \"set me up offline\". Trigger: /seed.",
+      "icon": "catalog",
+      "id": "skill:seed",
+      "kind": "skill",
+      "name": "seed",
+      "page": "reference/skills/seed.html",
+      "role": "Support",
+      "source": "skills/seed/SKILL.md"
+    },
+    {
+      "description": "Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Does not archive tickets. Hands off to /ship for the final mile. Use when: \"polish this\", \"get this merge-ready\", \"unblock\", \"clean up\", \"address reviews\", \"fix CI\", \"make this shippable\". Trigger: /settle, /pr-fix, /pr-polish.",
+      "icon": "catalog",
+      "id": "skill:settle",
+      "kind": "skill",
+      "name": "settle",
+      "page": "reference/skills/settle.html",
+      "role": "Support",
+      "source": "skills/settle/SKILL.md"
+    },
+    {
+      "description": "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"plan this\", \"spec out\", \"context packet\", \"technical design\". Trigger: /shape, /spec, /plan, /cp.",
+      "icon": "plan",
+      "id": "skill:shape",
+      "kind": "skill",
+      "name": "shape",
+      "page": "reference/skills/shape.html",
+      "role": "Plan",
+      "source": "skills/shape/SKILL.md"
+    },
+    {
+      "description": "Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /settle has already left the branch merge-ready \u2014 ship does not run CI, code-review, or refactor itself. If those aren't done, run /settle first. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
+      "icon": "ship",
+      "id": "skill:ship",
+      "kind": "skill",
+      "name": "ship",
+      "page": "reference/skills/ship.html",
+      "role": "Ship",
+      "source": "skills/ship/SKILL.md"
+    },
+    {
+      "description": "End-to-end \"ship it to the remote\" in one command. Reads the whole worktree, understands what's in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pushes. Not a git wrapper \u2014 a judgment layer on top of git. Decides what belongs, what doesn't, and how to slice the diff into commits a reviewer can read. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship it\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",
+      "icon": "ship",
+      "id": "skill:yeet",
+      "kind": "skill",
+      "name": "yeet",
+      "page": "reference/skills/yeet.html",
+      "role": "Ship",
+      "source": "skills/yeet/SKILL.md"
+    },
+    {
+      "description": "Finds accessibility issues. Does NOT fix them. Read-only investigation.",
+      "icon": "specialist",
+      "id": "agent:a11y-auditor",
+      "kind": "agent",
+      "name": "a11y-auditor",
+      "page": "reference/agents/a11y-auditor.html",
+      "role": "Specialist",
+      "source": "agents/a11y-auditor.md"
+    },
+    {
+      "description": "Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics.",
+      "icon": "specialist",
+      "id": "agent:a11y-critic",
+      "kind": "agent",
+      "name": "a11y-critic",
+      "page": "reference/agents/a11y-critic.html",
+      "role": "Specialist",
+      "source": "agents/a11y-critic.md"
+    },
+    {
+      "description": "Fixes accessibility issues from audit findings. Minimal surgical changes. Native HTML over ARIA.",
+      "icon": "specialist",
+      "id": "agent:a11y-fixer",
+      "kind": "agent",
+      "name": "a11y-fixer",
+      "page": "reference/agents/a11y-fixer.html",
+      "role": "Specialist",
+      "source": "agents/a11y-fixer.md"
+    },
+    {
+      "description": "TDD + simple design - \"Red. Green. Refactor",
+      "icon": "specialist",
+      "id": "agent:beck",
+      "kind": "agent",
+      "name": "beck",
+      "page": "reference/agents/beck.html",
+      "role": "Specialist",
+      "source": "agents/beck.md"
+    },
+    {
+      "description": "Implements specs via TDD. Follows the planner's context packet exactly. Heads-down execution.",
+      "icon": "specialist",
+      "id": "agent:builder",
+      "kind": "agent",
+      "name": "builder",
+      "page": "reference/agents/builder.html",
+      "role": "Specialist",
+      "source": "agents/builder.md"
+    },
+    {
+      "description": "Direct implementation + shippability - \"Focus is deciding what NOT to do",
+      "icon": "specialist",
+      "id": "agent:carmack",
+      "kind": "agent",
+      "name": "carmack",
+      "page": "reference/agents/carmack.html",
+      "role": "Specialist",
+      "source": "agents/carmack.md"
+    },
+    {
+      "description": "Classicist TDD + no internal mocks \u2014 \"A mock is a crutch. It lets you get a green test while the integration is broken.",
+      "icon": "specialist",
+      "id": "agent:cooper",
+      "kind": "agent",
+      "name": "cooper",
+      "page": "reference/agents/cooper.html",
+      "role": "Specialist",
+      "source": "agents/cooper.md"
+    },
+    {
+      "description": "Evaluates builder output against grading criteria. Skeptical by default. Fails or approves.",
+      "icon": "specialist",
+      "id": "agent:critic",
+      "kind": "agent",
+      "name": "critic",
+      "page": "reference/agents/critic.html",
+      "role": "Specialist",
+      "source": "agents/critic.md"
+    },
+    {
+      "description": "Complexity demon hunter - \"complexity very, very bad",
+      "icon": "specialist",
+      "id": "agent:grug",
+      "kind": "agent",
+      "name": "grug",
+      "page": "reference/agents/grug.html",
+      "role": "Specialist",
+      "source": "agents/grug.md"
+    },
+    {
+      "description": "Deep modules + information hiding - \"Deep modules manage complexity",
+      "icon": "specialist",
+      "id": "agent:ousterhout",
+      "kind": "agent",
+      "name": "ousterhout",
+      "page": "reference/agents/ousterhout.html",
+      "role": "Specialist",
+      "source": "agents/ousterhout.md"
+    },
+    {
+      "description": "Decomposes work into buildable specs. Writes context packets. Does NOT implement.",
+      "icon": "specialist",
+      "id": "agent:planner",
+      "kind": "agent",
+      "name": "planner",
+      "page": "reference/agents/planner.html",
+      "role": "Specialist",
+      "source": "agents/planner.md"
+    }
+  ],
+  "workflows": [
+    {
+      "decision": "Pick the workflow with repeated demand, visible friction, and a clear success oracle.",
+      "evidence": "Candidate workflow, non-goals, owner, acceptance proof, and failure/escalation conditions.",
+      "failure": "If no repeated pain or proof exists, keep researching instead of automating a demo-shaped workflow.",
+      "icon": "plan",
+      "input": "Messy process notes, stakeholder complaints, recent examples, and the current manual handoff.",
+      "source": "skills/shape/SKILL.md",
+      "summary": "Find the narrow repeatable pain before you build the agent.",
+      "title": "Choose the first workflow worth automating"
+    },
+    {
+      "decision": "Choose the smallest buildable slice that still makes the desired end state more true.",
+      "evidence": "A backlog.d item with goal, problem challenge, design, oracle, non-goals, and related work.",
+      "failure": "If the oracle is weak or the audience is wrong, route back to research or positioning before implementation.",
+      "icon": "plan",
+      "input": "A rough request, repo context, constraints, and the nearest live source files.",
+      "source": "skills/shape/SKILL.md",
+      "summary": "Move from ambition to a buildable slice with a real oracle.",
+      "title": "Turn a raw idea into a shaped ticket"
+    },
+    {
+      "decision": "Let implementation, review, CI, refactor, and QA each own their part of the evidence loop.",
+      "evidence": "Green gate output, review receipts, QA evidence, clean tree, and a delivery brief.",
+      "failure": "If any phase cannot produce live evidence, the branch is not merge-ready.",
+      "icon": "ship",
+      "input": "A shaped backlog item with concrete oracle and implementation surface.",
+      "source": "skills/deliver/SKILL.md",
+      "summary": "Use the inner loop to turn a shaped ticket into merge-ready work.",
+      "title": "Ship a repo change with review and gates"
+    },
+    {
+      "decision": "Prefer a stable checkout and system-wide provider roster over repo-local source bridges.",
+      "evidence": "Harness skill links, agent links, roster config, and no duplicate source-repo skill bridges.",
+      "failure": "If a harness cannot discover the global install, diagnose bootstrap paths before adding local copies.",
+      "icon": "build",
+      "input": "A local checkout or the GitHub bootstrap URL.",
+      "source": "bootstrap.sh",
+      "summary": "Put the shared primitives where every supported harness can find them.",
+      "title": "Install the system-wide harness with bootstrap.sh"
+    },
+    {
+      "decision": "Name the automation boundary, approval point, evidence standard, rollback path, and escalation rule.",
+      "evidence": "Control gaps, eval/oracle plan, receipt expectations, least-privilege boundary, rollback path, and escalation rule.",
+      "failure": "If controls are undefined, keep the workflow in implementation substrate rather than client-facing packaging.",
+      "icon": "repair",
+      "input": "Workflow description, tool permissions, model/provider choices, risk points, and expected operator handoff.",
+      "source": "docs/positioning.md",
+      "summary": "Decide where the machine stops and the operator steps in.",
+      "title": "Audit an AI workflow for evals, monitoring, and approval points"
+    }
+  ]
+}

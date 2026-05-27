@@ -57,6 +57,22 @@ backlog.d/ → /groom → /shape → /deliver → ship
 For a deeper map of the repository architecture, encoded assumptions, operating
 loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
 
+## Static Docs Companion
+
+Spellbook's public static docs companion is generated from live repo sources:
+
+```bash
+scripts/build-docs-site.sh
+scripts/check-docs-site.sh --self-test
+```
+
+Open [`docs/site/index.html`](docs/site/index.html) for the rendered site.
+Public-facing copy lives in [`docs/copy/site.json`](docs/copy/site.json).
+Source changes auto-regenerate the site via pre-commit; CI fails on drift.
+The generated catalog includes every local skill and agent, CI gate map,
+workflow walkthroughs, governance notes, and an agent-readable
+[`docs/site/llms.txt`](docs/site/llms.txt).
+
 ## Structure
 
 ```

@@ -7,7 +7,7 @@ disk; do not restate obvious filesystem facts.
 ## Non-Negotiables
 
 - Base branch: `master`.
-- Gate: `dagger call check --source=.`. Green means all 14 Spellbook CI lanes
+- Gate: `dagger call check --source=.`. Green means all 15 Spellbook CI lanes
   pass. `/ci` owns the exact lane list in `ci/src/spellbook_ci/main.py`.
 - Clean-tree closeout: no run is complete while
   `git status --short --untracked-files=all` shows paths. Commit, delete,
@@ -73,6 +73,9 @@ the active skill with a role, scope, output shape, and boundaries.
 - `.spellbook/agents.yaml` / `~/.spellbook/agents.yaml` — provider roster and
   default commands.
 - `scripts/check-agent-roster.py` — roster + delegation-floor gate.
+- `docs/copy/site.json` — public-facing docs companion copy and icon map.
+- `scripts/build-docs-site.sh` — regenerates `docs/site/` from live repo sources.
+- `scripts/check-docs-site.sh` — generated docs companion drift and oracle gate.
 - `scripts/record-delegation.py` / `scripts/summarize-delegations.py` —
   receipt capture and operator report.
 - `skills/harness/SKILL.md` — harness mutation contract.
