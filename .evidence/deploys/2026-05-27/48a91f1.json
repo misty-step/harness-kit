@@ -1,0 +1,21 @@
+{
+  "version": "48a91f1",
+  "sha": "48a91f13258ed3822813b1c5593ebd43eea089e2",
+  "env": "prod",
+  "target": "github-pages",
+  "app": "phrazzld/spellbook",
+  "url": "https://phrazzld.github.io/spellbook/",
+  "healthcheck_url": "https://phrazzld.github.io/spellbook/",
+  "deploy_id": "26536104942",
+  "rollback_handle": "git revert 48a91f13258ed3822813b1c5593ebd43eea089e2",
+  "status": "healthy",
+  "action": "deployed",
+  "timestamp": "2026-05-27T20:14:48Z",
+  "duration_seconds": 20,
+  "operator": "phrazzld",
+  "evidence": {
+    "workflow_url": "https://github.com/phrazzld/spellbook/actions/runs/26536104942",
+    "live_probe": "curl -I https://phrazzld.github.io/spellbook/",
+    "llms_probe": "curl -fsSL https://phrazzld.github.io/spellbook/llms.txt"
+  }
+}
