@@ -83,7 +83,7 @@ quality matters, it is probably wrong.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
 - System bootstrap installs every first-party skill into each detected harness.
   `.agents/skills/` is the optional repo-local vendored root with per-harness
-  bridges.
+  bridges for consumer repos, not for the Spellbook source checkout itself.
 - Unknown or unmarked harness artifacts are user-owned. Preserve or ask.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 
