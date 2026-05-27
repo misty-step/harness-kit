@@ -1,6 +1,9 @@
 import json
+import os
 import stat
 import tempfile
+import textwrap
+import time
 import unittest
 from pathlib import Path
 
@@ -16,6 +19,7 @@ from agent_roster import (  # noqa: E402
     append_receipt,
     build_attempt_receipt,
     build_probe_receipts,
+    dispatch_provider_lane,
     load_roster,
     summarize_receipts,
     resolve_roster_path,
@@ -269,6 +273,145 @@ class ReceiptTests(unittest.TestCase):
 
         self.assertEqual(summary["total"], 1)
         self.assertEqual(set(summary["providers"]), {"codex"})
+
+    def test_dispatch_refuses_unavailable_provider_before_running(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            transcript_dir = root / "traces"
+            receipt_path = root / "delegations.jsonl"
+            roster = _fixture_roster("missing-agent --run", probe="missing-agent --version")
+
+            receipt = dispatch_provider_lane(
+                roster,
+                provider_target="codex",
+                prompt="hello",
+                objective="unavailable provider fixture",
+                input_ref="prompt.txt",
+                backlog_ref="backlog.d/072-bounded-roster-lane-dispatch.md",
+                transcript_dir=transcript_dir,
+                receipt_output=receipt_path,
+                timeout_s=1,
+                grace_s=0.1,
+                lead_harness="codex",
+                lead_provider="codex",
+                path_env="",
+            )
+
+            self.assertEqual(receipt["provider_status"], "unavailable")
+            self.assertEqual(receipt["attempt_status"], "failed")
+            self.assertFalse(transcript_dir.exists())
+            self.assertEqual(summarize_receipts(receipt_path)["total"], 1)
+
+    def test_dispatch_timeout_kills_process_group_and_records_transcript(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bin_dir = root / "bin"
+            bin_dir.mkdir()
+            pid_file = root / "child.pid"
+            fake = bin_dir / "fake-agent"
+            fake.write_text(
+                textwrap.dedent(
+                    f"""\
+                    #!{sys.executable}
+                    import pathlib
+                    import signal
+                    import subprocess
+                    import sys
+                    import time
+                    import warnings
+
+                    warnings.filterwarnings("ignore", category=ResourceWarning)
+
+                    if "--version" in sys.argv:
+                        print("fake-agent 1.0")
+                        raise SystemExit(0)
+
+                    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+                    child = subprocess.Popen([
+                        sys.executable,
+                        "-c",
+                        "import signal,time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(60)",
+                    ])
+                    pathlib.Path({str(pid_file)!r}).write_text(str(child.pid))
+                    print("started child", child.pid, flush=True)
+                    while True:
+                        time.sleep(1)
+                    """
+                )
+            )
+            fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+            receipt_path = root / "delegations.jsonl"
+            transcript_dir = root / "traces"
+            roster = _fixture_roster("fake-agent run", probe="fake-agent --version")
+
+            started = time.monotonic()
+            receipt = dispatch_provider_lane(
+                roster,
+                provider_target="codex",
+                prompt="hello",
+                objective="timeout fixture",
+                input_ref="prompt.txt",
+                backlog_ref="backlog.d/072-bounded-roster-lane-dispatch.md",
+                transcript_dir=transcript_dir,
+                receipt_output=receipt_path,
+                timeout_s=0.2,
+                grace_s=0.1,
+                lead_harness="codex",
+                lead_provider="codex",
+                path_env=str(bin_dir),
+            )
+            elapsed = time.monotonic() - started
+
+            self.assertLess(elapsed, 2)
+            self.assertEqual(receipt["provider_status"], "error")
+            self.assertEqual(receipt["attempt_status"], "failed")
+            self.assertIn("timed out", receipt["summary"])
+            self.assertEqual(len(receipt["evidence_refs"]), 1)
+            transcript = Path(receipt["evidence_refs"][0])
+            self.assertTrue(transcript.exists())
+            self.assertIn("started child", transcript.read_text())
+            self.assertEqual(summarize_receipts(receipt_path)["total"], 1)
+
+            child_pid = int(pid_file.read_text())
+            for _ in range(20):
+                if not _pid_exists(child_pid):
+                    break
+                time.sleep(0.05)
+            self.assertFalse(_pid_exists(child_pid))
+
+
+def _fixture_roster(dispatch: str, *, probe: str) -> dict:
+    roster = {
+        "version": 1,
+        "providers": {
+            provider: {
+                "tier": "primary" if provider in {"codex", "claude", "pi"} else "conditional",
+                "kind": "cli",
+                "probe": probe,
+                "dispatch": dispatch,
+                "output": "text",
+                "permissions": "default",
+                "worktree": "recommended",
+                "notes": "fixture",
+            }
+            for provider in ROSTER_PROVIDER_IDS
+        },
+    }
+    roster["providers"]["manual"]["tier"] = "manual"
+    roster["providers"]["manual"]["kind"] = "manual"
+    roster["providers"]["manual"]["probe"] = "manual"
+    roster["providers"]["manual"]["dispatch"] = "manual"
+    roster["providers"]["manual"]["output"] = "manual-summary"
+    roster["providers"]["manual"]["worktree"] = "not_applicable"
+    return roster
+
+
+def _pid_exists(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    return True
 
 
 class FixtureSyntaxTests(unittest.TestCase):

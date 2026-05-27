@@ -8,7 +8,9 @@ import os
 import re
 import shlex
 import shutil
+import signal
 import subprocess
+import time
 import uuid
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
@@ -229,6 +231,155 @@ def _probe_status(provider_id: str, provider: dict[str, Any], path_env: str | No
     if completed.returncode != 0:
         return "error"
     return "available"
+
+
+def dispatch_provider_lane(
+    roster: dict[str, Any],
+    *,
+    provider_target: str,
+    prompt: str,
+    objective: str,
+    input_ref: str,
+    transcript_dir: Path,
+    receipt_output: Path,
+    timeout_s: float,
+    grace_s: float,
+    lead_harness: str,
+    lead_provider: str,
+    backlog_ref: str = "",
+    path_env: str | None = None,
+) -> dict[str, Any]:
+    """Run one provider command with process-group cleanup and receipt capture."""
+    validate_roster(roster)
+    if provider_target not in roster["providers"]:
+        raise ValueError(f"unknown provider target: {provider_target}")
+
+    provider = roster["providers"][provider_target]
+    worktree_id = Path.cwd().name
+    if provider["kind"] == "manual":
+        receipt = build_attempt_receipt(
+            provider_target=provider_target,
+            provider_status="manual",
+            attempt_status="manual",
+            objective=objective,
+            input_ref=input_ref,
+            evidence_refs=[],
+            lead_verdict="reference_only",
+            worktree_id=worktree_id,
+            backlog_ref=backlog_ref,
+            lead_harness=lead_harness,
+            lead_provider=lead_provider,
+            summary="manual provider cannot be dispatched by CLI",
+        )
+        append_receipt(receipt_output, receipt)
+        return receipt
+
+    provider_status = _probe_status(provider_target, provider, path_env)
+    if provider_status != "available":
+        receipt = build_attempt_receipt(
+            provider_target=provider_target,
+            provider_status=provider_status,
+            attempt_status="failed",
+            objective=objective,
+            input_ref=input_ref,
+            evidence_refs=[],
+            lead_verdict="rejected",
+            worktree_id=worktree_id,
+            backlog_ref=backlog_ref,
+            lead_harness=lead_harness,
+            lead_provider=lead_provider,
+            summary=f"provider probe was {provider_status}; dispatch skipped",
+        )
+        append_receipt(receipt_output, receipt)
+        return receipt
+
+    command = shlex.split(provider["dispatch"]) + [prompt]
+    transcript = _transcript_path(transcript_dir, provider_target)
+    transcript.parent.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    if path_env is not None:
+        env["PATH"] = path_env
+
+    timed_out = False
+    with transcript.open("w") as output:
+        process = subprocess.Popen(
+            command,
+            stdout=output,
+            stderr=subprocess.STDOUT,
+            text=True,
+            env=env,
+            start_new_session=True,
+        )
+        try:
+            returncode = process.wait(timeout=timeout_s)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            cleanup_note = _terminate_process_group(process.pid, grace_s)
+            try:
+                returncode = process.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                returncode = -signal.SIGKILL
+
+    if timed_out:
+        provider_status = "error"
+        attempt_status = "failed"
+        lead_verdict = "rejected"
+        summary = f"provider dispatch timed out after {timeout_s:g}s; {cleanup_note}"
+    elif returncode == 0:
+        provider_status = "available"
+        attempt_status = "succeeded"
+        lead_verdict = "pending"
+        summary = "provider dispatch exited 0"
+    else:
+        provider_status = "available"
+        attempt_status = "failed"
+        lead_verdict = "rejected"
+        summary = f"provider dispatch exited {returncode}"
+
+    receipt = build_attempt_receipt(
+        provider_target=provider_target,
+        provider_status=provider_status,
+        attempt_status=attempt_status,
+        objective=objective,
+        input_ref=input_ref,
+        evidence_refs=[str(transcript)],
+        lead_verdict=lead_verdict,
+        worktree_id=worktree_id,
+        backlog_ref=backlog_ref,
+        lead_harness=lead_harness,
+        lead_provider=lead_provider,
+        summary=summary,
+    )
+    append_receipt(receipt_output, receipt)
+    return receipt
+
+
+def _transcript_path(transcript_dir: Path, provider_target: str) -> Path:
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
+    safe_provider = re.sub(r"[^A-Za-z0-9_.-]", "_", provider_target)
+    return transcript_dir / f"{stamp}-{safe_provider}-{uuid.uuid4().hex[:8]}.txt"
+
+
+def _terminate_process_group(pid: int, grace_s: float) -> str:
+    try:
+        pgid = os.getpgid(pid)
+    except ProcessLookupError:
+        return "process exited before cleanup"
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+    except ProcessLookupError:
+        return "process group exited before SIGTERM"
+    except PermissionError:
+        return "permission denied during SIGTERM cleanup"
+    if grace_s > 0:
+        time.sleep(grace_s)
+    try:
+        os.killpg(pgid, signal.SIGKILL)
+    except ProcessLookupError:
+        return "process group exited after SIGTERM"
+    except PermissionError:
+        return "permission denied during SIGKILL cleanup"
+    return "process group killed"
 
 
 def build_attempt_receipt(

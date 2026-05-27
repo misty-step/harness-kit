@@ -20,6 +20,7 @@ skills/.external/
 # agent while using the provider roster. Config and examples under
 # .spellbook/ remain commit-eligible.
 .spellbook/traces/*.jsonl
+.spellbook/traces/provider-lanes/
 
 # Provider CLI runtime metadata.
 .antigravitycli/
