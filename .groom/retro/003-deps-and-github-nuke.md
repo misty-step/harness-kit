@@ -20,7 +20,7 @@
 - `open_issues_count` in the GitHub REST API **includes PRs**, not just issues. Don't
   use it as verification — use `gh issue list --state open` instead.
 - **Archived repos are read-only.** Can't close issues without unarchiving first. 50
-  archived repos across phrazzld + misty-step still have open issues.
+  archived repos across legacy personal + misty-step ownership still have open issues.
 - Initial repo scan used `isArchived == false` filter, missing archived repos. Scan
   ALL repos first, then filter by archived status.
 
