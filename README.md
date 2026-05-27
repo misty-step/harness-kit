@@ -3,6 +3,11 @@
 27 catalog skills, 8 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
+Spellbook is an operator-facing harness primitive library, not a buyer-facing
+governed workflow package or admin-control plane. Read
+[`docs/positioning.md`](docs/positioning.md) before framing this repo for
+clients, departments, procurement, security reviewers, or executives.
+
 ## Quick Start
 
 ```bash
