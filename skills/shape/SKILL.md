@@ -62,11 +62,13 @@ techniques in the context packet with specific files to study during build.
    architecture sketch, files to modify, pattern alignment, effort, tradeoffs.
    **Recommend one.**
 
-2. **Validate** — For effort M or larger, spawn the design review bench in parallel:
-   ousterhout reviews for module depth and information hiding, carmack for
-   shippability and over-engineering, grug for complexity. Give each the design
-   summary and ask for a verdict + concerns. If any has blocking concerns,
-   revise the design before proceeding.
+2. **Validate** — For effort M or larger, spawn the adversarial design review
+   bench in parallel: ousterhout reviews for module depth and information
+   hiding, carmack for shippability and over-engineering, grug for complexity.
+   Give each the design summary and ask for the production failure mode that
+   would embarrass us, plus the evidence that would prove it. If any has
+   blocking concerns, synthesize the evidence and revise the design before
+   proceeding.
 
 3. **Discuss** — No limit on rounds. Design isn't ready until user says so.
 

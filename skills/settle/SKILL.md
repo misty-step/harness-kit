@@ -32,9 +32,10 @@ Then report ship-ready and hand the operator off to `/ship`.
    or an explicit exception before `/settle` calls the branch ship-ready.
 4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
    If polish isn't converging by then, escalate rather than thrash.
-5. **Fresh-eyes self-review is load-bearing.** The final gate is reading
-   the full diff one last time and asking "would I approve this?" —
-   same-model bias is real; counter it with explicit hindsight.
+5. **Fresh-eyes adversarial self-review is load-bearing.** The final gate is
+   reading the full diff one last time and asking "what would embarrass us in
+   production if this shipped?" Same-model bias is real; counter it with
+   explicit hindsight.
 
 ## Delegation Floor
 
@@ -141,7 +142,7 @@ ship-ready. If the detector cannot resolve the base ref, inspect
 If either phase finds blocking issues or produces changes, commit the fix and
 return to step 2. Non-UI branches skip this step.
 
-### 6. Self-review hindsight
+### 6. Adversarial self-review hindsight
 
 Read the full branch diff one last time with fresh eyes:
 
@@ -149,7 +150,8 @@ Read the full branch diff one last time with fresh eyes:
 git diff $(git merge-base HEAD master)...HEAD
 ```
 
-Ask: **"Would I approve this if I were the reviewer?"** Look for:
+Ask: **"What production embarrassment would justify rejection here?"** If no
+plausible break appears, say unable-to-break and move on. Look for:
 
 - Shallow modules, pass-through layers, hidden coupling.
 - Tests that assert implementation instead of behavior.
@@ -186,7 +188,7 @@ in the *same* iteration:
 - [ ] `/code-review` verdict `ship` or `conditional` (no open blockers)
 - [ ] `/refactor` ran and applied no further changes this iteration
 - [ ] UI diffs have design/a11y evidence or an explicit repo-fit waiver
-- [ ] Self-review hindsight pass produced no follow-ups
+- [ ] Adversarial self-review hindsight pass produced no follow-ups
 - [ ] (If applicable) verdict ref is fresh and not `dont-ship`
 
 Safety cap: **max 6 iterations**. If the loop has not converged by the

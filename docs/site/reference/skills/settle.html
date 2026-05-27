@@ -55,9 +55,10 @@ Then report ship-ready and hand the operator off to `/ship`.
    or an explicit exception before `/settle` calls the branch ship-ready.
 4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
    If polish isn&#x27;t converging by then, escalate rather than thrash.
-5. **Fresh-eyes self-review is load-bearing.** The final gate is reading
-   the full diff one last time and asking &quot;would I approve this?&quot; —
-   same-model bias is real; counter it with explicit hindsight.
+5. **Fresh-eyes adversarial self-review is load-bearing.** The final gate is
+   reading the full diff one last time and asking &quot;what would embarrass us in
+   production if this shipped?&quot; Same-model bias is real; counter it with
+   explicit hindsight.
 
 ## Delegation Floor
 

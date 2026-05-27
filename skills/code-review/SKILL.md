@@ -18,13 +18,10 @@ results, fix blockers, loop until clean.
 ## Delegation Floor
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/code-review` starts by probing the
-roster and dispatching two or more non-lead roster members for independent
-review lanes. The internal philosophy bench and Thinktank are additive; they
-do not replace the roster floor. Give reviewers the diff, acceptance criteria,
-and risk lens, not the author's reasoning. The lead marshal synthesizes
-findings, verifies fixes, records receipts, and only works directly for
-mechanical command execution, emergency unblocks, explicit user-forbidden
-delegation, or an explicit waiver when fewer than two roster members are available.
+roster and dispatching two or more non-lead roster members for independent adversarial review lanes calibrated to what would embarrass us in production, not every nit.
+The internal philosophy bench and Thinktank are additive; they do not replace the roster floor.
+Give reviewers the diff, acceptance criteria, and risk lens, not the author's reasoning; the lead accepts, rejects, or downgrades findings as evidence.
+Reviewer output is not automatic veto. The lead verifies fixes, records receipts, and only works directly for mechanical command execution, emergency unblocks, explicit user-forbidden delegation, or an explicit waiver when fewer than two roster members are available.
 
 ## Marshal Protocol
 

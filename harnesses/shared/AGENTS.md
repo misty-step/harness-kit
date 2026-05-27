@@ -62,6 +62,11 @@ Commission agents; do not chat at them.
 - Output: exact shape and length.
 - Boundaries: what not to touch.
 
+Critic and verifier lanes are adversarial by default: point them at the
+claim, invariant, or oracle that would embarrass us in production if wrong.
+Their job is not broad nitpicking or automatic veto; the lead accepts or
+rejects their evidence.
+
 Prefer ad-hoc roster lanes over static named subagents. Static project
 subagents are for tool/permission isolation only.
 

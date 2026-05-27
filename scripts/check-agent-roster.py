@@ -54,6 +54,14 @@ RUNTIME_REFERENCES = {
     "Pi": Path("harnesses/pi/README.md"),
 }
 
+ADVERSARIAL_REVIEW_SKILLS = [
+    "code-review",
+    "implement",
+    "qa",
+    "settle",
+    "shape",
+]
+
 
 def delegation_floor_section(text: str) -> str:
     start = text.find("## Delegation Floor")
@@ -154,6 +162,35 @@ def validate_shared_roster_doctrine() -> None:
         )
 
 
+def validate_adversarial_done_review() -> None:
+    shared_path = Path("harnesses/shared/AGENTS.md")
+    shared_text = shared_path.read_text().lower()
+    shared_required = [
+        "adversarial",
+        "embarrass us in production",
+        "automatic veto",
+        "lead accepts or",
+    ]
+    missing = [phrase for phrase in shared_required if phrase not in shared_text]
+    if missing:
+        raise SystemExit(
+            f"{shared_path}: missing adversarial review phrase(s): "
+            + ", ".join(missing)
+        )
+
+    issues = []
+    for skill in ADVERSARIAL_REVIEW_SKILLS:
+        path = Path("skills") / skill / "SKILL.md"
+        text = path.read_text().lower()
+        if "adversarial" not in text:
+            issues.append(f"{path}: missing adversarial review stance")
+            continue
+        if "embarrass us" not in text and "production embarrassment" not in text:
+            issues.append(f"{path}: missing production-embarrassment calibration")
+    if issues:
+        raise SystemExit("; ".join(issues))
+
+
 def validate_no_source_skill_bridges() -> None:
     forbidden = [
         Path(".agents/skills"),
@@ -179,6 +216,7 @@ def main() -> int:
     validate_delegation_floor()
     validate_runtime_delegation_references()
     validate_shared_roster_doctrine()
+    validate_adversarial_done_review()
     validate_no_source_skill_bridges()
     receipts = read_receipts(fixture_path)
     if not receipts:
@@ -214,6 +252,7 @@ def main() -> int:
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
+    print(f"skills/: {len(ADVERSARIAL_REVIEW_SKILLS)} adversarial review stance(s) valid")
     print(f"harnesses/: {len(RUNTIME_REFERENCES)} runtime delegation reference(s) valid")
     print("source repo: no repo-local skill bridges")
     print(f"{summary_script}: report helper valid")

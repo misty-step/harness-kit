@@ -62,15 +62,17 @@ You are the executive orchestrator.
 - Delegate drive-the-app execution and evidence capture to focused
   subagents.
 - When the same agent both executed and judged, dispatch an independent
-  verifier before signing off on "pass".
+  adversarial verifier before signing off on "pass"; ask it to attack the
+  pass claim and name the path that would embarrass us in production.
 
 ## Delegation Floor
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/qa` starts by probing the roster and
 dispatching two or more available roster members for execution and
-independent verification before declaring pass/fail. Use one lane to drive
-the running surface and another to verify evidence, edge cases, and product
-judgment. The lead agent owns scope, severity, final verdict, and receipts.
+adversarial verification before declaring pass/fail. Use one lane to drive
+the running surface and another to attack the evidence, edge cases, and
+product judgment that support the pass claim. The lead agent owns scope,
+severity, final verdict, and receipts.
 Direct lead-only QA is limited to mechanical command execution, emergency
 unblocks, explicit user-forbidden delegation, or fewer than two available
 roster members.

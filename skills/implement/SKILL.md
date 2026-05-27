@@ -23,13 +23,10 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/implement` starts by probing the
 roster and dispatching two or more available roster members before code or
-tests are produced. Use one lane for the bounded builder attempt and another
-for independent validator/refactor scrutiny. Give lanes the context packet,
-oracle, boundaries, and relevant repo anchors, not hidden lead reasoning. The
-lead agent owns prompt framing, conflict resolution, final verification, and
-receipts; it should not write the implementation directly except for
-mechanical command execution, emergency unblocks, explicit user-forbidden
-delegation, or fewer than two available roster members.
+tests are produced. Use one lane for the bounded builder attempt and another for adversarial validator/refactor scrutiny: attack the completion claim and name what would embarrass us if green tests missed it.
+Give lanes the context packet, oracle, boundaries, and relevant repo anchors, not hidden lead reasoning.
+The lead agent owns prompt framing, conflict resolution, final verification, and receipts; critic output is evidence, not veto.
+The lead should not write the implementation directly except for mechanical command execution, emergency unblocks, explicit user-forbidden delegation, or fewer than two available roster members.
 
 ## Contract
 
