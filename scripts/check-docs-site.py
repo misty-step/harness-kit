@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate generated Spellbook docs site output."""
+"""Validate generated Harness Kit docs site output."""
 
 from __future__ import annotations
 

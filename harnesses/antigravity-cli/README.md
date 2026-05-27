@@ -1,6 +1,6 @@
 # Antigravity CLI Harness Notes
 
-Antigravity CLI is the Google-family provider lane for Spellbook. The local
+Antigravity CLI is the Google-family provider lane for Harness Kit. The local
 binary is `agy`.
 
 ## Dispatch Shape
@@ -41,7 +41,7 @@ workspace access to the target repo.
   constrained sentinel response when smoke-testing, because command-order errors
   can produce a successful but irrelevant setup/status answer.
 
-## Spellbook Rule
+## Harness Kit Rule
 
 Roster entries should keep Antigravity conditional until a local smoke proves
 the prompt was followed. Receipts and final synthesis should treat Antigravity

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build Spellbook's generated static documentation companion."""
+"""Build Harness Kit's generated static documentation companion."""
 
 from __future__ import annotations
 
@@ -321,12 +321,12 @@ def page_shell(title: str, current: str, body: str) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="generator" content="{GENERATED}">
-  <title>{esc(title)} | Spellbook Docs</title>
+  <title>{esc(title)} | Harness Kit Docs</title>
   <link rel="stylesheet" href="{css}">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="{home}">Spellbook</a>
+    <a class="brand" href="{home}">Harness Kit</a>
     <nav aria-label="Primary">
       <a href="{concepts}">Concepts</a>
       <a href="{workflows_href}">Workflows</a>
@@ -344,7 +344,7 @@ def page_shell(title: str, current: str, body: str) -> str:
 
 def source_link(source: str, current: str) -> str:
     _ = current
-    return f'<a href="https://github.com/misty-step/spellbook/blob/master/{source}">{esc(source)}</a>'
+    return f'<a href="https://github.com/misty-step/harness-kit/blob/master/{source}">{esc(source)}</a>'
 
 
 def card(title: str, text: str, href: str = "", icon: str = "", current: str = "index.html") -> str:
@@ -411,7 +411,7 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
           <span><strong>{len(collect_gates())}</strong> CI gates</span>
         </div>
       </div>
-      <aside class="hero-map" aria-label="Spellbook operating loop">
+      <aside class="hero-map" aria-label="Harness Kit operating loop">
         <span>{icon_svg('plan', current)}Shape</span>
         <span>{icon_svg('operate', current)}Delegate</span>
         <span>{icon_svg('verify', current)}Verify</span>
@@ -440,7 +440,7 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
       <h2>{esc(copy['backlog_title'])}</h2>
       <p>{esc(copy['backlog_copy'])}</p>
       <ul class="compact">
-        {''.join(f'<li><a href="https://github.com/misty-step/spellbook/blob/master/{esc(item["source"])}">{esc(item["title"])}</a> <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
+        {''.join(f'<li><a href="https://github.com/misty-step/harness-kit/blob/master/{esc(item["source"])}">{esc(item["title"])}</a> <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
       </ul>
     </section>
 """
@@ -489,7 +489,7 @@ def render_workflows() -> str:
     <section class="page-head">
       <p class="eyebrow">Workflows</p>
       <h1>From zero to one, then into the operating loop.</h1>
-      <p class="lede">These walkthroughs show how Spellbook turns human requests into governed, reviewable agent work.</p>
+      <p class="lede">These walkthroughs show how Harness Kit turns human requests into governed, reviewable agent work.</p>
     </section>
     <section class="stack">
       {''.join(items)}
@@ -557,7 +557,7 @@ def render_governance() -> str:
       <ul>
         <li>The workflow has an evaluation or oracle tied to the user-visible promise.</li>
         <li>Receipts show which providers ran and what the lead accepted or rejected.</li>
-        <li>The docs avoid claims that Spellbook provides RBAC, spend controls, procurement workflows, or incident dashboards.</li>
+        <li>The docs avoid claims that Harness Kit provides RBAC, spend controls, procurement workflows, or incident dashboards.</li>
       </ul>
       <p class="source">Sources: {source_link('.spellbook/agents.yaml', current)}, {source_link('docs/positioning.md', current)}</p>
     </section>
@@ -598,7 +598,7 @@ def render_reference(primitives: list[Primitive], gates: list[str]) -> str:
     <script src="{rel(current, 'assets/catalog.js')}"></script>
     <section class="grid three">
       {card('CI gate map', f'{len(gates)} gates enforced by Dagger.', rel(current, 'reference/gates.html'), 'verify', current)}
-      {card('Bootstrap behavior', 'How Spellbook installs skills, agents, and roster config.', rel(current, 'reference/bootstrap.html'), 'build', current)}
+      {card('Bootstrap behavior', 'How Harness Kit installs skills, agents, and roster config.', rel(current, 'reference/bootstrap.html'), 'build', current)}
       {card('Agent-readable manifest', 'Compact generated context for coding agents.', rel(current, 'llms.txt'), 'catalog', current)}
     </section>
 """
@@ -618,7 +618,7 @@ def render_primitive(primitive: Primitive) -> str:
     </section>
     <section class="grid two">
       {card('What it does', primitive.description, icon='catalog', current=current)}
-      {card('Workflow role', f'{primitive.role} primitive in the Spellbook operating loop.', icon=role_icon(primitive.role), current=current)}
+      {card('Workflow role', f'{primitive.role} primitive in the Harness Kit operating loop.', icon=role_icon(primitive.role), current=current)}
     </section>
     <section>
       <h2>Source contract preview</h2>
@@ -664,7 +664,7 @@ def render_bootstrap() -> str:
       {icon_svg('build', current)}
       <p class="eyebrow">Reference</p>
       <h1>Bootstrap behavior</h1>
-      <p class="lede">bootstrap.sh installs the system-wide harness links and provider roster. Consumer repos can then use Spellbook without vendoring source-repo skill bridges.</p>
+      <p class="lede">bootstrap.sh installs the system-wide harness links and provider roster. Consumer repos can then use Harness Kit without vendoring source-repo skill bridges.</p>
     </section>
     <section class="quickstart">
       <div>
@@ -674,13 +674,13 @@ def render_bootstrap() -> str:
       </div>
       <div class="quicksteps">
         <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
-        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script and installs the global harness links.</p></article>
-        <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Spellbook skills after install.</p></article>
+        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script through the legacy raw URL until the repo rename lands.</p></article>
+        <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Harness Kit skills after install.</p></article>
       </div>
     </section>
     <section class="grid two">
       {card('System install', 'Installs first-party skills and agents into supported local harnesses.', icon='build', current=current)}
-      {card('Stable checkout', 'Prefers a stable checkout over temporary worktrees unless SPELLBOOK_DIR is set.', icon='operate', current=current)}
+      {card('Stable checkout', 'Prefers a stable checkout over temporary worktrees unless HARNESS_KIT_DIR or legacy SPELLBOOK_DIR is set.', icon='operate', current=current)}
       {card('Roster config', 'Keeps external provider definitions available system-wide.', icon='catalog', current=current)}
       {card('Source cleanliness', 'Does not recreate source-repo .agents/.codex/.claude/.pi skill bridges.', icon='verify', current=current)}
     </section>
@@ -691,12 +691,12 @@ def render_bootstrap() -> str:
 
 def render_llms(primitives: list[Primitive], gates: list[str]) -> str:
     lines = [
-        "# Spellbook generated docs context",
+        "# Harness Kit generated docs context",
         "",
         GENERATED,
         "Copy source: docs/copy/site.json",
         "",
-        "Spellbook is an operator-facing harness primitive library for AI-assisted software development.",
+        "Harness Kit is an operator-facing harness primitive library for AI-assisted software development.",
         "It is not an enterprise admin-control plane or procurement-ready client package.",
         "",
         "Core pages:",

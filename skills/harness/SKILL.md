@@ -1,7 +1,7 @@
 ---
 name: harness
 description: |
-  Build and repair Spellbook primitives: skills, shared doctrine, provider
+  Build and repair Harness Kit primitives: skills, shared doctrine, provider
   roster, harness configs, gates, evals, bootstrap, and sync logic. Use for
   "improve the harness", "bootstrap is wrong", "AGENTS.md is stale", "skill
   health", "eval skill", "sync primitives", "roster defaults".
@@ -34,7 +34,7 @@ Mutate the harness. Keep it thin.
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
 - Skills stay self-contained: scripts/references under the skill; state roots
   from invoking repo.
-- Spellbook source skills live in `skills/`; repo-local `.agents/skills/` and
+- Harness Kit source skills live in `skills/`; repo-local `.agents/skills/` and
   harness-specific skill bridge dirs are `/seed` output for consumer repos.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
   only.
@@ -52,8 +52,9 @@ files and expected output; the lead owns final semantics, verification, and
 receipt evidence. Direct work is for mechanical commands, emergency unblocks,
 explicit user-forbidden delegation, or fewer than two available providers.
 Do not treat a missing repo-local roster as a waiver. Run the resolver-backed
-probe, which falls back to the system Spellbook roster:
-`python3 $SPELLBOOK_ROOT/scripts/probe-agent-roster.py`.
+probe, which falls back to the system Harness Kit roster:
+`python3 $HARNESS_KIT_ROOT/scripts/probe-agent-roster.py`.
+`SPELLBOOK_ROOT` remains a legacy alias for older operator shells.
 Native in-thread subagents may supplement the investigation, but they do not
 satisfy the roster floor. Count only configured provider ids in receipts and
 final roster reports.

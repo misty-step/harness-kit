@@ -125,7 +125,7 @@ subsequent loop).
 
 Check whether the diff touches UI surfaces. Prefer
 `scripts/detect-ui-surfaces.sh --base <repo-default-base>` when available
-(Spellbook's base is `master`); otherwise inspect changed paths for UI files
+(Harness Kit's base is `master`); otherwise inspect changed paths for UI files
 (`*.tsx`, `*.jsx`, `*.vue`, `*.svelte`, stylesheets, `app/**`, `pages/**`,
 `components/**`, stories, tokens, and theme config). If UI surfaces are
 present, the branch needs design and accessibility evidence before it is

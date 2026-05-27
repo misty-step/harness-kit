@@ -286,10 +286,10 @@ Estimate: S | M | L | XL
 Every active ticket MUST have Goal + Oracle. A ticket without an oracle
 is not ready — `/groom` either fixes it or demotes it to the icebox.
 
-When grooming spellbook itself, prefer items that create reusable
+When grooming Harness Kit itself, prefer items that create reusable
 primitives, scaffolds, references, or policies; validate proving-ground
 patterns meant to transfer outward; or remove debt that blocks downstream
-adoption. See `references/backlog-doctrine.md` under "Spellbook Product
+adoption. See `references/backlog-doctrine.md` under "Harness Kit Product
 Lens."
 
 ## Trailer Conventions

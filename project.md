@@ -1,4 +1,4 @@
-# Project: Spellbook
+# Project: Harness Kit
 
 ## Vision
 Portable harness primitive library that makes AI coding agents reliably
@@ -22,8 +22,8 @@ research-backed (web + multi-model validation before codifying).
 | Delegation guidance | Natural-language guidance that tells the lead agent when to spawn task-specific subagents, what responsibilities to assign, what evidence to require, and what philosophical lenses to apply |
 | Collection | Named group of skills in collections.yaml (payments, web, agent, infra, etc.) |
 | Harness | An AI agent runtime (Claude Code, Codex, Antigravity CLI/IDE, Pi) |
-| Manifest | `.spellbook.yaml` — optional project-local harness config |
-| Seed | Skill that vendors the system-wide Spellbook harness into a repo when checked-in local copies are worth the complexity |
+| Manifest | `.spellbook.yaml` — legacy optional project-local harness config |
+| Seed | Skill that vendors the system-wide Harness Kit catalog into a repo when checked-in local copies are worth the complexity |
 | DMI | Disable-model-invocation — user-only skills that cost zero budget |
 | Delivery pipeline | groom → deliver (shape → implement → review + ci + refactor + qa) → merge |
 
@@ -32,7 +32,7 @@ research-backed (web + multi-model validation before codifying).
 - **Milestone:** Harness library reset — rebrand, dynamic delegation, Antigravity migration
 - **Key work:** Pick the new name, stop installing global agents, convert static persona files into reusable lenses inside skills and AGENTS.md, add Antigravity CLI/IDE projections
 - **Theme:** Skills and repo guidance are durable; static global subagent catalogs are not
-- **Recent:** Restored the repo under `~/Development/spellbook`; backlog pivoted toward Antigravity and dynamic subagent management
+- **Recent:** Rebranded the repo as Harness Kit while preserving legacy `.spellbook` state paths; backlog pivoted toward Antigravity and dynamic subagent management
 
 ## Quality Bar
 
@@ -78,4 +78,4 @@ skills/{name}/
 
 ---
 *Last updated: 2026-03-16*
-*Updated during: Spellbook architecture refactor*
+*Updated during: Harness Kit rebrand*

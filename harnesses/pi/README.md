@@ -1,6 +1,6 @@
 # Pi Harness Notes
 
-Pi is a primary roster lane for Spellbook and usually carries the open-model
+Pi is a primary roster lane for Harness Kit and usually carries the open-model
 perspective. Use it for independent dynamic delegation when model diversity is
 more valuable than another proprietary coding-agent opinion.
 

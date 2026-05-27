@@ -1,13 +1,13 @@
-# AGENTS.md — Spellbook
+# AGENTS.md — Harness Kit
 
-Spellbook is the harness source repo. Keep this file terse: repo-specific
+Harness Kit is the harness source repo. Keep this file terse: repo-specific
 contracts only. Put workflow detail in skills; put generated/runtime state on
 disk; do not restate obvious filesystem facts.
 
 ## Non-Negotiables
 
 - Base branch: `master`.
-- Gate: `dagger call check --source=.`. Green means all 15 Spellbook CI lanes
+- Gate: `dagger call check --source=.`. Green means all 15 Harness Kit CI lanes
   pass. `/ci` owns the exact lane list in `ci/src/spellbook_ci/main.py`.
 - Clean-tree closeout: no run is complete while
   `git status --short --untracked-files=all` shows paths. Commit, delete,
@@ -16,7 +16,7 @@ disk; do not restate obvious filesystem facts.
 - `index.yaml` is generated. Never edit it by hand.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
-- Spellbook source skills live only in `skills/`. Do not commit source-repo
+- Harness Kit source skills live only in `skills/`. Do not commit source-repo
   `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, or `.pi/skills/`
   bridges; those are `/seed` output for consumer repos and duplicate the global
   install here.
@@ -51,7 +51,7 @@ raw transcripts.
 
 Before answering whether to hand this repo to a client, enterprise,
 department, executive, procurement reviewer, security reviewer, or
-nontechnical team, read `docs/positioning.md`. Spellbook is implementation
+nontechnical team, read `docs/positioning.md`. Harness Kit is implementation
 substrate for technical operators, not the buyer-facing governed workflow
 package or admin-control plane.
 
@@ -59,7 +59,7 @@ package or admin-control plane.
 
 Use these for harness work:
 
-- `/harness`: mutate Spellbook primitives, gates, roster, doctrine.
+- `/harness`: mutate Harness Kit primitives, gates, roster, doctrine.
 - `/yeet`: classify, commit, push; clean tree is the deliverable.
 - `/ship`: final-mile landing and backlog closure.
 - `/deliver`: one shaped item to merge-ready; no push, no merge.

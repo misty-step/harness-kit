@@ -53,7 +53,7 @@
         "learn"
       ]
     ],
-    "lede": "Spellbook names the parts that need to be assigned, checked, logged, and improved.",
+    "lede": "Harness Kit names the parts that need to be assigned, checked, logged, and improved.",
     "title": "The small vocabulary that keeps agent work operational."
   },
   "governance": {
@@ -96,7 +96,7 @@
   "home": {
     "backlog_copy": "The site is generated from live repo sources, including open backlog, so readers can see the operating system and its active edges together.",
     "backlog_title": "What is still moving",
-    "boundary_copy": "Spellbook is implementation infrastructure for technical operators. It is not an admin dashboard, procurement packet, spend-governance product, or executive training surface.",
+    "boundary_copy": "Harness Kit is implementation infrastructure for technical operators. It is not an admin dashboard, procurement packet, spend-governance product, or executive training surface.",
     "boundary_title": "What it is, and what it is not",
     "eyebrow": "Agent work, with receipts",
     "flow": [
@@ -106,7 +106,7 @@
       "/ci + /qa",
       "/reflect"
     ],
-    "lede": "Spellbook gives technical teams the primitives to plan, delegate, review, verify, and improve AI-assisted work without losing the thread.",
+    "lede": "Harness Kit gives technical teams the primitives to plan, delegate, review, verify, and improve AI-assisted work without losing the thread.",
     "quickstart": {
       "lede": "Install the global harness, open this companion, then use the operating loop from a real repo.",
       "steps": [
@@ -117,7 +117,7 @@
         },
         {
           "command": "ls ~/.codex/skills ~/.claude/skills ~/.pi/skills",
-          "detail": "At least one supported harness should show Spellbook skills after bootstrap completes.",
+          "detail": "At least one supported harness should show Harness Kit skills after bootstrap completes.",
           "label": "Verify discovery"
         },
         {
@@ -126,10 +126,10 @@
           "label": "Run the first loop"
         }
       ],
-      "title": "Start using Spellbook"
+      "title": "Start using Harness Kit"
     },
     "sixty_copy": "Start with a messy workflow. Shape the work, send it through a provider roster, build with tests, review with independent lanes, prove it with gates, then feed the lesson back into the harness.",
-    "sixty_title": "Spellbook in 60 seconds",
+    "sixty_title": "Harness Kit in 60 seconds",
     "start_cards": [
       {
         "href": "concepts.html",

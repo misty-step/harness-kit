@@ -160,7 +160,7 @@
         },
         {
           "command": "ls ~/.codex/skills ~/.claude/skills ~/.pi/skills",
-          "detail": "At least one supported harness should show Spellbook skills after bootstrap completes.",
+          "detail": "At least one supported harness should show Harness Kit skills after bootstrap completes.",
           "label": "Verify discovery"
         },
         {
@@ -169,7 +169,7 @@
           "label": "Run the first loop"
         }
       ],
-      "title": "Start using Spellbook"
+      "title": "Start using Harness Kit"
     },
     "task_finder": {
       "items": [
@@ -356,7 +356,7 @@
       "source": "skills/hardening/SKILL.md"
     },
     {
-      "description": "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness, /skill, /primitive.",
+      "description": "Build and repair Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness, /skill, /primitive.",
       "icon": "repair",
       "id": "skill:harness",
       "kind": "skill",
@@ -446,7 +446,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "Vendor the system-wide Spellbook harness into the current repo when a project needs checked-in local copies instead of relying on global bootstrap symlinks. Copies first-party skills and agents into a repo-local shared skill layer, then bridges harness-specific entrypoints back to that shared copy. Use when: \"seed this repo\", \"vendor spellbook here\", \"initialize the agent here\", \"set me up offline\". Trigger: /seed.",
+      "description": "Vendor the system-wide Harness Kit catalog into the current repo when a project needs checked-in local copies instead of relying on global bootstrap symlinks. Copies first-party skills and agents into a repo-local shared skill layer, then bridges harness-specific entrypoints back to that shared copy. Use when: \"seed this repo\", \"vendor harness kit here\", \"initialize the agent here\", \"set me up offline\". Trigger: /seed.",
       "icon": "catalog",
       "id": "skill:seed",
       "kind": "skill",

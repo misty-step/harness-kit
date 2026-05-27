@@ -1,6 +1,6 @@
 # Claude Code Harness Notes
 
-Claude Code is a primary roster lane for Spellbook. Use it for independent
+Claude Code is a primary roster lane for Harness Kit. Use it for independent
 dynamic delegation when the lead is not already Claude.
 
 ## Dispatch Shape

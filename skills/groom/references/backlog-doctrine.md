@@ -23,17 +23,17 @@ The active backlog (`backlog.d/`) is the current plan, not storage for every ide
 A good backlog is ordered, transparent, and actively maintained. It should make the next
 decisions obvious.
 
-## Spellbook Product Lens
+## Harness Kit Product Lens
 
-Spellbook is primarily a harness product for other repositories. Its own repo is where
+Harness Kit is primarily a harness product for other repositories. Its own repo is where
 patterns get validated before they spread.
 
-When shaping spellbook backlog items, prefer work that is one of:
+When shaping Harness Kit backlog items, prefer work that is one of:
 - a reusable primitive, scaffold, reference, or policy other repos can adopt
 - a proving-ground validation of a pattern meant to transfer outward
 - debt removal that materially blocks downstream adoption or trust
 
-If an item only improves spellbook's own repo and has no clear transfer value, demote it,
+If an item only improves Harness Kit's own repo and has no clear transfer value, demote it,
 merge it into a broader reusable effort, or rewrite it until the downstream payoff is explicit.
 
 ## Core rules
@@ -43,7 +43,7 @@ merge it into a broader reusable effort, or rewrite it until the downstream payo
 - Prefer one canonical item per outcome.
 - Split discovery from delivery.
 - Order work by user value, risk reduction, learning, and enablement.
-- For spellbook itself, optimize for downstream leverage first and local convenience second.
+- For Harness Kit itself, optimize for downstream leverage first and local convenience second.
 - Keep active work narrow. High WIP destroys prioritization.
 - Ideas that aren't execution-ready live in `.groom/BACKLOG.md`.
 
@@ -98,7 +98,7 @@ Move items down when they:
 - duplicate a broader surviving issue
 - depend on undefined architecture
 - represent “maybe someday” ideas with no current owner
-- only improve spellbook's own repo without reusable payoff
+- only improve Harness Kit's own repo without reusable payoff
 
 ## Cadence
 
@@ -128,7 +128,7 @@ Before an issue is execution-ready, verify:
 - dependencies are visible
 - scope boundaries are present
 - verification is executable
-- downstream leverage or proving-ground rationale is explicit for spellbook items
+- downstream leverage or proving-ground rationale is explicit for Harness Kit items
 - the issue can be completed in one coherent pass or should be split
 
 ## AI-agent adaptation

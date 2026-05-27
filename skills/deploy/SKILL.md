@@ -154,10 +154,10 @@ Field rules:
 - Do NOT chain rollbacks. If the operator wants to reverse further,
   require an explicit `--to` with a concrete handle
 
-## Spellbook Self-Deploy
+## Harness Kit Self-Deploy
 
-Spellbook itself has no deploy target (it is a symlinked-into-home
-config repo). If invoked from the spellbook repo: emit a clear no-op
+Harness Kit itself has no deploy target (it is a symlinked-into-home
+config repo). If invoked from the Harness Kit repo: emit a clear no-op
 receipt explaining bootstrap.sh is the "deploy" mechanism and exit 0.
 Detection: `git rev-parse --show-toplevel` resolves to a path
 containing `bootstrap.sh` AND `skills/` AND no `.spellbook/deploy.yaml`.

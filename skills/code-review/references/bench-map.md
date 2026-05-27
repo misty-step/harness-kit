@@ -40,7 +40,7 @@ an `add` list of agents.
 
 Constraints:
 
-- Agents in `add` MUST exist under `spellbook/agents/<name>.md`. Non-existent
+- Agents in `add` MUST exist under `agents/<name>.md`. Non-existent
   agents make the map unloadable.
 - Keep rules specific. Overly broad globs inflate the bench and force the cap
   to drop useful reviewers.
@@ -57,7 +57,7 @@ synthesis output so it stays auditable.
 
 ## Agents Referenced
 
-Only agents that exist in `spellbook/agents/` may appear:
+Only agents that exist in `agents/` may appear:
 
 - `critic`, `ousterhout`, `carmack`, `grug`, `beck`
 - `a11y-auditor` (web UI accessibility)

@@ -1,6 +1,6 @@
 # Codex CLI Harness Notes
 
-Codex CLI is a primary roster lane for Spellbook. Use it for independent
+Codex CLI is a primary roster lane for Harness Kit. Use it for independent
 dynamic delegation when the lead is not already Codex, or when a separate
 Codex process/worktree gives useful isolation.
 

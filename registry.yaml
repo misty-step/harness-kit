@@ -1,4 +1,4 @@
-# Spellbook Registry — external skill sources for embeddings and on-demand pull.
+# Harness Kit Registry — external skill sources for embeddings and on-demand pull.
 #
 # Skills and agents are discovered from the filesystem (skills/*/SKILL.md,
 # agents/*.md). This file lists third-party sources that feed:
@@ -35,7 +35,7 @@
 # share `vercel-`). Same prefix + same skill name = fatal at sync.
 
 sources:
-  - repo: misty-step/spellbook
+  - repo: misty-step/harness-kit
     default: true
     layout: flat
     skills_path: skills

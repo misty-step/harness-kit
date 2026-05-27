@@ -199,7 +199,7 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - The escape hatch (`SPELLBOOK_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook, `/settle --land`), never inside `/code-review`.
 
 Skip this step if `scripts/lib/verdicts.sh` does not exist in the target project
-(Spellbook-only feature, not expected in downstream repos).
+(Harness Kit-only feature, not expected in downstream repos).
 
 ## Gotchas
 

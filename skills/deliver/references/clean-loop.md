@@ -39,7 +39,7 @@ A phase is **dirty** when:
 3. Run `/refactor` — skip for trivial diffs (<20 LOC, single file).
 4. Check whether the diff touches UI surfaces. Prefer
    `scripts/detect-ui-surfaces.sh --base <repo-default-base>` when available
-   (Spellbook's base is `master`); otherwise use the same path patterns
+   (Harness Kit's base is `master`); otherwise use the same path patterns
    manually (`*.tsx`, `*.jsx`, `*.vue`, `*.svelte`, stylesheets, `app/**`,
    `pages/**`, `components/**`, stories, tokens, and theme config). If UI
    surfaces are present, run `/design` and `/a11y` before deciding the branch is

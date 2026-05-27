@@ -1,6 +1,6 @@
-# Spellbook Codebase Map
+# Harness Kit Codebase Map
 
-Spellbook is a portable primitive library for coding-agent workflows. It
+Harness Kit is a portable primitive library for coding-agent workflows. It
 ships markdown-first skills, specialized agent personas, harness-specific
 runtime config, and the local gates that keep those artifacts portable across
 Claude Code, Codex, and Pi.
@@ -25,7 +25,7 @@ dagger call check --source=. guards the catalog and harness contracts
 
 ## Source Of Truth
 
-Spellbook has five primary source surfaces.
+Harness Kit has five primary source surfaces.
 
 | Surface | Path | Owns |
 |---|---|---|
@@ -77,7 +77,7 @@ the philosophy bench used for review rather than implementation.
 
 ### Harness Layer
 
-Spellbook's primary portability layer is the filesystem: the same `SKILL.md`
+Harness Kit's primary portability layer is the filesystem: the same `SKILL.md`
 and agent markdown files can be discovered by multiple harnesses. Runtime
 features are wrappers around that layer, not the architecture.
 
@@ -97,7 +97,7 @@ fall back to the system `~/.spellbook/agents.yaml` installed by bootstrap.
 
 `/seed` remains as an explicit repo-local vendoring path for projects that need
 checked-in harness state, offline operation, or reviewable local copies. It is
-not the default way to consume Spellbook.
+not the default way to consume Harness Kit.
 
 ### Registry And Externals
 
@@ -121,7 +121,7 @@ The load-bearing check is:
 dagger call check --source=.
 ```
 
-The Dagger module in `ci/src/spellbook_ci/main.py` runs 13 gates in parallel:
+The Dagger module in `ci/src/spellbook_ci/main.py` runs 15 gates in parallel:
 YAML, shell, Python, frontmatter, index drift, vendored copies, Bun tests for
 `skills/research`, exclusion-pattern scans, portable paths, harness-agnostic
 install wording, `/deliver` composition, dropped claim primitives, and skill
@@ -157,7 +157,7 @@ backlog.d/NNN
 
 Use `/flywheel` when the desired behavior is to keep cycling through that loop
 across the queue. Use `/deliver <ticket>` when the target item is already
-chosen. Use `/harness` when the change touches Spellbook primitives
+chosen. Use `/harness` when the change touches Harness Kit primitives
 themselves: skills, agents, harness configs, registry entries, or gates.
 
 ## Encoded Assumptions
@@ -178,7 +178,7 @@ Concrete consequences:
 
 ### Thin Harness, Strong Models
 
-Spellbook resists semantic workflow engines. Skills should name judgment and
+Harness Kit resists semantic workflow engines. Skills should name judgment and
 boundaries; agents do the reasoning. Shallow pass-through wrappers, elaborate
 phase DSLs, and coordination primitives are treated as regressions.
 
@@ -213,16 +213,20 @@ For a new machine:
 curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 ```
 
-Set `SPELLBOOK_DIR=/path/to/spellbook` when you want global harness symlinks to
-point at a specific checkout instead of the stable default search path.
+The raw URL remains on the legacy GitHub repo path until the repository rename
+lands; `docs/rebrand.md` records that compatibility boundary.
 
-For a new or existing repo that should consume Spellbook, bootstrap is normally
+Set `HARNESS_KIT_DIR=/path/to/harness-kit` when you want global harness symlinks
+to point at a specific checkout instead of the stable default search path.
+`SPELLBOOK_DIR` remains a legacy alias for old checkouts.
+
+For a new or existing repo that should consume Harness Kit, bootstrap is normally
 enough. Run `/seed` only when the repo needs checked-in local copies, offline
 operation, or a reviewable vendored harness layer. Treat `.agents/skills/` as
 the optional repo-local shared skill root, with `.claude/skills/`,
 `.codex/skills/`, and Pi config as bridges.
 
-For Spellbook development:
+For Harness Kit development:
 
 1. Read `AGENTS.md` and `harnesses/shared/AGENTS.md` before changing design
    surfaces.

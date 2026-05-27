@@ -2,14 +2,14 @@
 
 ## What This Repo Is
 
-**Spellbook** — focused workflow skills, specialized agents, and harness
+**Harness Kit** — focused workflow skills, specialized agents, and harness
 configs for AI-assisted development. One repo, all harnesses, symlinked
 to ~/.claude, ~/.codex, ~/.pi via bootstrap.sh.
 
 ## Structure
 
 ```
-spellbook/
+harness-kit/
 ├── skills/        # Leaf skills (qa, demo, diagnose, research, ...) and
 │                  #   orchestrators (deliver, flywheel, code-review, settle, ...)
 ├── agents/        # Specialized agents: planner, builder, critic,
@@ -74,7 +74,8 @@ See `harnesses/shared/AGENTS.md` — one file, symlinked to every harness.
 - The pre-commit hook regenerates index.yaml — don't edit it manually.
 - bootstrap.sh has two modes: symlink (local checkout) and download (remote).
   Test both paths if you change it.
-- If you bootstrap from a temporary worktree, prefer pinning `SPELLBOOK_DIR`
-  to a stable checkout. Disposable worktree symlinks make global harness skills disappear later.
+- If you bootstrap from a temporary worktree, prefer pinning
+  `HARNESS_KIT_DIR` to a stable checkout. `SPELLBOOK_DIR` remains a legacy
+  alias. Disposable worktree symlinks make global harness skills disappear later.
 - `harnesses/claude/settings.json` is COPIED by bootstrap (Claude modifies it
   at runtime), not symlinked. Changes there need a re-bootstrap to take effect.

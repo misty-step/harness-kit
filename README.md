@@ -1,9 +1,9 @@
-# Spellbook
+# Harness Kit
 
 28 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
-Spellbook is an operator-facing harness primitive library, not a buyer-facing
+Harness Kit is an operator-facing harness primitive library, not a buyer-facing
 governed workflow package or admin-control plane. Read
 [`docs/positioning.md`](docs/positioning.md) before framing this repo for
 clients, departments, procurement, security reviewers, or executives.
@@ -17,9 +17,15 @@ clients, departments, procurement, security reviewers, or executives.
 curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 ```
 
+The raw install URL keeps the legacy `spellbook` repository path until the
+GitHub repo is renamed. The product name is Harness Kit; see
+[`docs/rebrand.md`](docs/rebrand.md) for the compatibility plan.
+
 If you're running bootstrap from a temporary git worktree, it now prefers a
-stable checkout like `~/Development/spellbook` automatically. To intentionally
-point your harnesses at a specific checkout, set `SPELLBOOK_DIR=/path/to/spellbook`.
+stable checkout like `~/Development/harness-kit` automatically. To intentionally
+point your harnesses at a specific checkout, set
+`HARNESS_KIT_DIR=/path/to/harness-kit`. `SPELLBOOK_DIR` remains a legacy alias
+for existing checkouts.
 
 ## Core Workflow Skills
 
@@ -59,7 +65,7 @@ loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
 
 ## Static Docs Companion
 
-Spellbook's public static docs companion is generated from live repo sources:
+Harness Kit's public static docs companion is generated from live repo sources:
 
 ```bash
 scripts/build-docs-site.sh
@@ -79,7 +85,7 @@ the generated-site check passes.
 ## Structure
 
 ```
-spellbook/
+harness-kit/
 ├── skills/        # Canonical skill catalog
 ├── agents/        # Agent definitions
 ├── harnesses/     # Per-harness configs (claude/, codex/, pi/)
