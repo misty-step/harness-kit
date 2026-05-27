@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and probe Spellbook's agent-provider roster."""
+"""Validate and probe Harness Kit's agent-provider roster."""
 
 from __future__ import annotations
 

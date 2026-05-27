@@ -1,4 +1,4 @@
-"""Shared search primitives for Spellbook embedding search.
+"""Shared search primitives for Harness Kit embedding search.
 
 Delegates embedding to gemini_embeddings (the single Gemini client).
 A copy of this file and gemini_embeddings.py ships at
@@ -32,7 +32,7 @@ def embed_texts(texts: list[str], dims: int, task_type: str) -> list[list[float]
         texts=texts,
         output_dimensionality=dims,
         task_type=task_type,
-        user_agent="spellbook-search",
+        user_agent="harness-kit-search",
     )
 
 

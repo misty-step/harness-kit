@@ -47,10 +47,10 @@ if ! matches 'All first-party skills are installed system-wide' bootstrap.sh; th
 fi
 
 if ! matches 'install_system_roster|~/.spellbook/agents.yaml|\\$HOME/.spellbook' bootstrap.sh; then
-  fail "bootstrap must install the provider roster into a system-wide Spellbook location"
+  fail "bootstrap must install the provider roster into a system-wide Harness Kit location"
 fi
 
-if ! matches 'SPELLBOOK_ROSTER|system_spellbook_dir|\\.spellbook.*agents.yaml' \
+if ! matches 'HARNESS_KIT_ROSTER|SPELLBOOK_ROSTER|system_spellbook_dir|\\.spellbook.*agents.yaml' \
   scripts/lib/agent_roster.py; then
   fail "roster helpers must fall back to a system-wide roster when repo-local roster is absent"
 fi

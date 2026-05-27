@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Search Spellbook skills and agents by semantic similarity.
+"""Search Harness Kit skills and agents by semantic similarity.
 
 Embeds a query with Gemini Embedding 2, compares against a locally cached
 embeddings corpus, and returns top matches ranked by cosine similarity.

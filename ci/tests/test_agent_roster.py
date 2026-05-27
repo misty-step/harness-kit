@@ -109,6 +109,20 @@ class RosterValidationTests(unittest.TestCase):
                 local_roster,
             )
 
+    def test_roster_resolution_accepts_harness_kit_env_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            configured = Path(tmp) / "agents.yaml"
+            configured.write_text("version: 1\nproviders: {}\n")
+            old = os.environ.get("HARNESS_KIT_ROSTER")
+            os.environ["HARNESS_KIT_ROSTER"] = str(configured)
+            try:
+                self.assertEqual(resolve_roster_path(repo=Path(tmp)), configured)
+            finally:
+                if old is None:
+                    os.environ.pop("HARNESS_KIT_ROSTER", None)
+                else:
+                    os.environ["HARNESS_KIT_ROSTER"] = old
+
 
 class ReceiptTests(unittest.TestCase):
     def test_builds_valid_unavailable_probe_receipts_for_empty_path(self) -> None:

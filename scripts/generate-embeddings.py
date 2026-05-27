@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate embeddings index for Spellbook skill/agent discovery.
+"""Generate embeddings index for Harness Kit skill/agent discovery.
 
 Reads local skills/agents AND fetches from external GitHub sources.
 Embeds with Gemini Embedding 2 and writes a local cache outside the repo by
@@ -35,7 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = REPO_ROOT / "skills"
 AGENTS_DIR = REPO_ROOT / "agents"
 REGISTRY_FILE = REPO_ROOT / "registry.yaml"
-LOCAL_SOURCE = "misty-step/spellbook"
+LOCAL_SOURCE = "misty-step/harness-kit"
 MODEL = "gemini-embedding-2-preview"
 DEFAULT_DIMS = 768
 BATCH_SIZE = 20
@@ -360,7 +360,7 @@ def embed_batch(texts: list[str], dims: int) -> list[list[float]]:
         texts=texts,
         output_dimensionality=dims,
         task_type="RETRIEVAL_DOCUMENT",
-        user_agent="spellbook-generate-embeddings",
+        user_agent="harness-kit-generate-embeddings",
     )
 
 
@@ -383,7 +383,7 @@ def main():
     elif metadata_file is None:
         metadata_file = output_file.with_name(f"{output_file.stem}-meta.json")
 
-    print("Spellbook Embeddings Generator")
+    print("Harness Kit Embeddings Generator")
     print(f"  Model: {MODEL}")
     print(f"  Dimensions: {dims}")
     print(f"  Output: {output_file}")

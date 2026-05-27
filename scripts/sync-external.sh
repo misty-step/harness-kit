@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Spellbook External-Skill Sync
+# Harness Kit External-Skill Sync
 #
 # Reads registry.yaml, fetches each declared external source at a pinned ref,
 # installs selected skills into skills/.external/<alias>/.
@@ -31,7 +31,7 @@ REGISTRY="$REPO_ROOT/registry.yaml"
 EXTERNAL_ROOT="$REPO_ROOT/skills/.external"
 CHECKOUT_ROOT="$EXTERNAL_ROOT/_checkouts"
 
-LOCAL_SOURCE="misty-step/spellbook"
+LOCAL_SOURCE="misty-step/harness-kit"
 
 MODE="sync"          # sync | check
 ALLOW_FLOATING=0     # 1 to permit branch/HEAD refs
@@ -206,7 +206,7 @@ checkout_sha() {
     git -C "$dir" fetch --filter=blob:none origin >/dev/null 2>&1 || \
     die "fetch failed in $dir"
   git -C "$dir" checkout --quiet "$sha" 2>/dev/null || \
-    git -C "$dir" checkout --quiet -B "spellbook-sync" "$sha" \
+    git -C "$dir" checkout --quiet -B "harness-kit-sync" "$sha" \
     || die "checkout $sha failed in $dir"
 }
 

@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Spellbook Bootstrap
+# Harness Kit Bootstrap
 #
 # Two modes:
-#   LOCAL:  Symlinks harness dirs to a local spellbook checkout (fast, editable)
+#   LOCAL:  Symlinks harness dirs to a local Harness Kit checkout (fast, editable)
 #   REMOTE: Downloads from GitHub (works on any machine without a checkout)
 #
 # Local mode is preferred. Remote is the fallback for fresh machines.
 #
 # Run: curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
 
-REPO="misty-step/spellbook"
+REPO="${HARNESS_KIT_REPO:-misty-step/harness-kit}"
+LEGACY_REPO="misty-step/spellbook"
 RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_TMP=""
-REMOTE_SPELLBOOK=""
+REMOTE_HARNESS_KIT=""
 
 cleanup_remote_tmp() {
   [ -z "$REMOTE_TMP" ] && return 0
@@ -28,7 +29,7 @@ ok()    { printf '\033[0;32m%s\033[0m\n' "$*"; }
 warn()  { printf '\033[0;33m%s\033[0m\n' "$*"; }
 err()   { printf '\033[0;31m%s\033[0m\n' "$*" >&2; }
 
-is_spellbook_checkout() {
+is_harness_kit_checkout() {
   local dir="$1"
   [ -d "$dir/skills" ] && [ -d "$dir/agents" ] && [ -d "$dir/harnesses" ]
 }
@@ -38,8 +39,13 @@ is_worktree_checkout() {
   [ -f "$dir/.git" ]
 }
 
-resolve_spellbook_dir() {
-  if [ -n "${SPELLBOOK_DIR:-}" ] && is_spellbook_checkout "$SPELLBOOK_DIR"; then
+resolve_harness_kit_dir() {
+  if [ -n "${HARNESS_KIT_DIR:-}" ] && is_harness_kit_checkout "$HARNESS_KIT_DIR"; then
+    printf '%s\n' "$HARNESS_KIT_DIR"
+    return 0
+  fi
+
+  if [ -n "${SPELLBOOK_DIR:-}" ] && is_harness_kit_checkout "$SPELLBOOK_DIR"; then
     printf '%s\n' "$SPELLBOOK_DIR"
     return 0
   fi
@@ -47,30 +53,38 @@ resolve_spellbook_dir() {
   local candidate
   if is_worktree_checkout "$SCRIPT_DIR"; then
     for candidate in \
+      "$HOME/Development/harness-kit" \
+      "$HOME/dev/harness-kit" \
+      "$HOME/src/harness-kit" \
+      "$HOME/code/harness-kit" \
       "$HOME/Development/spellbook" \
       "$HOME/dev/spellbook" \
       "$HOME/src/spellbook" \
       "$HOME/code/spellbook"
     do
-      if is_spellbook_checkout "$candidate"; then
+      if is_harness_kit_checkout "$candidate"; then
         printf '%s\n' "$candidate"
         return 0
       fi
     done
   fi
 
-  if is_spellbook_checkout "$SCRIPT_DIR"; then
+  if is_harness_kit_checkout "$SCRIPT_DIR"; then
     printf '%s\n' "$SCRIPT_DIR"
     return 0
   fi
 
   for candidate in \
+    "$HOME/Development/harness-kit" \
+    "$HOME/dev/harness-kit" \
+    "$HOME/src/harness-kit" \
+    "$HOME/code/harness-kit" \
     "$HOME/Development/spellbook" \
     "$HOME/dev/spellbook" \
     "$HOME/src/spellbook" \
     "$HOME/code/spellbook"
   do
-    if is_spellbook_checkout "$candidate"; then
+    if is_harness_kit_checkout "$candidate"; then
       printf '%s\n' "$candidate"
       return 0
     fi
@@ -249,7 +263,7 @@ copy_claude_settings_if_present() {
   ok "    settings.json (copied)"
 }
 
-verify_no_broken_spellbook_symlinks() {
+verify_no_broken_harness_kit_symlinks() {
   local dir="$1"
   local maxdepth="$2"
   local broken=0
@@ -258,7 +272,7 @@ verify_no_broken_spellbook_symlinks() {
   while IFS= read -r link; do
     target="$(readlink "$link" || true)"
     case "$target" in
-      "$SPELLBOOK"/*)
+      "$HARNESS_KIT"/*)
         if [ ! -e "$link" ]; then
           err "Broken symlink: $link -> $target"
           broken=1
@@ -278,7 +292,7 @@ install_system_file() {
   [ -e "$src" ] || { warn "    missing $label"; return 0; }
   mkdir -p "$(dirname "$dest")"
   rm -rf "$dest"
-  if [ -n "$SPELLBOOK" ]; then
+  if [ -n "$HARNESS_KIT" ]; then
     ln -sfn "$src" "$dest"
   else
     cp -R "$src" "$dest"
@@ -287,7 +301,7 @@ install_system_file() {
 }
 
 install_system_roster() {
-  local source_root="${SPELLBOOK:-$REMOTE_SPELLBOOK}"
+  local source_root="${HARNESS_KIT:-$REMOTE_HARNESS_KIT}"
   local system_dir="$HOME/.spellbook"
 
   info "Installing system roster..."
@@ -318,7 +332,7 @@ remove_source_skill_bridge_dir() {
     if [ -L "$entry" ]; then
       real_target="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$entry")"
       case "$real_target" in
-        "$SPELLBOOK/skills"/*)
+        "$HARNESS_KIT/skills"/*)
           rm -f "$entry"
           removed=1
           ;;
@@ -334,20 +348,20 @@ remove_source_skill_bridge_dir() {
   if rmdir "$dir" 2>/dev/null; then
     [ "$removed" -eq 1 ] && ok "    removed stale source $label"
   elif [ "$removed" -eq 1 ]; then
-    warn "    $label contains non-spellbook entries; removed only stale source symlinks"
+    warn "    $label contains non-Harness Kit entries; removed only stale source symlinks"
   elif [ "$has_foreign" -eq 1 ]; then
-    warn "    $label contains non-spellbook entries; leaving it alone"
+    warn "    $label contains non-Harness Kit entries; leaving it alone"
   fi
 }
 
 cleanup_source_skill_bridges() {
-  [ -n "$SPELLBOOK" ] || return 0
+  [ -n "$HARNESS_KIT" ] || return 0
 
   info "Cleaning source-repo skill bridges..."
-  remove_source_skill_bridge_dir "$SPELLBOOK/.codex/skills" ".codex/skills/"
-  remove_source_skill_bridge_dir "$SPELLBOOK/.claude/skills" ".claude/skills/"
-  remove_source_skill_bridge_dir "$SPELLBOOK/.pi/skills" ".pi/skills/"
-  remove_source_skill_bridge_dir "$SPELLBOOK/.agents/skills" ".agents/skills/"
+  remove_source_skill_bridge_dir "$HARNESS_KIT/.codex/skills" ".codex/skills/"
+  remove_source_skill_bridge_dir "$HARNESS_KIT/.claude/skills" ".claude/skills/"
+  remove_source_skill_bridge_dir "$HARNESS_KIT/.pi/skills" ".pi/skills/"
+  remove_source_skill_bridge_dir "$HARNESS_KIT/.agents/skills" ".agents/skills/"
   echo
 }
 
@@ -357,48 +371,65 @@ discover_local() {
   GLOBAL_SKILLS=()
   GLOBAL_AGENTS=()
 
-  for skill in "$SPELLBOOK"/skills/*; do
+  for skill in "$HARNESS_KIT"/skills/*; do
     [ -d "$skill" ] || continue
     [ -f "$skill/SKILL.md" ] || continue
     GLOBAL_SKILLS+=("$(basename "$skill")")
   done
 
-  for agent in "$SPELLBOOK"/agents/*.md; do
+  for agent in "$HARNESS_KIT"/agents/*.md; do
     [ -f "$agent" ] || continue
     GLOBAL_AGENTS+=("$(basename "$agent" .md)")
   done
 }
 
+download_archive() {
+  local repo="$1"
+  local archive="$2"
+  local target_dir="$3"
+  curl -sfL "https://github.com/$repo/archive/refs/heads/master.tar.gz" -o "$archive" \
+    || return 1
+  tar -xzf "$archive" -C "$target_dir" || return 1
+}
+
 discover_remote() {
   REMOTE_TMP="$(mktemp -d)"
-  local archive="$REMOTE_TMP/spellbook.tar.gz"
-  curl -sfL "https://github.com/$REPO/archive/refs/heads/master.tar.gz" -o "$archive" \
-    || { err "Failed to download spellbook archive"; exit 1; }
-  tar -xzf "$archive" -C "$REMOTE_TMP" \
-    || { err "Failed to extract spellbook archive"; exit 1; }
-  REMOTE_SPELLBOOK="$REMOTE_TMP/spellbook-master"
-  is_spellbook_checkout "$REMOTE_SPELLBOOK" \
-    || { err "Downloaded archive is not a spellbook checkout"; exit 1; }
+  local archive="$REMOTE_TMP/harness-kit.tar.gz"
+  local repo="$REPO"
+  if ! download_archive "$repo" "$archive" "$REMOTE_TMP"; then
+    warn "Failed to download $repo archive; trying legacy $LEGACY_REPO"
+    repo="$LEGACY_REPO"
+    download_archive "$repo" "$archive" "$REMOTE_TMP" \
+      || { err "Failed to download Harness Kit archive"; exit 1; }
+  fi
+
+  local extracted
+  extracted="$(find "$REMOTE_TMP" -maxdepth 1 -type d -name '*-master' | head -n 1)"
+  REMOTE_HARNESS_KIT="$extracted"
+  is_harness_kit_checkout "$REMOTE_HARNESS_KIT" \
+    || { err "Downloaded archive is not a Harness Kit checkout"; exit 1; }
 
   local skill agent
   GLOBAL_SKILLS=()
   GLOBAL_AGENTS=()
 
-  for skill in "$REMOTE_SPELLBOOK"/skills/*; do
+  for skill in "$REMOTE_HARNESS_KIT"/skills/*; do
     [ -d "$skill" ] || continue
     [ -f "$skill/SKILL.md" ] || continue
     GLOBAL_SKILLS+=("$(basename "$skill")")
   done
 
-  for agent in "$REMOTE_SPELLBOOK"/agents/*.md; do
+  for agent in "$REMOTE_HARNESS_KIT"/agents/*.md; do
     [ -f "$agent" ] || continue
     GLOBAL_AGENTS+=("$(basename "$agent" .md)")
   done
 }
 
-SPELLBOOK="$(resolve_spellbook_dir || true)"
+HARNESS_KIT="$(resolve_harness_kit_dir || true)"
+# Legacy alias used by existing downstream hook snippets and old user shells.
+SPELLBOOK="$HARNESS_KIT"
 
-if [ -n "$SPELLBOOK" ]; then
+if [ -n "$HARNESS_KIT" ]; then
   discover_local
 else
   discover_remote
@@ -430,7 +461,7 @@ link_parent_dir() {
     rm -f "$dest"
   elif [ -d "$dest" ]; then
     # Migrate from per-entry symlinks to parent symlink.
-    # Remove spellbook-managed symlinks; warn about non-symlink entries.
+    # Remove Harness Kit-managed symlinks; warn about non-symlink entries.
     local has_non_symlink=0
     local entry target
     for entry in "$dest"/*; do
@@ -438,7 +469,7 @@ link_parent_dir() {
       if [ -L "$entry" ]; then
         target="$(readlink "$entry" || true)"
         case "$target" in
-          "$src"/*|"$SPELLBOOK"/*) rm -f "$entry" ;;
+          "$src"/*|"$HARNESS_KIT"/*) rm -f "$entry" ;;
           *) has_non_symlink=1 ;;
         esac
       else
@@ -446,7 +477,7 @@ link_parent_dir() {
       fi
     done
     if [ "$has_non_symlink" -eq 1 ]; then
-      warn "    $label: non-spellbook entries exist, keeping per-entry links"
+      warn "    $label: non-Harness Kit entries exist, keeping per-entry links"
       return 1
     fi
     rmdir "$dest" 2>/dev/null || { warn "    $label: dir not empty after cleanup"; return 1; }
@@ -470,24 +501,24 @@ link_local() {
   fi
 
   local skill src
-  cleanup_symlinks_under_prefix "$skills_dir" "$SPELLBOOK/skills" "${GLOBAL_SKILLS[@]}"
+  cleanup_symlinks_under_prefix "$skills_dir" "$HARNESS_KIT/skills" "${GLOBAL_SKILLS[@]}"
   mkdir -p "$skills_dir"
   for skill in "${GLOBAL_SKILLS[@]}"; do
-    src="$SPELLBOOK/skills/$skill"
+    src="$HARNESS_KIT/skills/$skill"
     [ -d "$src" ] || { warn "    missing local skill: $skill"; continue; }
     ln -sfn "$src" "$skills_dir/$skill"
     ok "    $skill"
   done
 
   info "  Linking agents..."
-  if ! link_parent_dir "$SPELLBOOK/agents" "$agents_dir" "agents/"; then
+  if ! link_parent_dir "$HARNESS_KIT/agents" "$agents_dir" "agents/"; then
     # Fallback: per-agent symlinks
     local agent src
     local agent_files=()
     for agent in "${GLOBAL_AGENTS[@]}"; do agent_files+=("$agent.md"); done
-    cleanup_symlinks_under_prefix "$agents_dir" "$SPELLBOOK/agents" "${agent_files[@]}"
+    cleanup_symlinks_under_prefix "$agents_dir" "$HARNESS_KIT/agents" "${agent_files[@]}"
     for agent in "${GLOBAL_AGENTS[@]}"; do
-      src="$SPELLBOOK/agents/$agent.md"
+      src="$HARNESS_KIT/agents/$agent.md"
       [ -f "$src" ] || { warn "    missing local agent: $agent"; continue; }
       ln -sfn "$src" "$agents_dir/$agent.md"
       ok "    $agent"
@@ -495,32 +526,32 @@ link_local() {
   fi
 
   # Link harness-specific configs if they exist
-  local harness_config="$SPELLBOOK/harnesses/$harness"
+  local harness_config="$HARNESS_KIT/harnesses/$harness"
   if [ -d "$harness_config" ]; then
     info "  Linking harness config..."
     case "$harness" in
       claude)
-        link_file_if_present "$SPELLBOOK/harnesses/shared/AGENTS.md" "$harness_dir/CLAUDE.md" "CLAUDE.md (← shared AGENTS.md)"
+        link_file_if_present "$HARNESS_KIT/harnesses/shared/AGENTS.md" "$harness_dir/CLAUDE.md" "CLAUDE.md (← shared AGENTS.md)"
         link_dir_entries_if_present "$harness_config/hooks" "$harness_dir/hooks" "hooks/"
         copy_claude_settings_if_present "$harness_config/settings.json" "$harness_dir/settings.json"
-        remove_path_if_symlink_to_prefix "$harness_dir/.claude/settings.local.json" "$SPELLBOOK" ".claude/settings.local.json"
+        remove_path_if_symlink_to_prefix "$harness_dir/.claude/settings.local.json" "$HARNESS_KIT" ".claude/settings.local.json"
         ;;
       codex)
         cleanup_symlinks_under_prefix "$harness_dir/config" "$harness_config" "config.toml"
         link_file_if_present "$harness_config/config.toml" "$harness_dir/config/config.toml" "config.toml"
-        link_file_if_present "$SPELLBOOK/harnesses/shared/AGENTS.md" "$harness_dir/AGENTS.md" "AGENTS.md (← shared)"
+        link_file_if_present "$HARNESS_KIT/harnesses/shared/AGENTS.md" "$harness_dir/AGENTS.md" "AGENTS.md (← shared)"
         ;;
       pi)
-        link_file_if_present "$SPELLBOOK/harnesses/shared/AGENTS.md" "$harness_dir/agent/AGENTS.md" "AGENTS.md (← shared)"
-        remove_path_if_symlink_to_prefix "$harness_dir/agent/APPEND_SYSTEM.md" "$SPELLBOOK" "agent/APPEND_SYSTEM.md"
+        link_file_if_present "$HARNESS_KIT/harnesses/shared/AGENTS.md" "$harness_dir/agent/AGENTS.md" "AGENTS.md (← shared)"
+        remove_path_if_symlink_to_prefix "$harness_dir/agent/APPEND_SYSTEM.md" "$HARNESS_KIT" "agent/APPEND_SYSTEM.md"
         link_file_if_present "$harness_config/settings.json" "$harness_dir/settings.json" "settings.json"
-        cleanup_symlinks_under_prefix "$harness_dir/prompts" "$SPELLBOOK"
-        remove_path_if_symlink_to_prefix "$harness_dir/persona.md" "$SPELLBOOK" "persona.md"
+        cleanup_symlinks_under_prefix "$harness_dir/prompts" "$HARNESS_KIT"
+        remove_path_if_symlink_to_prefix "$harness_dir/persona.md" "$HARNESS_KIT" "persona.md"
         ;;
     esac
   fi
 
-  verify_no_broken_spellbook_symlinks "$harness_dir" 4
+  verify_no_broken_harness_kit_symlinks "$harness_dir" 4
 }
 
 # --- Remote mode: download from GitHub ---
@@ -530,12 +561,12 @@ download_skill() {
   local name="$2"
   local target="$skills_dir/$name"
 
-  [ -n "$REMOTE_SPELLBOOK" ] || { err "Remote checkout not available"; return 1; }
-  [ -d "$REMOTE_SPELLBOOK/skills/$name" ] || { err "Failed: missing skill $name"; return 1; }
+  [ -n "$REMOTE_HARNESS_KIT" ] || { err "Remote checkout not available"; return 1; }
+  [ -d "$REMOTE_HARNESS_KIT/skills/$name" ] || { err "Failed: missing skill $name"; return 1; }
 
   rm -rf "$target"
   mkdir -p "$(dirname "$target")"
-  cp -R "$REMOTE_SPELLBOOK/skills/$name" "$target"
+  cp -R "$REMOTE_HARNESS_KIT/skills/$name" "$target"
   ok "  $name → $target"
 }
 
@@ -543,11 +574,11 @@ download_agent() {
   local agents_dir="$1"
   local name="$2"
 
-  [ -n "$REMOTE_SPELLBOOK" ] || { err "Remote checkout not available"; return 1; }
-  [ -f "$REMOTE_SPELLBOOK/agents/$name.md" ] || { err "Failed: agent $name"; return 1; }
+  [ -n "$REMOTE_HARNESS_KIT" ] || { err "Remote checkout not available"; return 1; }
+  [ -f "$REMOTE_HARNESS_KIT/agents/$name.md" ] || { err "Failed: agent $name"; return 1; }
 
   mkdir -p "$agents_dir"
-  cp "$REMOTE_SPELLBOOK/agents/$name.md" "$agents_dir/$name.md"
+  cp "$REMOTE_HARNESS_KIT/agents/$name.md" "$agents_dir/$name.md"
   ok "  $name → $agents_dir/$name.md"
 }
 
@@ -567,9 +598,9 @@ install_remote() {
 
 # --- Orchestration ---
 
-info "Spellbook Bootstrap"
-if [ -n "$SPELLBOOK" ]; then
-  info "Local checkout detected: $SPELLBOOK"
+info "Harness Kit Bootstrap"
+if [ -n "$HARNESS_KIT" ]; then
+  info "Local checkout detected: $HARNESS_KIT"
   info "Mode: symlink"
 else
   info "No local checkout found."
@@ -593,7 +624,7 @@ for harness in claude codex pi; do
   info "Detected: $harness"
   mkdir -p "$harness_dir"
 
-  if [ -n "$SPELLBOOK" ]; then
+  if [ -n "$HARNESS_KIT" ]; then
     link_local "$harness" "$harness_dir"
   else
     agents_dir="$harness_dir/agents"
@@ -608,7 +639,7 @@ if [ "$installed" -eq 0 ]; then
   warn "No agent harnesses detected."
   warn "Installing to ~/.claude/ as default."
   mkdir -p "$HOME/.claude"
-  if [ -n "$SPELLBOOK" ]; then
+  if [ -n "$HARNESS_KIT" ]; then
     link_local "claude" "$HOME/.claude"
   else
     install_remote "$HOME/.claude/skills" "$HOME/.claude/agents"
@@ -617,10 +648,10 @@ if [ "$installed" -eq 0 ]; then
 fi
 
 # --- Git hooks: ensure core.hooksPath is set ---
-if [ -n "$SPELLBOOK" ] && [ -d "$SPELLBOOK/.githooks" ]; then
-  current_hooks_path="$(git -C "$SPELLBOOK" config core.hooksPath 2>/dev/null || true)"
+if [ -n "$HARNESS_KIT" ] && [ -d "$HARNESS_KIT/.githooks" ]; then
+  current_hooks_path="$(git -C "$HARNESS_KIT" config core.hooksPath 2>/dev/null || true)"
   if [ "$current_hooks_path" != ".githooks" ]; then
-    git -C "$SPELLBOOK" config core.hooksPath .githooks
+    git -C "$HARNESS_KIT" config core.hooksPath .githooks
     info "Set core.hooksPath → .githooks"
   fi
 fi
@@ -631,9 +662,9 @@ info "Skills (${#GLOBAL_SKILLS[@]}): ${GLOBAL_SKILLS[*]}"
 info "Agents (${#GLOBAL_AGENTS[@]}): ${GLOBAL_AGENTS[*]}"
 info "All first-party skills are installed system-wide for each detected harness."
 echo
-if [ -n "$SPELLBOOK" ]; then
-  info "Mode: symlink (edits in $SPELLBOOK propagate instantly)"
+if [ -n "$HARNESS_KIT" ]; then
+  info "Mode: symlink (edits in $HARNESS_KIT propagate instantly)"
 else
   info "Mode: downloaded from GitHub"
-  info "For symlink mode, clone spellbook and re-run."
+  info "For symlink mode, clone harness-kit and re-run."
 fi

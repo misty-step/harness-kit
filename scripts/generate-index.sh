@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generate index.yaml from all skills and agents in the Spellbook repo.
+# Generate index.yaml from all skills and agents in the Harness Kit repo.
 # Run from repo root: ./scripts/generate-index.sh
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 INDEX="$REPO_ROOT/index.yaml"
 
-echo "# Spellbook Index" > "$INDEX"
+echo "# Harness Kit Index" > "$INDEX"
 echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$INDEX"
 echo "# Do not edit manually. Run: ./scripts/generate-index.sh" >> "$INDEX"
 echo "" >> "$INDEX"

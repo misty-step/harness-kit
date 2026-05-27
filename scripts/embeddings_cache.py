@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared cache helpers for Spellbook embeddings."""
+"""Shared cache helpers for Harness Kit embeddings."""
 
 from __future__ import annotations
 
@@ -12,29 +12,31 @@ FORMAT_VERSION = 1
 DEFAULT_TTL_SECONDS = 86400
 
 
-def spellbook_cache_root() -> Path:
-    override = os.environ.get("SPELLBOOK_CACHE_DIR")
+def harness_kit_cache_root() -> Path:
+    override = os.environ.get("HARNESS_KIT_CACHE_DIR") or os.environ.get("SPELLBOOK_CACHE_DIR")
     if override:
         return Path(override).expanduser()
 
     codex_home = os.environ.get("CODEX_HOME")
     if codex_home:
-        return Path(codex_home).expanduser() / "cache" / "spellbook"
+        return Path(codex_home).expanduser() / "cache" / "harness-kit"
 
     xdg_cache = os.environ.get("XDG_CACHE_HOME")
     if xdg_cache:
-        return Path(xdg_cache).expanduser() / "spellbook"
+        return Path(xdg_cache).expanduser() / "harness-kit"
 
-    return Path.home() / ".cache" / "spellbook"
+    return Path.home() / ".cache" / "harness-kit"
 
 
 def discovery_cache_paths() -> tuple[Path, Path]:
-    cache_dir = spellbook_cache_root() / "discovery"
+    cache_dir = harness_kit_cache_root() / "discovery"
     return cache_dir / "embeddings.json", cache_dir / "embeddings-meta.json"
 
 
 def ttl_seconds() -> int:
-    raw = os.environ.get("SPELLBOOK_EMBEDDINGS_TTL_SECONDS")
+    raw = os.environ.get("HARNESS_KIT_EMBEDDINGS_TTL_SECONDS") or os.environ.get(
+        "SPELLBOOK_EMBEDDINGS_TTL_SECONDS"
+    )
     if not raw:
         return DEFAULT_TTL_SECONDS
     try:

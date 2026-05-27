@@ -507,7 +507,7 @@ def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
 
 
 def system_spellbook_dir() -> Path:
-    configured = os.environ.get("SPELLBOOK_HOME")
+    configured = os.environ.get("HARNESS_KIT_HOME") or os.environ.get("SPELLBOOK_HOME")
     if configured:
         return Path(configured).expanduser()
     return Path.home() / ".spellbook"
@@ -519,8 +519,12 @@ def resolve_roster_path(
     system_home: Path | None = None,
     configured: str | None = None,
 ) -> Path:
-    configured = configured or os.environ.get("SPELLBOOK_ROSTER") or os.environ.get(
-        "SPELLBOOK_ROSTER_PATH"
+    configured = (
+        configured
+        or os.environ.get("HARNESS_KIT_ROSTER")
+        or os.environ.get("HARNESS_KIT_ROSTER_PATH")
+        or os.environ.get("SPELLBOOK_ROSTER")
+        or os.environ.get("SPELLBOOK_ROSTER_PATH")
     )
     if configured:
         return Path(configured).expanduser()
@@ -541,8 +545,11 @@ def default_roster_path() -> Path:
 
 
 def default_receipt_path() -> Path:
-    configured = os.environ.get("SPELLBOOK_RECEIPTS") or os.environ.get(
-        "SPELLBOOK_RECEIPT_PATH"
+    configured = (
+        os.environ.get("HARNESS_KIT_RECEIPTS")
+        or os.environ.get("HARNESS_KIT_RECEIPT_PATH")
+        or os.environ.get("SPELLBOOK_RECEIPTS")
+        or os.environ.get("SPELLBOOK_RECEIPT_PATH")
     )
     if configured:
         return Path(configured).expanduser()
