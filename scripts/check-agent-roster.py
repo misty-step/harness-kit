@@ -37,26 +37,24 @@ def validate_delegation_floor() -> None:
     missing = []
     weak = []
     ambiguous = []
-    for root in (Path("skills"), Path(".agents/skills")):
-        if not root.exists():
+    root = Path("skills")
+    for skill in CORE_WORKFLOW_SKILLS:
+        path = root / skill / "SKILL.md"
+        if not path.exists():
             continue
-        for skill in CORE_WORKFLOW_SKILLS:
-            path = root / skill / "SKILL.md"
-            if not path.exists():
-                continue
-            text = path.read_text()
-            if "## Delegation Floor" not in text:
-                missing.append(str(path))
-                continue
-            has_roster_contract = (
-                "provider roster is available" in text or ".spellbook/agents.yaml" in text
-            )
-            if "two or more" not in text or not has_roster_contract:
-                weak.append(str(path))
-            if skill in {"shape", "research", "harness"}:
-                lowered = text.lower()
-                if "native in-thread subagents" not in lowered or "do not" not in lowered:
-                    ambiguous.append(str(path))
+        text = path.read_text()
+        if "## Delegation Floor" not in text:
+            missing.append(str(path))
+            continue
+        has_roster_contract = (
+            "provider roster is available" in text or ".spellbook/agents.yaml" in text
+        )
+        if "two or more" not in text or not has_roster_contract:
+            weak.append(str(path))
+        if skill in {"shape", "research", "harness"}:
+            lowered = text.lower()
+            if "native in-thread subagents" not in lowered or "do not" not in lowered:
+                ambiguous.append(str(path))
 
     errors = []
     if missing:
@@ -87,6 +85,21 @@ def validate_shared_roster_doctrine() -> None:
         )
 
 
+def validate_no_source_skill_bridges() -> None:
+    forbidden = [
+        Path(".agents/skills"),
+        Path(".codex/skills"),
+        Path(".claude/skills"),
+        Path(".pi/skills"),
+    ]
+    present = [str(path) for path in forbidden if path.exists()]
+    if present:
+        raise SystemExit(
+            "source repo must not commit repo-local skill bridges: "
+            + ", ".join(present)
+        )
+
+
 def main() -> int:
     roster_path = Path(".spellbook/agents.yaml")
     fixture_path = Path(".spellbook/examples/delegation-receipt.jsonl")
@@ -96,6 +109,7 @@ def main() -> int:
     validate_roster(load_roster(roster_path))
     validate_delegation_floor()
     validate_shared_roster_doctrine()
+    validate_no_source_skill_bridges()
     receipts = read_receipts(fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")
@@ -130,7 +144,7 @@ def main() -> int:
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
-    print(f".agents/skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
+    print("source repo: no repo-local skill bridges")
     print(f"{summary_script}: report helper valid")
     return 0
 

@@ -16,9 +16,10 @@ disk; do not restate obvious filesystem facts.
 - `index.yaml` is generated. Never edit it by hand.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
-- Repo-local harness source is `.agents/skills/`; in this repo it links to the
-  canonical `skills/` catalog. Hidden dirs are first-class. Search with
-  `rg --hidden -g '!.git/**'`.
+- Spellbook source skills live only in `skills/`. Do not commit source-repo
+  `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, or `.pi/skills/`
+  bridges; those are `/seed` output for consumer repos and duplicate the global
+  install here.
 
 ## Roster Floor
 

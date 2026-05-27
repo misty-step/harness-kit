@@ -306,6 +306,51 @@ install_system_roster() {
   echo
 }
 
+remove_source_skill_bridge_dir() {
+  local dir="$1"
+  local label="$2"
+
+  [ -d "$dir" ] || return 0
+
+  local entry real_target removed=0 has_foreign=0
+  for entry in "$dir"/*; do
+    [ -e "$entry" ] || [ -L "$entry" ] || continue
+    if [ -L "$entry" ]; then
+      real_target="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$entry")"
+      case "$real_target" in
+        "$SPELLBOOK/skills"/*)
+          rm -f "$entry"
+          removed=1
+          ;;
+        *)
+          has_foreign=1
+          ;;
+      esac
+    else
+      has_foreign=1
+    fi
+  done
+
+  if rmdir "$dir" 2>/dev/null; then
+    [ "$removed" -eq 1 ] && ok "    removed stale source $label"
+  elif [ "$removed" -eq 1 ]; then
+    warn "    $label contains non-spellbook entries; removed only stale source symlinks"
+  elif [ "$has_foreign" -eq 1 ]; then
+    warn "    $label contains non-spellbook entries; leaving it alone"
+  fi
+}
+
+cleanup_source_skill_bridges() {
+  [ -n "$SPELLBOOK" ] || return 0
+
+  info "Cleaning source-repo skill bridges..."
+  remove_source_skill_bridge_dir "$SPELLBOOK/.codex/skills" ".codex/skills/"
+  remove_source_skill_bridge_dir "$SPELLBOOK/.claude/skills" ".claude/skills/"
+  remove_source_skill_bridge_dir "$SPELLBOOK/.pi/skills" ".pi/skills/"
+  remove_source_skill_bridge_dir "$SPELLBOOK/.agents/skills" ".agents/skills/"
+  echo
+}
+
 discover_local() {
   local agent
   local skill
@@ -533,6 +578,7 @@ fi
 echo
 
 install_system_roster
+cleanup_source_skill_bridges
 
 installed=0
 
