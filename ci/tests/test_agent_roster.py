@@ -1,5 +1,6 @@
 import json
 import os
+import shlex
 import stat
 import tempfile
 import textwrap
@@ -39,6 +40,16 @@ class RosterValidationTests(unittest.TestCase):
         self.assertEqual(set(roster["providers"]), ROSTER_PROVIDER_IDS)
         self.assertEqual(roster["providers"]["codex"]["tier"], "primary")
         self.assertEqual(roster["providers"]["manual"]["kind"], "manual")
+
+    def test_agy_print_flag_is_last_before_prompt(self) -> None:
+        roster = load_roster(REPO_ROOT / ".spellbook/agents.yaml")
+
+        for field in ("dispatch", "smoke"):
+            parts = shlex.split(roster["providers"]["agy"][field])
+            self.assertIn("--print", parts)
+            self.assertIn("--print-timeout", parts)
+            self.assertLess(parts.index("--print-timeout"), parts.index("--print"))
+            self.assertEqual(parts[-1], "--print")
 
     def test_rejects_secret_like_command_values(self) -> None:
         roster = {
@@ -378,6 +389,60 @@ class ReceiptTests(unittest.TestCase):
                     break
                 time.sleep(0.05)
             self.assertFalse(_pid_exists(child_pid))
+
+    def test_dispatch_appends_prompt_after_agy_print_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bin_dir = root / "bin"
+            bin_dir.mkdir()
+            argv_path = root / "argv.json"
+            fake = bin_dir / "fake-agy"
+            fake.write_text(
+                textwrap.dedent(
+                    f"""\
+                    #!{sys.executable}
+                    import json
+                    import pathlib
+                    import sys
+
+                    if "--help" in sys.argv:
+                        print("Usage of agy")
+                        raise SystemExit(0)
+
+                    pathlib.Path({str(argv_path)!r}).write_text(json.dumps(sys.argv[1:]))
+                    print(sys.argv[-1])
+                    """
+                )
+            )
+            fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+            receipt_path = root / "delegations.jsonl"
+            transcript_dir = root / "traces"
+            roster = _fixture_roster(
+                "fake-agy --dangerously-skip-permissions --print-timeout 10m --print",
+                probe="fake-agy --help",
+            )
+
+            receipt = dispatch_provider_lane(
+                roster,
+                provider_target="agy",
+                prompt="sentinel prompt",
+                objective="agy argv fixture",
+                input_ref="prompt.txt",
+                transcript_dir=transcript_dir,
+                receipt_output=receipt_path,
+                timeout_s=1,
+                grace_s=0.1,
+                lead_harness="codex",
+                lead_provider="codex",
+                path_env=str(bin_dir),
+            )
+
+            self.assertEqual(receipt["attempt_status"], "succeeded")
+            argv = json.loads(argv_path.read_text())
+            self.assertEqual(argv[-2:], ["--print", "sentinel prompt"])
+            self.assertLess(argv.index("--print-timeout"), argv.index("--print"))
+            transcript = Path(receipt["evidence_refs"][0]).read_text()
+            self.assertIn("sentinel prompt", transcript)
 
 
 def _fixture_roster(dispatch: str, *, probe: str) -> dict:

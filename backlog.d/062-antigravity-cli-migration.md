@@ -69,3 +69,26 @@ On this machine, Antigravity-related state exists under:
 Observed directories include `plugins/`, `skills/`, `global_skills/`,
 `global_workflows/`, `mcp_config.json`, and `settings.json`. Treat these as
 implementation evidence to verify, not as a public contract by themselves.
+
+### 2026-05-27 CLI experiment notes
+
+Controlled local checks showed that `agy --help`, `agy plugin list`, and
+`agy changelog` are stable low-risk probes. `agy --print-timeout 45s --print
+"Reply with exactly: AGY_OK"` follows a sentinel prompt. `agy --add-dir
+/path/to/repo ... --print "Read project.md"` can run from a neutral directory
+while granting access to the target repo.
+
+The important command-shape finding is that `--print` must be the final flag
+before the prompt. With the old roster shape,
+`agy --print --dangerously-skip-permissions --print-timeout 10m <prompt>`,
+Antigravity treated `--dangerously-skip-permissions` / timeout text as prompt
+content and returned setup/permission-status output while exiting successfully.
+Spellbook's roster now uses:
+
+```sh
+agy --dangerously-skip-permissions --print-timeout 10m --print <prompt>
+```
+
+Keep Antigravity conditional in the roster and require transcript inspection or
+a sentinel prompt for smoke tests; a zero exit code alone is not sufficient
+evidence that the prompt was followed.
