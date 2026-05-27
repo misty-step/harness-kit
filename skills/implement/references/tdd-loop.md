@@ -81,6 +81,17 @@ half the job. Every behavior that can fail loudly needs a test:
 Silent catch-and-return is a red flag. If new code handles an exception,
 there's a test that asserts the handling is correct.
 
+## Hardening triggers
+
+Example tests are enough for many behaviors. Route to `/hardening property`
+before calling implementation done when the target has broad input domains or
+law-shaped behavior: parsers, encoders, serializers, normalization, allocation,
+scheduling, state transitions, arithmetic totals, sorting, filtering, or
+round trips. The property oracle must name the domain, exclusions, generator,
+and invariant. If no invariant can be stated in one sentence, stay with
+example tests and let review decide whether mutation or risk hardening is
+worth a separate pass.
+
 ## The refactor step's scope
 
 Local. Improve the code you just wrote in this cycle:

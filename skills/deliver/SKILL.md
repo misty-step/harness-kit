@@ -72,6 +72,8 @@ The delivery brief must answer:
 - What value the change creates for developers and operators.
 - What value the change creates for users or customers once it ships.
 - What was verified, and what residual risk remains before merge or deploy.
+- What hardening triggers were found by implementation, review, CI, or QA; if
+  `/hardening` did not run, why the route was waived.
 
 Every merge-ready brief includes this block:
 
@@ -81,12 +83,14 @@ Every merge-ready brief includes this block:
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:
+- Hardening run / waiver:
 - Residual unverified paths:
 ```
 
 If any phase cannot fill the block with live evidence, `/deliver` is not
 merge-ready. "Gate passed" is necessary evidence, not the whole acceptance
-argument.
+argument. Hardening recommendations are recorded in the receipt; they extend
+the clean loop only when a phase verdict makes the test-strength gap blocking.
 
 `/reflect` remains mandatory. Do not collapse reflection into the delivery
 brief. The brief explains the delivered result; `/reflect` captures the
@@ -131,6 +135,7 @@ let the outer loop own the final session-level shipping brief.
 | implement | `/implement` | TDD red→green→refactor, commits on feature branch | — |
 | review | `/code-review` | parallel bench review, synthesized findings | — |
 | ci | `/ci` | dagger audit + green pipeline | `/ci` itself decides — do not pre-filter |
+| hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, or DRY hardening evidence | no phase issued a blocking hardening requirement, or an explicit waiver is recorded |
 | refactor | `/refactor` | diff-aware simplification | trivial diffs (<20 LOC, single file) |
 | qa | `/qa` | browser-driven exploratory test, evidence | no user-facing surface (pure library/refactor) |
 
@@ -156,6 +161,10 @@ receipts; it never re-implements the phase.
 - **Evidence is out-of-band.** `/deliver` writes zero artifacts itself;
   per-phase skills emit; receipt records pointers only. See
   `references/evidence.md`.
+- **No auto-invoke of `/hardening`.** Downstream phases may flag hardening
+  opportunities; `/deliver` records them and any waiver. `/hardening` runs only
+  when explicitly included in the delivery path or when a phase issues a
+  blocking verdict naming the test-strength gap.
 
 ## Contract (exit code + receipt)
 

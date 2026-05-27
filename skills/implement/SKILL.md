@@ -97,6 +97,8 @@ Before exiting, confirm:
 - [ ] `git status` clean (no untracked debug files)
 - [ ] No `TODO`/`FIXME`/`console.log` added that isn't in the spec
 - [ ] Commits are logically atomic (one concern per commit)
+- [ ] Broad-domain or invariant-heavy behavior was routed through
+      `/hardening property`, or the handoff names why example tests are enough
 
 If any check fails, dispatch a builder sub-agent to fix. Max 2 fix loops,
 then escalate.

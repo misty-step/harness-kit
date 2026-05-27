@@ -52,6 +52,19 @@ available roster members.
 | `dry` | Duplication may hide copy-paste bugs or force scattered fixes. | Structural duplicate candidates and refactor/no-refactor calls. |
 | `full` | User asks for a hardening pass without naming a mode. | Risk-ranked sequence: risk -> property/mutation/acceptance -> dry if relevant. |
 
+## Upstream Signals
+
+Other workflow skills may route here without making hardening part of the
+default fast path:
+
+| Signal | Route |
+|---|---|
+| `/implement` names broad-domain or invariant-heavy behavior | `/hardening property` |
+| `/code-review` finds branch-heavy changed code with shallow tests | `/hardening mutation` or `/hardening risk` |
+| `/qa` relies on examples, fixtures, Gherkin, contracts, or golden files whose values should matter | `/hardening acceptance` |
+| `/ci` reports missing hardening visibility for a repo that needs it | `/hardening risk` |
+| `/deliver` carries a blocking phase verdict naming a test-strength gap | the mode named by that phase |
+
 ## Target Selection
 
 Start narrow. Pick a function, module, spec file, feature, route, or CLI

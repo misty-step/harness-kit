@@ -134,6 +134,24 @@ issuing a Ship verdict:
 Route behavior-preserving cleanup to `/refactor`; block Ship when the slop or
 spaghetti makes the changed behavior harder to reason about.
 
+## Hardening Lens
+
+Recommend `/hardening` when the diff exposes a test-strength gap:
+
+- `/hardening property` for broad input domains, parser/serializer laws,
+  normalization, state transitions, totals, allocation, scheduling, sorting, or
+  round trips;
+- `/hardening mutation` when branch-heavy changed code is covered only by
+  shallow examples or assertion-light tests;
+- `/hardening acceptance` when user-facing fixtures, Gherkin, API examples,
+  CLI transcripts, or golden paths should fail if important values change;
+- `/hardening risk` when complexity and coverage need to pick the next target
+  before a Ship verdict is credible.
+
+Do not block Ship merely because a hardening mode exists. Block only when the
+changed behavior is high-risk, the current tests are visibly weak, or the
+review cannot name a live evidence path that would catch the likely failure.
+
 ## Completion Gate
 
 Every Ship or Conditional verdict must include:
@@ -144,6 +162,7 @@ Every Ship or Conditional verdict must include:
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:
+- Hardening recommendation / waiver:
 - Residual unverified paths:
 ```
 

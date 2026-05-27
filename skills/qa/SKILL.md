@@ -27,6 +27,15 @@ The skill's job is to route to the right shape, then either defer to a
 project-local QA skill that encodes this repo's actual paths, or run a
 quick protocol on the fly.
 
+## Hardening Hook
+
+Route to `/hardening acceptance` when QA relies on examples whose values should
+matter: Gherkin scenarios, API fixtures, CLI transcripts, golden files,
+seeded workflows, screenshots with asserted data, or contract examples. QA can
+still pass without it when the check directly drives the live behavior, but the
+report must name whether acceptance mutation was run, waived as not useful, or
+left as residual risk.
+
 ## Completion Gate
 
 Every QA pass/fail report includes:
@@ -37,6 +46,7 @@ Every QA pass/fail report includes:
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:
+- Acceptance mutation / hardening:
 - Residual unverified paths:
 ```
 

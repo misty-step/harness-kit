@@ -93,6 +93,10 @@ gates into `check()`, thin the GHA/CircleCI provider to a single
   secrets scan — each one covered by a Dagger function, or a gap?
 - **Thresholds:** coverage floor ≥70% (calibrate to repo maturity),
   type-check in strict mode, lint rules not silently disabled.
+- **Hardening visibility:** property testing, mutation testing, CRAP/SCRAP,
+  structural DRY, or acceptance-mutation commands are documented for repos
+  whose changed surfaces need them. Missing tools are audit findings, not a
+  reason to add slow hardening work to the default fast gate.
 - **Hermeticity:** tests don't hit network/external DBs? Fixtures pinned?
 - **Speed:** full pipeline under ~10 minutes? If not, flag (not blocking).
 - **Pre-push hook:** invokes the Dagger pipeline? (see
