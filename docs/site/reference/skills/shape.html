@@ -26,11 +26,52 @@
       <p class="eyebrow">skill</p>
       <h1>shape</h1>
       <p class="lede">Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: &quot;shape this&quot;, &quot;write a spec&quot;, &quot;design this feature&quot;, &quot;plan this&quot;, &quot;spec out&quot;, &quot;context packet&quot;, &quot;technical design&quot;. Trigger: /shape, /spec, /plan, /cp.</p>
+      <p><code class="trigger large">/shape</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/shape/SKILL.md">skills/shape/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: &quot;shape this&quot;, &quot;write a spec&quot;, &quot;design this feature&quot;, &quot;plan this&quot;, &quot;spec out&quot;, &quot;context packet&quot;, &quot;technical design&quot;. Trigger: /shape, /spec, /plan, /cp.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-plan"></use></svg><h3>Workflow role</h3><p>Plan primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Shape a raw idea into something buildable. Output is a **context packet** —
+the unit of specification that precedes implementation.
+
+## Workflow
+
+### Phase 1: Understand
+
+Accept: raw idea, backlog.d/ item, issue ID, or observation.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/shape` starts by probing the roster
+and dispatching two or more available roster members before converging on a
+problem frame or solution. Use one lane to map repo constraints and another
+for prior-art or premise challenge; add more lanes when product, technical,
+or customer-risk perspectives diverge. The lead agent owns synthesis,
+questions to the user, final context-packet wording, and receipts. Direct
+lead-only shaping is limited to mechanical packet formatting, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
+Native in-thread subagents can add fresh-context signal, but they do not
+satisfy the roster floor. At least two real provider ids must be dispatched
+or waived explicitly.
+
+Spawn parallel sub-agents to gather context fast: one to map the relevant
+codebase area (files, patterns, constraints), another to search for prior art
+(how do other projects solve this? check codebase first, then /research).
+Synthesize their findings before proceeding.
+
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`) and the shape is M+ effort, dispatch at
+least two roster-backed provider lanes before converging. Use the lead model
+for synthesis; record meaningful external lanes as delegation receipts.
+
+If `exemplars.md` exists at project root, read it. Include relevant exemplar
+techniques in the context packet with specific files to study during build.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

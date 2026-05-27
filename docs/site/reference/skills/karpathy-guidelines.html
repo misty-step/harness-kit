@@ -26,11 +26,64 @@
       <p class="eyebrow">skill</p>
       <h1>karpathy-guidelines</h1>
       <p class="lede">Four behavioral guidelines to reduce common LLM coding mistakes: surface assumptions, prefer simplicity, make surgical changes, drive by verifiable goals. Distilled from Andrej Karpathy&#x27;s observations on where LLM agents silently fail. Reference inline when facing a judgment call about scope, simplicity, assumptions, or success criteria. Use when: &quot;am I overcomplicating this&quot;, &quot;should I refactor this adjacent code&quot;, &quot;what are my assumptions&quot;, &quot;how do I verify success&quot;, &quot;/karpathy&quot;, &quot;/principles&quot;.</p>
+      <p><code class="trigger large">/karpathy-guidelines</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/karpathy-guidelines/SKILL.md">skills/karpathy-guidelines/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Four behavioral guidelines to reduce common LLM coding mistakes: surface assumptions, prefer simplicity, make surgical changes, drive by verifiable goals. Distilled from Andrej Karpathy&#x27;s observations on where LLM agents silently fail. Reference inline when facing a judgment call about scope, simplicity, assumptions, or success criteria. Use when: &quot;am I overcomplicating this&quot;, &quot;should I refactor this adjacent code&quot;, &quot;what are my assumptions&quot;, &quot;how do I verify success&quot;, &quot;/karpathy&quot;, &quot;/principles&quot;.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Four principles for avoiding the specific LLM-agent failure modes
+Karpathy has repeatedly called out on Twitter/X: silent
+assumption-picking, premature abstraction, scope creep into adjacent
+code, and vague success criteria. Use as a self-check before acting,
+or dispatch when an agent seems to be drifting.
+
+**Tradeoff.** These bias toward caution over speed. For mechanical
+tasks (renames, find/replace, dep bumps) they&#x27;re overhead — use
+judgment. The threshold is &quot;does this need a judgment call?&quot;, same
+as for delegation.
+
+## 1. Think before coding
+
+**Don&#x27;t assume. Don&#x27;t hide confusion. Surface tradeoffs.**
+
+Before implementing:
+
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them — don&#x27;t pick
+  silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what&#x27;s confusing. Ask.
+
+The failure this prevents: the model picks one interpretation of a
+vague request, runs three-hundred lines, and the user only
+discovers the mismatch after reviewing the diff. Surface the fork
+*before* the work, not after.
+
+**Example.** Ticket: &quot;add validation to the signup form.&quot;
+
+Wrong: silently pick &quot;validate email format + password length,&quot;
+ship that, discover the user wanted reCAPTCHA.
+
+Right: before coding, state *&quot;I&#x27;m going to add client-side format
+validation for email and minimum-length for password. I&#x27;m not
+planning to wire up reCAPTCHA, rate limiting, or server-side
+checks. Confirm or redirect.&quot;*
+
+## 2. Simplicity first
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No &quot;flexibility&quot; or &quot;configurability&quot; that wasn&#x27;t requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

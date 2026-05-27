@@ -26,11 +26,45 @@
       <p class="eyebrow">skill</p>
       <h1>browser</h1>
       <p class="lede">Pick the right browser automation tool for a given task — across web and Electron apps, from CI tests to autonomous agents. Browser automation in 2026 is a testing pyramid: deterministic Playwright E2E at the base, AI-assisted helpers in the middle, persona-driven exploratory agents on top, and continuous QA agents against staging/production on top of that. Findings flow down (discoveries harden into deterministic tests), not up. Encodes the pyramid, the four-layer tool taxonomy (driver/mode/wrapper/ infra), the three distinct Playwright surfaces, and the load-bearing gotchas (agent() token trap, Spectron deprecation, runtime vs authoring- time AI, when selectors beat AI and when they don&#x27;t). Use for: &quot;automate the browser&quot;, &quot;script this flow&quot;, &quot;test this web app&quot;, &quot;test this electron app&quot;, &quot;scrape this site&quot;, &quot;should I use Playwright or Stagehand&quot;, &quot;which browser tool&quot;, &quot;browser agent&quot;, &quot;exploratory QA&quot;, &quot;persona testing&quot;, &quot;continuous QA&quot;, &quot;synthetic monitoring&quot;, &quot;puppet this UI&quot;, &quot;headless chrome&quot;, &quot;visual regression&quot;, &quot;E2E tests&quot;, &quot;self-healing tests&quot;, &quot;autonomous QA&quot;. Trigger: /browser.</p>
+      <p><code class="trigger large">/browser</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/browser/SKILL.md">skills/browser/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Pick the right browser automation tool for a given task — across web and Electron apps, from CI tests to autonomous agents. Browser automation in 2026 is a testing pyramid: deterministic Playwright E2E at the base, AI-assisted helpers in the middle, persona-driven exploratory agents on top, and continuous QA agents against staging/production on top of that. Findings flow down (discoveries harden into deterministic tests), not up. Encodes the pyramid, the four-layer tool taxonomy (driver/mode/wrapper/ infra), the three distinct Playwright surfaces, and the load-bearing gotchas (agent() token trap, Spectron deprecation, runtime vs authoring- time AI, when selectors beat AI and when they don&#x27;t). Use for: &quot;automate the browser&quot;, &quot;script this flow&quot;, &quot;test this web app&quot;, &quot;test this electron app&quot;, &quot;scrape this site&quot;, &quot;should I use Playwright or Stagehand&quot;, &quot;which browser tool&quot;, &quot;browser agent&quot;, &quot;exploratory QA&quot;, &quot;persona testing&quot;, &quot;continuous QA&quot;, &quot;synthetic monitoring&quot;, &quot;puppet this UI&quot;, &quot;headless chrome&quot;, &quot;visual regression&quot;, &quot;E2E tests&quot;, &quot;self-healing tests&quot;, &quot;autonomous QA&quot;. Trigger: /browser.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Browser automation is a **testing pyramid**, not a single tool. Pick the
+layer first, then the tool for that layer.
+
+## The Pyramid
+
+| Layer | Purpose | Tooling |
+|-------|---------|---------|
+| **4. Continuous QA** | scheduled agents, autonomous bug filing, synthetic monitoring against staging/prod | Custom Browser Use / Stagehand loops, bugAgent, QA.tech, Mabl, supaguard |
+| **3. Exploratory / Persona-driven** | cold-start exploration with a persona, charters, SBTM/PROOF reports, UX-gap discovery | Browser Use, Stagehand `agent()`, agent-browser, custom persona harnesses |
+| **2. Hybrid / AI-assisted** | Playwright body + AI for fragile steps, self-healing, AI-authored tests committed to repo | Playwright 1.56+ Planner/Generator/Healer, Stagehand atomic primitives, QA Wolf / Octomind (generate code), visual regression |
+| **1. Deterministic Playwright E2E** | critical user journeys, CI gate, 99%+ reliable, regression floor | Raw Playwright code, Playwright Test, fixtures, `getByRole` |
+
+**Findings flow down, not up.** The exploratory layer is a *discovery
+instrument*. When an agent persona finds a real bug or UX gap, harden
+the repro into a Layer 1 or Layer 2 test. Do not use runtime agents as
+release gates — they&#x27;re stochastic by construction.
+
+**Generate-once vs run-every-time.** QA Wolf / Octomind / Playwright&#x27;s
+Planner use AI at **authoring time** and produce deterministic Playwright
+code committed to the repo. Stagehand atomic / Browser Use use AI at
+**runtime**, paying LLM cost on every execution. Authoring-time AI is
+the production sweet spot; runtime AI is for fragile surfaces, one-off
+flows, and exploration.
+
+For the full pyramid rationale, persona patterns, SBTM/PROOF reporting,
+and commercial landscape, read `references/pyramid.md`.
+
+## The Four Tool Layers
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

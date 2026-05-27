@@ -26,11 +26,50 @@
       <p class="eyebrow">skill</p>
       <h1>groom</h1>
       <p class="lede">Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel interrogation, design-critique, technical-review, and research lanes. Use when: &quot;groom&quot;, &quot;what should we build&quot;, &quot;rethink this&quot;, &quot;biggest opportunity&quot;, &quot;backlog&quot;, &quot;prioritize&quot;, &quot;backlog session&quot;. Trigger: /groom, /backlog, /rethink, /moonshot, /scaffold.</p>
+      <p><code class="trigger large">/groom</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/groom/SKILL.md">skills/groom/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel interrogation, design-critique, technical-review, and research lanes. Use when: &quot;groom&quot;, &quot;what should we build&quot;, &quot;rethink this&quot;, &quot;biggest opportunity&quot;, &quot;backlog&quot;, &quot;prioritize&quot;, &quot;backlog session&quot;. Trigger: /groom, /backlog, /rethink, /moonshot, /scaffold.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-plan"></use></svg><h3>Workflow role</h3><p>Plan primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Keep the backlog healthy, organized, tidy, and strategically aligned. One
+loop, always-on. You cannot groom a backlog without tidying it.
+
+## Stance
+
+Grooming is the single operation that keeps `backlog.d/` useful. Every
+invocation runs the full loop:
+
+1. **Always tidies** — closes shipped tickets, reorders by priority, flags stale items.
+2. **Always brainstorms** — opens the aperture on what could be on the backlog that isn&#x27;t.
+3. **Always interrogates** — challenges the premise of top items with ad-hoc
+   roster lanes and the technical-review bench.
+4. **Always investigates** — dispatches Explore subagents against code hotspots.
+5. **Always researches** — delegates to `/research` for outside context on unfamiliar territory.
+6. **Always simplifies** — favors deletion and consolidation over addition.
+
+Emphasis flags (`--emphasis explore|rethink|moonshot|scaffold`) weight the
+loop toward a direction. They do not turn steps off. There is no `tidy`
+subcommand; tidy is the price of admission.
+
+You are the executive orchestrator. Keep synthesis, prioritization, and
+decision authority on the lead model. Delegate investigation and evidence
+gathering to focused subagents in parallel.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/groom` starts by probing the roster
+and dispatching two or more available roster members for investigation before
+the lead mutates backlog state or recommends priorities. Use lanes for
+backlog drift, premise challenge, technical hotspots, product opportunity,
+or external context. The lead agent keeps synthesis and prioritization; do
+not delegate final backlog judgment. Direct lead-only grooming is limited to
+mechanical ticket moves, emergency unblocks, explicit user-forbidden
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

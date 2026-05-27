@@ -26,11 +26,55 @@
       <p class="eyebrow">skill</p>
       <h1>flywheel</h1>
       <p class="lede">Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p>
+      <p><code class="trigger large">/flywheel</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/flywheel/SKILL.md">skills/flywheel/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-operate"></use></svg><h3>Workflow role</h3><p>Operate primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Compose cycles of: pick a backlog item → `/shape` (if unshaped) →
+`/implement` → `/yeet` → `/settle` → `/ship` → `/monitor` → loop.
+
+Abbreviated form using the convenience composer:
+pick → `/deliver` → `/yeet` → `/ship` → `/monitor` → loop.
+(`/deliver` = `/shape` → `/implement` → `/settle`.)
+
+You already know how to do each of these. This skill exists only to
+encode the invariants that aren&#x27;t inferable from the leaf names.
+
+## Invariants
+
+- Flywheel composes. Phase logic lives in the leaf skill. Flywheel has none.
+- State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
+- Provider-roster behavior lives in the leaf workflow skills. If the repo has
+  `.spellbook/agents.yaml`, `/flywheel` expects two or more roster-member
+  receipts or explicit exceptions in phase evidence, but it does not dispatch
+  providers directly.
+- The cycle closeout includes the roster delegation report from `/ship`,
+  plus any provider-health follow-ups surfaced by failed or low-signal lanes.
+- `/ship` owns closure: squash-merge, backlog archive, `/reflect`, and
+  applying reflect&#x27;s outputs. Flywheel does not invoke `/reflect` directly.
+- Ship before deploy. Always.
+- Harness edits from reflect never touch master. `/ship` routes them to
+  `harness/reflect-outputs` for human review.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/flywheel` verifies that each
+substantive lifecycle phase used two or more roster members or recorded a
+valid exception. It remains the outer-loop manager; leaf skills own dispatch.
+
+## Gotchas
+
+- `/deliver`&#x27;s receipt is the contract — don&#x27;t peer inside.
+- An item can be open in `backlog.d/` but already shipped in git. Fix
+  the stale entry before starting a cycle on it.
+- Library repos still ship + reflect when deploy/monitor no-op.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

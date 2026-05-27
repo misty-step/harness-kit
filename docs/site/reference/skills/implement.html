@@ -26,11 +26,58 @@
       <p class="eyebrow">skill</p>
       <h1>implement</h1>
       <p class="lede">Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red → Green → Refactor. Does not shape, review, QA, or ship — single concern: spec to green tests. Use when: &quot;implement this spec&quot;, &quot;build this&quot;, &quot;TDD this&quot;, &quot;code this up&quot;, &quot;write the code for this ticket&quot;, after /shape has produced a context packet. Trigger: /implement, /build (alias).</p>
+      <p><code class="trigger large">/implement</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/implement/SKILL.md">skills/implement/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red → Green → Refactor. Does not shape, review, QA, or ship — single concern: spec to green tests. Use when: &quot;implement this spec&quot;, &quot;build this&quot;, &quot;TDD this&quot;, &quot;code this up&quot;, &quot;write the code for this ticket&quot;, after /shape has produced a context packet. Trigger: /implement, /build (alias).</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-build"></use></svg><h3>Workflow role</h3><p>Build primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Spec in, green tests out. One packet, one feature branch, one concern.
+
+## Invariants
+
+- Trust the context packet. Do not reshape. Do not re-plan.
+- If the packet is incomplete, **fail loudly** — do not invent the spec.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/implement` starts by probing the
+roster and dispatching two or more available roster members before code or
+tests are produced. Use one lane for the bounded builder attempt and another
+for independent validator/refactor scrutiny. The lead agent owns prompt
+framing, conflict resolution, final verification, and receipts; it should not
+write the implementation directly except for mechanical command execution,
+emergency unblocks, explicit user-forbidden delegation, or fewer than two
+available roster members.
+
+## Contract
+
+**Input.** A context packet: goal, non-goals, constraints, repo anchors,
+oracle (executable preferred), implementation sequence. Resolution order:
+
+1. Explicit path argument (`/implement backlog.d/033-foo.md`)
+2. Backlog item ID (`/implement 033`) → resolves via `backlog.d/&lt;id&gt;-*.md`
+3. Last `/shape` output in the current session
+4. **No packet found → stop.** Do not guess the spec from a title.
+
+Required packet fields (hard gate — missing any = stop):
+- `goal` (one sentence, testable)
+- `oracle` (how we know it&#x27;s done, ideally executable commands)
+- `implementation sequence` (ordered steps, or explicit &quot;single chunk&quot;)
+
+See `references/context-packet.md` for the full shape.
+
+**Output.**
+- Code + tests on a feature branch (`&lt;type&gt;/&lt;slug&gt;` from current branch)
+- All tests green (new + existing)
+- Working tree clean (no debug prints, no scratch files)
+- Commits in repo convention — one logical unit per commit
+- Final message: branch ref + oracle checklist status + Completion Gate
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

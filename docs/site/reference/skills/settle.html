@@ -26,11 +26,47 @@
       <p class="eyebrow">skill</p>
       <h1>settle</h1>
       <p class="lede">Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Does not archive tickets. Hands off to /ship for the final mile. Use when: &quot;polish this&quot;, &quot;get this merge-ready&quot;, &quot;unblock&quot;, &quot;clean up&quot;, &quot;address reviews&quot;, &quot;fix CI&quot;, &quot;make this shippable&quot;. Trigger: /settle, /pr-fix, /pr-polish.</p>
+      <p><code class="trigger large">/settle</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/settle/SKILL.md">skills/settle/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Does not archive tickets. Hands off to /ship for the final mile. Use when: &quot;polish this&quot;, &quot;get this merge-ready&quot;, &quot;unblock&quot;, &quot;clean up&quot;, &quot;address reviews&quot;, &quot;fix CI&quot;, &quot;make this shippable&quot;. Trigger: /settle, /pr-fix, /pr-polish.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Take a feature branch from &quot;works&quot; to ship-ready. Iterate `/ci` →
+`/code-review` → `/refactor` until all exit gates pass in one pass.
+Then report ship-ready and hand the operator off to `/ship`.
+
+## Stance
+
+1. **Polish until green, stop at merge-ready.** `/settle` does not merge,
+   does not archive tickets, does not reflect. When the loop exits clean,
+   the operator runs `/ship`.
+2. **Compose, do not replace.** `/ci`, `/code-review`, and `/refactor` own
+   their domains. `/settle` sequences them and decides when to loop.
+3. **Executive orchestrator.** Keep review-comment disposition, risk
+   tradeoffs, and ship-readiness judgment on the lead model. Delegate
+   bounded fixes and evidence gathering to focused subagents.
+   When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), require `/code-review`,
+   `/refactor`, or `/diagnose` to produce two or more roster-member receipts
+   or an explicit exception before `/settle` calls the branch ship-ready.
+4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
+   If polish isn&#x27;t converging by then, escalate rather than thrash.
+5. **Fresh-eyes self-review is load-bearing.** The final gate is reading
+   the full diff one last time and asking &quot;would I approve this?&quot; —
+   same-model bias is real; counter it with explicit hindsight.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/settle` verifies that each
+substantive polish loop used two or more roster members or recorded a valid
+exception. It sequences leaf skills; leaf skills own dispatch. Direct
+lead-only settle work is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

@@ -12,13 +12,17 @@
     option.textContent = value;
     role.append(option);
   }
+  const empty = document.getElementById("catalog-empty");
   function apply() {
     const q = search.value.trim().toLowerCase();
+    let visibleCount = 0;
     for (const card of cards) {
       const text = card.textContent.toLowerCase();
       const visible = (!q || text.includes(q)) && (!kind.value || card.dataset.kind === kind.value) && (!role.value || card.dataset.role === role.value);
       card.hidden = !visible;
+      if (visible) visibleCount += 1;
     }
+    if (empty) empty.hidden = visibleCount !== 0;
   }
   search.addEventListener("input", apply);
   kind.addEventListener("change", apply);

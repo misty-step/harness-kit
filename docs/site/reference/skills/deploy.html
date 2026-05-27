@@ -26,11 +26,63 @@
       <p class="eyebrow">skill</p>
       <h1>deploy</h1>
       <p class="lede">Ship merged code to a deploy target. Thin router — detects target from repo config, dispatches to platform-specific recipe, captures a structured receipt (sha, version, URL, rollback handle), stops when the target reports healthy. Does not monitor (→ /monitor), does not triage (→ /diagnose), does not decide when to deploy. Use when: &quot;deploy&quot;, &quot;ship this&quot;, &quot;ship to prod&quot;, &quot;release&quot;, &quot;push to staging&quot;, &quot;deploy this branch&quot;, &quot;release cut&quot;. Trigger: /deploy, /ship-it, /release.</p>
+      <p><code class="trigger large">/deploy</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/deploy/SKILL.md">skills/deploy/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Ship merged code to a deploy target. Thin router — detects target from repo config, dispatches to platform-specific recipe, captures a structured receipt (sha, version, URL, rollback handle), stops when the target reports healthy. Does not monitor (→ /monitor), does not triage (→ /diagnose), does not decide when to deploy. Use when: &quot;deploy&quot;, &quot;ship this&quot;, &quot;ship to prod&quot;, &quot;release&quot;, &quot;push to staging&quot;, &quot;deploy this branch&quot;, &quot;release cut&quot;. Trigger: /deploy, /ship-it, /release.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Ship merged code to an environment. One invocation, one target, one
+receipt. The global skill is a router; the real work lives in the
+platform-specific recipe (`references/targets.md`) and repo-local config
+(`references/repo-config.md`).
+
+## Execution Stance
+
+You are the executive orchestrator for a narrow, high-stakes action.
+- Keep the abort/ship decision on the lead model. Do not delegate go/no-go.
+- Delegate detection, artifact validation, and log tailing to subagents.
+- Run validation steps in parallel; the deploy call itself is serial.
+
+## Contract
+
+**Input:** merged ref to deploy (default: current `HEAD` on primary
+branch). Optional `--env` (default from repo config). Optional
+`--version` (default: `HEAD` sha).
+
+**Output:** a deploy receipt (schema below) emitted to stdout as JSON
+and appended to the cycle manifest if one exists
+(`.spellbook/cycle-manifest.json`, see `/flywheel`).
+
+**Stops at:** target reports healthy (platform-native healthcheck OR
+configured `healthcheck` URL returns 2xx within `rollback_grace_seconds`).
+
+**Does NOT:** monitor post-deploy, triage failures, rollback
+automatically, build artifacts, manage secrets, promote across envs.
+
+## Protocol
+
+### 1. Detect target
+
+Check in order and stop at first hit:
+1. `.spellbook/deploy.yaml` → authoritative repo-local config
+2. `fly.toml` → `target: fly`
+3. `vercel.json` or `.vercel/project.json` → `target: vercel`
+4. `wrangler.toml` → `target: cloudflare`
+5. `Dockerfile` + `.spellbook/deploy.yaml` missing → prompt for target
+6. `serverless.yml` or `sam.yaml` → `target: aws`
+7. None of the above → abort with actionable error pointing to
+   `references/repo-config.md`
+
+If detection finds a config but `--env` was not supplied and the config
+declares multiple envs, abort and require `--env`. Fail closed.
+
+See `references/repo-config.md` for the full detection table and config
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

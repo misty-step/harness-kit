@@ -26,11 +26,58 @@
       <p class="eyebrow">skill</p>
       <h1>harness</h1>
       <p class="lede">Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness, /skill, /primitive.</p>
+      <p><code class="trigger large">/harness</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/harness/SKILL.md">skills/harness/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness, /skill, /primitive.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg><h3>Workflow role</h3><p>Maintain primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Mutate the harness. Keep it thin.
+
+## Route
+
+| Need | Load |
+|---|---|
+| create skill/agent | `references/mode-create.md` |
+| eval skill | `references/mode-eval.md` |
+| lint skill | `references/mode-lint.md` |
+| convert agent/skill | `references/mode-convert.md` |
+| sync externals | `references/mode-sync.md` |
+| engineer doctrine/gates/hooks | `references/mode-engineer.md` |
+| audit catalog | `references/mode-audit.md` |
+| open-model defaults | `references/open-model-roster.md` |
+
+## Contract
+
+- Fix root cause in the highest-leverage layer: type/test/hook/gate/skill/
+  AGENTS, in that order.
+- Prefer deletion. Harness prose is context tax.
+- Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
+- Skills stay self-contained: scripts/references under the skill; state roots
+  from invoking repo.
+- Spellbook source skills live in `skills/`; repo-local `.agents/skills/` and
+  harness-specific skill bridge dirs are `/seed` output for consumer repos.
+- Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
+  only.
+- System bootstrap exposes the full first-party skill catalog; repo-local
+  vendoring is exceptional and must earn its complexity.
+- Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
+  shaped ticket explicitly asks.
+
+## Delegation Floor
+
+If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), dispatch two or more providers for
+substantive harness work and record receipts. Direct work is for mechanical
+commands, emergency unblocks, explicit user waivers, or fewer than two
+available providers.
+Do not treat a missing repo-local roster as a waiver. Run the resolver-backed
+probe, which falls back to the system Spellbook roster:
+`python3 $SPELLBOOK_ROOT/scripts/probe-agent-roster.py`.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

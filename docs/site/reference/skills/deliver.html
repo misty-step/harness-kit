@@ -26,11 +26,57 @@
       <p class="eyebrow">skill</p>
       <h1>deliver</h1>
       <p class="lede">Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape → /implement → {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does not deploy. Communicates with callers via exit code + receipt.json — no stdout parsing. Every run also ends with a tight operator-facing brief plus a full /reflect session. Use when: building a shaped ticket, &quot;deliver this&quot;, &quot;make it merge-ready&quot;, driving one backlog item through review + CI + QA. Trigger: /deliver.</p>
+      <p><code class="trigger large">/deliver</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/deliver/SKILL.md">skills/deliver/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape → /implement → {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does not deploy. Communicates with callers via exit code + receipt.json — no stdout parsing. Every run also ends with a tight operator-facing brief plus a full /reflect session. Use when: building a shaped ticket, &quot;deliver this&quot;, &quot;make it merge-ready&quot;, driving one backlog item through review + CI + QA. Trigger: /deliver.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-operate"></use></svg><h3>Workflow role</h3><p>Orchestrate primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Inner-loop composer. One backlog item → merge-ready code. **Delivered ≠
+shipped.** The outer loop (`/flywheel`) consumes the receipt and
+decides whether to deploy. Humans merge.
+
+## Invariants
+
+- Compose atomic phase skills. Never inline phase logic.
+- Fail loud. Never swallow a phase failure into a &quot;best effort&quot; pass.
+- Clean closeout is part of merge-readiness. Before writing `merge_ready` or
+  presenting delivery as complete, `git status --short --untracked-files=all`
+  must be empty or every visible path must be classified into a follow-up
+  commit, deletion, move-out, durable ignore, or explicit handoff.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/deliver` begins by probing the roster
+and requires every substantive phase to show two or more roster-member
+receipts or an explicit exception. `/deliver` remains a composer, not a
+provider scheduler: phase skills dispatch their own lanes, while `/deliver`
+checks that the floor was met before it calls the work merge-ready. Direct
+lead-only delivery is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
+
+## Closeout Contract
+
+Every `/deliver` run ends with two operator-facing outputs, in this order:
+1. A tight delivery brief.
+2. A full `/reflect` session.
+
+This does not replace the machine contract. `receipt.json` remains the source
+of truth for callers and automation. The brief and reflection are for the
+human operator.
+
+The delivery brief is short and punchy. It is not a file inventory, a raw
+changelog, or a generic &quot;green tests&quot; note. Default shape: 1-2 short
+paragraphs or 4-6 flat bullets.
+
+The delivery brief must answer:
+- What ticket was worked and what changed.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

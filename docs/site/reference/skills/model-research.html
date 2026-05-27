@@ -26,11 +26,61 @@
       <p class="eyebrow">skill</p>
       <h1>model-research</h1>
       <p class="lede">Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces ranked recommendations. Use when: &quot;which model&quot;, &quot;compare models&quot;, &quot;find a model&quot;, &quot;model research&quot;, &quot;best model for&quot;, &quot;cheapest model&quot;, &quot;tool calling models&quot;, &quot;model selection&quot;, &quot;upgrade model&quot;, &quot;swap model&quot;, &quot;fallback models&quot;, &quot;model chain&quot;.</p>
+      <p><code class="trigger large">/model-research</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/model-research/SKILL.md">skills/model-research/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces ranked recommendations. Use when: &quot;which model&quot;, &quot;compare models&quot;, &quot;find a model&quot;, &quot;model research&quot;, &quot;best model for&quot;, &quot;cheapest model&quot;, &quot;tool calling models&quot;, &quot;model selection&quot;, &quot;upgrade model&quot;, &quot;swap model&quot;, &quot;fallback models&quot;, &quot;model chain&quot;.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Find the right model for a specific use case. Live data, not training data.
+
+## The Iron Laws
+
+```
+1. NEVER RECOMMEND MODELS FROM TRAINING DATA ALONE.
+   Every model name, price, and benchmark MUST come from a live source.
+
+2. EVERY MODEL HAS A RELEASE DATE. USE IT.
+   The current date matters. A model released 3+ months ago may already be
+   superseded. A model released last week may be unstable. Factor age into
+   every recommendation.
+```
+
+LLM model landscapes change weekly. Training data is stale within months.
+A model recommended from memory may be discontinued, superseded, or repriced.
+
+### The Freshness Rule
+
+**Today&#x27;s date is always available in system context. Use it.**
+
+For every model under consideration, determine its release date and compute age:
+
+| Age | Classification | Implication |
+|-----|---------------|-------------|
+| &lt; 2 weeks | **Bleeding edge** | May have bugs, API instability, sparse benchmarks. Flag risk. |
+| 2 weeks – 2 months | **Fresh** | Sweet spot: stabilized but still current-gen. Prefer these. |
+| 2 – 4 months | **Aging** | Check if a successor exists in the same family. Often superseded. |
+| 4+ months | **Stale** | Almost certainly superseded. Do NOT recommend without verifying it&#x27;s still the latest in its family. |
+
+**In a field moving this fast, &quot;a few months old&quot; IS old.** When two models
+are otherwise comparable, prefer the fresher one — it reflects more recent
+training data, RLHF tuning, and architecture improvements.
+
+When presenting models, ALWAYS include the release date (or &quot;unknown&quot; if
+unfindable) and age classification. This lets the user calibrate trust.
+
+## Protocol
+
+### Phase 1: Scope the Use Case
+
+Before searching, answer these questions (ask the user if unclear):
+
+1. **Task type**: tool calling, classification, generation, code, chat, embedding?
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

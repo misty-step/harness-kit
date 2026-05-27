@@ -26,11 +26,51 @@
       <p class="eyebrow">skill</p>
       <h1>yeet</h1>
       <p class="lede">End-to-end &quot;ship it to the remote&quot; in one command. Reads the whole worktree, understands what&#x27;s in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pushes. Not a git wrapper — a judgment layer on top of git. Decides what belongs, what doesn&#x27;t, and how to slice the diff into commits a reviewer can read. Use when: &quot;yeet&quot;, &quot;yeet this&quot;, &quot;commit and push&quot;, &quot;ship it&quot;, &quot;tidy and commit&quot;, &quot;wrap this up and push&quot;, &quot;get this off my machine&quot;. Trigger: /yeet, /ship-local (alias).</p>
+      <p><code class="trigger large">/yeet</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/yeet/SKILL.md">skills/yeet/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>End-to-end &quot;ship it to the remote&quot; in one command. Reads the whole worktree, understands what&#x27;s in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pushes. Not a git wrapper — a judgment layer on top of git. Decides what belongs, what doesn&#x27;t, and how to slice the diff into commits a reviewer can read. Use when: &quot;yeet&quot;, &quot;yeet this&quot;, &quot;commit and push&quot;, &quot;ship it&quot;, &quot;tidy and commit&quot;, &quot;wrap this up and push&quot;, &quot;get this off my machine&quot;. Trigger: /yeet, /ship-local (alias).</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-ship"></use></svg><h3>Workflow role</h3><p>Ship primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Take the current worktree state → one or more conventional commits → remote.
+One command. Executive authority. No approval gates.
+
+## Stance
+
+1. **Act, do not propose.** The skill has authority within its domain. Stage
+   what belongs, leave out what doesn&#x27;t, delete debris, split logically, push.
+   Escalate only on red-flag state (see Refuse Conditions).
+2. **Clean tree is the deliverable.** `/yeet` is not done while
+   `git status --short` still shows modified, staged, or untracked paths.
+   Resolve every path by commit, ignore, move out of the repo, or delete.
+3. **Reviewability is the product.** A stack of three focused commits beats
+   one 2,000-line &quot;wip&quot; commit, every time. Split on semantic boundaries
+   even if the tree was built in one session.
+   Provider-roster receipts are part of classification evidence when present.
+   If classification requires substantive judgment and no receipts exist,
+   dispatch two or more roster members before packaging completed work.
+4. **Never lose work.** Untracked scratch that might be the user&#x27;s in-flight
+   thinking gets moved, not deleted, unless it&#x27;s unambiguous debris.
+5. **Conventional Commits, always.** Type, optional scope, imperative subject.
+   Body explains *why*, not *what*.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/yeet` uses two or more roster members
+for substantive worktree classification, commit-boundary design, or risky
+cleanup decisions. The lead owns final staging, commit messages, and receipts.
+Direct lead-only yeet work is limited to mechanical git commands, emergency
+unblocks, explicit user-forbidden delegation, or an explicit waiver when
+fewer than two roster members are available.
+
+## Modes
+
+- Default: stage → split into commits → push.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

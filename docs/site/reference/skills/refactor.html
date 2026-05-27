@@ -26,11 +26,55 @@
       <p class="eyebrow">skill</p>
       <h1>refactor</h1>
       <p class="lede">Branch-aware simplification and refactoring workflow. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan the full codebase, research prior art, and identify the highest-impact simplification opportunity. Use when: &quot;refactor this&quot;, &quot;simplify this diff&quot;, &quot;clean this up&quot;, &quot;reduce complexity&quot;, &quot;pay down tech debt&quot;, &quot;make this easier to maintain&quot;, &quot;make this more elegant&quot;, &quot;reduce the number of states&quot;, &quot;clarify naming&quot;. Trigger: /refactor.</p>
+      <p><code class="trigger large">/refactor</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/refactor/SKILL.md">skills/refactor/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Branch-aware simplification and refactoring workflow. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan the full codebase, research prior art, and identify the highest-impact simplification opportunity. Use when: &quot;refactor this&quot;, &quot;simplify this diff&quot;, &quot;clean this up&quot;, &quot;reduce complexity&quot;, &quot;pay down tech debt&quot;, &quot;make this easier to maintain&quot;, &quot;make this more elegant&quot;, &quot;reduce the number of states&quot;, &quot;clarify naming&quot;. Trigger: /refactor.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg><h3>Workflow role</h3><p>Improve primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Reduce complexity without reducing correctness. Favor fewer states, clearer
+names, stronger invariants, better tests, and current docs. Deletion first,
+then consolidation, then abstraction, then mechanical cleanup.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/refactor` starts by probing the
+roster and dispatching two or more available roster members before choosing
+or applying a simplification. Use one lane to map complexity and another to
+challenge behavior-preservation risk; add a builder lane for the selected
+change. The lead agent owns the final cut, proof, and receipts. Direct
+lead-only refactoring is limited to mechanical command execution, emergency
+unblocks, explicit user-forbidden delegation, or fewer than two available
+roster members.
+
+## Deslop Pass
+
+When invoked after implementation or review, run a behavior-preserving deslop
+pass before broader refactoring. Remove:
+
+- unnecessary AI-style comments and restatements of obvious code
+- defensive checks or try/catch blocks that are abnormal for trusted internal
+  paths
+- casts, optionality, and fallback branches that paper over unclear invariants
+- deeply nested code that can become early returns or a smaller model
+- bespoke helpers or wrappers that duplicate canonical local utilities
+
+Keep behavior unchanged unless fixing a clear bug. If cleanup would alter
+behavior, stop and route the finding back through `/shape` or `/implement`.
+
+## Branch-Aware Routing
+
+Detect the current branch and primary branch first:
+1. Current: `git rev-parse --abbrev-ref HEAD`
+2. Primary: `git symbolic-ref --short refs/remotes/origin/HEAD | sed &#x27;s#^origin/##&#x27;`
+   (fallback `main`, then `master`)
+
+If current branch != primary branch: run **Feature Branch Mode**.
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

@@ -13,6 +13,11 @@ Core pages:
 - Governance: docs/site/governance.html
 - Reference: docs/site/reference/index.html
 
+Onboarding path:
+- Install: ./bootstrap.sh
+- First workflow: /shape -> /deliver -> /ci + /qa -> /reflect
+- Use the Start page chooser to map jobs to primitives.
+
 Primitives:
 - skill:a11y | skills/a11y/SKILL.md | docs/site/reference/skills/a11y.html
 - skill:agent-readiness | skills/agent-readiness/SKILL.md | docs/site/reference/skills/agent-readiness.html

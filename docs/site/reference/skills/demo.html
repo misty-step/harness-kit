@@ -26,11 +26,61 @@
       <p class="eyebrow">skill</p>
       <h1>demo</h1>
       <p class="lede">Capture and share what changed — every app has a demo path; the format depends on the change and the audience. The spectrum runs from a release-notes blurb (&quot;no demo needed, here&#x27;s what moved&quot;) through a curl + JSON paste, a terminal recording, a screenshot, a GIF, up to a polished narrated launch video. Pick the path that fits the change shape (UI / API / CLI / library / agent tool / internal-only), the audience (PR reviewer / team Slack / external customer), and the time budget. Also scaffolds a project-local demo skill for repos with recurring polished-capture needs. Use when: &quot;make a demo&quot;, &quot;generate demo&quot;, &quot;record walkthrough&quot;, &quot;launch video&quot;, &quot;PR evidence&quot;, &quot;upload screenshots&quot;, &quot;demo artifacts&quot;, &quot;make a video&quot;, &quot;demo this feature&quot;, &quot;create a walkthrough&quot;, &quot;show what changed&quot;, &quot;paste the output&quot;, &quot;release notes blurb&quot;, &quot;scaffold demo&quot;, &quot;generate demo skill&quot;. Trigger: /demo.</p>
+      <p><code class="trigger large">/demo</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/demo/SKILL.md">skills/demo/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Capture and share what changed — every app has a demo path; the format depends on the change and the audience. The spectrum runs from a release-notes blurb (&quot;no demo needed, here&#x27;s what moved&quot;) through a curl + JSON paste, a terminal recording, a screenshot, a GIF, up to a polished narrated launch video. Pick the path that fits the change shape (UI / API / CLI / library / agent tool / internal-only), the audience (PR reviewer / team Slack / external customer), and the time budget. Also scaffolds a project-local demo skill for repos with recurring polished-capture needs. Use when: &quot;make a demo&quot;, &quot;generate demo&quot;, &quot;record walkthrough&quot;, &quot;launch video&quot;, &quot;PR evidence&quot;, &quot;upload screenshots&quot;, &quot;demo artifacts&quot;, &quot;make a video&quot;, &quot;demo this feature&quot;, &quot;create a walkthrough&quot;, &quot;show what changed&quot;, &quot;paste the output&quot;, &quot;release notes blurb&quot;, &quot;scaffold demo&quot;, &quot;generate demo skill&quot;. Trigger: /demo.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>**Every app has a demo path.** The question is never &quot;is there something
+to show?&quot; — it&#x27;s &quot;what shape does showing take in this codebase, for
+this change, for this audience?&quot; A refactor&#x27;s demo is a PR-description
+bullet pointing at the diff stats; a new endpoint&#x27;s demo is a `curl`
+paired with its JSON response; a CLI flag&#x27;s demo is a terminal paste;
+a UI change&#x27;s demo is a screenshot or GIF; a tentpole launch&#x27;s demo is
+a narrated video. Same skill, different output.
+
+The failure mode this skill exists to prevent is the silent skip —
+shipping a change with no visible record of what moved, because the
+repo doesn&#x27;t have `.evidence/` or a video pipeline. The repo not
+having those surfaces doesn&#x27;t mean there&#x27;s nothing to show. It means
+the demo path here is a different path.
+
+## Completion Gate
+
+Every demo outcome, including &quot;no artifact needed,&quot; answers:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior shown:
+- Live evidence or artifact:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Residual unshown paths:
+```
+
+For internal changes, the demo may be a PR/release-note sentence, but it still
+names the developer/operator behavior that changed.
+
+## Execution Stance
+
+You are the executive orchestrator.
+- Keep shape detection, audience fit, and sufficiency judgment on the
+  lead model. These are the load-bearing calls.
+- For routine changes, run the quick-capture protocol inline.
+- For polished artifacts (GIF / video / launch), delegate planning,
+  capture, and critique to separate focused subagents. Cold reviewer for
+  final quality judgment — self-grading is worthless.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/demo` uses two or more roster members
+for substantive artifact planning, capture critique, or external-facing
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

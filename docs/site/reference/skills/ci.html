@@ -26,11 +26,49 @@
       <p class="eyebrow">skill</p>
       <h1>ci</h1>
       <p class="lede">Audit a repo&#x27;s CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p>
+      <p><code class="trigger large">/ci</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/ci/SKILL.md">skills/ci/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Audit a repo&#x27;s CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg><h3>Workflow role</h3><p>Verify primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Confidence in correctness. CI is load-bearing: a green CI is a claim about
+code correctness. If CI is weak (no type check, shallow tests, no coverage
+floor), green means nothing. So this skill **audits first, then runs**.
+
+Stops at green CI. Does not review code semantics (→ `/code-review`), does
+not address review comments (→ `/settle`), does not ship.
+
+## Modes
+
+- Default: audit → run. Full pass.
+- `--audit-only`: produce audit report and gap proposals; do not run gates.
+- `--run-only`: skip audit, just drive gates green.
+
+## Stance
+
+1. **Audit before run.** A weak pipeline passing is worse than a strong
+   one failing. Inventory coverage before trusting green.
+   When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), probe the roster and dispatch two
+   or more available roster members for CI-audit, red-gate investigation,
+   or weak-coverage analysis before changing gate policy. `/ci` remains the
+   canonical gate owner and `dagger call check` remains the proof.
+2. **Dagger-mandatory, auto-scaffolded.** Missing `dagger.json` is a gap
+   the skill closes itself, not a blocker that halts work. Scaffold a
+   TypeScript Dagger module, fold every existing gate into `check()`,
+   thin the CI provider (GHA, CircleCI, etc.) to a single `dagger call check`
+   step, and update pre-push hooks to match. Raw `npm run lint` / `pytest`
+   / `go test` etc. are what GHA replaced, not what replaces GHA — they
+   bypass the hermetic-container contract. CI providers must be thin
+   wrappers that shell out to `dagger call check`, never the authoritative
+   gate owner. Agent-first, local-first, provider-independent.
+3. **Act, do not propose.** The skill has executive authority within its
+   domain: mechanical strengthenings (adding missing gates, wiring
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

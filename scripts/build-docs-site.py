@@ -52,6 +52,25 @@ WORKFLOW_ROLES = {
 }
 
 
+GATE_DESCRIPTIONS = {
+    "check-agent-roster": "Validates provider roster schema, receipt fixtures, delegation floors, and source-repo bridge hygiene.",
+    "check-deliver-composition": "Ensures /deliver composes phase skills instead of inlining CI, QA, review, or claims internals.",
+    "check-docs-site": "Rebuilds the static docs companion and fails on stale pages, missing primitives, broken workflow pages, or invalid icon/copy references.",
+    "check-exclusions": "Blocks code-suppression comments, broad type escapes, and skipped tests.",
+    "check-frontmatter": "Validates skill frontmatter fields and size limits.",
+    "check-harness-install-paths": "Guards global, cross-harness install wording for /seed and /tailor.",
+    "check-index-drift": "Regenerates index.yaml and fails if the committed catalog is stale.",
+    "check-no-claims": "Prevents removed claim-coordination primitives from returning under skills/.",
+    "check-portable-paths": "Rejects hardcoded user home paths outside explicitly allowed harness files.",
+    "check-skill-evals": "Validates skill eval suites have README, cases, and graders.",
+    "check-vendored-copies": "Ensures vendored repo-local harness copies match canonical sources.",
+    "lint-python": "Compiles Python scripts outside ci/ to catch syntax errors.",
+    "lint-shell": "Runs shellcheck on shell scripts outside ci/.",
+    "lint-yaml": "Parses top-level YAML files.",
+    "test-bun": "Runs the TypeScript test suite for the research skill.",
+}
+
+
 ICON_PATHS = {
     "build": '<path d="M14 4 20 10"/><path d="M16 2l6 6-9.5 9.5a3 3 0 0 1-4.2 0l-1.8-1.8a3 3 0 0 1 0-4.2L16 2Z"/><path d="M5 19l-2 2"/>',
     "catalog": '<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
@@ -250,6 +269,45 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
+def script_json(value: str) -> str:
+    return value.replace("<", "\\u003c").replace("&", "\\u0026")
+
+
+def trigger_for(primitive: Primitive) -> str:
+    return f"/{primitive.name}" if primitive.kind == "skill" else primitive.name
+
+
+def page_excerpt(source: str) -> str:
+    path = ROOT / source
+    lines = []
+    in_frontmatter = False
+    started = False
+    for raw in read(path).splitlines():
+        line = raw.rstrip()
+        if line == "---":
+            in_frontmatter = not in_frontmatter
+            continue
+        if in_frontmatter:
+            continue
+        if line.startswith("# ") and not started:
+            started = True
+            continue
+        if not line.strip() and not lines:
+            continue
+        lines.append(line)
+        if len("\n".join(lines)) > 1800:
+            break
+    excerpt = "\n".join(lines).strip()
+    return excerpt + ("\n..." if len(excerpt) > 1750 else "")
+
+
+def render_excerpt(source: str) -> str:
+    excerpt = page_excerpt(source)
+    if not excerpt:
+        return ""
+    return f'<pre class="source-excerpt"><code>{esc(excerpt)}</code></pre>'
+
+
 def page_shell(title: str, current: str, body: str) -> str:
     css = rel(current, "assets/site.css")
     home = rel(current, "index.html")
@@ -295,6 +353,44 @@ def card(title: str, text: str, href: str = "", icon: str = "", current: str = "
     return f'<article class="card">{icon_markup}<h3>{esc(title)}</h3><p>{esc(text)}</p>{link}</article>'
 
 
+def render_quickstart(current: str, quickstart: dict[str, object]) -> str:
+    steps = []
+    for index, step in enumerate(quickstart["steps"], 1):
+        steps.append(
+            f'<article class="quickstep"><span>{index}</span><h3>{esc(step["label"])}</h3>'
+            f'<code>{esc(step["command"])}</code><p>{esc(step["detail"])}</p></article>'
+        )
+    return f'''
+    <section class="quickstart">
+      <div>
+        <p class="eyebrow">Quickstart</p>
+        <h2>{esc(quickstart["title"])}</h2>
+        <p>{esc(quickstart["lede"])}</p>
+      </div>
+      <div class="quicksteps">{''.join(steps)}</div>
+      <p class="source">Sources: {source_link('bootstrap.sh', current)}, {source_link('skills/shape/SKILL.md', current)}, {source_link('skills/deliver/SKILL.md', current)}</p>
+    </section>
+'''
+
+
+def render_task_finder(current: str, task_finder: dict[str, object]) -> str:
+    items = []
+    for item in task_finder["items"]:
+        href = rel(current, item["href"]) if not str(item["href"]).startswith("http") else item["href"]
+        items.append(
+            f'<a class="task-card" href="{href}">{icon_svg(item["icon"], current)}'
+            f'<span>{esc(item["use"])}</span><strong>{esc(item["task"])}</strong></a>'
+        )
+    return f'''
+    <section>
+      <p class="eyebrow">Chooser</p>
+      <h2>{esc(task_finder["title"])}</h2>
+      <p>{esc(task_finder["lede"])}</p>
+      <div class="task-grid">{''.join(items)}</div>
+    </section>
+'''
+
+
 def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> str:
     current = "index.html"
     copy = COPY["home"]
@@ -327,6 +423,8 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
       <p>{esc(copy['sixty_copy'])}</p>
       <div class="flow">{flow}</div>
     </section>
+    {render_quickstart(current, copy['quickstart'])}
+    {render_task_finder(current, copy['task_finder'])}
     <section>
       <h2>Start here</h2>
       <div class="grid three">
@@ -473,6 +571,7 @@ def primitive_card(primitive: Primitive, current: str) -> str:
     return (
         f'<article class="catalog-card" data-kind="{primitive.kind}" data-role="{esc(primitive.role)}">'
         f'{icon}<span>{esc(primitive.kind)}</span><h3>{esc(primitive.name)}</h3>'
+        f'<code class="trigger">{esc(trigger_for(primitive))}</code>'
         f'<p>{esc(primitive.description)}</p><a href="{href}">Reference</a></article>'
     )
 
@@ -487,14 +586,15 @@ def render_reference(primitives: list[Primitive], gates: list[str]) -> str:
       <p class="lede">This section is rebuilt from source files so the public documentation cannot drift silently from the harness.</p>
     </section>
     <section class="controls" aria-label="Catalog filters">
-      <input id="catalog-search" type="search" placeholder="Search skills and agents">
+      <input id="catalog-search" type="search" placeholder="Search {len([p for p in primitives if p.kind == 'skill'])} skills and {len([p for p in primitives if p.kind == 'agent'])} agents" aria-label="Search skills and agents">
       <select id="catalog-kind"><option value="">All primitives</option><option value="skill">Skills</option><option value="agent">Agents</option></select>
       <select id="catalog-role"><option value="">All roles</option></select>
     </section>
     <section id="catalog-grid" class="catalog-grid">
       {''.join(primitive_card(primitive, current) for primitive in primitives)}
     </section>
-    <script id="catalog-data" type="application/json">{esc(manifest)}</script>
+    <p id="catalog-empty" class="empty" hidden>No primitives match those filters.</p>
+    <script id="catalog-data" type="application/json">{script_json(manifest)}</script>
     <script src="{rel(current, 'assets/catalog.js')}"></script>
     <section class="grid three">
       {card('CI gate map', f'{len(gates)} gates enforced by Dagger.', rel(current, 'reference/gates.html'), 'verify', current)}
@@ -513,11 +613,17 @@ def render_primitive(primitive: Primitive) -> str:
       <p class="eyebrow">{esc(primitive.kind)}</p>
       <h1>{esc(primitive.name)}</h1>
       <p class="lede">{esc(primitive.description)}</p>
+      <p><code class="trigger large">{esc(trigger_for(primitive))}</code></p>
       <p class="source">Source: {source_link(primitive.source, current)}</p>
     </section>
     <section class="grid two">
       {card('What it does', primitive.description, icon='catalog', current=current)}
       {card('Workflow role', f'{primitive.role} primitive in the Spellbook operating loop.', icon=role_icon(primitive.role), current=current)}
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      {render_excerpt(primitive.source)}
     </section>
     <section class="checklist">
       <h2>What to verify</h2>
@@ -544,7 +650,7 @@ def render_gates(gates: list[str]) -> str:
       <p class="lede">The repo's load-bearing verification is Dagger. These gates are extracted from ci/src/spellbook_ci/main.py.</p>
     </section>
     <section class="grid three">
-      {''.join(card(gate, 'Runs as part of dagger call check --source=.', icon='verify', current=current) for gate in gates)}
+      {''.join(card(gate, GATE_DESCRIPTIONS.get(gate, 'Runs as part of dagger call check --source=.'), icon='verify', current=current) for gate in gates)}
     </section>
     <p class="source">Source: {source_link('ci/src/spellbook_ci/main.py', current)}</p>
 """
@@ -559,6 +665,18 @@ def render_bootstrap() -> str:
       <p class="eyebrow">Reference</p>
       <h1>Bootstrap behavior</h1>
       <p class="lede">bootstrap.sh installs the system-wide harness links and provider roster. Consumer repos can then use Spellbook without vendoring source-repo skill bridges.</p>
+    </section>
+    <section class="quickstart">
+      <div>
+        <p class="eyebrow">First install</p>
+        <h2>Run bootstrap from a stable checkout</h2>
+        <p>Use the local checkout when you have it. The remote one-liner exists for fresh machines.</p>
+      </div>
+      <div class="quicksteps">
+        <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
+        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script and installs the global harness links.</p></article>
+        <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Spellbook skills after install.</p></article>
+      </div>
     </section>
     <section class="grid two">
       {card('System install', 'Installs first-party skills and agents into supported local harnesses.', icon='build', current=current)}
@@ -588,6 +706,11 @@ def render_llms(primitives: list[Primitive], gates: list[str]) -> str:
         "- Governance: docs/site/governance.html",
         "- Reference: docs/site/reference/index.html",
         "",
+        "Onboarding path:",
+        "- Install: ./bootstrap.sh",
+        "- First workflow: /shape -> /deliver -> /ci + /qa -> /reflect",
+        "- Use the Start page chooser to map jobs to primitives.",
+        "",
         "Primitives:",
     ]
     for primitive in primitives:
@@ -604,6 +727,7 @@ def render_manifest(primitives: list[Primitive], gates: list[str], backlog: list
         "do_not_edit": True,
         "icons": sorted(ICON_PATHS),
         "primitives": [primitive.__dict__ | {"id": primitive.ident, "icon": role_icon(primitive.role)} for primitive in primitives],
+        "onboarding": {"quickstart": COPY["home"]["quickstart"], "task_finder": COPY["home"]["task_finder"]},
         "workflows": workflows(),
         "gates": gates,
         "backlog": backlog,
@@ -646,6 +770,24 @@ h3 { margin:0 0 8px; font-size:20px; line-height:1.2; }
 .flow { display:grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap:10px; margin-top:24px; }
 .flow span { position:relative; padding:14px; background:var(--panel); border:1px solid #cbd8f6; border-radius:8px; text-align:center; font-weight:800; }
 .flow span:not(:last-child)::after { content:""; position:absolute; top:50%; right:-10px; width:10px; border-top:2px solid #b8c8ec; transform:translateY(-50%); }
+.quickstart { display:grid; grid-template-columns:minmax(240px, .7fr) minmax(0, 1.3fr); gap:24px; align-items:start; }
+.quickstart > div:first-child p:not(.eyebrow) { color:var(--muted); }
+.quicksteps { display:grid; gap:12px; }
+.quickstep { border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px; }
+.quickstep span { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:999px; background:#eef5ff; color:var(--accent); font-weight:800; margin-bottom:12px; }
+.quickstep code { display:block; padding:10px 12px; border:1px solid #e3e8f2; border-radius:8px; background:#f8fafc; color:var(--ink); font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; overflow-wrap:anywhere; }
+.quickstep p { color:var(--muted); margin-bottom:0; }
+.task-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-top:18px; }
+.task-card { display:grid; gap:8px; align-content:start; min-height:150px; border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:18px; color:var(--ink); box-shadow:0 10px 28px rgba(17,24,39,.04); transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+.task-card:hover { text-decoration:none; border-color:#b8c8ec; transform:translateY(-1px); box-shadow:0 16px 34px rgba(17,24,39,.07); }
+.task-card .icon { margin-bottom:2px; }
+.task-card span { color:var(--accent); font-weight:800; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; }
+.task-card strong { font-size:18px; line-height:1.25; }
+.empty { max-width:1120px; margin:0 auto; padding:0 clamp(20px, 5vw, 64px) 28px; color:var(--muted); font-weight:700; }
+.trigger { display:inline-block; width:max-content; max-width:100%; padding:5px 8px; border:1px solid #dce8ff; border-radius:6px; background:#f8fbff; color:var(--accent); font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; font-weight:800; overflow-wrap:anywhere; }
+.trigger.large { font-size:15px; padding:8px 10px; margin-top:10px; }
+.source-excerpt { margin:18px 0 0; padding:18px; border:1px solid var(--line); border-radius:8px; background:#0f172a; color:#e5ecff; overflow:auto; white-space:pre-wrap; font-size:13px; line-height:1.55; }
+.source-excerpt code { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; }
 .grid { display:grid; gap:16px; }
 .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -673,8 +815,8 @@ input { flex:1; min-width:220px; }
 .catalog-grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:16px; padding-top:8px; }
 .catalog-card span { display:inline-block; margin-bottom:12px; color:var(--accent2); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
 .primitive-head { border-bottom:1px solid var(--line); }
-@media (max-width: 980px) { .hero { grid-template-columns:1fr; gap:28px; } .hero-map { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 820px) { .topbar { align-items:flex-start; flex-direction:column; } .flow, .grid.two, .grid.three, .catalog-grid, .steps { grid-template-columns:1fr; } .flow span:not(:last-child)::after { display:none; } h1 { font-size:42px; } .controls { align-items:stretch; flex-direction:column; } .compact li { align-items:flex-start; grid-template-columns:1fr; } }
+@media (max-width: 980px) { .hero, .quickstart { grid-template-columns:1fr; gap:28px; } .hero-map { grid-template-columns:repeat(2, minmax(0, 1fr)); } .task-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 820px) { .topbar { align-items:flex-start; flex-direction:column; } .flow, .grid.two, .grid.three, .catalog-grid, .steps, .task-grid { grid-template-columns:1fr; } .flow span:not(:last-child)::after { display:none; } h1 { font-size:42px; } .controls { align-items:stretch; flex-direction:column; } .compact li { align-items:flex-start; grid-template-columns:1fr; } }
 @media (max-width: 520px) { section { padding-inline:20px; } .hero { padding-top:48px; } .hero-map { grid-template-columns:1fr; } .lede { font-size:18px; } }
 """.strip() + "\n"
 
@@ -693,13 +835,17 @@ JS = """
     option.textContent = value;
     role.append(option);
   }
+  const empty = document.getElementById("catalog-empty");
   function apply() {
     const q = search.value.trim().toLowerCase();
+    let visibleCount = 0;
     for (const card of cards) {
       const text = card.textContent.toLowerCase();
       const visible = (!q || text.includes(q)) && (!kind.value || card.dataset.kind === kind.value) && (!role.value || card.dataset.role === role.value);
       card.hidden = !visible;
+      if (visible) visibleCount += 1;
     }
+    if (empty) empty.hidden = visibleCount !== 0;
   }
   search.addEventListener("input", apply);
   kind.addEventListener("change", apply);

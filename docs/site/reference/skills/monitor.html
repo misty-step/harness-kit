@@ -26,11 +26,54 @@
       <p class="eyebrow">skill</p>
       <h1>monitor</h1>
       <p class="lede">Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, flaky tests, benchmark drift, local daemon output, release regressions, or agent-session audit trails. Emit structured events. Escalate to /diagnose on trip, close clean on green. Thin watcher, not diagnostician. Use when: &quot;monitor signals&quot;, &quot;watch the deploy&quot;, &quot;is the deploy ok&quot;, &quot;post-deploy watch&quot;, &quot;signal watch&quot;, &quot;watch production&quot;, &quot;watch CI&quot;, &quot;watch logs&quot;, &quot;watch benchmark drift&quot;, &quot;is it healthy&quot;. Trigger: /monitor.</p>
+      <p><code class="trigger large">/monitor</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/monitor/SKILL.md">skills/monitor/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, flaky tests, benchmark drift, local daemon output, release regressions, or agent-session audit trails. Emit structured events. Escalate to /diagnose on trip, close clean on green. Thin watcher, not diagnostician. Use when: &quot;monitor signals&quot;, &quot;watch the deploy&quot;, &quot;is the deploy ok&quot;, &quot;post-deploy watch&quot;, &quot;signal watch&quot;, &quot;watch production&quot;, &quot;watch CI&quot;, &quot;watch logs&quot;, &quot;watch benchmark drift&quot;, &quot;is it healthy&quot;. Trigger: /monitor.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-operate"></use></svg><h3>Workflow role</h3><p>Operate primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Watch signals after a change. Escalate to `/diagnose` on regression. Close
+clean when signals stay green through the grace window.
+
+**Every repo has a monitor path.** A production app may watch healthchecks,
+logs, traces, and error rates. A CLI may watch CI failures, golden-command
+transcripts, and release regressions. A library may watch consumer builds,
+benchmark drift, flaky tests, and issue reports. A local daemon may watch
+its logs and readiness endpoint. Absence of Sentry, Prometheus, or a
+public deploy is not absence of monitoring; it means the signal source is
+different.
+
+This skill observes and escalates. It does not diagnose root cause
+(`/diagnose` does). It does not rollback (caller decides). It does not
+page humans (outer loop decides).
+
+Monitoring also includes observability coverage. A repo with no product
+analytics still has signals: agent traces, provider receipts, workflow ledger
+events, CI history, command transcripts, logs, benchmark outputs, and release
+smoke artifacts. If a change creates behavior that cannot be observed after
+ship, flag that as a monitor finding and route it to `/reflect` or `/groom`
+as instrumentation debt.
+
+## Execution Stance
+
+You are a thin watcher.
+- Load config or fall back to healthcheck-only.
+- Poll on a fixed cadence until the grace window elapses or a signal trips.
+- On trip: emit one `monitor.alert` event with payload, exit, hand off.
+- On clean: emit one `monitor.done` event, exit.
+- Never analyze why a signal tripped. Never attempt remediation.
+- Provider roster lanes are not part of steady-state polling. If a trip needs
+  investigation, hand off to `/diagnose`, which uses `.spellbook/agents.yaml`
+  as its two-or-more roster-member floor.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/monitor` uses two or more roster
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

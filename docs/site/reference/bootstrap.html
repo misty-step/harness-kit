@@ -25,6 +25,18 @@
       <h1>Bootstrap behavior</h1>
       <p class="lede">bootstrap.sh installs the system-wide harness links and provider roster. Consumer repos can then use Spellbook without vendoring source-repo skill bridges.</p>
     </section>
+    <section class="quickstart">
+      <div>
+        <p class="eyebrow">First install</p>
+        <h2>Run bootstrap from a stable checkout</h2>
+        <p>Use the local checkout when you have it. The remote one-liner exists for fresh machines.</p>
+      </div>
+      <div class="quicksteps">
+        <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
+        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script and installs the global harness links.</p></article>
+        <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Spellbook skills after install.</p></article>
+      </div>
+    </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#icon-build"></use></svg><h3>System install</h3><p>Installs first-party skills and agents into supported local harnesses.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#icon-operate"></use></svg><h3>Stable checkout</h3><p>Prefers a stable checkout over temporary worktrees unless SPELLBOOK_DIR is set.</p></article>

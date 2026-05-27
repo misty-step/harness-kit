@@ -43,6 +43,25 @@
       <p>Start with a messy workflow. Shape the work, send it through a provider roster, build with tests, review with independent lanes, prove it with gates, then feed the lesson back into the harness.</p>
       <div class="flow"><span>Messy workflow</span><span>/shape</span><span>/deliver</span><span>/ci + /qa</span><span>/reflect</span></div>
     </section>
+    
+    <section class="quickstart">
+      <div>
+        <p class="eyebrow">Quickstart</p>
+        <h2>Start using Spellbook</h2>
+        <p>Install the global harness, open this companion, then use the operating loop from a real repo.</p>
+      </div>
+      <div class="quicksteps"><article class="quickstep"><span>1</span><h3>Install the harness</h3><code>curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash</code><p>Fresh machines can install from GitHub; local checkouts can run ./bootstrap.sh directly.</p></article><article class="quickstep"><span>2</span><h3>Verify discovery</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Spellbook skills after bootstrap completes.</p></article><article class="quickstep"><span>3</span><h3>Run the first loop</h3><code>/shape -&gt; /deliver -&gt; /ci + /qa -&gt; /reflect</code><p>Start with a real workflow or repo change; keep evidence and roster receipts attached to the work.</p></article></div>
+      <p class="source">Sources: <a href="https://github.com/phrazzld/spellbook/blob/master/bootstrap.sh">bootstrap.sh</a>, <a href="https://github.com/phrazzld/spellbook/blob/master/skills/shape/SKILL.md">skills/shape/SKILL.md</a>, <a href="https://github.com/phrazzld/spellbook/blob/master/skills/deliver/SKILL.md">skills/deliver/SKILL.md</a></p>
+    </section>
+
+    
+    <section>
+      <p class="eyebrow">Chooser</p>
+      <h2>Find the right primitive</h2>
+      <p>Start from the job you need done. Each path links to a generated source-backed reference page.</p>
+      <div class="task-grid"><a class="task-card" href="reference/skills/shape.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-plan"></use></svg><span>/shape</span><strong>Turn a vague idea into buildable work</strong></a><a class="task-card" href="reference/skills/deliver.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-ship"></use></svg><span>/deliver</span><strong>Implement a shaped ticket</strong></a><a class="task-card" href="workflows/ship-a-repo-change-with-review-and-gates.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-verify"></use></svg><span>/code-review + /ci + /qa</span><strong>Check whether a branch is safe to ship</strong></a><a class="task-card" href="reference/bootstrap.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-repair"></use></svg><span>/harness or bootstrap.sh</span><strong>Install or repair the harness</strong></a><a class="task-card" href="reference/skills/research.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-catalog"></use></svg><span>/research</span><strong>Research an unfamiliar system or market</strong></a><a class="task-card" href="reference/skills/reflect.html"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#icon-learn"></use></svg><span>/reflect</span><strong>Capture lessons after a run</strong></a></div>
+    </section>
+
     <section>
       <h2>Start here</h2>
       <div class="grid three">

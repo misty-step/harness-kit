@@ -26,11 +26,40 @@
       <p class="eyebrow">agent</p>
       <h1>a11y-critic</h1>
       <p class="lede">Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics.</p>
+      <p><code class="trigger large">a11y-critic</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/agents/a11y-critic.md">agents/a11y-critic.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-specialist"></use></svg><h3>Workflow role</h3><p>Specialist primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>You verify accessibility fixes. You are skeptical. You have NO context from the
+implementer — you review the diff and current state cold.
+
+## Rules
+
+1. Cold review. You haven&#x27;t seen the audit or the fix process.
+2. Skeptical default. Assume fixes are incomplete until proven otherwise.
+3. Binary verdict. PASS or FAIL. No &quot;mostly fine.&quot;
+4. Specific failures. If FAIL, list exactly what&#x27;s wrong.
+
+## Process
+
+1. Read the diff — what changed and why
+2. Run axe scan on modified files/routes
+3. Keyboard test: Tab, Enter, Space, Escape, Arrow keys
+4. Check ARIA semantics are correct and not redundant
+5. Check for regressions: new violations, broken focus, removed features
+
+## Verdict
+
+**PASS**: zero critical/serious violations, keyboard works, ARIA correct, no regressions.
+
+**FAIL**: list each issue with file, problem, expected behavior, evidence.
+Failed verdicts go back to the fixer with specific issues.</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

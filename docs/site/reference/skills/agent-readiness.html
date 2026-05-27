@@ -26,11 +26,58 @@
       <p class="eyebrow">skill</p>
       <h1>agent-readiness</h1>
       <p class="lede">Assess and improve codebase readiness for AI coding agents. Dispatches parallel subagents to evaluate style, testing, docs, architecture, CI, observability, security, and dev environment. Produces a scored report with prioritized remediation. Then executes the highest-impact fixes. Use when: &quot;agent readiness&quot;, &quot;is this codebase agent-ready&quot;, &quot;readiness report&quot;, &quot;make this codebase agent-friendly&quot;, &quot;agent-ready assessment&quot;, &quot;readiness audit&quot;, &quot;prepare for agents&quot;. Trigger: /agent-readiness, /readiness.</p>
+      <p><code class="trigger large">/agent-readiness</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/agent-readiness/SKILL.md">skills/agent-readiness/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Assess and improve codebase readiness for AI coding agents. Dispatches parallel subagents to evaluate style, testing, docs, architecture, CI, observability, security, and dev environment. Produces a scored report with prioritized remediation. Then executes the highest-impact fixes. Use when: &quot;agent readiness&quot;, &quot;is this codebase agent-ready&quot;, &quot;readiness report&quot;, &quot;make this codebase agent-friendly&quot;, &quot;agent-ready assessment&quot;, &quot;readiness audit&quot;, &quot;prepare for agents&quot;. Trigger: /agent-readiness, /readiness.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Assess how well this codebase supports autonomous AI coding agents.
+Then fix the highest-impact gaps.
+
+**Target:** $ARGUMENTS
+
+## Execution Stance
+
+You are the executive orchestrator.
+- Keep prioritization, remediation approval, and final readiness judgment on the lead model.
+- Delegate pillar assessments and bounded fixes to focused subagents.
+- Use parallel fanout by default for independent pillars.
+
+## Core Insight
+
+The agent is not broken. The environment is. A codebase with fast feedback
+loops and clear instructions makes any agent dramatically more effective.
+A codebase with poor feedback loops defeats any agent you throw at it.
+
+## Workflow
+
+### Phase 1: Assess
+
+Dispatch **parallel subagents** — one per pillar — to evaluate the codebase.
+Each subagent runs the checks from `references/pillar-checks.md` for its
+assigned pillar and returns a structured verdict.
+
+Launch all pillar assessments simultaneously:
+
+| Subagent | Pillar | What it checks |
+|----------|--------|---------------|
+| 1 | Style &amp; Validation | Linters, formatters, type checkers, pre-commit hooks |
+| 2 | Build &amp; CI | Build commands, dependency pinning, CI config, feedback speed |
+| 3 | Testing | Coverage, speed, local execution, unit/integration/E2E layers |
+| 4 | Documentation | CLAUDE.md/AGENTS.md, README, setup guide, architecture docs, ADRs |
+| 5 | Dev Environment | Reproducibility, env templates, devcontainers, isolated workspaces |
+| 6 | Code Quality | Modularity, complexity, file organization, coupling, dead code |
+| 7 | Observability | Structured logging, error handling, metrics, tracing |
+| 8 | Security &amp; Governance | Branch protection, CODEOWNERS, secret scanning, dependency audit |
+
+Each subagent uses **Explore** agent type and reads `references/pillar-checks.md`
+for its pillar&#x27;s specific pass/fail criteria. Output format per subagent:
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

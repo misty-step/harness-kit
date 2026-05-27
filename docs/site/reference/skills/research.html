@@ -26,11 +26,58 @@
       <p class="eyebrow">skill</p>
       <h1>research</h1>
       <p class="lede">Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: &quot;search for&quot;, &quot;look up&quot;, &quot;research&quot;, &quot;delegate&quot;, &quot;get perspectives&quot;, &quot;web search&quot;, &quot;find out&quot;, &quot;investigate&quot;, &quot;introspect&quot;, &quot;session analysis&quot;, &quot;check readwise&quot;, &quot;saved articles&quot;, &quot;reading list&quot;, &quot;highlights&quot;, &quot;what are people saying&quot;, &quot;X search&quot;, &quot;social sentiment&quot;, &quot;trending&quot;.</p>
+      <p><code class="trigger large">/research</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/research/SKILL.md">skills/research/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: &quot;search for&quot;, &quot;look up&quot;, &quot;research&quot;, &quot;delegate&quot;, &quot;get perspectives&quot;, &quot;web search&quot;, &quot;find out&quot;, &quot;investigate&quot;, &quot;introspect&quot;, &quot;session analysis&quot;, &quot;check readwise&quot;, &quot;saved articles&quot;, &quot;reading list&quot;, &quot;highlights&quot;, &quot;what are people saying&quot;, &quot;X search&quot;, &quot;social sentiment&quot;, &quot;trending&quot;.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Explore primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>Retrieval-first research, multi-AI orchestration, and expert validation.
+
+## Execution Stance
+
+You are the executive orchestrator.
+- Keep query framing, source weighting, and final synthesis on the lead model.
+- Delegate source retrieval and specialized analysis to focused subagents/tools.
+- Run multi-source fanout in parallel for independent evidence streams.
+
+## Delegation Floor
+
+If a provider roster is available (repo `.spellbook/agents.yaml` or system
+`~/.spellbook/agents.yaml`), `/research` starts by probing the roster and
+dispatching two or more available roster
+members for independent research lanes. Use lanes with distinct sources,
+methods, or model families; web search, Thinktank, and provider CLIs are
+evidence inputs, not substitutes for lead synthesis. Record meaningful
+external attempts with the repo receipt tool. Direct lead-only research is
+limited to mechanical lookup, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are available.
+Do not check only the repo-local path. Run the resolver-backed probe, which
+falls back from repo roster to the system Spellbook roster:
+`python3 $SPELLBOOK_ROOT/scripts/probe-agent-roster.py`.
+Native in-thread subagents are useful for fresh context, but they are not
+external roster members. They do not count toward the two-provider floor.
+
+## Absorbed Skills
+
+This skill consolidates: `web-search`, `delegate`, `thinktank`, `introspect`.
+
+## Routing
+
+### Explicit sub-capability (user names one)
+
+If first argument matches a keyword, route directly to that reference:
+
+| Keyword | Reference |
+|---------|-----------|
+| `web-search`, `web-deep`, `web-news`, `web-docs` | `references/web-search.md` |
+| `delegate` | `references/delegate.md` |
+| `thinktank` | `references/thinktank.md` |
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

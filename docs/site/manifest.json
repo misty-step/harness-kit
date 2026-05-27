@@ -149,6 +149,71 @@
     "specialist",
     "verify"
   ],
+  "onboarding": {
+    "quickstart": {
+      "lede": "Install the global harness, open this companion, then use the operating loop from a real repo.",
+      "steps": [
+        {
+          "command": "curl -sL https://raw.githubusercontent.com/phrazzld/spellbook/master/bootstrap.sh | bash",
+          "detail": "Fresh machines can install from GitHub; local checkouts can run ./bootstrap.sh directly.",
+          "label": "Install the harness"
+        },
+        {
+          "command": "ls ~/.codex/skills ~/.claude/skills ~/.pi/skills",
+          "detail": "At least one supported harness should show Spellbook skills after bootstrap completes.",
+          "label": "Verify discovery"
+        },
+        {
+          "command": "/shape -> /deliver -> /ci + /qa -> /reflect",
+          "detail": "Start with a real workflow or repo change; keep evidence and roster receipts attached to the work.",
+          "label": "Run the first loop"
+        }
+      ],
+      "title": "Start using Spellbook"
+    },
+    "task_finder": {
+      "items": [
+        {
+          "href": "reference/skills/shape.html",
+          "icon": "plan",
+          "task": "Turn a vague idea into buildable work",
+          "use": "/shape"
+        },
+        {
+          "href": "reference/skills/deliver.html",
+          "icon": "ship",
+          "task": "Implement a shaped ticket",
+          "use": "/deliver"
+        },
+        {
+          "href": "workflows/ship-a-repo-change-with-review-and-gates.html",
+          "icon": "verify",
+          "task": "Check whether a branch is safe to ship",
+          "use": "/code-review + /ci + /qa"
+        },
+        {
+          "href": "reference/bootstrap.html",
+          "icon": "repair",
+          "task": "Install or repair the harness",
+          "use": "/harness or bootstrap.sh"
+        },
+        {
+          "href": "reference/skills/research.html",
+          "icon": "catalog",
+          "task": "Research an unfamiliar system or market",
+          "use": "/research"
+        },
+        {
+          "href": "reference/skills/reflect.html",
+          "icon": "learn",
+          "task": "Capture lessons after a run",
+          "use": "/reflect"
+        }
+      ],
+      "lede": "Start from the job you need done. Each path links to a generated source-backed reference page.",
+      "title": "Find the right primitive"
+    }
+  },
   "primitives": [
     {
       "description": "Accessibility audit, remediation, and verification. WCAG 2.2 AA compliance. Three-agent protocol: audit (find issues) \u2192 remediate (fix them) \u2192 critique (verify fixes). Use when: \"accessibility audit\", \"a11y\", \"WCAG\", \"screen reader\", \"keyboard navigation\", \"contrast check\", \"aria fix\", \"accessibility sprint\", \"audit accessibility\", \"fix accessibility\", \"a11y issues\", \"a11y check\". Trigger: /a11y",

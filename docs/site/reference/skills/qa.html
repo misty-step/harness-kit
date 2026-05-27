@@ -26,11 +26,61 @@
       <p class="eyebrow">skill</p>
       <h1>qa</h1>
       <p class="lede">Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;, &quot;scaffold qa&quot;, &quot;generate qa skill&quot;. Trigger: /qa.</p>
+      <p><code class="trigger large">/qa</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/qa/SKILL.md">skills/qa/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;, &quot;scaffold qa&quot;, &quot;generate qa skill&quot;. Trigger: /qa.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg><h3>Workflow role</h3><p>Verify primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>**Every app has a QA path.** The question this skill answers first is not
+&quot;how do I drive a browser?&quot; — it&#x27;s &quot;what shape is this app, and what does
+verifying it actually look like here?&quot; A CLI is QA&#x27;d with shell
+invocations and exit-code audits. An API is QA&#x27;d by replaying requests
+against a preview deploy. A Next.js app is QA&#x27;d by walking golden paths
+in a browser. A library is QA&#x27;d by installing it into a sandbox consumer.
+An MCP server is QA&#x27;d by replaying tool calls through the harness that
+registered it. None of these are optional; all of them are QA.
+
+The skill&#x27;s job is to route to the right shape, then either defer to a
+project-local QA skill that encodes this repo&#x27;s actual paths, or run a
+quick protocol on the fly.
+
+## Hardening Hook
+
+Route to `/hardening acceptance` when QA relies on examples whose values should
+matter: Gherkin scenarios, API fixtures, CLI transcripts, golden files,
+seeded workflows, screenshots with asserted data, or contract examples. QA can
+still pass without it when the check directly drives the live behavior, but the
+report must name whether acceptance mutation was run, waived as not useful, or
+left as residual risk.
+
+## Completion Gate
+
+Every QA pass/fail report includes:
+
+```markdown
+## Completion Gate
+- Exact end-user behavior verified:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Acceptance mutation / hardening:
+- Residual unverified paths:
+```
+
+For internal libraries or harness changes, replace end-user behavior with the
+developer/operator behavior under test. Adjacent unit tests are supporting
+evidence only; QA must name the running surface it actually exercised.
+
+## Execution Stance
+
+You are the executive orchestrator.
+- Keep test scope, severity classification, and the final pass/fail call
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>

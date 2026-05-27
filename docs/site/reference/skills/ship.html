@@ -26,11 +26,49 @@
       <p class="eyebrow">skill</p>
       <h1>ship</h1>
       <p class="lede">Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /settle has already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /settle first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p>
+      <p><code class="trigger large">/ship</code></p>
       <p class="source">Source: <a href="https://github.com/phrazzld/spellbook/blob/master/skills/ship/SKILL.md">skills/ship/SKILL.md</a></p>
     </section>
     <section class="grid two">
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /settle has already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /settle first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-ship"></use></svg><h3>Workflow role</h3><p>Ship primitive in the Spellbook operating loop.</p></article>
+    </section>
+    <section>
+      <h2>Source contract preview</h2>
+      <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
+      <pre class="source-excerpt"><code>The final mile. Branch is merge-ready; `/ship` lands it, archives the
+ticket(s), syncs docs, runs `/reflect`, and threads reflect&#x27;s outputs back
+into the repo. One command from &quot;green&quot; to &quot;shipped and learned from.&quot;
+
+## Stance
+
+1. **Act, do not propose.** `/ship` has authority within its domain.
+   Archive, merge, pull, reflect, apply. Escalate only on refuse conditions.
+2. **Never lose trailer context.** `Closes-backlog` trailers must survive
+   into the squash commit on master. `/groom` sweeps master by trailer —
+   a dropped trailer is a ticket that never closes.
+3. **Pre-merge prep belongs on the shipping branch.** Archive moves and
+   doc syncs go on the feature branch before the squash so the merge
+   commit itself carries a single, clean closure event.
+4. **Reflect&#x27;s harness edits never touch master.** They land on a
+   `harness/reflect-outputs` branch for human review. This is a hard
+   invariant from `reflect/SKILL.md`.
+5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
+   `/settle` already proved the branch clean. If `/settle` wasn&#x27;t run,
+   refuse and route the operator back.
+6. **Roster receipts are required evidence.** In repos with
+   `.spellbook/agents.yaml`, verify that `/settle` or the documented
+   landability evidence includes two or more roster-member receipts or an
+   explicit exception before final-mile merge work.
+
+## Delegation Floor
+
+When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/ship` does not normally dispatch
+providers; it verifies upstream roster receipts and includes them in
+`/reflect`. If final-mile work surfaces substantive judgment, route back to
+`/settle` or dispatch two or more roster members before proceeding. Direct
+lead-only shipping is limited to mechanical git operations, emergency
+...</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>
