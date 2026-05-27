@@ -53,16 +53,16 @@ WORKFLOW_ROLES = {
 
 
 ICON_PATHS = {
-    "build": '<path d="M14.7 6.3l3-3a3 3 0 0 1 .9 3.7l-2.1 2.1 3.4 3.4-2.4 2.4-3.4-3.4-7.8 7.8a2.1 2.1 0 0 1-3-3l7.8-7.8-2.8-2.8 2.4-2.4 4 4Z"/>',
-    "catalog": '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5v-4Zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5v-4Zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5v-4Zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5v-4Z"/>',
-    "learn": '<path d="M5 5.7A8.5 8.5 0 0 1 19.3 9H16l4.5 4.5L25 9h-3.2A11 11 0 0 0 3.6 4.2L5 5.7Zm14 12.6A8.5 8.5 0 0 1 4.7 15H8l-4.5-4.5L-1 15h3.2a11 11 0 0 0 18.2 4.8L19 18.3Z" transform="translate(0 0) scale(.96)"/>',
-    "operate": '<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-3.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Zm0-3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
-    "plan": '<path d="M12 3 4 20l8-3 8 3-8-17Zm0 4.8 3.3 8.3L12 15l-3.3 1.1L12 7.8Z"/>',
-    "repair": '<path d="M12 3 5 6v5.5c0 4.5 2.9 8.5 7 9.7 4.1-1.2 7-5.2 7-9.7V6l-7-3Zm3.8 7.1-4.5 4.5-2.1-2.1-1.4 1.4 3.5 3.5 5.9-5.9-1.4-1.4Z"/>',
-    "review": '<path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Zm9.5 3.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/>',
-    "ship": '<path d="M4 12h12.2l-4.6-4.6L13 6l7 7-7 7-1.4-1.4 4.6-4.6H4v-2Z"/><path d="M4 5h5v2H6v10h3v2H4V5Z"/>',
-    "specialist": '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0H5Zm14.5-12.5 1.8 1.1-1.8 1.1v2.1l-1.8-1.1-1.8 1.1V9.7l-1.8-1.1 1.8-1.1V5.4l1.8 1.1 1.8-1.1v2.1Z"/>',
-    "verify": '<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm-1.1-5.2-3.7-3.7 1.4-1.4 2.3 2.3 4.9-4.9 1.4 1.4-6.3 6.3Z"/>',
+    "build": '<path d="M14 4 20 10"/><path d="M16 2l6 6-9.5 9.5a3 3 0 0 1-4.2 0l-1.8-1.8a3 3 0 0 1 0-4.2L16 2Z"/><path d="M5 19l-2 2"/>',
+    "catalog": '<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
+    "learn": '<path d="M4 7a8 8 0 0 1 13.7-3.2"/><path d="M18 4v5h-5"/><path d="M20 17a8 8 0 0 1-13.7 3.2"/><path d="M6 20v-5h5"/>',
+    "operate": '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/>',
+    "plan": '<path d="M12 3 4 20l8-4 8 4-8-17Z"/><path d="M12 8v8"/>',
+    "repair": '<path d="M12 3 5 6v5.5c0 4.5 2.9 8.3 7 9.5 4.1-1.2 7-5 7-9.5V6l-7-3Z"/><path d="m8.8 12.2 2.1 2.1 4.5-4.6"/>',
+    "review": '<path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>',
+    "ship": '<path d="M4 12h14"/><path d="m13 7 5 5-5 5"/><path d="M4 5h5"/><path d="M4 19h5"/>',
+    "specialist": '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/><path d="M19 5v4"/><path d="M17 7h4"/>',
+    "verify": '<circle cx="12" cy="12" r="8"/><path d="m8.5 12.5 2.4 2.4 4.8-5.2"/>',
 }
 
 
@@ -130,7 +130,8 @@ def render_icons() -> str:
         symbols.append(f'<symbol id="icon-{name}" viewBox="0 0 24 24">{path}</symbol>')
     return (
         f"<!-- {GENERATED} -->\n"
-        '<svg xmlns="http://www.w3.org/2000/svg" style="display:none" fill="currentColor" stroke="none">\n'
+        '<svg xmlns="http://www.w3.org/2000/svg" style="display:none" fill="none" '
+        'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">\n'
         + "\n".join(symbols)
         + "\n</svg>\n"
     )
@@ -303,14 +304,23 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
     flow = "".join(f"<span>{esc(label)}</span>" for label in copy["flow"])
     body = f"""
     <section class="hero">
-      <p class="eyebrow">{esc(copy['eyebrow'])}</p>
-      <h1>{esc(copy['title'])}</h1>
-      <p class="lede">{esc(copy['lede'])}</p>
-      <div class="metrics">
-        <span><strong>{len([p for p in primitives if p.kind == 'skill'])}</strong> skills</span>
-        <span><strong>{len([p for p in primitives if p.kind == 'agent'])}</strong> agents</span>
-        <span><strong>{len(collect_gates())}</strong> CI gates</span>
+      <div class="hero-copy">
+        <p class="eyebrow">{esc(copy['eyebrow'])}</p>
+        <h1>{esc(copy['title'])}</h1>
+        <p class="lede">{esc(copy['lede'])}</p>
+        <p class="hero-links"><a href="concepts.html">Read the concepts</a><a href="reference/index.html">Browse the catalog</a></p>
+        <div class="metrics">
+          <span><strong>{len([p for p in primitives if p.kind == 'skill'])}</strong> skills</span>
+          <span><strong>{len([p for p in primitives if p.kind == 'agent'])}</strong> agents</span>
+          <span><strong>{len(collect_gates())}</strong> CI gates</span>
+        </div>
       </div>
+      <aside class="hero-map" aria-label="Spellbook operating loop">
+        <span>{icon_svg('plan', current)}Shape</span>
+        <span>{icon_svg('operate', current)}Delegate</span>
+        <span>{icon_svg('verify', current)}Verify</span>
+        <span>{icon_svg('learn', current)}Improve</span>
+      </aside>
     </section>
     <section class="band">
       <h2>{esc(copy['sixty_title'])}</h2>
@@ -332,7 +342,7 @@ def render_home(primitives: list[Primitive], backlog: list[dict[str, str]]) -> s
       <h2>{esc(copy['backlog_title'])}</h2>
       <p>{esc(copy['backlog_copy'])}</p>
       <ul class="compact">
-        {''.join(f'<li>{esc(item["title"])} <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
+        {''.join(f'<li><a href="https://github.com/phrazzld/spellbook/blob/master/{esc(item["source"])}">{esc(item["title"])}</a> <span>{esc(item["source"])}</span></li>' for item in backlog[:6])}
       </ul>
     </section>
 """
@@ -602,38 +612,47 @@ def render_manifest(primitives: list[Primitive], gates: list[str], backlog: list
 
 
 CSS = """
-:root { color-scheme: light; --ink:#111827; --muted:#5b6575; --line:#d9dee8; --paper:#fbfcff; --panel:#ffffff; --accent:#246bfe; --accent2:#00a889; --warm:#f3b34c; }
+:root { color-scheme: light; --ink:#111827; --muted:#5b6575; --line:#d9dee8; --paper:#fbfcff; --panel:#ffffff; --accent:#246bfe; --accent2:#00a889; }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.55; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .topbar { position: sticky; top: 0; z-index: 5; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:16px clamp(20px, 5vw, 64px); border-bottom:1px solid rgba(17,24,39,.08); background:rgba(251,252,255,.92); backdrop-filter: blur(14px); }
-.brand { font-weight: 800; letter-spacing: 0; color: var(--ink); }
+.brand { display:inline-flex; align-items:center; gap:10px; font-weight: 800; letter-spacing: 0; color: var(--ink); }
+.brand::before { content:""; width:18px; height:18px; border-radius:6px; background:linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow:0 5px 18px rgba(36,107,254,.25); }
 nav { display:flex; gap:18px; flex-wrap:wrap; font-size:14px; }
 main { padding-bottom: 64px; }
 section { max-width: 1120px; margin: 0 auto; padding: 42px clamp(20px, 5vw, 64px); }
-.hero { padding-top: 72px; }
+.hero { display:grid; grid-template-columns:minmax(0, 1.35fr) minmax(280px, .65fr); gap:56px; align-items:center; padding-top: 74px; padding-bottom:54px; }
+.hero-copy { min-width:0; }
+.hero-map { border:1px solid var(--line); border-radius:8px; background:linear-gradient(180deg, #ffffff, #f7fbff); box-shadow:0 22px 50px rgba(17,24,39,.07); padding:18px; display:grid; gap:10px; }
+.hero-map span { display:flex; align-items:center; gap:12px; padding:13px 14px; border:1px solid #e3e8f2; border-radius:8px; background:#fff; font-weight:800; color:var(--ink); }
+.hero-map .icon { width:20px; height:20px; margin:0; color:var(--accent); }
 .eyebrow { margin:0 0 12px; color:var(--accent2); font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-h1 { margin:0; max-width:980px; font-size: clamp(42px, 7vw, 84px); line-height:.96; letter-spacing:0; }
+h1 { margin:0; max-width:820px; font-size: clamp(38px, 5vw, 64px); line-height:1.03; letter-spacing:0; }
 .page-head h1 { font-size: clamp(36px, 5vw, 64px); }
 h2 { margin:0 0 14px; font-size: clamp(24px, 3vw, 38px); line-height:1.1; letter-spacing:0; }
 h3 { margin:0 0 8px; font-size:20px; line-height:1.2; }
 .lede { max-width:760px; color:var(--muted); font-size:20px; }
-.icon { width:24px; height:24px; display:block; color:var(--accent); margin-bottom:16px; }
-.hero .icon, .page-head > .icon { width:34px; height:34px; }
+.hero-links { display:flex; gap:18px; flex-wrap:wrap; margin:22px 0 0; font-weight:800; }
+.hero-links a::after { content:" ->"; }
+.icon { width:24px; height:24px; display:block; color:var(--accent); stroke:var(--accent); fill:none; margin-bottom:16px; }
+.page-head > .icon { width:34px; height:34px; }
 .metrics { display:flex; gap:10px; flex-wrap:wrap; margin-top:28px; }
-.metrics span, .proof, .source, .compact span { border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:8px 12px; color:var(--muted); }
+.metrics span, .proof, .source { border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:8px 12px; color:var(--muted); }
 .metrics strong { color:var(--ink); }
 .band { max-width:none; background:#eef5ff; border-block:1px solid #dce8ff; }
 .band > * { max-width:1000px; margin-left:auto; margin-right:auto; }
-.flow { display:grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap:8px; margin-top:24px; }
-.flow span { padding:14px; background:var(--panel); border:1px solid #cbd8f6; border-radius:8px; text-align:center; font-weight:700; }
+.flow { display:grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap:10px; margin-top:24px; }
+.flow span { position:relative; padding:14px; background:var(--panel); border:1px solid #cbd8f6; border-radius:8px; text-align:center; font-weight:800; }
+.flow span:not(:last-child)::after { content:""; position:absolute; top:50%; right:-10px; width:10px; border-top:2px solid #b8c8ec; transform:translateY(-50%); }
 .grid { display:grid; gap:16px; }
 .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.card, .catalog-card, .workflow { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px; box-shadow: 0 10px 28px rgba(17,24,39,.04); }
+.card, .catalog-card, .workflow { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px; box-shadow: 0 10px 28px rgba(17,24,39,.04); transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+.card:hover, .catalog-card:hover, .workflow:hover { border-color:#b8c8ec; transform:translateY(-1px); box-shadow:0 16px 34px rgba(17,24,39,.07); }
 .card p, .catalog-card p, .workflow p { color:var(--muted); margin-bottom:0; }
-.card-link, .catalog-card a { display:inline-block; margin-top:16px; font-weight:700; }
+.card-link, .catalog-card a { display:inline-block; margin-top:16px; font-weight:800; }
 .stack { display:grid; gap:16px; }
 .workflow { border-left:4px solid var(--accent); }
 .workflow .icon, .catalog-card .icon { margin-bottom:14px; }
@@ -644,7 +663,9 @@ h3 { margin:0 0 8px; font-size:20px; line-height:1.2; }
 .checklist { background:#f7f8fb; border-block:1px solid var(--line); max-width:none; }
 .checklist > * { max-width:960px; margin-left:auto; margin-right:auto; }
 .compact { padding-left:0; list-style:none; display:grid; gap:10px; }
-.compact li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+.compact li { display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+.compact a { color:var(--ink); font-weight:700; }
+.compact span { color:var(--muted); font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; overflow-wrap:anywhere; }
 .source { display:inline-block; font-size:14px; }
 .controls { display:flex; gap:12px; align-items:center; padding-top:0; }
 input, select { min-height:42px; border:1px solid var(--line); border-radius:8px; padding:8px 12px; background:var(--panel); color:var(--ink); font:inherit; }
@@ -652,7 +673,9 @@ input { flex:1; min-width:220px; }
 .catalog-grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:16px; padding-top:8px; }
 .catalog-card span { display:inline-block; margin-bottom:12px; color:var(--accent2); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
 .primitive-head { border-bottom:1px solid var(--line); }
-@media (max-width: 820px) { .topbar { align-items:flex-start; flex-direction:column; } .flow, .grid.two, .grid.three, .catalog-grid, .steps { grid-template-columns:1fr; } h1 { font-size:42px; } .controls { align-items:stretch; flex-direction:column; } .compact li { align-items:flex-start; flex-direction:column; } }
+@media (max-width: 980px) { .hero { grid-template-columns:1fr; gap:28px; } .hero-map { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 820px) { .topbar { align-items:flex-start; flex-direction:column; } .flow, .grid.two, .grid.three, .catalog-grid, .steps { grid-template-columns:1fr; } .flow span:not(:last-child)::after { display:none; } h1 { font-size:42px; } .controls { align-items:stretch; flex-direction:column; } .compact li { align-items:flex-start; grid-template-columns:1fr; } }
+@media (max-width: 520px) { section { padding-inline:20px; } .hero { padding-top:48px; } .hero-map { grid-template-columns:1fr; } .lede { font-size:18px; } }
 """.strip() + "\n"
 
 
