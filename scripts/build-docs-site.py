@@ -880,6 +880,7 @@ def build(output: Path) -> None:
         write_file(output, primitive.page, render_primitive(primitive))
     write_file(output, "manifest.json", render_manifest(primitives, gates, backlog))
     write_file(output, "llms.txt", render_llms(primitives, gates))
+    write_file(output, ".nojekyll", "")
     write_file(output, "assets/site.css", f"/* {GENERATED} */\n{CSS}")
     write_file(output, "assets/catalog.js", f"// {GENERATED}\n{JS}")
     write_file(output, "assets/icons.svg", render_icons())

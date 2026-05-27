@@ -73,6 +73,9 @@ The generated catalog includes every local skill and agent, CI gate map,
 workflow walkthroughs, governance notes, and an agent-readable
 [`docs/site/llms.txt`](docs/site/llms.txt).
 
+Deploys publish [`docs/site`](docs/site) to GitHub Pages from `master` after
+the generated-site check passes.
+
 ## Structure
 
 ```

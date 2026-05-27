@@ -167,6 +167,7 @@ def validate_site(site: Path, compare_to_rebuild: bool = True) -> None:
         "reference/gates.html",
         "reference/bootstrap.html",
         "llms.txt",
+        ".nojekyll",
     ]
     for relative in required_pages:
         path = site / relative
