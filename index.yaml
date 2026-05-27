@@ -1,5 +1,5 @@
 # Spellbook Index
-# Generated: 2026-05-27T15:31:47Z
+# Generated: 2026-05-27T16:25:24Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -55,6 +55,10 @@ skills:
     description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel in"
     source: first-party
     tags: [a,always-on,backlog,brainstorm,every,fans,grooming,happens,in,interrogate]
+  - name: hardening
+    description: "Agent-driven test hardening for functions, specs, and acceptance surfaces: property testing, mutation testing, acceptance mutation, CRAP/SCRAP risk, and structural DRY analysis. Use when: \"property te"
+    source: first-party
+    tags: [acceptance,agent-driven,analysis,crap,dry,functions,hardening,mutation,property,risk]
   - name: harness
     description: "Build and repair Spellbook primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS."
     source: first-party

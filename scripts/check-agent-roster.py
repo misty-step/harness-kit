@@ -19,6 +19,7 @@ CORE_WORKFLOW_SKILLS = [
     "diagnose",
     "flywheel",
     "groom",
+    "hardening",
     "harness",
     "implement",
     "monitor",
