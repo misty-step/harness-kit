@@ -45,10 +45,13 @@ into the repo. One command from "green" to "shipped and learned from."
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/ship` does not normally dispatch
 providers; it verifies upstream roster receipts and includes them in
 `/reflect`. If final-mile work surfaces substantive judgment, route back to
-`/settle` or dispatch two or more roster members before proceeding. Direct
-lead-only shipping is limited to mechanical git operations, emergency
-unblocks, explicit user-forbidden delegation, or an explicit waiver when
-fewer than two roster members are available.
+`/settle` or dispatch two or more roster members before proceeding. Use lanes
+for release-risk critique and closure-state review, give them the merge-ready
+evidence and backlog state, and record receipt evidence for accepted and
+rejected advice. Direct lead-only shipping is limited to mechanical git
+operations, emergency unblocks, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available. The lead owns
+the final ship/no-ship decision.
 
 ## Prerequisites
 

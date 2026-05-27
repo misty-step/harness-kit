@@ -58,7 +58,10 @@ provider scheduler: phase skills dispatch their own lanes, while `/deliver`
 checks that the floor was met before it calls the work merge-ready. Direct
 lead-only delivery is limited to mechanical command execution, emergency
 unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
+roster members. Give phase lanes the shaped packet, boundaries, and evidence
+requirements; receipts must show accepted, rejected, failed, or waived lanes.
+The lead owns phase sequencing, synthesis, final verification, and the
+merge-ready verdict.
 
 ## Closeout Contract
 
@@ -71,11 +74,6 @@ of truth for callers and automation. The brief and reflection are for the
 human operator.
 
 The delivery brief is short and punchy. It is not a file inventory, a raw
-changelog, or a generic &quot;green tests&quot; note. Default shape: 1-2 short
-paragraphs or 4-6 flat bullets.
-
-The delivery brief must answer:
-- What ticket was worked and what changed.
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -46,10 +46,11 @@ When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/
 roster and dispatching two or more available roster members before choosing
 or applying a simplification. Use one lane to map complexity and another to
 challenge behavior-preservation risk; add a builder lane for the selected
-change. The lead agent owns the final cut, proof, and receipts. Direct
-lead-only refactoring is limited to mechanical command execution, emergency
-unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
+change. Give lanes scoped diff, tests, invariants, and evidence requirements.
+The lead agent owns the final cut, proof, and receipts. Direct lead-only
+refactoring is limited to mechanical command execution, emergency unblocks,
+explicit user-forbidden delegation, or fewer than two available roster
+members.
 
 ## Deslop Pass
 
@@ -72,8 +73,6 @@ Detect the current branch and primary branch first:
 1. Current: `git rev-parse --abbrev-ref HEAD`
 2. Primary: `git symbolic-ref --short refs/remotes/origin/HEAD | sed &#x27;s#^origin/##&#x27;`
    (fallback `main`, then `master`)
-
-If current branch != primary branch: run **Feature Branch Mode**.
 ...</code></pre>
     </section>
     <section class="checklist">

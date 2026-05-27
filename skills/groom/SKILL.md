@@ -44,9 +44,11 @@ and dispatching two or more available roster members for investigation before
 the lead mutates backlog state or recommends priorities. Use lanes for
 backlog drift, premise challenge, technical hotspots, product opportunity,
 or external context. The lead agent keeps synthesis and prioritization; do
-not delegate final backlog judgment. Direct lead-only grooming is limited to
-mechanical ticket moves, emergency unblocks, explicit user-forbidden
-delegation, or an explicit waiver when fewer than two roster members are available.
+not delegate final backlog judgment. Give each lane bounded files or questions,
+then record receipt evidence for accepted and rejected recommendations. Direct
+lead-only grooming is limited to mechanical ticket moves, emergency unblocks,
+explicit user-forbidden delegation, or an explicit waiver when fewer than two
+roster members are available.
 
 ## The Always-On Loop
 

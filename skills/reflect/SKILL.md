@@ -27,10 +27,11 @@ outputs without inventing hidden rankings.
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/reflect` uses two or more roster
 members for substantive postmortem, coaching, or harness-tuning analysis.
 Use lanes to surface independent failure interpretations and improvement
-proposals; the lead owns synthesis, codification choices, and receipts.
-Direct lead-only reflection is limited to mechanical summary formatting,
-emergency unblocks, explicit user-forbidden delegation, or an explicit waiver
-when fewer than two roster members are available.
+proposals. Give lanes scoped session context, receipts, changed files, and
+evidence questions; the lead owns synthesis, codification choices, and
+receipts. Direct lead-only reflection is limited to mechanical summary
+formatting, emergency unblocks, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available.
 
 Every finding becomes one of three things:
 - a codified artifact

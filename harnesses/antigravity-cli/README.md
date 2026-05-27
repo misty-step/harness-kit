@@ -46,3 +46,16 @@ workspace access to the target repo.
 Roster entries should keep Antigravity conditional until a local smoke proves
 the prompt was followed. Receipts and final synthesis should treat Antigravity
 output as evidence, not authority, like every other provider lane.
+
+## Dynamic Delegation Notes
+
+- Use Antigravity for a bounded Google-family perspective, especially design,
+  critique, docs, and cross-check lanes.
+- Keep `--print` last so `scripts/dispatch-agent.py` can append the scoped
+  commission safely.
+- Give the lane role, objective, scope, output shape, and boundaries; do not
+  rely on project-global chat context.
+- Record receipts for followed, failed, or irrelevant outputs. A zero exit is
+  not enough evidence that the prompt was obeyed.
+- The lead agent owns final synthesis and verification after reading the
+  Antigravity evidence.

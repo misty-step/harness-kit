@@ -28,10 +28,11 @@ When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/
 roster and dispatching two or more available roster members for independent
 evidence or hypothesis lanes before selecting a fix. Use separate lanes for
 competing root causes, reproduction, config/service checks, or proposed fix
-validation. The lead agent owns the root-cause verdict, fix choice, proof,
-and receipts. Direct lead-only diagnosis is limited to mechanical command
-execution, emergency unblocks, explicit user-forbidden delegation, or fewer
-than two available roster members.
+validation. Give lanes scoped symptoms, logs, repro steps, suspected files,
+and evidence expectations. The lead agent owns the root-cause verdict, fix
+choice, proof, and receipts. Direct lead-only diagnosis is limited to
+mechanical command execution, emergency unblocks, explicit user-forbidden
+delegation, or fewer than two available roster members.
 
 ## Routing
 

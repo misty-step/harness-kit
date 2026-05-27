@@ -66,10 +66,12 @@ You are the executive orchestrator.
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/demo` uses two or more roster members
 for substantive artifact planning, capture critique, or external-facing
 release evidence. Use one lane for capture plan and another for cold quality
-review. The lead owns audience fit, sufficiency, and receipts. Direct
-lead-only demo work is limited to mechanical capture commands, emergency
-unblocks, explicit user-forbidden delegation, or an explicit waiver when
-fewer than two roster members are available.
+review. Give each lane scoped audience, changed behavior, and artifact
+constraints; receipts record proposed evidence, rejected artifacts, and final
+proof. The lead owns audience fit, sufficiency, and receipts. Direct lead-only
+demo work is limited to mechanical capture commands, emergency unblocks,
+explicit user-forbidden delegation, or an explicit waiver when fewer than two
+roster members are available.
 
 ## Shape detection (always step one)
 

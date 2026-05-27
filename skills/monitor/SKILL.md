@@ -54,8 +54,13 @@ You are a thin watcher.
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/monitor` uses two or more roster
 members for substantive incident interpretation, regression analysis, or
-follow-up shaping. Pure polling remains mechanical; investigations route to
-`/diagnose` and inherit its roster floor.
+follow-up shaping. Use lanes for signal interpretation and false-positive
+critique; give each lane scoped receipts, logs, health output, and monitor
+config. Pure polling remains mechanical; investigations route to `/diagnose`
+and inherit its roster floor. Direct lead-only monitor work is limited to
+mechanical polling, emergency unblocks, explicit user-forbidden delegation, or
+an explicit waiver when fewer than two roster members are available. The lead
+records receipt evidence and owns the trip/no-trip verdict.
 
 Signal query syntax (Datadog PromQL, Grafana HTTP, log greps) lives in
 `references/signals.md`. Judgment about what constitutes a real trip vs

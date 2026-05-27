@@ -65,10 +65,12 @@ not address review comments (→ `/settle`), does not ship.
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), the lead agent uses two or more roster
 lanes for audit, failure diagnosis, and gate-strengthening judgment. The lead
-may run exact validation commands and apply mechanical repairs directly after
-the lane decision is made. Direct lead-only CI work is limited to mechanical
-command execution, emergency unblocks, explicit user-forbidden delegation, or
-an explicit waiver when fewer than two roster members are available.
+gives each lane scoped commands, failing output, and relevant config, then
+records the lane evidence in receipts before deciding. The lead may run exact
+validation commands and apply mechanical repairs directly after the lane
+decision is made. Direct lead-only CI work is limited to mechanical command
+execution, emergency unblocks, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available.
 6. **Bounded self-heal.** See `references/self-heal.md` for the fix-vs-
    escalate decision. Algorithm and logic failures escalate.
 

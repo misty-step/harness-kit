@@ -37,7 +37,10 @@ provider scheduler: phase skills dispatch their own lanes, while `/deliver`
 checks that the floor was met before it calls the work merge-ready. Direct
 lead-only delivery is limited to mechanical command execution, emergency
 unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
+roster members. Give phase lanes the shaped packet, boundaries, and evidence
+requirements; receipts must show accepted, rejected, failed, or waived lanes.
+The lead owns phase sequencing, synthesis, final verification, and the
+merge-ready verdict.
 
 ## Closeout Contract
 

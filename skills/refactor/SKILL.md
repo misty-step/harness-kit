@@ -24,10 +24,11 @@ When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/
 roster and dispatching two or more available roster members before choosing
 or applying a simplification. Use one lane to map complexity and another to
 challenge behavior-preservation risk; add a builder lane for the selected
-change. The lead agent owns the final cut, proof, and receipts. Direct
-lead-only refactoring is limited to mechanical command execution, emergency
-unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
+change. Give lanes scoped diff, tests, invariants, and evidence requirements.
+The lead agent owns the final cut, proof, and receipts. Direct lead-only
+refactoring is limited to mechanical command execution, emergency unblocks,
+explicit user-forbidden delegation, or fewer than two available roster
+members.
 
 ## Deslop Pass
 

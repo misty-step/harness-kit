@@ -40,10 +40,13 @@ Then report ship-ready and hand the operator off to `/ship`.
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/settle` verifies that each
 substantive polish loop used two or more roster members or recorded a valid
-exception. It sequences leaf skills; leaf skills own dispatch. Direct
-lead-only settle work is limited to mechanical command execution, emergency
-unblocks, explicit user-forbidden delegation, or an explicit waiver when
-fewer than two roster members are available.
+exception. It sequences leaf skills; leaf skills own dispatch. For settle-owned
+judgment, use lanes for merge-readiness critique and residual-risk review, give
+them the diff, receipts, and failing evidence, and record their evidence in the
+settle report. Direct lead-only settle work is limited to mechanical command
+execution, emergency unblocks, explicit user-forbidden delegation, or an
+explicit waiver when fewer than two roster members are available. The lead owns
+the final merge-ready verdict.
 
 ## Prerequisites
 

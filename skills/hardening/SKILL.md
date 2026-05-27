@@ -36,7 +36,8 @@ When a provider roster is available (repo `.spellbook/agents.yaml` or system
 `~/.spellbook/agents.yaml`), `/hardening` starts by probing the roster and
 dispatching two or more available roster members. Use one lane to identify
 hardening candidates and one lane to challenge the chosen oracle, domains,
-mutants, and residual risk. The lead owns synthesis, edits, verification, and
+mutants, and residual risk. Give lanes scoped code, acceptance criteria, and
+test-strength evidence. The lead owns synthesis, edits, verification, and
 receipts. Direct lead-only work is limited to mechanical command execution,
 emergency unblocks, explicit user-forbidden delegation, or fewer than two
 available roster members.

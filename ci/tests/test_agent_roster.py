@@ -492,6 +492,23 @@ class FixtureSyntaxTests(unittest.TestCase):
         self.assertIsInstance(data, dict)
         self.assertIn("providers", data)
 
+    def test_runtime_delegation_references_exist(self) -> None:
+        for relative in [
+            "harnesses/claude/README.md",
+            "harnesses/codex/README.md",
+            "harnesses/antigravity-cli/README.md",
+            "harnesses/pi/README.md",
+        ]:
+            text = (REPO_ROOT / relative).read_text().lower()
+            for phrase in [
+                "dynamic delegation",
+                "roster",
+                "receipt",
+                "evidence",
+                "lead",
+            ]:
+                self.assertIn(phrase, text, f"{relative} missing {phrase}")
+
 
 if __name__ == "__main__":
     unittest.main()

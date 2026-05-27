@@ -40,10 +40,13 @@ One command. Executive authority. No approval gates.
 
 When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/yeet` uses two or more roster members
 for substantive worktree classification, commit-boundary design, or risky
-cleanup decisions. The lead owns final staging, commit messages, and receipts.
-Direct lead-only yeet work is limited to mechanical git commands, emergency
-unblocks, explicit user-forbidden delegation, or an explicit waiver when
-fewer than two roster members are available.
+cleanup decisions. Use lanes for diff classification and risk review; give
+them scoped status, diff, and backlog context while withholding final commit
+intent until synthesis. The lead owns final staging, commit messages,
+verification, and receipts. Direct lead-only yeet work is limited to
+mechanical git commands, emergency unblocks, explicit user-forbidden
+delegation, or an explicit waiver when fewer than two roster members are
+available.
 
 ## Modes
 

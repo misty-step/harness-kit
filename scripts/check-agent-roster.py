@@ -33,6 +33,37 @@ CORE_WORKFLOW_SKILLS = [
     "yeet",
 ]
 
+DELEGATION_FLOOR_REQUIREMENTS = {
+    "roster floor": ["two or more"],
+    "direct-work exceptions": [
+        "mechanical",
+        "emergency",
+        "user-forbidden",
+        "fewer than two",
+    ],
+    "lane responsibilities": ["lane"],
+    "context boundary": ["context", "give", "scope"],
+    "output evidence": ["receipt", "evidence"],
+    "lead verification": ["lead"],
+}
+
+RUNTIME_REFERENCES = {
+    "Claude Code": Path("harnesses/claude/README.md"),
+    "Codex": Path("harnesses/codex/README.md"),
+    "Antigravity": Path("harnesses/antigravity-cli/README.md"),
+    "Pi": Path("harnesses/pi/README.md"),
+}
+
+
+def delegation_floor_section(text: str) -> str:
+    start = text.find("## Delegation Floor")
+    if start == -1:
+        return ""
+    end = text.find("\n## ", start + 1)
+    if end == -1:
+        return text[start:]
+    return text[start:end]
+
 
 def validate_delegation_floor() -> None:
     missing = []
@@ -44,13 +75,26 @@ def validate_delegation_floor() -> None:
         if not path.exists():
             continue
         text = path.read_text()
-        if "## Delegation Floor" not in text:
+        section = delegation_floor_section(text)
+        if not section:
             missing.append(str(path))
             continue
+        lowered_section = section.lower()
         has_roster_contract = (
-            "provider roster is available" in text or ".spellbook/agents.yaml" in text
+            "provider roster is available" in section
+            or ".spellbook/agents.yaml" in section
         )
-        if "two or more" not in text or not has_roster_contract:
+        missing_requirements = [
+            name
+            for name, phrases in DELEGATION_FLOOR_REQUIREMENTS.items()
+            if not any(phrase in lowered_section for phrase in phrases)
+        ]
+        if not has_roster_contract:
+            missing_requirements.append("roster availability")
+        if missing_requirements:
+            weak.append(f"{path} ({', '.join(missing_requirements)})")
+            continue
+        if "explicit user waivers" in lowered_section:
             weak.append(str(path))
         if skill in {"shape", "research", "harness"}:
             lowered = text.lower()
@@ -68,6 +112,30 @@ def validate_delegation_floor() -> None:
         )
     if errors:
         raise SystemExit("; ".join(errors))
+
+
+def validate_runtime_delegation_references() -> None:
+    issues = []
+    for runtime, path in RUNTIME_REFERENCES.items():
+        if not path.exists():
+            issues.append(f"{path}: missing {runtime} dynamic delegation reference")
+            continue
+        text = path.read_text().lower()
+        missing = [
+            phrase
+            for phrase in [
+                "dynamic delegation",
+                "roster",
+                "receipt",
+                "evidence",
+                "lead",
+            ]
+            if phrase not in text
+        ]
+        if missing:
+            issues.append(f"{path}: missing phrase(s): {', '.join(missing)}")
+    if issues:
+        raise SystemExit("; ".join(issues))
 
 
 def validate_shared_roster_doctrine() -> None:
@@ -109,6 +177,7 @@ def main() -> int:
 
     validate_roster(load_roster(roster_path))
     validate_delegation_floor()
+    validate_runtime_delegation_references()
     validate_shared_roster_doctrine()
     validate_no_source_skill_bridges()
     receipts = read_receipts(fixture_path)
@@ -145,6 +214,7 @@ def main() -> int:
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
+    print(f"harnesses/: {len(RUNTIME_REFERENCES)} runtime delegation reference(s) valid")
     print("source repo: no repo-local skill bridges")
     print(f"{summary_script}: report helper valid")
     return 0

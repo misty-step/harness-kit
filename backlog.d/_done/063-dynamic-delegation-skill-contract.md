@@ -1,7 +1,7 @@
 # Add a dynamic delegation contract to workflow skills
 
 Priority: P1
-Status: ready
+Status: merge-ready
 Estimate: M
 
 ## Goal
@@ -25,7 +25,7 @@ how the lead verifies the result.
 
 ## Oracle
 
-- [ ] Each substantial workflow skill has a `## Delegation Floor` or equivalent
+- [x] Each substantial workflow skill has a `## Delegation Floor` or equivalent
       section with:
       - two or more roster members as the default floor when a roster exists;
       - the narrow exception set for direct lead-agent work;
@@ -33,14 +33,14 @@ how the lead verifies the result.
       - context boundary;
       - output/evidence contract;
       - verification responsibility retained by the lead agent.
-- [ ] `/harness` lint or audit mode flags substantial workflow skills that
+- [x] `/harness` lint or audit mode flags substantial workflow skills that
       lack a delegation floor or explicit exception rationale.
-- [ ] Runtime-specific references explain how to express dynamic delegation in
+- [x] Runtime-specific references explain how to express dynamic delegation in
       Claude Code, Codex, Antigravity CLI, and Pi without changing the core
       skill semantics.
-- [ ] At least `/code-review`, `/research`, `/shape`, `/refactor`, `/diagnose`,
+- [x] At least `/code-review`, `/research`, `/shape`, `/refactor`, `/diagnose`,
       `/qa`, and `/deliver` are updated as exemplars.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -66,3 +66,25 @@ mode, and context budget.
 `harnesses/shared/AGENTS.md` should carry the general routing rule. Skills
 should carry workflow-specific delegation recipes. Domain skills should carry
 domain-specific reviewer lenses.
+
+## What Was Built
+
+- Strengthened `scripts/check-agent-roster.py` so the harness gate now validates
+  delegation-floor contract fields across all 19 core workflow skills:
+  provider floor, direct-work exceptions, lane responsibilities, context
+  boundary, output/evidence contract, and lead verification.
+- Added runtime-specific dynamic delegation references for Claude Code, Codex,
+  Antigravity CLI, and Pi under `harnesses/*/README.md`.
+- Updated `/harness lint` and `/harness audit` references to flag missing or
+  weak delegation-floor coverage through `python3 scripts/check-agent-roster.py`.
+- Tightened workflow skill delegation floors so substantial workflows name
+  lane context, evidence/receipt expectations, and lead-owned verification.
+- Added regression coverage in `ci/tests/test_agent_roster.py` for runtime
+  delegation references.
+
+## Verification
+
+- `python3 scripts/check-agent-roster.py`
+- `python3 -m unittest ci.tests.test_agent_roster`
+- `scripts/build-docs-site.sh && scripts/check-docs-site.sh --self-test`
+- `dagger call check --source=.`

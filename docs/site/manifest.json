@@ -73,10 +73,6 @@
       "title": "Migrate Gemini support to Antigravity CLI and IDE"
     },
     {
-      "source": "backlog.d/063-dynamic-delegation-skill-contract.md",
-      "title": "Add a dynamic delegation contract to workflow skills"
-    },
-    {
       "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
       "title": "Repo-grounded acceptance contract for workflow skills"
     },

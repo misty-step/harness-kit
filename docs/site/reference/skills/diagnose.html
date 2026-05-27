@@ -51,10 +51,11 @@ When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/
 roster and dispatching two or more available roster members for independent
 evidence or hypothesis lanes before selecting a fix. Use separate lanes for
 competing root causes, reproduction, config/service checks, or proposed fix
-validation. The lead agent owns the root-cause verdict, fix choice, proof,
-and receipts. Direct lead-only diagnosis is limited to mechanical command
-execution, emergency unblocks, explicit user-forbidden delegation, or fewer
-than two available roster members.
+validation. Give lanes scoped symptoms, logs, repro steps, suspected files,
+and evidence expectations. The lead agent owns the root-cause verdict, fix
+choice, proof, and receipts. Direct lead-only diagnosis is limited to
+mechanical command execution, emergency unblocks, explicit user-forbidden
+delegation, or fewer than two available roster members.
 
 ## Routing
 
@@ -70,7 +71,6 @@ than two available roster members.
 If first argument matches a domain name (stripe, quality, etc.), route to `references/audit.md`.
 If &quot;triage&quot;, &quot;incident&quot;, &quot;postmortem&quot;, &quot;production down&quot; → `references/triage.md`.
 If &quot;flaky&quot;, &quot;flake&quot;, &quot;intermittent&quot;, &quot;nondeterministic test&quot; → `references/flaky-test-investigation.md`.
-If &quot;fix&quot; → `references/fix.md`. If &quot;log issues&quot; → `references/log-issues.md`.
 ...</code></pre>
     </section>
     <section class="checklist">

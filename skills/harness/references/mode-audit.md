@@ -45,6 +45,22 @@ Flag skills that:
 - Share >50% of trigger phrases with another skill (description overlap)
 - Have complementary domains that could be one skill without exceeding 3 workflows
 
+### 3b. Delegation Contract Coverage
+
+For substantial workflow skills, run or mirror
+`python3 scripts/check-agent-roster.py` and report any missing or weak
+`## Delegation Floor` sections. Flag:
+
+- no two-provider roster floor when a roster exists;
+- missing exception rationale for direct lead-only work;
+- vague lane responsibilities or context boundaries;
+- absent output/evidence or receipt contract;
+- no statement that the lead owns synthesis and verification;
+- missing runtime delegation references for Claude Code, Codex, Antigravity
+  CLI, or Pi.
+
+Treat a missing floor as harness debt, not a stylistic note.
+
 ### 4. Recommendations
 
 For each skill, emit one of:
