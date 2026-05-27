@@ -1,3 +1,3 @@
-from .main import SpellbookCi
+from .main import HarnessKitCi
 
-__all__ = ["SpellbookCi"]
+__all__ = ["HarnessKitCi"]

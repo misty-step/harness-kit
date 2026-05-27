@@ -1,8 +1,11 @@
 [project]
-name = "spellbook-ci"
+name = "harness-kit-ci"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = ["dagger-io>=0.0.0"]
+
+[project.entry-points."dagger.mod"]
+main_object = "spellbook_ci:HarnessKitCi"
 
 [build-system]
 requires = ["hatchling"]

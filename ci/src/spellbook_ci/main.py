@@ -1,4 +1,4 @@
-"""Spellbook CI pipeline — local-first quality gates via Dagger."""
+"""Harness Kit CI pipeline — local-first quality gates via Dagger."""
 
 from typing import Annotated
 
@@ -21,7 +21,7 @@ def _repair_prompt(
 ) -> str:
     """Prompt the LLM with the exact repair contract."""
     return f"""
-You are repairing a failing CI gate in the spellbook repository.
+You are repairing a failing CI gate in the Harness Kit repository.
 
 Gate: {failure.name}
 Attempt: {attempt} of {attempts}
@@ -94,8 +94,8 @@ def _repair_container(source: dagger.Directory) -> dagger.Container:
     )
 
 @object_type
-class SpellbookCi:
-    """Local CI pipeline for the spellbook repo."""
+class HarnessKitCi:
+    """Local CI pipeline for the Harness Kit repo."""
 
     @function
     async def lint_yaml(
@@ -569,7 +569,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-docs-site", self.check_docs_site(source))
 
         # Format results
-        lines = ["Spellbook CI Results", "=" * 40]
+        lines = ["Harness Kit CI Results", "=" * 40]
         passed = 0
         failed = 0
         for name, ok, msg in sorted(results):

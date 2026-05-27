@@ -1,5 +1,5 @@
 {
-  "name": "spellbook-ci",
+  "name": "harness-kit-ci",
   "engineVersion": "v0.20.3",
   "sdk": {
     "source": "python"

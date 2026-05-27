@@ -17,7 +17,7 @@ from heal_support import (  # noqa: E402
 
 class ParseCheckFailuresTests(unittest.TestCase):
     def test_returns_all_failed_gate_details(self) -> None:
-        summary = """Spellbook CI Results
+        summary = """Harness Kit CI Results
 ========================================
   PASS  lint-yaml
   FAIL  lint-shell
@@ -40,7 +40,7 @@ class ParseCheckFailuresTests(unittest.TestCase):
         )
 
     def test_uses_default_detail_when_stderr_missing(self) -> None:
-        summary = """Spellbook CI Results
+        summary = """Harness Kit CI Results
 ========================================
   FAIL  lint-python
 ========================================
@@ -55,7 +55,7 @@ class ParseCheckFailuresTests(unittest.TestCase):
         )
 
     def test_first_failed_gate_returns_first_failure_name(self) -> None:
-        summary = """Spellbook CI Results
+        summary = """Harness Kit CI Results
 ========================================
   PASS  lint-yaml
   FAIL  lint-shell
@@ -69,7 +69,7 @@ class ParseCheckFailuresTests(unittest.TestCase):
         self.assertEqual(first_failed_gate(summary), "lint-shell")
 
     def test_first_failed_gate_returns_none_when_summary_has_no_failures(self) -> None:
-        summary = """Spellbook CI Results
+        summary = """Harness Kit CI Results
 ========================================
   PASS  lint-yaml
 ========================================
