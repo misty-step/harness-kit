@@ -111,6 +111,10 @@
     {
       "source": "backlog.d/073-mechanical-hardening-evidence-gates.md",
       "title": "Mechanical hardening evidence gates"
+    },
+    {
+      "source": "backlog.d/074-tighten-delegation-floor-linter.md",
+      "title": "Tighten delegation-floor lint from keyword scan to negative fixtures"
     }
   ],
   "copy_source": "docs/copy/site.json",
