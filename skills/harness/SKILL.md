@@ -45,7 +45,7 @@ Mutate the harness. Keep it thin.
 
 ## Delegation Floor
 
-If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), dispatch two or more providers for
+If a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), dispatch two or more providers for
 substantive harness work and record receipts. Use lanes for doctrine critique,
 runtime compatibility, gate design, and regression risk. Give each lane scoped
 files and expected output; the lead owns final semantics, verification, and
@@ -54,7 +54,6 @@ explicit user-forbidden delegation, or fewer than two available providers.
 Do not treat a missing repo-local roster as a waiver. Run the resolver-backed
 probe, which falls back to the system Harness Kit roster:
 `python3 $HARNESS_KIT_ROOT/scripts/probe-agent-roster.py`.
-`SPELLBOOK_ROOT` remains a legacy alias for older operator shells.
 Native in-thread subagents may supplement the investigation, but they do not
 satisfy the roster floor. Count only configured provider ids in receipts and
 final roster reports.

@@ -13,7 +13,7 @@ loss, and mid-phase crashes are recoverable via `--resume <ulid>`.
 └── ci/             # /ci logs
 ```
 
-Default `<state-dir>` = `<worktree-root>/.spellbook/deliver/<ulid>/`.
+Default `<state-dir>` = `<worktree-root>/.harness-kit/deliver/<ulid>/`.
 
 ## Checkpoint Protocol (atomic)
 

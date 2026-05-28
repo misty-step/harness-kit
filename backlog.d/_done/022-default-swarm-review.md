@@ -27,7 +27,7 @@ catches model-specific blind spots.
 - [x] `/deliver` pipeline includes code review step that produces verdict
 - [x] `/land` refuses without verdict ref
 - [x] Pre-merge hook blocks `git merge` without verdict
-- [x] Skipping review requires explicit `SPELLBOOK_NO_REVIEW=1` env var (escape hatch)
+- [x] Skipping review requires explicit `HARNESS_KIT_NO_REVIEW=1` env var (escape hatch)
 
 ## Non-Goals
 
@@ -44,14 +44,14 @@ catches model-specific blind spots.
   without valid verdict. Fail-open on branch-name ambiguity (learned from def0cb9).
 - `verdict_check_landable` function in `scripts/lib/verdicts.sh` — returns 0/1/2
   for landable/missing-stale-or-invalid/dont-ship. Centralizes logic used by both callers.
-- Escape hatch: `SPELLBOOK_NO_REVIEW=1` env var, respected by both hook and script.
+- Escape hatch: `HARNESS_KIT_NO_REVIEW=1` env var, respected by both hook and script.
 - 30 tests total: 17 verdict, 7 land, 6 hook — all green.
 - Skill prose updates: `/deliver` gotcha bullet, `/settle` /land pointer,
   `/code-review` escape-hatch documentation.
 
 ## Design Decisions
 
-- Env var (`SPELLBOOK_NO_REVIEW=1`) over CLI flag — single harness-agnostic
+- Env var (`HARNESS_KIT_NO_REVIEW=1`) over CLI flag — single harness-agnostic
   mechanism that works for both hook and script.
 - `pre-merge-commit` hook only (not `pre-push`) — matches ticket scope
   ("blocks git merge"). FF-merge gap accepted; `/land` is the canonical path.

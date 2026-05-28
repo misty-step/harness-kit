@@ -8,12 +8,12 @@ Estimate: M
 
 Add an `audit` mode to `/groom` that walks every skill under `skills/` and reports which are missing load-bearing quality gates: SKILL.md frontmatter, a resolver-reachable description, at least one test or eval reference, and a concrete trigger phrase. Output is a coverage report with severity ranking, not auto-fixes.
 
-Inspired by Gary Tan's "Skillify" 10-step checklist; scoped down to the minimum set that actually predicts skill health in spellbook.
+Inspired by Gary Tan's "Skillify" 10-step checklist; scoped down to the minimum set that actually predicts skill health in harness-kit.
 
 ## Non-Goals
 
 - NOT auto-generating tests, evals, or fixes. Audit is read-only; humans decide what to promote.
-- NOT the full 10-step Skillify checklist. Gary's version includes resolver triggers, LLM evals, DRY audits, E2E smoke, filing rules — half of those don't apply to spellbook's architecture or are already covered by Dagger gates. This ticket is the subset that produces new signal.
+- NOT the full 10-step Skillify checklist. Gary's version includes resolver triggers, LLM evals, DRY audits, E2E smoke, filing rules — half of those don't apply to harness-kit's architecture or are already covered by Dagger gates. This ticket is the subset that produces new signal.
 - NOT a new Dagger gate. Audit is a /groom subcommand; the existing index-drift and frontmatter gates already enforce the minimum. This adds diagnostic depth, not another hard gate.
 - NOT covering `agents/` — separate concern; agent quality has different criteria.
 
@@ -52,12 +52,12 @@ The groom synthesis dropped candidate #4 (skills/audit-resolver) because dark/un
 
 ### Deliberate non-goals revisited
 
-Resisting the pull to grow this into a 10-step quality system. Spellbook's axe-sharpening exemption (it IS the axe) doesn't license building every possible audit; it licenses building audits whose output drives real skill promotion/demotion decisions. Four dimensions is enough to produce that output.
+Resisting the pull to grow this into a 10-step quality system. Harness Kit's axe-sharpening exemption (it IS the axe) doesn't license building every possible audit; it licenses building audits whose output drives real skill promotion/demotion decisions. Four dimensions is enough to produce that output.
 
 ### Composition
 
 - Soft dependency on 051 (AGENTS.md L3 routing) — the fourth dimension becomes hard signal once 051 lands.
-- Independent of 052 (.spellbook/ config).
+- Independent of 052 (.harness-kit/ config).
 - Should run after 051 so the routing-reference check produces useful output on first run.
 
 ### Execution sketch

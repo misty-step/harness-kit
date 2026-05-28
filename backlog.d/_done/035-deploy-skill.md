@@ -30,7 +30,7 @@ monitor post-deploy (→ `/monitor`), does not triage anomalies (→
    Docker vs static S3 — the skill is necessarily thin at the global
    level and most content lives in repo-local config.
 2. **Global skill = router.** The global `/deploy` reads repo config
-   (e.g. `.spellbook/deploy.yaml` or detection heuristics), dispatches to
+   (e.g. `.harness-kit/deploy.yaml` or detection heuristics), dispatches to
    the right deploy mechanism, and returns a canonical deploy receipt.
 3. **Receipt is the contract.** Regardless of target, output a structured
    receipt: `{version, env, url, healthcheck_url, rollback_cmd, timestamp}`.
@@ -67,10 +67,10 @@ monitor post-deploy (→ `/monitor`), does not triage anomalies (→
 ## Repo-Local Config
 
 ```yaml
-# .spellbook/deploy.yaml
+# .harness-kit/deploy.yaml
 target: fly
-app: spellbook-prod
-healthcheck: https://spellbook.fly.dev/health
+app: harness-kit-prod
+healthcheck: https://harness-kit.fly.dev/health
 rollback_grace_seconds: 300
 ```
 
@@ -90,8 +90,8 @@ and writes it. Interactive → self-persisting config.
 - [ ] `skills/deploy/SKILL.md` exists
 - [ ] Runs on at least 2 target types (e.g. static + containerized)
 - [ ] Emits structured receipt JSON
-- [ ] `.spellbook/deploy.yaml` detection works; absent-file prompts
-- [ ] Spellbook itself has no deploy target — skill correctly no-ops or errors clearly
+- [ ] `.harness-kit/deploy.yaml` detection works; absent-file prompts
+- [ ] Harness Kit itself has no deploy target — skill correctly no-ops or errors clearly
 - [ ] Integrates with `/autopilot` outer loop: receipt lands in cycle manifest
 
 ## Non-Goals

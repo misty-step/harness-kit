@@ -22,7 +22,7 @@ generic, stale, or untested against the changed executable path.
 - Do not lower any gate or replace `dagger call check --source=.`.
 - Do not require every small edit to run every phase. The contract applies when
   the workflow claims review, delivery, repo-local vendoring, or QA success.
-- Do not encode repo-specific stack doctrine in Spellbook. Spellbook defines
+- Do not encode repo-specific stack doctrine in Harness Kit. Harness Kit defines
   the evidence shape; repo-local config or vendored skills supply the concrete
   commands, files, and acceptance gates.
 
@@ -55,14 +55,14 @@ generic, stale, or untested against the changed executable path.
 
 ## Notes
 
-### Why this belongs in Spellbook
+### Why this belongs in Harness Kit
 
 This is not a Curb, Canary, ThinkTank, or Brandt rule. It is the repeated
 failure mode of the harness layer itself: the agent knows how to produce a
 plausible artifact, but the operator has to ask again for live repo evidence,
 actual command paths, authenticated QA, or a before/after harness diff.
 
-Spellbook should own the generic acceptance contract because it owns the
+Harness Kit should own the generic acceptance contract because it owns the
 workflow primitives. Downstream repos should only own the concrete evidence:
 their commands, routes, skill roots, deployment surfaces, and invariants.
 

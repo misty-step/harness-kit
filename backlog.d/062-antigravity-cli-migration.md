@@ -83,7 +83,7 @@ before the prompt. With the old roster shape,
 `agy --print --dangerously-skip-permissions --print-timeout 10m <prompt>`,
 Antigravity treated `--dangerously-skip-permissions` / timeout text as prompt
 content and returned setup/permission-status output while exiting successfully.
-Spellbook's roster now uses:
+Harness Kit's roster now uses:
 
 ```sh
 agy --dangerously-skip-permissions --print-timeout 10m --print <prompt>

@@ -28,7 +28,7 @@ encode the invariants that aren't inferable from the leaf names.
 - Flywheel composes. Phase logic lives in the leaf skill. Flywheel has none.
 - State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
 - Provider-roster behavior lives in the leaf workflow skills. If the repo has
-  `.spellbook/agents.yaml`, `/flywheel` expects two or more roster-member
+  `.harness-kit/agents.yaml`, `/flywheel` expects two or more roster-member
   receipts or explicit exceptions in phase evidence, but it does not dispatch
   providers directly.
 - The cycle closeout includes the roster delegation report from `/ship`,
@@ -41,7 +41,7 @@ encode the invariants that aren't inferable from the leaf names.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/flywheel` verifies that each
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/flywheel` verifies that each
 substantive lifecycle phase used two or more roster members or recorded a
 valid exception. It remains the outer-loop manager; leaf skills own dispatch.
 For outer-loop judgments, use lanes for cycle strategy and risk critique, give

@@ -1,6 +1,6 @@
 ---
 name: worker
-description: spellbook implementation specialist for high-signal, low-bloat execution
+description: harness-kit implementation specialist for high-signal, low-bloat execution
 tools: read, grep, find, ls, bash, edit, write
 ---
 

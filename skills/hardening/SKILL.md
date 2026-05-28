@@ -32,8 +32,8 @@ You are the lead hardening engineer.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system
-`~/.spellbook/agents.yaml`), `/hardening` starts by probing the roster and
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system
+`~/.harness-kit/agents.yaml`), `/hardening` starts by probing the roster and
 dispatching two or more available roster members. Use one lane to identify
 hardening candidates and one lane to challenge the chosen oracle, domains,
 mutants, and residual risk. Give lanes scoped code, acceptance criteria, and

@@ -13,7 +13,7 @@ DEFAULT_TTL_SECONDS = 86400
 
 
 def harness_kit_cache_root() -> Path:
-    override = os.environ.get("HARNESS_KIT_CACHE_DIR") or os.environ.get("SPELLBOOK_CACHE_DIR")
+    override = os.environ.get("HARNESS_KIT_CACHE_DIR")
     if override:
         return Path(override).expanduser()
 
@@ -34,9 +34,7 @@ def discovery_cache_paths() -> tuple[Path, Path]:
 
 
 def ttl_seconds() -> int:
-    raw = os.environ.get("HARNESS_KIT_EMBEDDINGS_TTL_SECONDS") or os.environ.get(
-        "SPELLBOOK_EMBEDDINGS_TTL_SECONDS"
-    )
+    raw = os.environ.get("HARNESS_KIT_EMBEDDINGS_TTL_SECONDS")
     if not raw:
         return DEFAULT_TTL_SECONDS
     try:

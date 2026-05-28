@@ -13,7 +13,7 @@ Stretching to 30+ minutes catches a few rare issues but blocks the outer
 loop and invites flapping-signal noise. 5 minutes is the Pareto sweet
 spot for short-horizon verification.
 
-Override per-repo in `.spellbook/monitor.yaml`. Override per-invocation
+Override per-repo in `.harness-kit/monitor.yaml`. Override per-invocation
 with `--grace` only for unusually risky deploys.
 
 ## What Counts as a Trip

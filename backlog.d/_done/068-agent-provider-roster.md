@@ -8,7 +8,7 @@ Supersedes: `backlog.d/068-provider-delegation-receipts.md`
 
 ## Goal
 
-Make Spellbook's default operating model explicit: the lead agent talking
+Make Harness Kit's default operating model explicit: the lead agent talking
 to the human is an agent manager, and non-trivial work should be delegated
 through a configured roster of coding-agent providers rather than silently
 handled solo. The unit is a cross-harness mechanism: a root-level provider
@@ -27,7 +27,7 @@ The tempting solution is a new `/orchestrate` mega-skill that launches,
 supervises, compares, scores, and kills every external agent. That is the
 wrong first shape.
 
-Spellbook already has lifecycle primitives:
+Harness Kit already has lifecycle primitives:
 
 - `backlog.d/056-agent-session-trace-lifecycle.md` owns durable session
   trace linkage.
@@ -57,7 +57,7 @@ is that agent delegation is currently informal and unrecoverable:
    commit, so "just keep logs" is not an acceptable answer.
 
 The shape must turn delegation from an anecdote into evidence without
-turning Spellbook into a process supervisor.
+turning Harness Kit into a process supervisor.
 
 ## Research Notes
 
@@ -65,7 +65,7 @@ turning Spellbook into a process supervisor.
 
 Exa surfaced current CLI-agent and orchestration examples, including
 Antigravity CLI coverage and several community agent orchestrators. The
-signal was that this ecosystem is moving fast, so Spellbook should probe
+signal was that this ecosystem is moving fast, so Harness Kit should probe
 capabilities at runtime instead of assuming every provider is installed.
 
 ### xAI / Grok
@@ -109,15 +109,15 @@ Thinktank `research/quick` was launched against this ticket with systems
 and verification lanes. It reinforced that local CLI probes are feasible,
 that Thinktank itself needs async dispatch/collect treatment because runs
 can take minutes, and that receipts should be local-first and append-only.
-The rejected suggestion was a separate `.spellbook/provider-receipts/`
+The rejected suggestion was a separate `.harness-kit/provider-receipts/`
 store, because that would fork trace/ledger ownership.
 
 ### Codebase
 
 Existing repo constraints point to a narrow mechanism:
 
-- `056` already names `.spellbook/traces/` as a viable trace store.
-- `058` already names `.spellbook/work/` as the ledger/mission-control
+- `056` already names `.harness-kit/traces/` as a viable trace store.
+- `058` already names `.harness-kit/work/` as the ledger/mission-control
   store.
 - `skills/research/provider-adapter.ts` is search-specific and should not
   become a generic delegation manager.
@@ -152,7 +152,7 @@ long-running agents.
 Expose adapter phases directly and let skills choreograph provider runs.
 
 Failure mode: temporal decomposition. Every caller learns the lifecycle,
-storage leaks through the interface, and Spellbook grows shallow glue.
+storage leaks through the interface, and Harness Kit grows shallow glue.
 
 ### Option C: Full agent manager/control plane
 
@@ -170,7 +170,7 @@ receipt data.
 
 ### Provider Roster
 
-Add a root-level, repo-local roster at `.spellbook/agents.yaml`.
+Add a root-level, repo-local roster at `.harness-kit/agents.yaml`.
 
 The roster is committed when it describes repo-approved provider classes
 and safe command templates. Per-machine availability remains runtime
@@ -223,11 +223,11 @@ collect` sequence.
 Receipt rows are append-only JSONL at:
 
 ```text
-.spellbook/traces/delegations.jsonl
+.harness-kit/traces/delegations.jsonl
 ```
 
 This makes `062` a trace input. `058` may summarize it in
-`.spellbook/work/`, but the ledger must reference `delegation_id` values
+`.harness-kit/work/`, but the ledger must reference `delegation_id` values
 rather than redefining provider schema.
 
 Required receipt fields:
@@ -277,7 +277,7 @@ exception.
 
 Add the smallest script surface that supports the boundary:
 
-- `scripts/probe-agent-roster.py`: validates `.spellbook/agents.yaml`,
+- `scripts/probe-agent-roster.py`: validates `.harness-kit/agents.yaml`,
   probes safe availability metadata, and can emit unavailable rows without
   crashing.
 - `scripts/record-delegation.py`: appends normalized receipt rows after
@@ -290,15 +290,15 @@ Add a Dagger sub-gate:
 
 - `check-agent-roster`: validates roster syntax, receipt schema examples,
   no secret-looking values in committed roster or fixtures, and no raw
-  provider session directories under committed `.spellbook/`.
+  provider session directories under committed `.harness-kit/`.
 
 Update `.gitignore` so runtime trace output is ignored while committed
 configuration remains trackable:
 
-- keep `.spellbook/agents.yaml` and schema/example fixtures eligible for
+- keep `.harness-kit/agents.yaml` and schema/example fixtures eligible for
   commit,
-- ignore `.spellbook/traces/*.jsonl` by default,
-- keep the existing `.spellbook/deliver/` force-add guard intact.
+- ignore `.harness-kit/traces/*.jsonl` by default,
+- keep the existing `.harness-kit/deliver/` force-add guard intact.
 
 ### Experiments
 
@@ -316,8 +316,8 @@ providers prematurely.
 
 ## Cross-Harness
 
-The primary layer is `.spellbook/agents.yaml` plus
-`.spellbook/traces/delegations.jsonl`. Claude, Codex, and Pi can all read
+The primary layer is `.harness-kit/agents.yaml` plus
+`.harness-kit/traces/delegations.jsonl`. Claude, Codex, and Pi can all read
 the same roster file and append the same receipt shape. Harness-specific
 advantages are adapter details, not architecture.
 
@@ -336,14 +336,14 @@ entries. Missing binaries produce `unavailable` rows, not harness failure.
 
 ## Oracle
 
-- [ ] `.spellbook/agents.yaml` exists with primary entries for `codex`,
+- [ ] `.harness-kit/agents.yaml` exists with primary entries for `codex`,
       `claude`, and `pi`, conditional entries for `agy`, `cursor-agent`,
       and `grok-build`, plus a `manual` fallback.
 - [ ] `scripts/probe-agent-roster.py` validates the roster and emits valid
       unavailable status rows when run on a machine with zero matching
       providers.
 - [ ] `scripts/record-delegation.py` writes exactly one normalized receipt
-      row per delegation attempt to `.spellbook/traces/delegations.jsonl`.
+      row per delegation attempt to `.harness-kit/traces/delegations.jsonl`.
 - [ ] Receipt rows include `schema_version`, `delegation_id`,
       `provider_target`, `provider_status`, `attempt_status`,
       `evidence_refs`, `lead_verdict`, `worktree_id`, and

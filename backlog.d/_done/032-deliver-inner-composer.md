@@ -78,7 +78,7 @@ exclusively via exit code + receipt file. No stdout parsing, no heuristic
 output sniffing.
 
 **Receipt path:** `<state-dir>/receipt.json`. Default state-dir:
-`<worktree-root>/.spellbook/deliver/<ulid>/` (gitignored). When invoked by
+`<worktree-root>/.harness-kit/deliver/<ulid>/` (gitignored). When invoked by
 `/autopilot`, caller passes `--state-dir backlog.d/_cycles/<ulid>/evidence/deliver/`
 so state lands under the cycle's evidence tree.
 
@@ -165,7 +165,7 @@ itself, only records pointers in the receipt.
 
 Not in git (explicit): no `.evidence/` directory, no LFS pointers, no
 committed screenshots. Review transcripts and CI logs live under
-`.spellbook/` which is gitignored wholesale. Demo artifacts live on GitHub
+`.harness-kit/` which is gitignored wholesale. Demo artifacts live on GitHub
 releases as they do today.
 
 **Fate of ticket 024:** Superseded for `/deliver`'s purposes. If 024 stays
@@ -196,7 +196,7 @@ the next cycle. `/deliver` does not clean up after itself.
 
 State is filesystem-backed, worktree-local, resumable.
 
-**State root:** `<state-dir>`, default `<worktree-root>/.spellbook/deliver/<ulid>/`.
+**State root:** `<state-dir>`, default `<worktree-root>/.harness-kit/deliver/<ulid>/`.
 
 ```
 <state-dir>/
@@ -230,14 +230,14 @@ guarantees as `/autopilot` outer (028).
 
 ## Worktree Behavior
 
-State paths rooted at the worktree root's `.spellbook/deliver/` — NOT at
+State paths rooted at the worktree root's `.harness-kit/deliver/` — NOT at
 `$HOME` or the primary repo's `.git/`. Two worktrees of the same repository
 can each run `/deliver` on different branches concurrently with zero
 interference: separate `<ulid>`s, separate state directories, separate
 receipts. No global locks.
 
 Implementation: `/deliver` resolves its state root as
-`$(git rev-parse --show-toplevel)/.spellbook/deliver/`, which in a linked
+`$(git rev-parse --show-toplevel)/.harness-kit/deliver/`, which in a linked
 worktree returns the worktree path (not the primary clone's). Verified by
 an oracle check.
 
@@ -277,7 +277,7 @@ an oracle check.
    - [ ] `index.yaml` — autopilot entry renamed to deliver
    - [ ] `index.yaml` — iterate description mentioning `/autopilot` updated
          to `/deliver` (coordinate with 028's iterate → autopilot rename)
-   - [ ] `.spellbook.yaml` global-skills comment list
+   - [ ] `.harness-kit.yaml` global-skills comment list
 
    Root docs:
    - [ ] `CLAUDE.md` orchestrator comment list and pipeline diagram
@@ -342,10 +342,10 @@ an oracle check.
 5. **Harness Enforcement (lands with the rename)** — structural prevention,
    not prose:
 
-   - [ ] `.gitignore` includes `.spellbook/deliver/` (state dir worktree-local, never committed)
-   - [ ] Pre-commit hook: reject manual edits to `.spellbook/deliver/**/state.json` and `receipt.json`
+   - [ ] `.gitignore` includes `.harness-kit/deliver/` (state dir worktree-local, never committed)
+   - [ ] Pre-commit hook: reject manual edits to `.harness-kit/deliver/**/state.json` and `receipt.json`
    - [ ] Pre-push hook: warn (not block) if pushing a branch with a live
-         `.spellbook/deliver/<ulid>/state.json` whose status ≠ `merge_ready`
+         `.harness-kit/deliver/<ulid>/state.json` whose status ≠ `merge_ready`
          (catches "I forgot to finish /deliver before pushing" footgun)
    - [ ] Lint rule: no inlined-phase calls in `skills/deliver/SKILL.md` —
          grep for known phase-skill internals (e.g., direct `/code-review`

@@ -86,7 +86,7 @@ the target lacks any of them (especially a rollback handle), flag it —
 
 ## Static S3 + CloudFront
 
-- **Detect:** `.spellbook/deploy.yaml` with `target: s3` (no universal
+- **Detect:** `.harness-kit/deploy.yaml` with `target: s3` (no universal
   marker file) OR `s3-deploy.json` / similar project convention
 - **Auth check:** `aws sts get-caller-identity`
 - **Current sha:** object metadata on `index.html` —
@@ -110,7 +110,7 @@ the target lacks any of them (especially a rollback handle), flag it —
 
 ## Self-hosted Docker (SSH + registry)
 
-- **Detect:** `Dockerfile` + `.spellbook/deploy.yaml` with
+- **Detect:** `Dockerfile` + `.harness-kit/deploy.yaml` with
   `target: docker` and `host`, `image`, `registry` fields
 - **Auth check:** `docker login <registry>` succeeds; `ssh <host> true`
 - **Current sha:** `ssh <host> 'docker inspect <container> --format
@@ -134,7 +134,7 @@ the target lacks any of them (especially a rollback handle), flag it —
 ## Kubernetes
 
 - **Detect:** `k8s/` dir, `kustomization.yaml`, `Chart.yaml` (helm),
-  OR `.spellbook/deploy.yaml` with `target: k8s`
+  OR `.harness-kit/deploy.yaml` with `target: k8s`
 - **Auth check:** `kubectl auth can-i update deployments -n <ns>`
 - **Current sha:** deployment annotation —
   `kubectl get deployment <name> -n <ns> -o
@@ -159,7 +159,7 @@ the target lacks any of them (especially a rollback handle), flag it —
 Last-resort escape hatch. Repo declares:
 
 ```yaml
-# .spellbook/deploy.yaml
+# .harness-kit/deploy.yaml
 target: custom
 deploy_cmd: "./scripts/deploy.sh"
 current_sha_cmd: "./scripts/current-sha.sh"

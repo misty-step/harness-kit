@@ -32,7 +32,7 @@ This is the mechanical first step behind the dynamic-delegation pivot.
 - [ ] `bootstrap.sh` sets `GLOBAL_AGENTS=()` and does not fail when the list is
       empty.
 - [ ] Remote bootstrap mode does not call GitHub to enumerate agents.
-- [ ] Local bootstrap removes stale Spellbook-managed global agent symlinks
+- [ ] Local bootstrap removes stale Harness Kit-managed global agent symlinks
       from supported harness dirs, while preserving human-authored files.
 - [ ] Bootstrap output clearly says: "Global agents are not installed; skills
       now provide dynamic delegation guidance."

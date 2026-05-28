@@ -30,7 +30,7 @@ entry IDs on every finding.
 
 ## Oracle
 
-- [ ] `skills/code-review/SKILL.md` in spellbook documents the
+- [ ] `skills/code-review/SKILL.md` in harness-kit documents the
       convention: the critic subagent's prompt template includes a
       line like *"Load `references/review-patterns.md` if present.
       Check each diff hunk against the catalog and cite entry IDs on
@@ -50,9 +50,9 @@ entry IDs on every finding.
       to `review-patterns.md` — and to leave the file out if the repo already
       has one
 - [ ] The canary repo's `#029` ("code-review pattern catalog") lands
-      as the first consumer implementation; the spellbook convention
+      as the first consumer implementation; the harness-kit convention
       is validated against it
-- [ ] `./bin/validate` green in spellbook (docs-only change)
+- [ ] `./bin/validate` green in harness-kit (docs-only change)
 
 ## Notes
 
@@ -67,16 +67,16 @@ repo that runs `/code-review` can benefit from a locally-curated list
 of "things external reviewers flag repeatedly here," and every repo
 that doesn't have one re-discovers the same issues each cycle.
 
-**What spellbook owns vs. what the repo owns.**
+**What harness-kit owns vs. what the repo owns.**
 
-| Spellbook provides | Consuming repo provides |
+| Harness Kit provides | Consuming repo provides |
 |---|---|
 | The template file (`review-patterns-template.md`) | The actual catalog entries, authored from that repo's history |
 | The SKILL.md clause that makes consultation mandatory | The per-entry rule / violation / fix / enforcement details |
 | The numbering convention (`P-01`, `P-02`, …) | Their own P-IDs, stable across time |
 | The lifecycle narrative (seed → enforce → keep as docs) | The judgment on which finds are pattern-worthy |
 
-This split is load-bearing. Spellbook standardizes the shape so an
+This split is load-bearing. Harness Kit standardizes the shape so an
 operator moving between repos recognizes the surface. The *content*
 has to be per-repo — what's a pattern in canary (RFC 9457 problem
 details; deterministic template summaries; single-writer
@@ -172,7 +172,7 @@ on first vendored install if absent, and leaves existing catalogs untouched.
 - *Operators skip the convention.* Mitigated by the SKILL.md clause
   that emits a warning when `review-patterns.md` is missing — visible
   in every review output until seeded.
-- *Drift between canary's `#029` shape and the spellbook template.*
+- *Drift between canary's `#029` shape and the harness-kit template.*
   Ship `#029` first, then backport the lessons into the template.
   Canary is the reference consumer; the template should match what
   actually worked there.

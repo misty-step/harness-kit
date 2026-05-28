@@ -10,7 +10,7 @@ Make the shared shell helpers fail closed and preserve exact JSON payloads when
 they are used directly or vendored into target repos.
 
 The Conviction repo-local harness review found two script-level hazards that are
-Spellbook bugs, not downstream repo bugs:
+Harness Kit bugs, not downstream repo bugs:
 
 - `scripts/lib/verdicts.sh` falls back to `HEAD` when the requested branch or
   ref does not resolve, so a missing review target can silently validate the
@@ -41,6 +41,6 @@ Spellbook bugs, not downstream repo bugs:
 
 ## Notes
 
-This should be fixed in Spellbook because bootstrap and `/seed` expose these
+This should be fixed in Harness Kit because bootstrap and `/seed` expose these
 helpers to target repos. Patching only the generated Conviction copies would
 leave the canonical source with the same fail-open behavior.

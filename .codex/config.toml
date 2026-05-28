@@ -1,9 +1,9 @@
-# Spellbook repo-local Codex config.
+# Harness Kit repo-local Codex config.
 # Codex discovers skills in `.codex/skills/` via symlink bridges back to
 # `.agents/skills/`, the canonical shared root.
 
 [project]
-name = "spellbook"
+name = "harness-kit"
 description = "Harness library: skills, agents, configs for Claude Code / Codex / Pi"
 
 [skills]

@@ -112,8 +112,8 @@ test_merge_allowed_ship() {
 }
 
 test_merge_bypass_env() {
-  assert_exit "merge bypasses with SPELLBOOK_NO_REVIEW=1" 0 \
-    env SPELLBOOK_NO_REVIEW=1 git merge --no-ff feat-x
+  assert_exit "merge bypasses with HARNESS_KIT_NO_REVIEW=1" 0 \
+    env HARNESS_KIT_NO_REVIEW=1 git merge --no-ff feat-x
 }
 
 # --- Runner ---

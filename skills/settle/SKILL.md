@@ -27,7 +27,7 @@ Then report ship-ready and hand the operator off to `/ship`.
 3. **Executive orchestrator.** Keep review-comment disposition, risk
    tradeoffs, and ship-readiness judgment on the lead model. Delegate
    bounded fixes and evidence gathering to focused subagents.
-   When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), require `/code-review`,
+   When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), require `/code-review`,
    `/refactor`, or `/diagnose` to produce two or more roster-member receipts
    or an explicit exception before `/settle` calls the branch ship-ready.
 4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
@@ -39,7 +39,7 @@ Then report ship-ready and hand the operator off to `/ship`.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/settle` verifies that each
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/settle` verifies that each
 substantive polish loop used two or more roster members or recorded a valid
 exception. It sequences leaf skills; leaf skills own dispatch. For settle-owned
 judgment, use lanes for merge-readiness critique and residual-risk review, give
@@ -248,7 +248,7 @@ Stop and surface to the operator instead of looping:
 - Working tree has unresolved conflict markers.
 - Safety cap hit (6 iterations without convergence) — emit diagnosis,
   do not loop further.
-- Escape-hatch environment variable `SPELLBOOK_NO_REVIEW=1` does **not**
+- Escape-hatch environment variable `HARNESS_KIT_NO_REVIEW=1` does **not**
   apply here — it's for `/ship`'s pre-merge check, not `/settle`'s loop.
 
 ## Interactions

@@ -6,7 +6,7 @@ Estimate: M
 
 ## Goal
 
-Make Spellbook's hardening and acceptance-evidence claims mechanically harder
+Make Harness Kit's hardening and acceptance-evidence claims mechanically harder
 to fake. A workflow that says a surface is accepted, hardened, or merge-ready
 should carry non-empty evidence fields, and later phases should detect when the
 oracle or acceptance artifact changed without an explicit contract-change note.
@@ -37,7 +37,7 @@ oracle or acceptance artifact changed without an explicit contract-change note.
 ## Notes
 
 This follows the Uncle Bob hardening pattern without putting slow or
-language-specific tools in the global gate. The fast Spellbook gate should
+language-specific tools in the global gate. The fast Harness Kit gate should
 enforce that evidence claims have a real shape. Repo-local hardening workflows
 remain responsible for their own property-test, mutation, CRAP/SCRAP, DRY, and
 acceptance-mutation commands.

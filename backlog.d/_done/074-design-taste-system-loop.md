@@ -6,7 +6,7 @@ Estimate: M
 
 ## Goal
 
-Give Spellbook a thin, cross-harness design-quality loop for UI work:
+Give Harness Kit a thin, cross-harness design-quality loop for UI work:
 detect when a change touches user-facing interface surfaces, route those
 changes through artifact-backed design critique, scaffold project-local design
 system guidance when a repo has recurring UI work, and verify the skill with a
@@ -52,7 +52,7 @@ Sources checked during shaping:
   Fluent, and Atlassian are useful for vocabulary and component-page anatomy,
   not for importing their visual language.
 
-Local research found Spellbook already has most of the raw ingredients:
+Local research found Harness Kit already has most of the raw ingredients:
 
 - `skills/design/SKILL.md` requires rendered artifacts, explicit intent,
   ranked critique, structural redesign directions, and a completion gate.
@@ -78,7 +78,7 @@ Conversely, importing aesthetic skills wholesale can create taste theater:
 font bans, purple-gradient avoidance, dramatic motion, or landing-page
 composition where the target repo actually needs a quiet operational console.
 
-The Spellbook-sized solution is a routing and evidence loop:
+The Harness Kit-sized solution is a routing and evidence loop:
 
 - detect UI-relevant changes;
 - load repo-local design-system facts when they exist;
@@ -183,7 +183,7 @@ The grader should verify that the candidate:
 
 ## Non-Goals
 
-- No shared Spellbook UI framework.
+- No shared Harness Kit UI framework.
 - No global token engine.
 - No hard CI fail on subjective design taste.
 - No static `designer` agent in `agents/`.

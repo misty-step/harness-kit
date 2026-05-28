@@ -45,7 +45,7 @@ shapes in a diff.
       cross-repo-useful pattern reference, so consuming repos know
       they can link out to shared docs rather than copy-pasting
 - [ ] Canary's local `#029` catalog entry `P-07` (preload-then-take)
-      cross-references this spellbook doc as its "why it matters"
+      cross-references this harness-kit doc as its "why it matters"
       expansion
 - [ ] `./bin/validate` green (docs-only)
 
@@ -57,7 +57,7 @@ over two cycles — the incident detail endpoint preloaded every
 `errors_by_class` response computed `total_errors` from a truncated
 groups list. The *specific* fixes are Ecto-specific. The *discipline*
 is not: any paginated/capped API on any ORM has the same risk shape.
-Writing the generic form once in spellbook means every consuming repo
+Writing the generic form once in harness-kit means every consuming repo
 inherits the review-time rule without re-deriving it.
 
 **Reference shape (draft outline).**

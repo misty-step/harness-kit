@@ -8,12 +8,12 @@ interference and no global locks.
 State root is computed per-invocation as:
 
 ```
-$(git rev-parse --show-toplevel)/.spellbook/deliver/
+$(git rev-parse --show-toplevel)/.harness-kit/deliver/
 ```
 
 In a linked worktree, `git rev-parse --show-toplevel` returns the
 **worktree's** root, not the primary clone's. Every worktree has its own
-`.spellbook/deliver/` tree.
+`.harness-kit/deliver/` tree.
 
 ## Concurrent Worktrees
 
@@ -47,4 +47,4 @@ The `/deliver` oracle verifies:
 > concurrently; both produce independent merge-ready receipts.
 
 If that check fails, the state-root resolution is broken — likely
-someone hardcoded `$HOME/.spellbook/` or the primary clone's `.git/`.
+someone hardcoded `$HOME/.harness-kit/` or the primary clone's `.git/`.

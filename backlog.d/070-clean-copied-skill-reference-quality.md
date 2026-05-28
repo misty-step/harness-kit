@@ -42,4 +42,4 @@ phase names to downstream repos.
 These are upstream quality defects because downstream repos consume the same
 references through the system-wide harness or explicit `/seed` vendoring.
 Downstream repos may patch local copies for an active PR, but the durable fix is
-in Spellbook.
+in Harness Kit.

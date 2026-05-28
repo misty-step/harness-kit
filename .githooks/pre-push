@@ -25,7 +25,7 @@ fi
 # If a live /deliver state.json exists whose status is not merge_ready, the
 # user likely forgot to finish the run before pushing. Yellow-warn, do not
 # block; pushing mid-flight is their call.
-deliver_root="$repo_root/.spellbook/deliver"
+deliver_root="$repo_root/.harness-kit/deliver"
 if [ -d "$deliver_root" ]; then
   yellow=$'\033[33m'
   reset=$'\033[0m'

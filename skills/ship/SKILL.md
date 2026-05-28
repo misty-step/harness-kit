@@ -36,13 +36,13 @@ into the repo. One command from "green" to "shipped and learned from."
    `/settle` already proved the branch clean. If `/settle` wasn't run,
    refuse and route the operator back.
 6. **Roster receipts are required evidence.** In repos with
-   `.spellbook/agents.yaml`, verify that `/settle` or the documented
+   `.harness-kit/agents.yaml`, verify that `/settle` or the documented
    landability evidence includes two or more roster-member receipts or an
    explicit exception before final-mile merge work.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/ship` does not normally dispatch
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/ship` does not normally dispatch
 providers; it verifies upstream roster receipts and includes them in
 `/reflect`. If final-mile work surfaces substantive judgment, route back to
 `/settle` or dispatch two or more roster members before proceeding. Use lanes
@@ -380,7 +380,7 @@ Closed:     029, 031
 Referenced: 024
 Docs:       docs/context/lane-runtime.md (synced)
 Reflect:    2 backlog mutations applied, 3 harness proposals on
-            harness/reflect-outputs, retro in .spellbook/reflect/<cycle>/
+            harness/reflect-outputs, retro in .harness-kit/reflect/<cycle>/
 Residual:   none
 ```
 

@@ -52,13 +52,13 @@ has seen it recur.
 
 ## Notes
 
-### Why this belongs in Spellbook
+### Why this belongs in Harness Kit
 
 This is the learning loop for the harness itself. The repeated-prompt reducer
 automation found useful defaults, but the durable fix should live where
 workflow corrections can become skills, AGENTS rules, evals, or backlog items.
 
-Spellbook already has `/reflect`, `/monitor`, `/groom`, and `backlog.d/`.
+Harness Kit already has `/reflect`, `/monitor`, `/groom`, and `backlog.d/`.
 Adding a tiny prompt-debt contract to those primitives is cheaper and more
 portable than creating a new tool.
 

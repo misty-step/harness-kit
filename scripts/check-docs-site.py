@@ -103,8 +103,8 @@ def compare_dirs(expected: Path, actual: Path) -> list[str]:
 
 def page_metadata(path: Path) -> tuple[str | None, str | None]:
     text = path.read_text(encoding="utf-8")
-    primitive = re.search(r'<meta name="spellbook-primitive" content="([^"]+)">', text)
-    source = re.search(r'<meta name="spellbook-source" content="([^"]+)">', text)
+    primitive = re.search(r'<meta name="harness-kit-primitive" content="([^"]+)">', text)
+    source = re.search(r'<meta name="harness-kit-source" content="([^"]+)">', text)
     return (
         primitive.group(1) if primitive else None,
         source.group(1) if source else None,
@@ -258,8 +258,8 @@ def self_test() -> None:
         page = sorted((base / "reference/skills").glob("*.html"))[0]
         text = page.read_text(encoding="utf-8")
         text = re.sub(
-            r'<meta name="spellbook-source" content="[^"]+">',
-            '<meta name="spellbook-source" content="missing/source.md">',
+            r'<meta name="harness-kit-source" content="[^"]+">',
+            '<meta name="harness-kit-source" content="missing/source.md">',
             text,
             count=1,
         )

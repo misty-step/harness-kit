@@ -38,7 +38,7 @@ and a grader that can be rerun after edits or model upgrades.
 Frontier agent teams treat evals as the mechanism that turns prompt and harness
 changes from vibes into engineering. The useful eval unit is not just final
 text: it includes the task, transcript/trajectory, final outcome, and graders.
-For Spellbook, that maps naturally to skill invocation: prompt + repo fixture,
+For Harness Kit, that maps naturally to skill invocation: prompt + repo fixture,
 tool/evidence trace, produced artifact, and pass/fail or rubric grader.
 
 This complements `backlog.d/053-skill-quality-audit-mode.md`: audit reports

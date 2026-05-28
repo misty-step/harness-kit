@@ -3,9 +3,9 @@
   "sha": "f15ac7cd82b437fed20fac6d5de7573dc8376787",
   "env": "prod",
   "target": "github-pages",
-  "app": "misty-step/spellbook",
-  "url": "https://misty-step.github.io/spellbook/",
-  "healthcheck_url": "https://misty-step.github.io/spellbook/",
+  "app": "misty-step/harness-kit",
+  "url": "https://misty-step.github.io/harness-kit/",
+  "healthcheck_url": "https://misty-step.github.io/harness-kit/",
   "deploy_id": "26536812945",
   "rollback_handle": "git revert f15ac7cd82b437fed20fac6d5de7573dc8376787",
   "status": "healthy",
@@ -14,9 +14,9 @@
   "duration_seconds": 12,
   "operator": "misty-step",
   "evidence": {
-    "workflow_url": "https://github.com/misty-step/spellbook/actions/runs/26536812945",
-    "live_probe": "curl -I https://misty-step.github.io/spellbook/",
-    "llms_probe": "curl -fsSL https://misty-step.github.io/spellbook/llms.txt",
-    "bootstrap_probe": "curl -fsSL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh"
+    "workflow_url": "https://github.com/misty-step/harness-kit/actions/runs/26536812945",
+    "live_probe": "curl -I https://misty-step.github.io/harness-kit/",
+    "llms_probe": "curl -fsSL https://misty-step.github.io/harness-kit/llms.txt",
+    "bootstrap_probe": "curl -fsSL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh"
   }
 }

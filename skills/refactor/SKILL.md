@@ -20,7 +20,7 @@ then consolidation, then abstraction, then mechanical cleanup.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/refactor` starts by probing the
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/refactor` starts by probing the
 roster and dispatching two or more available roster members before choosing
 or applying a simplification. Use one lane to map complexity and another to
 challenge behavior-preservation risk; add a builder lane for the selected

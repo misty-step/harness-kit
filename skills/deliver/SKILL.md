@@ -30,7 +30,7 @@ decides whether to deploy. Humans merge.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/deliver` begins by probing the roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/deliver` begins by probing the roster
 and requires every substantive phase to show two or more roster-member
 receipts or an explicit exception. `/deliver` remains a composer, not a
 provider scheduler: phase skills dispatch their own lanes, while `/deliver`
@@ -192,7 +192,7 @@ Full receipt schema + state lifecycle: `references/receipt.md`.
 
 State is filesystem-backed and resumable.
 
-- **State root:** `<worktree-root>/.spellbook/deliver/<ulid>/` (gitignored).
+- **State root:** `<worktree-root>/.harness-kit/deliver/<ulid>/` (gitignored).
   Override via `--state-dir <path>` (the outer loop uses this to land state
   under its cycle's evidence tree).
 - **Checkpoint:** after each phase, `state.json` rewritten atomically
@@ -237,7 +237,7 @@ Full protocol: `references/durability.md`.
 - `references/durability.md` — state.json atomic checkpoint protocol,
   `--resume` / `--abandon` semantics, double-invoke
 - `references/evidence.md` — per-phase emission paths, gitignored
-  `.spellbook/deliver/` conventions
+  `.harness-kit/deliver/` conventions
 - `references/branch.md` — branch-naming, HEAD-detection, no-push rule
 - `references/worktree.md` — state-root resolution, concurrent worktrees
 
@@ -247,7 +247,7 @@ Full protocol: `references/durability.md`.
 - Merging — humans merge
 - Multi-ticket operation — one ticket per invocation
 - Claim-based coordination — explicitly dropped
-- Version-controlled evidence — gitignored under `.spellbook/`
+- Version-controlled evidence — gitignored under `.harness-kit/`
 
 ## Related
 

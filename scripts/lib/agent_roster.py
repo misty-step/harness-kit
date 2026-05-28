@@ -506,11 +506,11 @@ def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
     }
 
 
-def system_spellbook_dir() -> Path:
-    configured = os.environ.get("HARNESS_KIT_HOME") or os.environ.get("SPELLBOOK_HOME")
+def system_harness_kit_dir() -> Path:
+    configured = os.environ.get("HARNESS_KIT_HOME")
     if configured:
         return Path(configured).expanduser()
-    return Path.home() / ".spellbook"
+    return Path.home() / ".harness-kit"
 
 
 def resolve_roster_path(
@@ -523,17 +523,15 @@ def resolve_roster_path(
         configured
         or os.environ.get("HARNESS_KIT_ROSTER")
         or os.environ.get("HARNESS_KIT_ROSTER_PATH")
-        or os.environ.get("SPELLBOOK_ROSTER")
-        or os.environ.get("SPELLBOOK_ROSTER_PATH")
     )
     if configured:
         return Path(configured).expanduser()
 
-    local = (repo if repo is not None else repo_root()) / ".spellbook" / "agents.yaml"
+    local = (repo if repo is not None else repo_root()) / ".harness-kit" / "agents.yaml"
     if local.exists():
         return local
 
-    system = (system_home if system_home is not None else system_spellbook_dir()) / "agents.yaml"
+    system = (system_home if system_home is not None else system_harness_kit_dir()) / "agents.yaml"
     if system.exists():
         return system
 
@@ -548,13 +546,11 @@ def default_receipt_path() -> Path:
     configured = (
         os.environ.get("HARNESS_KIT_RECEIPTS")
         or os.environ.get("HARNESS_KIT_RECEIPT_PATH")
-        or os.environ.get("SPELLBOOK_RECEIPTS")
-        or os.environ.get("SPELLBOOK_RECEIPT_PATH")
     )
     if configured:
         return Path(configured).expanduser()
 
-    return repo_root() / ".spellbook" / "traces" / "delegations.jsonl"
+    return repo_root() / ".harness-kit" / "traces" / "delegations.jsonl"
 
 
 def parse_common_args(description: str) -> argparse.ArgumentParser:

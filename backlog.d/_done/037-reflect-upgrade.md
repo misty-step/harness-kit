@@ -109,7 +109,7 @@ rather than fork it.
 - [ ] Backlog mutations land as git commits on the appropriate branch
 - [ ] Harness suggestions land on `harness/auto-tune`, never main
 - [ ] `reflect.done` event carries findings array
-- [ ] Dogfoods: reflect on this spellbook repo's autopilot Phase 1 cycle, produces useful findings
+- [ ] Dogfoods: reflect on this harness-kit repo's autopilot Phase 1 cycle, produces useful findings
 
 ## Non-Goals
 

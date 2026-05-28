@@ -70,7 +70,7 @@ fi
 gate="$(PYTHONPATH="$pythonpath" python3 - <<'PY' "$check_output"
 import sys
 
-from spellbook_ci.heal_support import first_failed_gate
+from harness_kit_ci.heal_support import first_failed_gate
 
 print(first_failed_gate(sys.argv[1]) or "")
 PY
@@ -84,7 +84,7 @@ fi
 branch="$(PYTHONPATH="$pythonpath" python3 - <<'PY' "$gate"
 import sys
 
-from spellbook_ci.heal_support import repair_branch_name
+from harness_kit_ci.heal_support import repair_branch_name
 
 print(repair_branch_name(sys.argv[1]))
 PY
@@ -93,7 +93,7 @@ PY
 commit_message="$(PYTHONPATH="$pythonpath" python3 - <<'PY' "$gate"
 import sys
 
-from spellbook_ci.heal_support import repair_commit_message
+from harness_kit_ci.heal_support import repair_commit_message
 
 print(repair_commit_message(sys.argv[1]))
 PY
@@ -107,7 +107,7 @@ PYTHONPATH="$pythonpath" python3 - <<'PY' "$before_snapshot" > "$stage_plan"
 from pathlib import Path
 import sys
 
-from spellbook_ci.heal_support import snapshot_delta
+from harness_kit_ci.heal_support import snapshot_delta
 
 before = Path(sys.argv[1])
 after = Path(".")

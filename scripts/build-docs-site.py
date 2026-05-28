@@ -245,7 +245,7 @@ def collect_primitives() -> list[Primitive]:
 
 
 def collect_gates() -> list[str]:
-    text = read(ROOT / "ci/src/spellbook_ci/main.py")
+    text = read(ROOT / "ci/src/harness_kit_ci/main.py")
     return sorted(set(re.findall(r'run_gate,\s+"([^"]+)"', text)))
 
 
@@ -559,7 +559,7 @@ def render_governance() -> str:
         <li>Receipts show which providers ran and what the lead accepted or rejected.</li>
         <li>The docs avoid claims that Harness Kit provides RBAC, spend controls, procurement workflows, or incident dashboards.</li>
       </ul>
-      <p class="source">Sources: {source_link('.spellbook/agents.yaml', current)}, {source_link('docs/positioning.md', current)}</p>
+      <p class="source">Sources: {source_link('.harness-kit/agents.yaml', current)}, {source_link('docs/positioning.md', current)}</p>
     </section>
 """
     return page_shell("Governance", current, body)
@@ -636,7 +636,7 @@ def render_primitive(primitive: Primitive) -> str:
 """
     return page_shell(f"{primitive.kind.title()}: {primitive.name}", current, body).replace(
         "<meta name=\"generator\"",
-        f"<meta name=\"spellbook-primitive\" content=\"{primitive.ident}\">\n  <meta name=\"spellbook-source\" content=\"{primitive.source}\">\n  <meta name=\"generator\"",
+        f"<meta name=\"harness-kit-primitive\" content=\"{primitive.ident}\">\n  <meta name=\"harness-kit-source\" content=\"{primitive.source}\">\n  <meta name=\"generator\"",
     )
 
 
@@ -647,12 +647,12 @@ def render_gates(gates: list[str]) -> str:
       {icon_svg('verify', current)}
       <p class="eyebrow">Reference</p>
       <h1>CI gate map</h1>
-      <p class="lede">The repo's load-bearing verification is Dagger. These gates are extracted from ci/src/spellbook_ci/main.py.</p>
+      <p class="lede">The repo's load-bearing verification is Dagger. These gates are extracted from ci/src/harness_kit_ci/main.py.</p>
     </section>
     <section class="grid three">
       {''.join(card(gate, GATE_DESCRIPTIONS.get(gate, 'Runs as part of dagger call check --source=.'), icon='verify', current=current) for gate in gates)}
     </section>
-    <p class="source">Source: {source_link('ci/src/spellbook_ci/main.py', current)}</p>
+    <p class="source">Source: {source_link('ci/src/harness_kit_ci/main.py', current)}</p>
 """
     return page_shell("CI Gates", current, body)
 
@@ -674,13 +674,13 @@ def render_bootstrap() -> str:
       </div>
       <div class="quicksteps">
         <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
-        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script through the legacy raw URL until the repo rename lands.</p></article>
+        <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script from the Harness Kit repository.</p></article>
         <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Harness Kit skills after install.</p></article>
       </div>
     </section>
     <section class="grid two">
       {card('System install', 'Installs first-party skills and agents into supported local harnesses.', icon='build', current=current)}
-      {card('Stable checkout', 'Prefers a stable checkout over temporary worktrees unless HARNESS_KIT_DIR or legacy SPELLBOOK_DIR is set.', icon='operate', current=current)}
+      {card('Stable checkout', 'Prefers a stable checkout over temporary worktrees unless HARNESS_KIT_DIR is set.', icon='operate', current=current)}
       {card('Roster config', 'Keeps external provider definitions available system-wide.', icon='catalog', current=current)}
       {card('Source cleanliness', 'Does not recreate source-repo .agents/.codex/.claude/.pi skill bridges.', icon='verify', current=current)}
     </section>

@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "spellbook_ci"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "harness_kit_ci"))
 
 from heal_support import (  # noqa: E402
     HEALABLE_GATES,

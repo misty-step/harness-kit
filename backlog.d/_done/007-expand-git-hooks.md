@@ -23,7 +23,7 @@ Add git hooks that enforce quality at commit/push time, replacing Claude-specifi
 - Don't duplicate what Dagger already checks
 
 ## Oracle
-- [x] `git commit` in spellbook repo regenerates index.yaml automatically — .githooks/pre-commit
+- [x] `git commit` in harness-kit repo regenerates index.yaml automatically — .githooks/pre-commit
 - [x] `git push` runs Dagger CI gates via pre-push hook — .githooks/pre-push
 - [x] bootstrap.sh ensures core.hooksPath is set to .githooks/
 - ~~`git push origin master` blocked~~ — dropped per user preference (not needed)

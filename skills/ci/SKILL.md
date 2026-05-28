@@ -34,7 +34,7 @@ not address review comments (→ `/settle`), does not ship.
 
 1. **Audit before run.** A weak pipeline passing is worse than a strong
    one failing. Inventory coverage before trusting green.
-   When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), probe the roster and dispatch two
+   When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), probe the roster and dispatch two
    or more available roster members for CI-audit, red-gate investigation,
    or weak-coverage analysis before changing gate policy. `/ci` remains the
    canonical gate owner and `dagger call check` remains the proof.
@@ -63,7 +63,7 @@ not address review comments (→ `/settle`), does not ship.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), the lead agent uses two or more roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), the lead agent uses two or more roster
 lanes for audit, failure diagnosis, and gate-strengthening judgment. The lead
 gives each lane scoped commands, failing output, and relevant config, then
 records the lane evidence in receipts before deciding. The lead may run exact

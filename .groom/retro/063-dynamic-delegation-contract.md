@@ -6,7 +6,7 @@ Branch: `deliver/063-dynamic-delegation-contract`
 
 ## Shipped
 
-Spellbook now makes roster-backed delegation an explicit workflow-skill
+Harness Kit now makes roster-backed delegation an explicit workflow-skill
 contract. The shipped change strengthened `scripts/check-agent-roster.py`,
 added runtime references for Claude Code, Codex, Antigravity CLI, and Pi, and
 updated the core workflow skills so the lead agent owns orchestration,

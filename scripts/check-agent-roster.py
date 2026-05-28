@@ -90,7 +90,7 @@ def validate_delegation_floor() -> None:
         lowered_section = section.lower()
         has_roster_contract = (
             "provider roster is available" in section
-            or ".spellbook/agents.yaml" in section
+            or ".harness-kit/agents.yaml" in section
         )
         missing_requirements = [
             name
@@ -207,8 +207,8 @@ def validate_no_source_skill_bridges() -> None:
 
 
 def main() -> int:
-    roster_path = Path(".spellbook/agents.yaml")
-    fixture_path = Path(".spellbook/examples/delegation-receipt.jsonl")
+    roster_path = Path(".harness-kit/agents.yaml")
+    fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
     gitignore_path = Path(".gitignore")
     summary_script = Path("scripts/summarize-delegations.py")
 
@@ -236,14 +236,14 @@ def main() -> int:
         raise SystemExit(f"{summary_script}: roster report helper failed{suffix}")
 
     gitignore = gitignore_path.read_text()
-    if ".spellbook/traces/*.jsonl" not in gitignore:
+    if ".harness-kit/traces/*.jsonl" not in gitignore:
         raise SystemExit(".gitignore must ignore runtime delegation JSONL traces")
 
     forbidden_dirs = [
-        ".spellbook/auth",
-        ".spellbook/sessions",
-        ".spellbook/provider-sessions",
-        ".spellbook/raw-transcripts",
+        ".harness-kit/auth",
+        ".harness-kit/sessions",
+        ".harness-kit/provider-sessions",
+        ".harness-kit/raw-transcripts",
     ]
     present = [path for path in forbidden_dirs if Path(path).exists()]
     if present:

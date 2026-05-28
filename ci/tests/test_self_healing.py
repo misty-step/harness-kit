@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "spellbook_ci"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "harness_kit_ci"))
 
 from heal_support import snapshot_delta  # noqa: E402
 

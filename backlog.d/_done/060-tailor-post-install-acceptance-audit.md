@@ -8,7 +8,7 @@ Shipped: 2026-05-21
 ## Problem
 
 `/tailor` can produce a structurally valid harness that is still not bespoke.
-The Spellbook self-tailor run exposed the failure mode: green deterministic
+The Harness Kit self-tailor run exposed the failure mode: green deterministic
 checks missed stale gate counts, hardcoded checkout paths, missing
 always-install `/trace`, deploy-lifecycle leakage, stale repo-brief debt, and
 workflow skills that were effectively copied instead of rewritten.
@@ -39,14 +39,14 @@ Add `skills/tailor/scripts/collect-post-tailor-evidence.py`.
 Inputs:
 
 - target repo root
-- resolved Spellbook root
+- resolved Harness Kit root
 - shared skill root (`.agent/skills` or `.agents/skills`)
 - installed agent root
 - repo brief path
 
 Output:
 
-- `.spellbook/tailor/audit/<run-id>/evidence.json`
+- `.harness-kit/tailor/audit/<run-id>/evidence.json`
 - optional sibling artifacts such as `diffs/*.diff`, `grep/*.txt`,
   `readlinks.txt`
 
@@ -54,7 +54,7 @@ The collector has no semantic verdict. It exits nonzero only when it cannot
 collect evidence. It records objective facts:
 
 - installed skills, categories, markers, source names, and byte identity
-  against Spellbook sources
+  against Harness Kit sources
 - always-install presence, including `/trace`
 - per-harness bridge topology and broken symlinks
 - external-skill symlink targets plus sibling markers
@@ -82,11 +82,11 @@ future state.
 After evidence collection, `/tailor` dispatches a mandatory acceptance critic
 with:
 
-- `.spellbook/repo-brief.md`
+- `.harness-kit/repo-brief.md`
 - `AGENTS.md`
 - the evidence packet and artifact directory
 - rewritten workflow `SKILL.md` files
-- source Spellbook workflow paths for comparison
+- source Harness Kit workflow paths for comparison
 - the planner's install/rewrite brief when available
 
 The critic reviews the installed harness as a set. It returns:
@@ -98,7 +98,7 @@ The critic reviews the installed harness as a set. It returns:
     {
       "kind": "depth | cohesion | contract | install | stale-context",
       "path": ".agents/skills/monitor/SKILL.md",
-      "evidence_ref": ".spellbook/tailor/audit/<run-id>/grep/lifecycle.txt",
+      "evidence_ref": ".harness-kit/tailor/audit/<run-id>/grep/lifecycle.txt",
       "finding": "Monitor still treats /deploy receipts as the primary input despite repo brief saying no deploy target.",
       "repair": "Rewrite monitor around CI, index drift, skill eval drift, bootstrap/symlink drift, and agent-session audit trails."
     }
@@ -109,7 +109,7 @@ The critic reviews the installed harness as a set. It returns:
 ```
 
 Persist that judgment to
-`.spellbook/tailor/audit/<run-id>/verdict.json`. This is a run receipt, not a
+`.harness-kit/tailor/audit/<run-id>/verdict.json`. This is a run receipt, not a
 future ownership manifest. It records only the reviewer decision, blockers,
 evidence refs, repair directives, residual risk, and reviewer identities. A
 rerun creates a new audit directory; it does not mutate prior verdicts.
@@ -153,7 +153,7 @@ prompts. They should not remain as free-floating orchestration prose.
 - [ ] Critic output is pass/fail with blocking findings, evidence refs, and
       repair directives; no numeric score or deterministic semantic threshold.
 - [ ] Critic output is persisted to
-      `.spellbook/tailor/audit/<run-id>/verdict.json`; `/tailor audit` reruns
+      `.harness-kit/tailor/audit/<run-id>/verdict.json`; `/tailor audit` reruns
       create a new audit directory instead of mutating old verdicts.
 - [ ] A fixture or eval case with stale gate count, hardcoded user path, missing
       `/trace`, deploy lifecycle leakage, stale debt map, and byte-identical

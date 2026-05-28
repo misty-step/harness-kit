@@ -3,7 +3,7 @@
 Last researched: 2026-05-26.
 
 Use this when choosing complementary open-weight provider defaults for
-Spellbook roster lanes such as Pi and OpenCode. Treat this as an operating
+Harness Kit roster lanes such as Pi and OpenCode. Treat this as an operating
 snapshot, not a permanent ranking. Re-check model lists and live smokes before
 changing defaults.
 
@@ -90,7 +90,7 @@ Source: https://openrouter.ai/qwen/qwen3.5-397b-a17b
 as released 2026-04-07 with 203K context and describes 8+ hour autonomous
 coding-task capability. Keep it in the candidate pool, but do not make it a
 default until we have provider-specific tool-call smokes and at least one real
-Spellbook task comparison.
+Harness Kit task comparison.
 
 Use for: long-running coding/autonomy trials and model-diversity experiments.
 
@@ -103,6 +103,6 @@ Source: https://openrouter.ai/z-ai/glm-5.1
 - Re-check provider model lists before each default change. Model family names
   drift faster than harness docs.
 - A model-list hit is not enough. Required evidence is a live CLI smoke using
-  the exact roster command and at least one real Spellbook task before promotion.
-- Record default changes in `.spellbook/agents.yaml`, the relevant harness
+  the exact roster command and at least one real Harness Kit task before promotion.
+- Record default changes in `.harness-kit/agents.yaml`, the relevant harness
   config, local config if needed, and this note.

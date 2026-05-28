@@ -39,7 +39,7 @@ gathering to focused subagents in parallel.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/groom` starts by probing the roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/groom` starts by probing the roster
 and dispatching two or more available roster members for investigation before
 the lead mutates backlog state or recommends priorities. Use lanes for
 backlog drift, premise challenge, technical hotspots, product opportunity,

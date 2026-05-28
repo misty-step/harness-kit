@@ -6,7 +6,7 @@ Estimate: S
 
 ## Goal
 
-Re-examine Spellbook's software-development lifecycle map and verify that the
+Re-examine Harness Kit's software-development lifecycle map and verify that the
 workflow skills are split at the right boundaries. The audit should identify
 over-split phases, underrepresented phases, and cross-cutting responsibilities
 that should be carried by existing skills instead of becoming new skills.
@@ -27,7 +27,7 @@ that should be carried by existing skills instead of becoming new skills.
       whether the boundary is too broad, too narrow, or right-sized.
 - [ ] Explicitly evaluate whether instrument/observe belongs in `/implement`,
       `/qa`, `/monitor`, `/seed`, a new skill, or a shared contract.
-- [ ] Compare the audit against at least one real shipped Spellbook cycle and
+- [ ] Compare the audit against at least one real shipped Harness Kit cycle and
       one downstream app repo cycle.
 - [ ] Emit at most three follow-up backlog items, each with an oracle.
 - [ ] `dagger call check --source=.` passes if any skill docs change.

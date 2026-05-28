@@ -257,7 +257,7 @@ Build and maintain the infrastructure that makes agents effective.
 | Evaluate a skill (baseline comparison) | `references/mode-eval.md` |
 | Lint/validate a skill against quality gates | `references/mode-lint.md` |
 | Convert agent ↔ skill | `references/mode-convert.md` |
-| Sync primitives from spellbook to project | `references/mode-sync.md` |
+| Sync primitives from harness-kit to project | `references/mode-sync.md` |
 | Design harness improvements | `references/mode-engineer.md` |
 | Audit skill health and usage | `references/mode-audit.md` |
 
@@ -487,7 +487,7 @@ Reference-backed modes (heading + 1-2 line redirect to references/) don't count.
 | skills/harness/references/mode-lint.md | ~60 | Extracted from SKILL.md: quality gates table + new mode-bloat gate |
 | skills/harness/references/mode-eval.md | ~40 | Extracted from SKILL.md: baseline comparison protocol |
 | skills/harness/references/mode-convert.md | ~40 | Extracted from SKILL.md: agent→skill and skill→agent conversion |
-| skills/harness/references/mode-sync.md | ~30 | Extracted from SKILL.md: sync protocol, .spellbook marker |
+| skills/harness/references/mode-sync.md | ~30 | Extracted from SKILL.md: sync protocol, .harness-kit marker |
 | skills/harness/references/mode-engineer.md | ~80 | Extracted from SKILL.md: codification hierarchy, Norman principle, Dagger, hooks, AGENTS.md, stress-test, thin harness |
 | skills/harness/references/mode-audit.md | ~80 | New: skill health assessment from invocation data |
 | skills/qa/references/scaffold.md | 225 | Moved from harness, renamed |

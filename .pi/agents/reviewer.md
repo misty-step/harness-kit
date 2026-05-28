@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: spellbook review specialist for correctness, quality gates, and long-term maintainability
+description: harness-kit review specialist for correctness, quality gates, and long-term maintainability
 tools: read, grep, find, ls, bash
 ---
 

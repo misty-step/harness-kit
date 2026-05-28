@@ -39,11 +39,11 @@ Derived from /groom session 2026-04-23 processing agent-guidance clippings. Must
 
 ### Framing correction
 
-Initial research recommendation was "compress 400 → 150 lines." That target was imported from AuggieBench's measurement of repo-specific AGENTS.md files guiding agents inside a single project. Spellbook's `harnesses/shared/AGENTS.md` is a different animal — the global default brain symlinked into every harness, always loaded, everywhere. Length isn't the problem. Signposting and layer separation are. The load-bearing win isn't fewer tokens; it's that a model reading it knows *which kind of thing* it's reading and which layer a new principle belongs to.
+Initial research recommendation was "compress 400 → 150 lines." That target was imported from AuggieBench's measurement of repo-specific AGENTS.md files guiding agents inside a single project. Harness Kit's `harnesses/shared/AGENTS.md` is a different animal — the global default brain symlinked into every harness, always loaded, everywhere. Length isn't the problem. Signposting and layer separation are. The load-bearing win isn't fewer tokens; it's that a model reading it knows *which kind of thing* it's reading and which layer a new principle belongs to.
 
 ### Axe-sharpening exemption
 
-Infra:feature ratio as an axe-sharpening signal doesn't apply to spellbook — spellbook IS the axe, so harness work is feature work. The real validation metric is downstream: does the system-wide harness produce better agent behavior in real repos without bespoke generated scaffolding? This restructure is the proving ground for that hypothesis.
+Infra:feature ratio as an axe-sharpening signal doesn't apply to harness-kit — harness-kit IS the axe, so harness work is feature work. The real validation metric is downstream: does the system-wide harness produce better agent behavior in real repos without bespoke generated scaffolding? This restructure is the proving ground for that hypothesis.
 
 ### What Layer 3 routing tables actually look like
 

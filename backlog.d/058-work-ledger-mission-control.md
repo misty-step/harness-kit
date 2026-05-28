@@ -19,7 +19,7 @@ evidence, open blockers, spawned agents, and next action.
 
 ## Oracle
 
-- [ ] A simple ledger format exists under `.spellbook/work/` or
+- [ ] A simple ledger format exists under `.harness-kit/work/` or
       `.evidence/_work/` with one JSONL record per phase transition.
 - [ ] `/deliver`, `/ship`, `/qa`, `/demo`, `/code-review`, `/monitor`, and
       `/reflect` each name the ledger event they emit or consume.
@@ -34,7 +34,7 @@ evidence, open blockers, spawned agents, and next action.
 
 Sophisticated agent workflows are converging on a mission-control shape: many
 agents may work in parallel, but humans need one compact surface to steer,
-pause, resume, audit, and communicate status. Spellbook already has most of the
+pause, resume, audit, and communicate status. Harness Kit already has most of the
 pieces (`backlog.d/`, `.evidence/`, verdict refs, reflect outputs). The missing
 piece is a tiny ledger that ties them together without turning the repo into a
 platform.

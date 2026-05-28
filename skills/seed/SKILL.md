@@ -18,7 +18,7 @@ copies for offline work, review, or repository-specific persistence.
 
 ## What to do
 
-1. Find `$HARNESS_KIT_ROOT`: `readlink -f` this SKILL.md, walk up until you
+1. Find the Harness Kit root: `readlink -f` this SKILL.md, walk up until you
    see `skills/` + `agents/` + `harnesses/`.
 
 2. Resolve the repo-local **shared skill root**. Use `.agents/skills/`.
@@ -27,7 +27,7 @@ copies for offline work, review, or repository-specific persistence.
    Harness Kit skills; `.claude/skills/`, `.codex/skills/`, and `.pi/skills/`
    are bridges.
 
-3. Copy every skill in `$HARNESS_KIT_ROOT/skills/` into the shared skill root,
+3. Copy every skill in `<harness-kit-root>/skills/` into the shared skill root,
    preserving each skill's full directory (`references/`, `scripts/`,
    `evals/`, everything). Skip `seed` itself; it lives globally.
 
@@ -35,20 +35,19 @@ copies for offline work, review, or repository-specific persistence.
    `.pi/skills/<name>` point at each shared skill when those harness dirs
    exist. Do not duplicate skill contents into harness-specific dirs.
 
-5. Copy every agent in `$HARNESS_KIT_ROOT/agents/` into the repo's existing
+5. Copy every agent in `<harness-kit-root>/agents/` into the repo's existing
    agent directory. In most repos today that is `.claude/agents/`.
    Do not invent a second copy of agents unless the repo already has
    a documented shared-agent convention.
 
-6. Copy `$HARNESS_KIT_ROOT/harnesses/shared/AGENTS.md` to `./AGENTS.md`
+6. Copy `<harness-kit-root>/harnesses/shared/AGENTS.md` to `./AGENTS.md`
    only if one doesn't already exist.
 
 7. Print what you installed.
 
 ## Invariants
 
-- Never modify `$HARNESS_KIT_ROOT` or `~/.claude` / `~/.codex` / `~/.pi`.
-  `$SPELLBOOK` remains a legacy alias in older checkouts.
+- Never modify the Harness Kit root or `~/.claude` / `~/.codex` / `~/.pi`.
   Writes only to the current repo.
 - Shared skill root first. Harness Kit-distributed skills live in the
   repo-local shared skill layer; `.claude/skills/` is only a bridge.

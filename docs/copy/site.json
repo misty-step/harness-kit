@@ -111,7 +111,7 @@
       "lede": "Install the global harness, open this companion, then use the operating loop from a real repo.",
       "steps": [
         {
-          "command": "curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash",
+          "command": "curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash",
           "detail": "Fresh machines can install from GitHub; local checkouts can run ./bootstrap.sh directly.",
           "label": "Install the harness"
         },

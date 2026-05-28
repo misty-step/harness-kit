@@ -17,7 +17,7 @@ results, fix blockers, loop until clean.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/code-review` starts by probing the
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/code-review` starts by probing the
 roster and dispatching two or more non-lead roster members for independent adversarial review lanes calibrated to what would embarrass us in production, not every nit.
 The internal philosophy bench and Thinktank are additive; they do not replace the roster floor.
 Give reviewers the diff, acceptance criteria, and risk lens, not the author's reasoning; the lead accepts, rejects, or downgrades findings as evidence.
@@ -44,7 +44,7 @@ Reviewer output is not automatic veto. The lead verifies fixes, records receipts
    |------|------|-----|
    | Internal bench | 3-5 Explore sub-agents with philosophy lenses | Agent tool, tailored prompts |
    | Thinktank review | 10 agents, 8 model providers | `thinktank review` CLI. See `references/thinktank-review.md` |
-   | Cross-harness | Two or more available non-lead providers from `.spellbook/agents.yaml` | See `references/cross-harness.md` |
+   | Cross-harness | Two or more available non-lead providers from `.harness-kit/agents.yaml` | See `references/cross-harness.md` |
 
    Thinktank-specific rule: wait for the process to exit, or for
    `trace/summary.json` to reach `complete` or `degraded` with a
@@ -196,7 +196,7 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
   gets new commits after review, the verdict is stale and `/settle` will re-trigger review.
 - Verdict refs live under `refs/verdicts/<branch>` and sync via `git push/fetch`.
 - Also write a copy to `.evidence/<branch>/<date>/verdict.json` for browsability.
-- The escape hatch (`SPELLBOOK_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook, `/settle --land`), never inside `/code-review`.
+- The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook, `/settle --land`), never inside `/code-review`.
 
 Skip this step if `scripts/lib/verdicts.sh` does not exist in the target project
 (Harness Kit-only feature, not expected in downstream repos).

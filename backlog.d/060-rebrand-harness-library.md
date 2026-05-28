@@ -7,7 +7,7 @@ Estimate: M
 ## Goal
 
 Choose and execute a new name for this repo before the next architecture pass
-lands. The current "Spellbook" name still points at a fantasy metaphor and at
+lands. The current "Harness Kit" name still points at a fantasy metaphor and at
 static catalogs of spells/agents. The project is becoming a practical shared
 harness library: skills, repo guidance, projections, and bootstrap support for multiple
 agent runtimes.
@@ -18,7 +18,7 @@ The rebrand should make that product shape obvious.
 
 - Do not change the architecture while renaming. This ticket is naming,
   repository identity, docs, command names, package names, and public wording.
-- Do not rename every internal `.spellbook/` state path until the replacement
+- Do not rename every internal `.harness-kit/` state path until the replacement
   name is chosen and migration compatibility is specified.
 - Do not pick a clever name that obscures the tool's job. Prefer practical,
   harness-oriented language over metaphor.
@@ -30,9 +30,9 @@ The rebrand should make that product shape obvious.
       notes. The rationale explicitly says why it fits a shared harness repo.
 - [ ] `README.md`, `project.md`, `AGENTS.md`, `CLAUDE.md`, `bootstrap.sh`,
       `registry.yaml`, `index.yaml`, and active skill descriptions no longer
-      present "Spellbook" as the product name, except in compatibility notes.
+      present "Harness Kit" as the product name, except in compatibility notes.
 - [ ] The bootstrap entrypoint preserves a compatibility path for the old repo
-      checkout and any existing `.spellbook/` local state.
+      checkout and any existing `.harness-kit/` local state.
 - [ ] The repo identity, package names, generated index headers, hook messages,
       and Dagger module names are renamed or explicitly deferred with a tracked
       migration reason.
@@ -45,7 +45,7 @@ The rebrand should make that product shape obvious.
 ### Why this is first
 
 Naming is now blocking architecture. If we keep landing new work under
-"Spellbook," every new file bakes in the old metaphor and makes the eventual
+"Harness Kit," every new file bakes in the old metaphor and makes the eventual
 rename larger. The highest-leverage first move is to choose the product identity
 that matches the actual direction: a shared harness primitive library.
 
@@ -60,6 +60,6 @@ that matches the actual direction: a shared harness primitive library.
 
 ### Compatibility contract
 
-Keep `.spellbook/` as the legacy state directory until a later migration ticket
+Keep `.harness-kit/` as the legacy state directory until a later migration ticket
 proves it can be renamed without breaking existing repos. The product can
 rebrand before local state paths do.

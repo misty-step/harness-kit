@@ -6,7 +6,7 @@ Estimate: M
 
 ## Goal
 
-Add new Dagger gates to `ci/src/spellbook_ci/main.py` that replace Claude hook enforcement with harness-agnostic checks. Each gate fires once per `dagger call check`, works across all harnesses and human workflows.
+Add new Dagger gates to `ci/src/harness_kit_ci/main.py` that replace Claude hook enforcement with harness-agnostic checks. Each gate fires once per `dagger call check`, works across all harnesses and human workflows.
 
 ## Non-Goals
 - Don't make gates fail by default — warn first, repos escalate to hard failure
@@ -24,13 +24,13 @@ Replaces `exclusion-guard.py`. Scans for `@ts-ignore`, `eslint-disable`, `.skip`
 Replaces `env-var-newline-guard.py`. Scans for `echo ... | ... env add/set` patterns that corrupt secrets with trailing newlines.
 
 ### check-complexity-budget (optional, repos opt in)
-Reads `.spellbook.yaml` complexity thresholds. Measures LOC per file, nesting depth. Warns on overages.
+Reads `.harness-kit.yaml` complexity thresholds. Measures LOC per file, nesting depth. Warns on overages.
 
 ## Oracle
 - [x] `dagger call check` runs all new gates alongside existing 7 — 9 gates total, 0 failures
 - [x] New gates discover files from filesystem (not hardcoded lists) — glob-based discovery
 - [x] Each gate fails on findings (upgraded from warn — enforcement is the point)
-- [x] Running `dagger call check` on spellbook repo catches exclusion patterns if present
+- [x] Running `dagger call check` on harness-kit repo catches exclusion patterns if present
 
 ## What Was Built
 

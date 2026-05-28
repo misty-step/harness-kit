@@ -42,7 +42,7 @@ problems (→ `/investigate`), does not rollback (→ caller decides).
 /monitor <deploy-receipt-ref> [--grace <duration>]
     │
     ▼
-  1. Load signal config (.spellbook/monitor.yaml or defaults)
+  1. Load signal config (.harness-kit/monitor.yaml or defaults)
     │
     ▼
   2. Establish baseline: healthcheck 200, error rate, latency p99
@@ -59,14 +59,14 @@ problems (→ `/investigate`), does not rollback (→ caller decides).
 ## Repo-Local Config
 
 ```yaml
-# .spellbook/monitor.yaml
+# .harness-kit/monitor.yaml
 healthcheck:
-  url: https://spellbook.fly.dev/health
+  url: https://harness-kit.fly.dev/health
   expected_status: 200
 signals:
   - name: error_rate
     source: datadog
-    query: "sum:errors{service:spellbook}.as_rate()"
+    query: "sum:errors{service:harness-kit}.as_rate()"
     threshold: "> 0.01"
   - name: latency_p99
     source: grafana

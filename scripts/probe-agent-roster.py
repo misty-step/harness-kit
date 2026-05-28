@@ -26,7 +26,7 @@ def main() -> int:
     parser.add_argument("--path-env", default=None)
     parser.add_argument("--lead-harness", default="unknown")
     parser.add_argument("--lead-provider", default="unknown")
-    parser.add_argument("--input-ref", default=".spellbook/agents.yaml")
+    parser.add_argument("--input-ref", default=".harness-kit/agents.yaml")
     parser.add_argument("--objective", default="probe agent-provider roster")
     parser.add_argument("--backlog-ref", default="")
     args = parser.parse_args()

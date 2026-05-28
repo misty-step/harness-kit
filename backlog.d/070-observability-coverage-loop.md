@@ -6,7 +6,7 @@ Estimate: M
 
 ## Goal
 
-Make observability coverage a first-class Spellbook health surface across
+Make observability coverage a first-class Harness Kit health surface across
 product and non-product repos. A repo should be able to answer: what behavior
 changed, what telemetry or evidence would reveal whether it is working, and
 which important paths are still invisible to agents and operators?
@@ -23,19 +23,19 @@ which important paths are still invisible to agents and operators?
 - [ ] Define an observability coverage report shape covering runtime telemetry,
       product analytics, agent traces, workflow receipts, command evidence,
       benchmark outputs, and release smoke artifacts.
-- [ ] Extend `.spellbook/monitor.yaml` schema planning so repos can declare
+- [ ] Extend `.harness-kit/monitor.yaml` schema planning so repos can declare
       non-healthcheck signal sources such as delegation receipts, workflow
       events, evidence directories, local logs, and analytics coverage files.
 - [ ] Teach `/monitor` and `/seed` to name a repo's dominant observability
       surfaces in repo-local config or vendored monitor guidance.
 - [ ] Teach `/qa` or `/implement` to flag newly changed behavior with no
       observable signal as instrumentation debt.
-- [ ] Provide one product-repo example and one Spellbook/library example.
+- [ ] Provide one product-repo example and one Harness Kit/library example.
 - [ ] `dagger call check --source=.` passes.
 
 ## Notes
 
 The n2parko-style nightly analytics scanner is the app-specific case. The
-Spellbook-general version is broader: maximize useful context for future
+Harness Kit-general version is broader: maximize useful context for future
 agents through logs, traces, receipts, evidence, and coverage reports while
 preserving privacy and thin-harness boundaries.

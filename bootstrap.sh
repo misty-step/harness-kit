@@ -9,10 +9,9 @@ set -euo pipefail
 #
 # Local mode is preferred. Remote is the fallback for fresh machines.
 #
-# Run: curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
+# Run: curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 
 REPO="${HARNESS_KIT_REPO:-misty-step/harness-kit}"
-LEGACY_REPO="misty-step/spellbook"
 RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_TMP=""
@@ -45,22 +44,13 @@ resolve_harness_kit_dir() {
     return 0
   fi
 
-  if [ -n "${SPELLBOOK_DIR:-}" ] && is_harness_kit_checkout "$SPELLBOOK_DIR"; then
-    printf '%s\n' "$SPELLBOOK_DIR"
-    return 0
-  fi
-
   local candidate
   if is_worktree_checkout "$SCRIPT_DIR"; then
     for candidate in \
       "$HOME/Development/harness-kit" \
       "$HOME/dev/harness-kit" \
       "$HOME/src/harness-kit" \
-      "$HOME/code/harness-kit" \
-      "$HOME/Development/spellbook" \
-      "$HOME/dev/spellbook" \
-      "$HOME/src/spellbook" \
-      "$HOME/code/spellbook"
+      "$HOME/code/harness-kit"
     do
       if is_harness_kit_checkout "$candidate"; then
         printf '%s\n' "$candidate"
@@ -78,11 +68,7 @@ resolve_harness_kit_dir() {
     "$HOME/Development/harness-kit" \
     "$HOME/dev/harness-kit" \
     "$HOME/src/harness-kit" \
-    "$HOME/code/harness-kit" \
-    "$HOME/Development/spellbook" \
-    "$HOME/dev/spellbook" \
-    "$HOME/src/spellbook" \
-    "$HOME/code/spellbook"
+    "$HOME/code/harness-kit"
   do
     if is_harness_kit_checkout "$candidate"; then
       printf '%s\n' "$candidate"
@@ -302,12 +288,12 @@ install_system_file() {
 
 install_system_roster() {
   local source_root="${HARNESS_KIT:-$REMOTE_HARNESS_KIT}"
-  local system_dir="$HOME/.spellbook"
+  local system_dir="$HOME/.harness-kit"
 
   info "Installing system roster..."
-  install_system_file "$source_root/.spellbook/agents.yaml" \
+  install_system_file "$source_root/.harness-kit/agents.yaml" \
     "$system_dir/agents.yaml" "agents.yaml"
-  install_system_file "$source_root/.spellbook/examples" \
+  install_system_file "$source_root/.harness-kit/examples" \
     "$system_dir/examples" "examples/"
   install_system_file "$source_root/scripts/probe-agent-roster.py" \
     "$system_dir/scripts/probe-agent-roster.py" "scripts/probe-agent-roster.py"
@@ -395,13 +381,8 @@ download_archive() {
 discover_remote() {
   REMOTE_TMP="$(mktemp -d)"
   local archive="$REMOTE_TMP/harness-kit.tar.gz"
-  local repo="$REPO"
-  if ! download_archive "$repo" "$archive" "$REMOTE_TMP"; then
-    warn "Failed to download $repo archive; trying legacy $LEGACY_REPO"
-    repo="$LEGACY_REPO"
-    download_archive "$repo" "$archive" "$REMOTE_TMP" \
-      || { err "Failed to download Harness Kit archive"; exit 1; }
-  fi
+  download_archive "$REPO" "$archive" "$REMOTE_TMP" \
+    || { err "Failed to download Harness Kit archive from $REPO"; exit 1; }
 
   local extracted
   extracted="$(find "$REMOTE_TMP" -maxdepth 1 -type d -name '*-master' | head -n 1)"
@@ -426,8 +407,6 @@ discover_remote() {
 }
 
 HARNESS_KIT="$(resolve_harness_kit_dir || true)"
-# Legacy alias used by existing downstream hook snippets and old user shells.
-SPELLBOOK="$HARNESS_KIT"
 
 if [ -n "$HARNESS_KIT" ]; then
   discover_local

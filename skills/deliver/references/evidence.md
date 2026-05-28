@@ -21,14 +21,14 @@ never writes evidence itself, only records pointers in the receipt.
 - No LFS pointers for QA artifacts
 - No committed screenshots, videos, or test transcripts
 
-Review transcripts and CI logs live under `.spellbook/deliver/` which is
+Review transcripts and CI logs live under `.harness-kit/deliver/` which is
 gitignored wholesale. Demo artifacts live on GitHub releases.
 
 ## Gitignore Convention
 
-`.spellbook/` is gitignored repo-wide. `/deliver` state (`state.json`,
+`.harness-kit/` is gitignored repo-wide. `/deliver` state (`state.json`,
 `receipt.json`, `review/`, `ci/`) lands under
-`.spellbook/deliver/<ulid>/`. Demo artifacts land on GitHub releases.
+`.harness-kit/deliver/<ulid>/`. Demo artifacts land on GitHub releases.
 
 Nothing `/deliver` or its phase skills emit should be tracked by git.
 If a phase emits something that should be permanent (commit-worthy

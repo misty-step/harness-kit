@@ -37,8 +37,8 @@
       "title": "AGENTS.md three-layer restructure + routing tables"
     },
     {
-      "source": "backlog.d/052-spellbook-config-contract.md",
-      "title": "`.spellbook/*.yaml` repo-local config contract for `/flywheel`"
+      "source": "backlog.d/052-harness-kit-config-contract.md",
+      "title": "`.harness-kit/*.yaml` repo-local config contract for `/flywheel`"
     },
     {
       "source": "backlog.d/053-skill-quality-audit-mode.md",
@@ -154,7 +154,7 @@
       "lede": "Install the global harness, open this companion, then use the operating loop from a real repo.",
       "steps": [
         {
-          "command": "curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash",
+          "command": "curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash",
           "detail": "Fresh machines can install from GitHub; local checkouts can run ./bootstrap.sh directly.",
           "label": "Install the harness"
         },

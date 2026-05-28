@@ -20,7 +20,7 @@ from the registry alone.
 
 ## Why Now
 
-`registry.yaml` has existed since early Spellbook but only feeds
+`registry.yaml` has existed since early Harness Kit but only feeds
 embeddings. External skills (e.g. `agent-browser`) get manually copied
 into `skills/`, drift from upstream, and pollute `index.yaml`. The first
 incident (agent-browser → index drift breaking CI on `feat/iterate-mvp-phase1`)
@@ -48,7 +48,7 @@ Defer (curation cost > value):
   mixed quality. If adopted, pick a subset via `include:`; do not
   wholesale-ingest.
 - **`garrytan/gstack`** — heavy install (Bun, setup script),
-  non-standard layout, namespace overlap with existing Spellbook skills
+  non-standard layout, namespace overlap with existing Harness Kit skills
   (`qa`, `investigate`, `review`, `ship`, `retro`). Cherry-pick
   individual SKILL.md files via `include:` if desired; don't install
   the whole kit.

@@ -61,7 +61,7 @@ Codex 0.122.0 then falls back to global config and proceeds, so the
 error is soft — but it surfaces on every invocation and blocks
 worktree / session setup UX for operators who treat errors as
 blocking. Confirmed on canary (commit `9bdc962`, `.codex/config.toml`)
-and spellbook (own `.codex/config.toml`). Both were emitted by
+and harness-kit (own `.codex/config.toml`). Both were emitted by
 `/tailor` and have since been hand-patched. This ticket prevents the
 next tailored repo from re-introducing it.
 
@@ -116,5 +116,5 @@ Ships whenever `/tailor` is next touched; high priority because every
 re-tailored repo re-introduces the bug until this lands.
 
 Source: `/diagnose` session on canary 2026-04-23; reproduced against
-spellbook from the same root cause. Both repos hand-patched; skill
+harness-kit from the same root cause. Both repos hand-patched; skill
 not yet updated.

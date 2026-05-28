@@ -19,7 +19,7 @@ The Conviction tailor PR review found several generated-artifact defects:
 
 - `code-review` bench-map references `a11y-auditor`, but the tailored repo did
   not install `.claude/agents/a11y-auditor.md`.
-- Bench-map documentation still pointed at `spellbook/agents/` even though the
+- Bench-map documentation still pointed at `harness-kit/agents/` even though the
   generated repo's callable agent root is `.claude/agents/`.
 - `deliver/references/branch.md` documented `<type>/<slug>` even when the
   tailored repo contract requires `<type>/<id>-<slug>`.
@@ -30,9 +30,9 @@ The Conviction tailor PR review found several generated-artifact defects:
 
 ## Non-Goals
 
-- Do not make every Spellbook agent globally installed in every target repo.
+- Do not make every Harness Kit agent globally installed in every target repo.
 - Do not hand-edit historical audit artifacts as the durable fix.
-- Do not add target-repo-specific doctrine to Spellbook source files.
+- Do not add target-repo-specific doctrine to Harness Kit source files.
 
 ## Oracle
 
@@ -41,7 +41,7 @@ The Conviction tailor PR review found several generated-artifact defects:
 - [ ] If a generated bench-map rule references `a11y-auditor`, the target repo
       has a callable `a11y-auditor` agent or the rule is omitted.
 - [ ] Generated bench-map documentation names the target repo's callable agent
-      root, not Spellbook's source `agents/` directory.
+      root, not Harness Kit's source `agents/` directory.
 - [ ] Generated deliver branch documentation uses the target repo's branch
       contract, including item id plus slug when that is the repo convention.
 - [ ] Generated gate evidence labels public placeholder env values as

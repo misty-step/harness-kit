@@ -17,14 +17,14 @@ argument-hint: "[distill|calibrate|coach|tune-repo|append|cycle] [context]"
 
 Structured reflection that improves both the harness and the operator.
 
-If a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), include `.spellbook/traces/` delegation
+If a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), include `.harness-kit/traces/` delegation
 receipts in the evidence set when they are relevant. Reflection should convert
 provider-lane results and failure modes into backlog, harness, or coaching
 outputs without inventing hidden rankings.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/reflect` uses two or more roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/reflect` uses two or more roster
 members for substantive postmortem, coaching, or harness-tuning analysis.
 Use lanes to surface independent failure interpretations and improvement
 proposals. Give lanes scoped session context, receipts, changed files, and
@@ -158,7 +158,7 @@ so the caller can apply them under different policies.
 3. **Cycle summary** (human-readable narrative). What shipped, what was
    learned, what went well, what went poorly. Also written to the
    standard retro location (`.groom/retro/<primary-id>.md` or the
-   `.spellbook/reflect/<cycle-id>/` receipts dir, matching whatever
+   `.harness-kit/reflect/<cycle-id>/` receipts dir, matching whatever
    convention the invoking repo already uses).
 
 ### Invariants

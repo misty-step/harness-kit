@@ -7,14 +7,14 @@ Depends on: 067-positioning-boundary-for-client-facing-packages.md
 
 ## Goal
 
-Create a static HTML documentation companion for Spellbook that makes the
+Create a static HTML documentation companion for Harness Kit that makes the
 catalog usable by people who do not already speak AI-ops or harness
 engineering. The unit is a docs site plus build-time catalog checks: it
-indexes every local skill and agent, explains what Spellbook is from zero
+indexes every local skill and agent, explains what Harness Kit is from zero
 to one, and walks through concrete workflow examples that clients can read
 without opening the repo.
 
-This is public-facing packaging for Spellbook as implementation
+This is public-facing packaging for Harness Kit as implementation
 infrastructure, not a replacement for the repo or a Brandt-specific handoff
 package.
 
@@ -22,13 +22,13 @@ The unit is deliberately narrow: a static docs companion and deterministic
 docs checks. It is not a client onboarding product, enterprise admin surface,
 or governed-workflow package. `067-positioning-boundary-for-client-facing-
 packages.md` should land first or in the same branch so the public site cannot
-accidentally imply that Spellbook itself provides RBAC, spend governance,
+accidentally imply that Harness Kit itself provides RBAC, spend governance,
 procurement-ready onboarding, or an incident dashboard.
 
 ## Problem Challenge
 
 The first-order request sounds like "make docs," but the underlying
-failure mode is buyer and operator translation. Spellbook already has a
+failure mode is buyer and operator translation. Harness Kit already has a
 rich catalog, gates, doctrine, and workflow loops; the missing layer is a
 clean explanation surface that turns those internals into:
 
@@ -102,7 +102,7 @@ Failure mode: drifts from source of truth, becomes a sales site instead of
 the durable documentation companion.
 
 Chosen: Option B. It teaches first, indexes second, and keeps the catalog
-source-derived so Spellbook does not inherit a second manual content system.
+source-derived so Harness Kit does not inherit a second manual content system.
 
 ### Option D: Boundary-first docs slice
 
@@ -128,20 +128,20 @@ and enough generated catalog machinery to prevent drift.
    stable across repeated builds from the same checkout.
 3. Add a catalog extraction step that reads canonical repo sources:
    `skills/*/SKILL.md`, `agents/*.md`, `index.yaml`,
-   `harnesses/shared/AGENTS.md`, `ci/src/spellbook_ci/main.py`,
+   `harnesses/shared/AGENTS.md`, `ci/src/harness_kit_ci/main.py`,
    `.githooks/*`, `bootstrap.sh`, and open `backlog.d` items.
 4. Render generated reference pages for every skill and agent:
    purpose, trigger, when to use, inputs/outputs where present, related
    workflows, source path, and expected evidence.
 5. Hand-author the teaching spine using a Diataxis-shaped IA:
-   - Spellbook in 60 seconds
+   - Harness Kit in 60 seconds
    - What is a harness?
    - Skills, agents, gates, traces, oracles, and workflows
    - From messy workflow to governed AI operation
    - Inner loop: `/shape` -> `/deliver` -> `/ci` -> `/qa`
    - Outer loop: `/flywheel` -> `/monitor` -> `/reflect`
    - Governance: evals, approvals, observability, safety boundaries
-   - Positioning boundary: what Spellbook is and is not
+   - Positioning boundary: what Harness Kit is and is not
 6. Include example workflows as first-class pages, not buried snippets:
    - "Choose the first workflow worth automating"
    - "Turn a raw idea into a shaped ticket"
@@ -154,7 +154,7 @@ and enough generated catalog machinery to prevent drift.
 8. Add visual polish appropriate for a public technical docs site:
    restrained layout, excellent typography, high-contrast diagrams,
    simple interactive filters, and workflow cards. Avoid marketing-page
-   hero bloat; the first screen should immediately explain Spellbook.
+   hero bloat; the first screen should immediately explain Harness Kit.
 9. Include an AI/agent-readable surface such as `llms.txt` or a compact
    generated manifest so coding agents can consume the docs without
    scraping the whole site.
@@ -163,7 +163,7 @@ and enough generated catalog machinery to prevent drift.
 
 Top-level sections:
 
-1. `Start` — one-sentence positioning, "Spellbook in 60 seconds", and the
+1. `Start` — one-sentence positioning, "Harness Kit in 60 seconds", and the
    zero-to-one path for a reader who does not know AI ops.
 2. `Concepts` — harness, skill, agent, gate, oracle, trace, roster, workflow.
 3. `Workflows` — five concrete walkthroughs with expected inputs, decisions,
@@ -171,7 +171,7 @@ Top-level sections:
 4. `Reference` — generated skill and agent pages, CI gate map, bootstrap
    behavior, and cross-harness notes.
 5. `Governance` — evals, traces, approvals, least-privilege tool boundaries,
-   rollback, escalation, and what Spellbook does not provide.
+   rollback, escalation, and what Harness Kit does not provide.
 
 Every concept and workflow page should end with a short "what to verify"
 checklist and links to the source files that make the claim true.
@@ -184,7 +184,7 @@ Likely files:
 - `scripts/build-docs-site.py`
 - `scripts/check-docs-site.sh`
 - `docs/site/**` generated static output
-- `ci/src/spellbook_ci/main.py` for `check-docs-site`
+- `ci/src/harness_kit_ci/main.py` for `check-docs-site`
 - Optional: a one-line README pointer to the generated docs command
 
 The implementation should avoid adding package-manager state just to build
@@ -195,7 +195,7 @@ sources.
 ## Cross-Harness
 
 The docs site is not a harness-native runtime feature. It documents the
-filesystem-level Spellbook catalog and must explain Claude, Codex, and Pi
+filesystem-level Harness Kit catalog and must explain Claude, Codex, and Pi
 behavior from one source. Generated pages should explicitly show when a
 primitive is universal versus when a harness-specific setting affects how
 it is installed or invoked.
@@ -220,7 +220,7 @@ remain canonical.
       link fixture.
 - [ ] The site includes at least five workflow walkthroughs listed in the
       design section.
-- [ ] A non-specialist first-run path explains Spellbook, harnesses,
+- [ ] A non-specialist first-run path explains Harness Kit, harnesses,
       skills, agents, and gates without requiring prior AI-ops vocabulary.
 - [ ] The site includes a governance section covering evals, traces,
       approvals, least-privilege tool boundaries, and rollback/escalation.
@@ -228,7 +228,7 @@ remain canonical.
       Daybook prose verbatim.
 - [ ] The docs site includes a generated `llms.txt` or equivalent compact
       agent-readable manifest.
-- [ ] `ci/src/spellbook_ci/main.py` includes the docs check in
+- [ ] `ci/src/harness_kit_ci/main.py` includes the docs check in
       `dagger call check --source=.`.
 - [ ] `dagger call check --source=.` passes after adding the site and any
       new docs checks.
@@ -245,7 +245,7 @@ remain canonical.
 - No JS framework, bundler, package manager, or design-system dependency unless
   the implementer proves the static generator cannot meet the oracle.
 - No manually maintained duplicate reference pages for skills or agents.
-- No claim that Spellbook provides enterprise RBAC, spend controls,
+- No claim that Harness Kit provides enterprise RBAC, spend controls,
   procurement workflows, or incident dashboards.
 
 ## Related

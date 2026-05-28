@@ -7,13 +7,13 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 # --- /deliver state protection: block manual commits of agent-written files ---
-# state.json and receipt.json under .spellbook/deliver/<ulid>/ are rewritten by
+# state.json and receipt.json under .harness-kit/deliver/<ulid>/ are rewritten by
 # /deliver itself and gitignored by default. If they appear in a commit, the
 # user has either force-added them or bypassed the ignore. Almost always a
 # mistake; surface loudly.
 deliver_state_hits="$(
   git diff --cached --name-only --diff-filter=ACM |
-    grep -E '^\.spellbook/deliver/.+/(state|receipt)\.json$' || true
+    grep -E '^\.harness-kit/deliver/.+/(state|receipt)\.json$' || true
 )"
 if [ -n "$deliver_state_hits" ]; then
   echo "[pre-commit] ERROR: refusing to commit agent-written /deliver state files:" >&2
@@ -35,7 +35,7 @@ skill_changed() {
 }
 
 docs_input_changed() {
-  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md|AGENTS\.md|harnesses/shared/AGENTS\.md|docs/copy/|docs/positioning\.md|backlog\.d/.*\.md|bootstrap\.sh|ci/src/spellbook_ci/main\.py|scripts/build-docs-site\.py|scripts/check-docs-site\.py)$'
+  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md|AGENTS\.md|harnesses/shared/AGENTS\.md|docs/copy/|docs/positioning\.md|backlog\.d/.*\.md|bootstrap\.sh|ci/src/harness_kit_ci/main\.py|scripts/build-docs-site\.py|scripts/check-docs-site\.py)$'
 }
 
 changed=0

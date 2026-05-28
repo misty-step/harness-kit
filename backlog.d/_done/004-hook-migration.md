@@ -42,7 +42,7 @@ Claude hooks are Claude-Code-specific, fire per tool use (expensive at agent vel
 | time-context.py | SessionStart | **keep** | ✅ harness-specific context injection |
 
 ## Oracle
-- [x] All "Dagger gate" hooks have equivalent checks in `ci/src/spellbook_ci/main.py`
+- [x] All "Dagger gate" hooks have equivalent checks in `ci/src/harness_kit_ci/main.py`
 - [x] All "skill instruction" hooks have their guidance in the relevant SKILL.md or AGENTS.md
 - [x] All "drop" hooks are removed from settings.json
 - [x] `dagger call check` catches everything the old hooks caught

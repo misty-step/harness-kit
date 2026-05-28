@@ -14,18 +14,13 @@ clients, departments, procurement, security reviewers, or executives.
 # Bootstrap (one-time per machine)
 # Installs all first-party skills and the provider roster system-wide; symlinks
 # if a local checkout exists, downloads from GitHub otherwise
-curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
+curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
-
-The raw install URL keeps the legacy `spellbook` repository path until the
-GitHub repo is renamed. The product name is Harness Kit; see
-[`docs/rebrand.md`](docs/rebrand.md) for the compatibility plan.
 
 If you're running bootstrap from a temporary git worktree, it now prefers a
 stable checkout like `~/Development/harness-kit` automatically. To intentionally
 point your harnesses at a specific checkout, set
-`HARNESS_KIT_DIR=/path/to/harness-kit`. `SPELLBOOK_DIR` remains a legacy alias
-for existing checkouts.
+`HARNESS_KIT_DIR=/path/to/harness-kit`.
 
 ## Core Workflow Skills
 

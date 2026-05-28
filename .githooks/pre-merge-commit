@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Verdict gate for non-fast-forward merges.
 # Blocks merge commits unless a valid review verdict exists for the topic branch.
-# Escape hatch: SPELLBOOK_NO_REVIEW=1
+# Escape hatch: HARNESS_KIT_NO_REVIEW=1
 set -euo pipefail
 
 repo_root="$(git rev-parse --show-toplevel)"
 
-if [ "${SPELLBOOK_NO_REVIEW:-}" = "1" ]; then
-  echo "pre-merge-commit: bypassing verdict gate (SPELLBOOK_NO_REVIEW=1)" >&2
+if [ "${HARNESS_KIT_NO_REVIEW:-}" = "1" ]; then
+  echo "pre-merge-commit: bypassing verdict gate (HARNESS_KIT_NO_REVIEW=1)" >&2
   exit 0
 fi
 
@@ -47,7 +47,7 @@ verdict_check_landable "$branch" || rc=$?
 if [ "$rc" -eq 1 ]; then
   echo "pre-merge-commit: no valid verdict for '$branch'." >&2
   echo "  Run /code-review first, or bypass with:" >&2
-  echo "  SPELLBOOK_NO_REVIEW=1 git merge --no-ff \"$branch\"" >&2
+  echo "  HARNESS_KIT_NO_REVIEW=1 git merge --no-ff \"$branch\"" >&2
   exit 1
 elif [ "$rc" -eq 2 ]; then
   echo "pre-merge-commit: verdict is 'dont-ship' for '$branch'." >&2

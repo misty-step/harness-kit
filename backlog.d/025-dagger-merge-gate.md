@@ -16,7 +16,7 @@ A merge to master should be impossible without passing `dagger call check`.
 
 ## Design
 
-For solo/small-team (Spellbook's current reality):
+For solo/small-team (Harness Kit's current reality):
 - Pre-merge git hook runs `dagger call check` before allowing merge to master
 - `/land` command (from 021) enforces this as part of its workflow
 - No GitHub Actions needed — enforcement is local + git hooks

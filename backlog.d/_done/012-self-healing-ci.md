@@ -34,12 +34,12 @@ When `dagger call check` fails, auto-spawn a builder sub-agent to diagnose and f
 
 ## What Was Built
 
-- `ci/src/spellbook_ci/main.py` — Added `heal()` to the Dagger module. It:
+- `ci/src/harness_kit_ci/main.py` — Added `heal()` to the Dagger module. It:
   reads the aggregated `check()` summary, selects exactly one healable lint-style
   failure, creates a writable repair container, prompts Dagger LLM with the actual
   failing gate output, verifies the targeted gate plus full `check()`, and returns
   the repaired repo directory for host-side export.
-- `ci/src/spellbook_ci/heal_support.py` — Pure helpers for parsing failed gates,
+- `ci/src/harness_kit_ci/heal_support.py` — Pure helpers for parsing failed gates,
   enforcing the one-gate-at-a-time contract, generating repair metadata, and
   computing the delta between pre/post-heal worktree snapshots.
 - `ci/tests/test_heal_support.py` and `ci/tests/test_self_healing.py` — Unit tests

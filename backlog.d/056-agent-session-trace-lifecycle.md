@@ -26,7 +26,7 @@ demo artifact, and shipped change.
       a unit of work: backlog/spec ID, branch, commits, reviewer verdicts,
       QA evidence, demo artifact, and transcript refs.
 - [ ] The primitive supports at least one durable attachment mechanism
-      that does not rewrite history: Git notes, a `.spellbook/traces/`
+      that does not rewrite history: Git notes, a `.harness-kit/traces/`
       JSONL index, PR body links, or another explicitly named store.
 - [ ] `/ship` requires a final work record linking the shipped commit to
       the trace artifact or records why no transcript was available.
@@ -45,7 +45,7 @@ records decisions, corrections, failed hypotheses, tool evidence, and
 review context that explain how the work arrived there.
 
 The storage contract should be boring and local-first. A minimal viable
-shape is a small JSONL record under `.spellbook/traces/` plus optional
+shape is a small JSONL record under `.harness-kit/traces/` plus optional
 Git notes on the landing commit. The JSONL record can point at external
 transcript exports when a harness provides them, without making that
 harness the primary architecture.

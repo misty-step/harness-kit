@@ -33,7 +33,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 class RosterValidationTests(unittest.TestCase):
     def test_committed_roster_declares_required_providers(self) -> None:
-        roster = load_roster(REPO_ROOT / ".spellbook/agents.yaml")
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
 
         validate_roster(roster)
 
@@ -42,7 +42,7 @@ class RosterValidationTests(unittest.TestCase):
         self.assertEqual(roster["providers"]["manual"]["kind"], "manual")
 
     def test_agy_print_flag_is_last_before_prompt(self) -> None:
-        roster = load_roster(REPO_ROOT / ".spellbook/agents.yaml")
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
 
         for field in ("dispatch", "smoke"):
             parts = shlex.split(roster["providers"]["agy"][field])
@@ -80,7 +80,7 @@ class RosterValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             repo = root / "repo"
-            system_home = root / "system-spellbook"
+            system_home = root / "system-harness-kit"
             repo.mkdir()
             system_home.mkdir()
             system_roster = system_home / "agents.yaml"
@@ -95,8 +95,8 @@ class RosterValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             repo = root / "repo"
-            system_home = root / "system-spellbook"
-            local_dir = repo / ".spellbook"
+            system_home = root / "system-harness-kit"
+            local_dir = repo / ".harness-kit"
             local_dir.mkdir(parents=True)
             system_home.mkdir()
             local_roster = local_dir / "agents.yaml"
@@ -126,7 +126,7 @@ class RosterValidationTests(unittest.TestCase):
 
 class ReceiptTests(unittest.TestCase):
     def test_builds_valid_unavailable_probe_receipts_for_empty_path(self) -> None:
-        roster = load_roster(REPO_ROOT / ".spellbook/agents.yaml")
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
 
         receipts = build_probe_receipts(
             roster,
@@ -183,7 +183,7 @@ class ReceiptTests(unittest.TestCase):
                 path_env=str(bin_dir),
                 lead_harness="codex",
                 lead_provider="codex",
-                input_ref=".spellbook/agents.yaml",
+                input_ref=".harness-kit/agents.yaml",
                 objective="probe fixture",
             )
 
@@ -495,13 +495,13 @@ def _pid_exists(pid: int) -> bool:
 
 class FixtureSyntaxTests(unittest.TestCase):
     def test_receipt_fixture_is_valid_jsonl(self) -> None:
-        fixture = REPO_ROOT / ".spellbook/examples/delegation-receipt.jsonl"
+        fixture = REPO_ROOT / ".harness-kit/examples/delegation-receipt.jsonl"
 
         for line in fixture.read_text().splitlines():
             validate_receipt(json.loads(line))
 
     def test_roster_yaml_is_plain_mapping(self) -> None:
-        data = yaml.safe_load((REPO_ROOT / ".spellbook/agents.yaml").read_text())
+        data = yaml.safe_load((REPO_ROOT / ".harness-kit/agents.yaml").read_text())
 
         self.assertIsInstance(data, dict)
         self.assertIn("providers", data)

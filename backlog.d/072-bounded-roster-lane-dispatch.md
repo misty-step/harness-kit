@@ -18,7 +18,7 @@ of raw transcripts.
 ## Design
 
 1. Add a reusable dispatch helper in `scripts/lib/agent_roster.py`.
-   - Load the provider command from `.spellbook/agents.yaml`.
+   - Load the provider command from `.harness-kit/agents.yaml`.
    - Refuse manual or unavailable providers.
    - Run with `start_new_session=True` so timeout cleanup can kill the whole
      process group, not just the parent PID.
@@ -40,7 +40,7 @@ of raw transcripts.
 
 The mechanism is filesystem and CLI based. Claude Code, Codex, Pi, and other
 harnesses can call the same `scripts/dispatch-agent.py` from any repo using
-Spellbook. It records the same `.spellbook/traces/delegations.jsonl` receipts
+Harness Kit. It records the same `.harness-kit/traces/delegations.jsonl` receipts
 that `probe-agent-roster.py` and `record-delegation.py` already use.
 
 ## Oracle
@@ -59,7 +59,7 @@ that `probe-agent-roster.py` and `record-delegation.py` already use.
 - Do not build a provider scheduler, retry engine, ranking system, or semantic
   workflow DSL.
 - Do not commit transcripts; runtime traces stay ignored under
-  `.spellbook/traces/`.
+  `.harness-kit/traces/`.
 - Do not change provider defaults or model choices.
 - Do not solve provider auth or entitlement failures.
 

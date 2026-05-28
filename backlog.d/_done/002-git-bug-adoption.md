@@ -67,7 +67,7 @@ atomic claims so two agents never work the same issue.
 ## 2026-04-22 — retirement
 
 git-bug was retired because the tooling was installed but never seeded — zero
-`refs/bugs/*` across spellbook and all downstream repos. The CLI shipped, the
+`refs/bugs/*` across harness-kit and all downstream repos. The CLI shipped, the
 adoption loop didn't. `backlog.d/` is now the single-tier source of truth for
 shaped work.
 

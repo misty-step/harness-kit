@@ -31,8 +31,8 @@ can be inspected. If rendering is impossible, mark the design unverified.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system
-`~/.spellbook/agents.yaml`), use two or more roster members for substantive
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system
+`~/.harness-kit/agents.yaml`), use two or more roster members for substantive
 redesign, external-facing polish, or final critique of visible UI changes. Use
 one lane for proposed direction or implementation and another for cold review.
 Direct lead-only design work is limited to mechanical capture, emergency

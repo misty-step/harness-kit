@@ -38,7 +38,7 @@ One command. Executive authority. No approval gates.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/yeet` uses two or more roster members
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/yeet` uses two or more roster members
 for substantive worktree classification, commit-boundary design, or risky
 cleanup decisions. Use lanes for diff classification and risk review; give
 them scoped status, diff, and backlog context while withholding final commit

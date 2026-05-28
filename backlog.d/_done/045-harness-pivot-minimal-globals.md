@@ -8,14 +8,14 @@ Supersedes: 029 (MVP redesigned), 043 (`/tailor-skills` deleted)
 
 ## What changed
 
-Spellbook's distribution model flipped from "install the full catalog
+Harness Kit's distribution model flipped from "install the full catalog
 globally, allow per-project filters" to "install nearly nothing
 globally, let per-repo skills populate `.claude/` on demand."
 
 **Before the pivot:**
 
 - `~/.claude/skills/` held 80+ symlinks (first-party + externals).
-- `/tailor-skills` wrote a per-project `.spellbook.yaml` allowlist.
+- `/tailor-skills` wrote a per-project `.harness-kit.yaml` allowlist.
 - `bootstrap.sh` re-ran and filtered `~/.claude/skills/` globally,
   meaning the last-pruned repo silently dictated skill availability
   in every OTHER repo.
@@ -32,14 +32,14 @@ globally, let per-repo skills populate `.claude/` on demand."
   fit.
 - `/tailor` is a natural-language skill (~85 lines, no state machine,
   no killswitch). Explores the repo, reads prior session history,
-  browses spellbook, picks relevant primitives, copies them into
+  browses harness-kit, picks relevant primitives, copies them into
   `.claude/skills/` and `.claude/agents/`, specializes where
   concrete, writes `AGENTS.md` and `settings.local.json`.
-- `/seed` is a new ~35-line skill. Dumb copy of most spellbook
+- `/seed` is a new ~35-line skill. Dumb copy of most harness-kit
   primitives into the current repo. For when you want something
   working fast and will curate by hand.
 - `bootstrap.sh` hard-codes `GLOBAL_SKILLS=(tailor seed)`. The
-  allowlist parser, `SPELLBOOK_TEST_MODE` probe, and
+  allowlist parser, `HARNESS_KIT_TEST_MODE` probe, and
   `EXTERNAL_SKILLS[]` machinery are gone.
 - A/B killswitch (`tailor-ab-spike.sh`, `tailor-ab.sh`) and
   pre-commit lint (`tailor-lint.sh`) deleted. Replaced by agent
@@ -70,7 +70,7 @@ on next bootstrap. Repos that already had `.claude/skills/` content
 (e.g., via prior `/qa scaffold`) are unaffected. Repos without
 `.claude/` get nothing until the user runs `/seed` or `/tailor`.
 
-Stale `.spellbook.yaml` files in existing repos are now no-ops — safe
+Stale `.harness-kit.yaml` files in existing repos are now no-ops — safe
 to delete.
 
 ## References

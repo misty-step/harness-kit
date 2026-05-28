@@ -22,7 +22,7 @@ receipt.
   of assumptions.
 - Give scoped paths, expected output, and explicit boundaries because open-model
   lanes can drift when the prompt is loose.
-- Keep provider/model defaults in `.spellbook/agents.yaml`; do not bake them
+- Keep provider/model defaults in `.harness-kit/agents.yaml`; do not bake them
   into workflow skills.
 - The lead verifies Pi output against files, commands, tests, and receipts
   before accepting it.

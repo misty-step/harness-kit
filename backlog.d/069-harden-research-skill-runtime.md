@@ -10,7 +10,7 @@ Make `/research` resilient under normal runtime faults: concurrent cache
 writes, hung providers, optional synthesis failures, and empty dedupe results.
 
 The Conviction repo-local harness review surfaced `skills/research/` defects
-that are upstream Spellbook defects because target repos consume the canonical
+that are upstream Harness Kit defects because target repos consume the canonical
 `skills/research/` implementation.
 
 ## Non-Goals
@@ -39,5 +39,5 @@ that are upstream Spellbook defects because target repos consume the canonical
 ## Notes
 
 Downstream repos should not patch vendored TypeScript copies. The canonical
-runtime behavior belongs in Spellbook's `skills/research/` source and its Bun
+runtime behavior belongs in Harness Kit's `skills/research/` source and its Bun
 test suite.

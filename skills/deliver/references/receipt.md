@@ -6,11 +6,11 @@ no heuristic sniffing.
 
 ## Path
 
-- Default: `<worktree-root>/.spellbook/deliver/<ulid>/receipt.json`
+- Default: `<worktree-root>/.harness-kit/deliver/<ulid>/receipt.json`
 - Override: `--state-dir <path>` (outer loop uses
   `backlog.d/_cycles/<ulid>/evidence/deliver/`)
 
-The entire `.spellbook/` tree is gitignored.
+The entire `.harness-kit/` tree is gitignored.
 
 ## Schema
 

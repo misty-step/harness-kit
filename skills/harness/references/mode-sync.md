@@ -1,14 +1,14 @@
 # /harness sync
 
-Pull primitives from spellbook into project-local harness directories.
+Pull primitives from harness-kit into project-local harness directories.
 
 ## How it works
 
-Reads `.spellbook.yaml`, pulls declared skills/agents from GitHub into
-project-local harness directories. When a local spellbook checkout exists,
+Reads `.harness-kit.yaml`, pulls declared skills/agents from GitHub into
+project-local harness directories. When a local harness-kit checkout exists,
 uses symlinks instead (edits propagate instantly).
 
 ## Marker file convention
 
-Managed primitives have a `.spellbook` marker file.
+Managed primitives have a `.harness-kit` marker file.
 /harness sync only touches directories with this marker.

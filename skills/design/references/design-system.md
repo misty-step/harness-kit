@@ -5,7 +5,7 @@ theme files, or visual rules that should remain coherent across the product.
 
 ## What Belongs In A Repo Design System
 
-Keep the design system local to the consuming repo. Spellbook provides the
+Keep the design system local to the consuming repo. Harness Kit provides the
 process and checks; the product owns the visual language.
 
 Minimum useful system:

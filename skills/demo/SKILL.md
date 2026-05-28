@@ -63,7 +63,7 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/demo` uses two or more roster members
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/demo` uses two or more roster members
 for substantive artifact planning, capture critique, or external-facing
 release evidence. Use one lane for capture plan and another for cold quality
 review. Give each lane scoped audience, changed behavior, and artifact

@@ -75,7 +75,7 @@ See `harnesses/shared/AGENTS.md` — one file, symlinked to every harness.
 - bootstrap.sh has two modes: symlink (local checkout) and download (remote).
   Test both paths if you change it.
 - If you bootstrap from a temporary worktree, prefer pinning
-  `HARNESS_KIT_DIR` to a stable checkout. `SPELLBOOK_DIR` remains a legacy
+  `HARNESS_KIT_DIR` to a stable checkout. `HARNESS_KIT_DIR` remains a legacy
   alias. Disposable worktree symlinks make global harness skills disappear later.
 - `harnesses/claude/settings.json` is COPIED by bootstrap (Claude modifies it
   at runtime), not symlinked. Changes there need a re-bootstrap to take effect.

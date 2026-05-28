@@ -47,12 +47,12 @@ You are a thin watcher.
 - On clean: emit one `monitor.done` event, exit.
 - Never analyze why a signal tripped. Never attempt remediation.
 - Provider roster lanes are not part of steady-state polling. If a trip needs
-  investigation, hand off to `/diagnose`, which uses `.spellbook/agents.yaml`
+  investigation, hand off to `/diagnose`, which uses `.harness-kit/agents.yaml`
   as its two-or-more roster-member floor.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/monitor` uses two or more roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/monitor` uses two or more roster
 members for substantive incident interpretation, regression analysis, or
 follow-up shaping. Use lanes for signal interpretation and false-positive
 critique; give each lane scoped receipts, logs, health output, and monitor
@@ -71,8 +71,8 @@ noise lives here.
 | Input | Source | Default |
 |-------|--------|---------|
 | deploy receipt ref | positional arg from `/deploy` | optional; when absent, use configured project signals |
-| grace window | `--grace` flag, else `.spellbook/monitor.yaml`, else built-in | 5 minutes |
-| signal config | `.spellbook/monitor.yaml` | repo-specific signal path; absent → healthcheck-only if `$SPELLBOOK_HEALTHCHECK_URL` is set |
+| grace window | `--grace` flag, else `.harness-kit/monitor.yaml`, else built-in | 5 minutes |
+| signal config | `.harness-kit/monitor.yaml` | repo-specific signal path; absent → healthcheck-only if `$HARNESS_KIT_HEALTHCHECK_URL` is set |
 | poll interval | config `poll_interval` | 30 seconds |
 
 ## Contract
@@ -84,7 +84,7 @@ or `monitor.alert` — never both, never zero.
 
 Events extend the `/flywheel` envelope so the outer loop can consume them
 directly. Append to the active cycle's `cycle.jsonl` when running under
-`/flywheel`; otherwise write to `.spellbook/monitor/<ulid>.jsonl`.
+`/flywheel`; otherwise write to `.harness-kit/monitor/<ulid>.jsonl`.
 
 ```json
 {
@@ -155,13 +155,13 @@ Details in `references/grace-window.md`.
 ## Configuration
 
 ```yaml
-# .spellbook/monitor.yaml
+# .harness-kit/monitor.yaml
 grace_window: 5m          # total watch duration
 poll_interval: 30s        # time between polls
 observability:
-  receipts: .spellbook/traces/delegations.jsonl
-  workflow_events: .spellbook/work/*.jsonl
-  evidence_dirs: [".evidence", ".spellbook/monitor"]
+  receipts: .harness-kit/traces/delegations.jsonl
+  workflow_events: .harness-kit/work/*.jsonl
+  evidence_dirs: [".evidence", ".harness-kit/monitor"]
 healthcheck:
   url: https://app.example.com/health
   expected_status: 200
@@ -179,7 +179,7 @@ signals:
 ```
 
 Absent config → healthcheck-only using the deploy receipt's `healthcheck`
-field or `$SPELLBOOK_HEALTHCHECK_URL`. Absent receipt, config, and env
+field or `$HARNESS_KIT_HEALTHCHECK_URL`. Absent receipt, config, and env
 healthcheck → refuse to run, emit `phase.failed` with note
 `monitor: no signal source available`. For repos with a vendored harness, this
 is a harness failure: the local config or skill copy should name at least one
@@ -211,7 +211,7 @@ More in `references/grace-window.md`.
 /monitor [<deploy-receipt-ref>] [--grace <duration>]
     │
     ▼
-  1. Load config (.spellbook/monitor.yaml) or fall back to receipt healthcheck
+  1. Load config (.harness-kit/monitor.yaml) or fall back to receipt healthcheck
   2. Compute deadline = now + grace_window (adjusted for ramp if present)
   3. Poll loop (every poll_interval):
        ├── For each signal: query, compare to threshold, record sample
@@ -233,10 +233,10 @@ More in `references/grace-window.md`.
 /monitor --grace 10m --config /tmp/monitor.yaml
 
 # Smoke test: zero-config, env healthcheck
-SPELLBOOK_HEALTHCHECK_URL=https://app.example.com/health /monitor
+HARNESS_KIT_HEALTHCHECK_URL=https://app.example.com/health /monitor
 
 # Local/library repo: config watches CI or benchmark artifacts
-/monitor --config .spellbook/monitor.yaml
+/monitor --config .harness-kit/monitor.yaml
 ```
 
 ## Gotchas
@@ -267,7 +267,7 @@ SPELLBOOK_HEALTHCHECK_URL=https://app.example.com/health /monitor
   transient. If the host is unreachable two polls in a row you have
   already lost users.
 - **Config changes mid-flight are ignored.** The config loaded at start is
-  the config for the invocation. A repo editing `.spellbook/monitor.yaml`
+  the config for the invocation. A repo editing `.harness-kit/monitor.yaml`
   during a watch does not alter thresholds for the running instance.
 - **Poll interval is a floor.** Slow backends may stretch the actual
   cadence. The grace window is wall-clock, not poll-count.

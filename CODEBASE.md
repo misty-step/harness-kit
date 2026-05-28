@@ -43,7 +43,7 @@ Generated or runtime surfaces are deliberately secondary:
   naming convention; audits must use hidden-aware searches such as
   `rg --hidden -g '!.git/**'`.
 - `.claude/`, `.codex/`, and `.pi/` are runtime bridge directories.
-- `.spellbook/deliver/<ulid>/` is runtime state for `/deliver`; it is
+- `.harness-kit/deliver/<ulid>/` is runtime state for `/deliver`; it is
   agent-written, gitignored, and blocked from forced commits.
 - `skills/.external/` is a local cache populated from `registry.yaml`; it is
   not redistributable source.
@@ -85,15 +85,15 @@ features are wrappers around that layer, not the architecture.
 
 - global skills: every `skills/*/SKILL.md`
 - global agents: every `agents/*.md`
-- global roster: `~/.spellbook/agents.yaml` plus roster helper scripts under
-  `~/.spellbook/scripts/`
+- global roster: `~/.harness-kit/agents.yaml` plus roster helper scripts under
+  `~/.harness-kit/scripts/`
 
 Local bootstrap prefers symlinks to a stable checkout so skill edits propagate
 immediately. Remote bootstrap downloads a GitHub archive and copies full skill
 directories, including references, scripts, and evals. Claude settings are
 copied, not symlinked, because Claude mutates `settings.json` at runtime.
-Roster helpers prefer a repo-local `.spellbook/agents.yaml` when present, then
-fall back to the system `~/.spellbook/agents.yaml` installed by bootstrap.
+Roster helpers prefer a repo-local `.harness-kit/agents.yaml` when present, then
+fall back to the system `~/.harness-kit/agents.yaml` installed by bootstrap.
 
 `/seed` remains as an explicit repo-local vendoring path for projects that need
 checked-in harness state, offline operation, or reviewable local copies. It is
@@ -121,7 +121,7 @@ The load-bearing check is:
 dagger call check --source=.
 ```
 
-The Dagger module in `ci/src/spellbook_ci/main.py` runs 15 gates in parallel:
+The Dagger module in `ci/src/harness_kit_ci/main.py` runs 15 gates in parallel:
 YAML, shell, Python, frontmatter, index drift, vendored copies, Bun tests for
 `skills/research`, exclusion-pattern scans, portable paths, harness-agnostic
 install wording, `/deliver` composition, dropped claim primitives, and skill
@@ -133,11 +133,11 @@ are meant to be diagnosed, not papered over.
 
 Git hooks reinforce the same contracts:
 
-- `pre-commit` regenerates `index.yaml`, blocks `.spellbook/deliver/` state
+- `pre-commit` regenerates `index.yaml`, blocks `.harness-kit/deliver/` state
   commits, and checks harness-agnostic install wording.
 - `pre-push` runs the Dagger check when Dagger and Docker are available.
 - `pre-merge-commit` enforces review verdicts for non-fast-forward merges,
-  with `SPELLBOOK_NO_REVIEW=1` as the explicit escape hatch.
+  with `HARNESS_KIT_NO_REVIEW=1` as the explicit escape hatch.
 - post-commit/post-merge/post-rewrite hooks rerun `bootstrap.sh` when local
   skill or agent changes should propagate.
 
@@ -210,15 +210,14 @@ exercised that exact path.
 For a new machine:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/misty-step/spellbook/master/bootstrap.sh | bash
+curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
 
-The raw URL remains on the legacy GitHub repo path until the repository rename
-lands; `docs/rebrand.md` records that compatibility boundary.
+The raw URL uses the Harness Kit repository path.
 
 Set `HARNESS_KIT_DIR=/path/to/harness-kit` when you want global harness symlinks
 to point at a specific checkout instead of the stable default search path.
-`SPELLBOOK_DIR` remains a legacy alias for old checkouts.
+`HARNESS_KIT_DIR` pins global harness symlinks to a specific checkout.
 
 For a new or existing repo that should consume Harness Kit, bootstrap is normally
 enough. Run `/seed` only when the repo needs checked-in local copies, offline
@@ -246,7 +245,7 @@ The active backlog clusters into five themes.
 
 - `backlog.d/051-agents-md-three-layer-restructure.md`: restructure shared
   AGENTS guidance and routing tables.
-- `backlog.d/052-spellbook-config-contract.md`: define `.spellbook/*.yaml`
+- `backlog.d/052-harness-kit-config-contract.md`: define `.harness-kit/*.yaml`
   config contracts for lifecycle skills.
 - `backlog.d/056-agent-session-trace-lifecycle.md`: preserve agent sessions as
   durable work artifacts.
@@ -285,7 +284,7 @@ The active backlog clusters into five themes.
 
 ## Known Sharp Edges
 
-- `project.md` is older than the current harness pivot. It still references
+- `project.md` predates the current harness pivot. It still references
   `/focus`, collections, and manifest-pull as active architecture. Treat
   `AGENTS.md`, `README.md`, `bootstrap.sh`, and the Dagger module as more
   current.

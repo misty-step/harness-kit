@@ -47,7 +47,7 @@ This is an instruction change, not a code change. The bench personas already exi
 
 ### Why it's worth doing despite being local polish
 
-The groom synthesis flagged this as "local polish only, zero downstream leverage." True — downstream repos don't use spellbook's bench directly. But the bench IS how spellbook validates its own changes. If the bench rationalizes author context, then every skill, every AGENTS.md change, every refactor has weaker review than it should. Compounds.
+The groom synthesis flagged this as "local polish only, zero downstream leverage." True — downstream repos don't use harness-kit's bench directly. But the bench IS how harness-kit validates its own changes. If the bench rationalizes author context, then every skill, every AGENTS.md change, every refactor has weaker review than it should. Compounds.
 
 ### The specific anti-pattern this kills
 

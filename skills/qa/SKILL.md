@@ -67,7 +67,7 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/qa` starts by probing the roster and
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/qa` starts by probing the roster and
 dispatching two or more available roster members for execution and
 adversarial verification before declaring pass/fail. Use one lane to drive
 the running surface and another to attack the evidence, edge cases, and

@@ -3,7 +3,7 @@
 How a repo declares its deploy target to `/deploy`. Two mechanisms,
 one authoritative, the other heuristic.
 
-## Authoritative: `.spellbook/deploy.yaml`
+## Authoritative: `.harness-kit/deploy.yaml`
 
 If present, this file is the single source of truth. `/deploy` will
 not probe further.
@@ -58,12 +58,12 @@ them, never writes them.
 
 ### First-run bootstrap
 
-If `.spellbook/deploy.yaml` is absent and `/deploy` runs interactively
+If `.harness-kit/deploy.yaml` is absent and `/deploy` runs interactively
 (TTY attached):
 
 1. Run detection heuristics (below). If exactly one target is
    plausible, show what was inferred and ask: "Create
-   `.spellbook/deploy.yaml` with target=<X>, app=<Y>? [Y/n]"
+   `.harness-kit/deploy.yaml` with target=<X>, app=<Y>? [Y/n]"
 2. Ask for `healthcheck` URL (required, no default)
 3. Ask for `rollback_grace_seconds` (default 300)
 4. Write the file, commit it in a separate step (skill does not auto-commit)
@@ -79,7 +79,7 @@ Ordered probe. First hit wins. Stop at the first match.
 
 | Priority | Marker                                       | Inferred target |
 |----------|----------------------------------------------|-----------------|
-| 1        | `.spellbook/deploy.yaml`                     | (authoritative) |
+| 1        | `.harness-kit/deploy.yaml`                     | (authoritative) |
 | 2        | `fly.toml`                                   | `fly`           |
 | 3        | `vercel.json` or `.vercel/project.json`      | `vercel`        |
 | 4        | `wrangler.toml` or `wrangler.jsonc`          | `cloudflare`    |
@@ -90,7 +90,7 @@ Ordered probe. First hit wins. Stop at the first match.
 
 Ambiguity rules:
 - Multiple markers (e.g. both `fly.toml` and `vercel.json`) → require
-  `.spellbook/deploy.yaml` to disambiguate. Do not guess.
+  `.harness-kit/deploy.yaml` to disambiguate. Do not guess.
 - `Dockerfile` alone → could be fly, k8s, self-hosted, ECS, Railway,
   Render, etc. Always prompt or require config.
 
@@ -101,11 +101,11 @@ When heuristic detection succeeds:
 - `vercel.json` → parse `name` or use `.vercel/project.json` → `projectId`
 - `wrangler.toml` → parse `name = "..."` field
 - `serverless.yml` → parse `service:` field
-- `k8s` → require `.spellbook/deploy.yaml` (no universal convention)
+- `k8s` → require `.harness-kit/deploy.yaml` (no universal convention)
 
 ### What heuristic detection CANNOT infer
 
-Always require `.spellbook/deploy.yaml` for:
+Always require `.harness-kit/deploy.yaml` for:
 - `healthcheck` URL (platform defaults are insufficient — they often
   return 200 on a root path that does not exercise the deployed code)
 - Multi-env routing (platforms handle envs differently; explicit

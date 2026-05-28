@@ -34,7 +34,7 @@ branch). Optional `--env` (default from repo config). Optional
 
 **Output:** a deploy receipt (schema below) emitted to stdout as JSON
 and appended to the cycle manifest if one exists
-(`.spellbook/cycle-manifest.json`, see `/flywheel`).
+(`.harness-kit/cycle-manifest.json`, see `/flywheel`).
 
 **Stops at:** target reports healthy (platform-native healthcheck OR
 configured `healthcheck` URL returns 2xx within `rollback_grace_seconds`).
@@ -47,11 +47,11 @@ automatically, build artifacts, manage secrets, promote across envs.
 ### 1. Detect target
 
 Check in order and stop at first hit:
-1. `.spellbook/deploy.yaml` → authoritative repo-local config
+1. `.harness-kit/deploy.yaml` → authoritative repo-local config
 2. `fly.toml` → `target: fly`
 3. `vercel.json` or `.vercel/project.json` → `target: vercel`
 4. `wrangler.toml` → `target: cloudflare`
-5. `Dockerfile` + `.spellbook/deploy.yaml` missing → prompt for target
+5. `Dockerfile` + `.harness-kit/deploy.yaml` missing → prompt for target
 6. `serverless.yml` or `sam.yaml` → `target: aws`
 7. None of the above → abort with actionable error pointing to
    `references/repo-config.md`
@@ -110,7 +110,7 @@ command. `/monitor` may trigger rollback as a separate action.
 
 ### 7. Emit receipt
 
-Write JSON to stdout. Append to `.spellbook/cycle-manifest.json` if it
+Write JSON to stdout. Append to `.harness-kit/cycle-manifest.json` if it
 exists (as `deploy_receipts[]`). Also write to
 `.evidence/deploys/<date>/<sha-short>.json` for browsability.
 
@@ -160,7 +160,7 @@ Harness Kit itself has no deploy target (it is a symlinked-into-home
 config repo). If invoked from the Harness Kit repo: emit a clear no-op
 receipt explaining bootstrap.sh is the "deploy" mechanism and exit 0.
 Detection: `git rev-parse --show-toplevel` resolves to a path
-containing `bootstrap.sh` AND `skills/` AND no `.spellbook/deploy.yaml`.
+containing `bootstrap.sh` AND `skills/` AND no `.harness-kit/deploy.yaml`.
 
 ## Gotchas
 
@@ -176,7 +176,7 @@ containing `bootstrap.sh` AND `skills/` AND no `.spellbook/deploy.yaml`.
   wasted deploys and misleading receipts. Do not skip it.
 - **Silent CI bypass:** if `gh` is unavailable, do not silently skip the
   CI-green check — warn loudly and require `--force-no-ci` to proceed.
-- **Secrets in repo-local config:** `.spellbook/deploy.yaml` holds
+- **Secrets in repo-local config:** `.harness-kit/deploy.yaml` holds
   target names, URLs, grace windows — NEVER tokens. If the repo needs
   secrets to deploy, they live in the platform CLI's auth, not here.
 - **Multi-env ambiguity:** if config lists `prod` and `staging` and the

@@ -157,7 +157,7 @@ For full stack walk-throughs per scenario, read `references/stacks.md`.
 - **Browserbase's value is anti-bot + observability, not just hosting.**
   No bot detection + no session replay need = local Chromium is cheaper.
 
-## Existing Spellbook Integrations
+## Existing Harness Kit Integrations
 
 - **Vercel `agent-browser`** registered in `registry.yaml` (pin
   `4cc6ca40`) as `vercel-agent-browser`. Layer 3 default for

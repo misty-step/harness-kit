@@ -10,5 +10,5 @@ bootstrap_relevant_changed() {
 
 bootstrap_relevant_changed || exit 0
 
-echo "[post-commit] Spellbook harness content changed — re-linking"
+echo "[post-commit] Harness Kit harness content changed — re-linking"
 ./bootstrap.sh

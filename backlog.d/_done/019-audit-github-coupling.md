@@ -7,7 +7,7 @@ Estimate: S
 ## Goal
 
 Identify every remaining dependency on GitHub (API, Actions, PR state, releases,
-`gh` CLI calls) across the entire Spellbook codebase and downstream skills.
+`gh` CLI calls) across the entire Harness Kit codebase and downstream skills.
 Produce a concrete removal plan for each dependency.
 
 ## Why

@@ -16,7 +16,7 @@ Review all global skills for repo-specificity. Classify each as: stays global, b
 | agent-readiness | 90% | 10% | Global | Pillar checks are already polyglot (enumerate alternatives per ecosystem). Fixes use runtime detection, not hardcoded tools. Optional config for threshold overrides only. |
 | deps | 95% | 5% | Global | Ecosystem routing via lockfile detection is universal. Reachability analysis and behavioral diff are per-ecosystem, not per-repo. No changes needed. |
 | code-review | 70% | 30% | Global + config | Reviewer bench and synthesis workflow are universal. Live verification trigger patterns (`.tsx`, `pages/`, `routes/`) are Next.js-specific. Config for file patterns and dev command. |
-| settle | 95% | 5% | Global | All three phases (fix, polish, simplify) are universal Git/GitHub mechanics. Only `backlog.d/`/`git-bug` references are spellbook-specific; low severity. No changes needed. |
+| settle | 95% | 5% | Global | All three phases (fix, polish, simplify) are universal Git/GitHub mechanics. Only `backlog.d/`/`git-bug` references are harness-kit-specific; low severity. No changes needed. |
 | autopilot | 60% | 40% | Global + config | Orchestration skeleton is universal. Backlog source (`backlog.d/` vs GitHub Issues vs Linear), CI runner (`dagger` vs `make` vs `npm`), and observability stack (Canary/Sentry/PostHog) are hardcoded. Config for backlog/CI; observability block is the strongest scaffold sub-component candidate. |
 
 ## Key Finding

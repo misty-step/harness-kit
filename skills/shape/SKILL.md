@@ -29,7 +29,7 @@ Accept: raw idea, backlog.d/ item, issue ID, or observation.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/shape` starts by probing the roster
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/shape` starts by probing the roster
 and dispatching two or more available roster members before converging on a
 problem frame or solution. Use one lane to map repo constraints and another
 for prior-art or premise challenge; add more lanes when product, technical,

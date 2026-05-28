@@ -12,15 +12,15 @@ skills/.external/
 
 # /deliver runtime state: per-invocation ULID dirs with state.json, receipt.json,
 # review/, ci/ transcripts. Agent-written, never human-edited, never committed.
-# Narrow pattern: only .spellbook/deliver/, preserving commit-eligible configs
-# like .spellbook/deploy.yaml that other skills (e.g. /deploy) expect in-tree.
-.spellbook/deliver/
+# Narrow pattern: only .harness-kit/deliver/, preserving commit-eligible configs
+# like .harness-kit/deploy.yaml that other skills (e.g. /deploy) expect in-tree.
+.harness-kit/deliver/
 
 # Delegation receipt stream: append-only runtime JSONL written by the lead
 # agent while using the provider roster. Config and examples under
-# .spellbook/ remain commit-eligible.
-.spellbook/traces/*.jsonl
-.spellbook/traces/provider-lanes/
+# .harness-kit/ remain commit-eligible.
+.harness-kit/traces/*.jsonl
+.harness-kit/traces/provider-lanes/
 
 # Provider CLI runtime metadata.
 .antigravitycli/

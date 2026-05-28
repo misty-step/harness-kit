@@ -8,7 +8,7 @@ Shipped: 2026-04-15 (Phase 1 + rename); 2026-04-16 (thin-harness pivot)
 ## What shipped
 
 `/flywheel` exists at `skills/flywheel/SKILL.md` (42 lines) — the
-"thin-harness reference form" cited in `.spellbook/repo-brief.md`. It
+"thin-harness reference form" cited in `.harness-kit/repo-brief.md`. It
 composes `/deliver` → land → `/deploy` → `/monitor` → `/reflect cycle`
 and loops.
 
@@ -76,7 +76,7 @@ contract.
 /flywheel [--max-cycles N] [--budget $X] [--until <pred>] [--unattended]
     │
     ▼
-  acquire <worktree-root>/.spellbook/flywheel.lock
+  acquire <worktree-root>/.harness-kit/flywheel.lock
     │
     ▼
 ┌── CYCLE START ───────────────────────────────┐
@@ -319,7 +319,7 @@ Invariants:
 - **D3.** `manifest.json` is rewritten atomically (temp + rename) at two
   moments: cycle open, and after every `*.done` event. Always reflects
   state at-or-before the last event.
-- **D4.** Lock file (`.spellbook/flywheel.lock`) records
+- **D4.** Lock file (`.harness-kit/flywheel.lock`) records
   `{pid, cycle_id, started_at}`. Stale-pid steal via `O_CREAT|O_EXCL`
   already implemented in Phase 1 (`scripts/lib/flywheel_lock.sh`).
 - **D5.** Worst-case loss on SIGKILL: the phase in progress is re-run from
@@ -342,9 +342,9 @@ Path resolution: all state paths anchor to `git rev-parse --show-toplevel`
 
 Worktree-local paths:
 ```
-<worktree-root>/.spellbook/flywheel.lock
+<worktree-root>/.harness-kit/flywheel.lock
 <worktree-root>/backlog.d/_cycles/<ulid>/...
-<worktree-root>/.spellbook/flywheel-state.json
+<worktree-root>/.harness-kit/flywheel-state.json
 ```
 
 Rationale: git worktrees share `.git/` but have independent working trees.
@@ -464,7 +464,7 @@ Token budget: SKILL.md ≤3K tokens (target), ≤5K (ceiling).
 
 Structural prevention beats prose. Add alongside the rename commit:
 
-- [ ] `.gitignore` includes `.spellbook/` (state dir must never be committed)
+- [ ] `.gitignore` includes `.harness-kit/` (state dir must never be committed)
 - [ ] `.gitignore` includes `backlog.d/_cycles/*/evidence/deliver/`
       (gitignored — cycles are committed, but `/deliver` state inside is not)
 - [ ] CODEOWNERS entry: `harness/auto-tune` requires human review before merge
@@ -497,7 +497,7 @@ Symbols to rename:
 - `ITERATE_LOCK_PID` → `AUTOPILOT_LOCK_PID`
 
 Path strings:
-- `.spellbook/iterate.lock` → `.spellbook/flywheel.lock`
+- `.harness-kit/iterate.lock` → `.harness-kit/flywheel.lock`
 - `backlog.d/_cycles/` unchanged — keep historical cycles readable
 
 Env var: `AUTOPILOT_MODE=1` (currently no `ITERATE_MODE` in code —
@@ -527,7 +527,7 @@ Composition work:
 - `harness.suggested` → `harness/auto-tune` branch
 - Worktree-local path anchoring (`git rev-parse --show-toplevel`)
 - Durability oracle items (SIGKILL mid-phase, two-worktree concurrency)
-- Spellbook dogfoods on itself
+- Harness Kit dogfoods on itself
 
 ## Oracle
 
@@ -559,12 +559,12 @@ Durability:
 
 Worktree:
 - [ ] `/flywheel` run from a linked worktree uses
-      `<worktree-root>/.spellbook/flywheel.lock`, not main checkout's
+      `<worktree-root>/.harness-kit/flywheel.lock`, not main checkout's
 - [ ] worktree-A and worktree-B can both run `/flywheel` concurrently on
       the same repo; each has its own lock, cycle dir, budget state
 
 Integration:
-- [ ] Spellbook dogfoods on itself (one real cycle, one real item shipped
+- [ ] Harness Kit dogfoods on itself (one real cycle, one real item shipped
       end-to-end)
 
 ## Non-Goals

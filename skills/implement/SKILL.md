@@ -21,7 +21,7 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.spellbook/agents.yaml` or system `~/.spellbook/agents.yaml`), `/implement` starts by probing the
+When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/implement` starts by probing the
 roster and dispatching two or more available roster members before code or
 tests are produced. Use one lane for the bounded builder attempt and another for adversarial validator/refactor scrutiny: attack the completion claim and name what would embarrass us if green tests missed it.
 Give lanes the context packet, oracle, boundaries, and relevant repo anchors, not hidden lead reasoning.

@@ -11,7 +11,7 @@ Antigravity, Pi, or the next harness first-try.
 **Target User:** Senior+ engineers running multi-agent workflows across multiple repos.
 **Current Focus:** Rebrand, remove global static agents, and make skills +
 AGENTS.md the durable layer for dynamic task-specific delegation.
-**Key Differentiators:** Agent-agnostic (works across harnesses), manifest-driven (`.spellbook.yaml`),
+**Key Differentiators:** Agent-agnostic (works across harnesses), manifest-driven (`.harness-kit.yaml`),
 research-backed (web + multi-model validation before codifying).
 
 ## Domain Glossary
@@ -22,7 +22,7 @@ research-backed (web + multi-model validation before codifying).
 | Delegation guidance | Natural-language guidance that tells the lead agent when to spawn task-specific subagents, what responsibilities to assign, what evidence to require, and what philosophical lenses to apply |
 | Collection | Named group of skills in collections.yaml (payments, web, agent, infra, etc.) |
 | Harness | An AI agent runtime (Claude Code, Codex, Antigravity CLI/IDE, Pi) |
-| Manifest | `.spellbook.yaml` — legacy optional project-local harness config |
+| Manifest | `.harness-kit.yaml` — legacy optional project-local harness config |
 | Seed | Skill that vendors the system-wide Harness Kit catalog into a repo when checked-in local copies are worth the complexity |
 | DMI | Disable-model-invocation — user-only skills that cost zero budget |
 | Delivery pipeline | groom → deliver (shape → implement → review + ci + refactor + qa) → merge |
@@ -32,7 +32,7 @@ research-backed (web + multi-model validation before codifying).
 - **Milestone:** Harness library reset — rebrand, dynamic delegation, Antigravity migration
 - **Key work:** Pick the new name, stop installing global agents, convert static persona files into reusable lenses inside skills and AGENTS.md, add Antigravity CLI/IDE projections
 - **Theme:** Skills and repo guidance are durable; static global subagent catalogs are not
-- **Recent:** Rebranded the repo as Harness Kit while preserving legacy `.spellbook` state paths; backlog pivoted toward Antigravity and dynamic subagent management
+- **Recent:** Rebranded the repo as Harness Kit while preserving legacy `.harness-kit` state paths; backlog pivoted toward Antigravity and dynamic subagent management
 
 ## Quality Bar
 

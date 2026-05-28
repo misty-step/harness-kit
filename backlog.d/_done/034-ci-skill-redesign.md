@@ -107,7 +107,7 @@ down and document. Track in a follow-up ticket after `/ci` lands.
 ## Oracle
 
 - [ ] `skills/ci/SKILL.md` exists
-- [ ] Runs on spellbook itself: audit identifies any current CI gaps, runs Dagger pipeline green
+- [ ] Runs on harness-kit itself: audit identifies any current CI gaps, runs Dagger pipeline green
 - [ ] Audit output is structured (markdown table of gaps + severity + proposed fix)
 - [ ] Fix-until-green loop: demonstrable on a branch with a fixable lint error
 - [ ] Non-fixable failure: exit non-zero with diagnosis that points to file:line

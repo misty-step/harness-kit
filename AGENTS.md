@@ -8,7 +8,7 @@ disk; do not restate obvious filesystem facts.
 
 - Base branch: `master`.
 - Gate: `dagger call check --source=.`. Green means all 15 Harness Kit CI lanes
-  pass. `/ci` owns the exact lane list in `ci/src/spellbook_ci/main.py`.
+  pass. `/ci` owns the exact lane list in `ci/src/harness_kit_ci/main.py`.
 - Clean-tree closeout: no run is complete while
   `git status --short --untracked-files=all` shows paths. Commit, delete,
   move out, or ignore every file. Treat untracked `backlog.d/NNN-*.md` as
@@ -23,14 +23,14 @@ disk; do not restate obvious filesystem facts.
 
 ## Roster Floor
 
-The provider roster is repo-local at `.spellbook/agents.yaml` when present and
-system-wide at `~/.spellbook/agents.yaml` otherwise. For substantive research,
+The provider roster is repo-local at `.harness-kit/agents.yaml` when present and
+system-wide at `~/.harness-kit/agents.yaml` otherwise. For substantive research,
 design, implementation, QA, diagnosis, review, backlog, reflection, or harness
 work:
 
 - probe the roster;
 - dispatch two or more available providers;
-- record sanitized receipts in `.spellbook/traces/delegations.jsonl`;
+- record sanitized receipts in `.harness-kit/traces/delegations.jsonl`;
 - synthesize as lead; provider output is evidence, not authority.
 
 Direct solo work is allowed only for mechanical commands, emergency unblocks,
@@ -70,7 +70,7 @@ the active skill with a role, scope, output shape, and boundaries.
 ## Hot Paths
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
-- `.spellbook/agents.yaml` / `~/.spellbook/agents.yaml` — provider roster and
+- `.harness-kit/agents.yaml` / `~/.harness-kit/agents.yaml` — provider roster and
   default commands.
 - `scripts/check-agent-roster.py` — roster + delegation-floor gate.
 - `docs/copy/site.json` — public-facing docs companion copy and icon map.
