@@ -157,7 +157,7 @@ backlog.d/NNN
 
 Use `/flywheel` when the desired behavior is to keep cycling through that loop
 across the queue. Use `/deliver <ticket>` when the target item is already
-chosen. Use `/harness` when the change touches Harness Kit primitives
+chosen. Use `/harness-engineering` when the change touches Harness Kit primitives
 themselves: skills, agents, harness configs, registry entries, or gates.
 
 ## Encoded Assumptions
@@ -229,7 +229,7 @@ For Harness Kit development:
 
 1. Read `AGENTS.md` and `harnesses/shared/AGENTS.md` before changing design
    surfaces.
-2. Choose the workflow skill that matches the job: `/harness` for primitives,
+2. Choose the workflow skill that matches the job: `/harness-engineering` for primitives,
    `/groom` for backlog, `/shape` for a new ticket, `/deliver` for a ticket,
    `/ci` for gate failures, `/diagnose` for unknown failures.
 3. Never hand-edit `index.yaml`.

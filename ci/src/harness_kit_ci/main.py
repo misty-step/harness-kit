@@ -488,7 +488,7 @@ print('skills/: no claims primitives found.')
         """Validate structure for existing skill eval suites."""
         return await (
             _lint_container(source)
-            .with_exec(["python3", "skills/harness/scripts/validate-evals.py"])
+            .with_exec(["python3", "skills/harness-engineering/scripts/validate-evals.py"])
             .stdout()
         )
 

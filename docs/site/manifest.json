@@ -195,7 +195,7 @@
           "href": "reference/bootstrap.html",
           "icon": "repair",
           "task": "Install or repair the harness",
-          "use": "/harness or bootstrap.sh"
+          "use": "/harness-engineering or bootstrap.sh"
         },
         {
           "href": "reference/skills/research.html",
@@ -264,6 +264,16 @@
       "page": "reference/skills/code-review.html",
       "role": "Review",
       "source": "skills/code-review/SKILL.md"
+    },
+    {
+      "description": "Generate a repository-local skill from live repo discovery and user intent. Use when: \"create QA skill\", \"generate repo skill\", \"make a local skill\", \"persona acceptance skill\", \"value proposition QA\", \"bespoke repo QA\", \"scaffold local skill\". Creates concrete `.agents/skills/<name>/` guidance with harness-specific bridges when useful. Trigger: /create-repo-skill, /repo-skill, /create-qa-skill.",
+      "icon": "catalog",
+      "id": "skill:create-repo-skill",
+      "kind": "skill",
+      "name": "create-repo-skill",
+      "page": "reference/skills/create-repo-skill.html",
+      "role": "Support",
+      "source": "skills/create-repo-skill/SKILL.md"
     },
     {
       "description": "Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape \u2192 /implement \u2192 {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does not deploy. Communicates with callers via exit code + receipt.json \u2014 no stdout parsing. Every run also ends with a tight operator-facing brief plus a full /reflect session. Use when: building a shaped ticket, \"deliver this\", \"make it merge-ready\", driving one backlog item through review + CI + QA. Trigger: /deliver.",
@@ -356,14 +366,14 @@
       "source": "skills/hardening/SKILL.md"
     },
     {
-      "description": "Build and repair Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness, /skill, /primitive.",
+      "description": "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness-engineering, /harness, /skill.",
       "icon": "repair",
-      "id": "skill:harness",
+      "id": "skill:harness-engineering",
       "kind": "skill",
-      "name": "harness",
-      "page": "reference/skills/harness.html",
+      "name": "harness-engineering",
+      "page": "reference/skills/harness-engineering.html",
       "role": "Maintain",
-      "source": "skills/harness/SKILL.md"
+      "source": "skills/harness-engineering/SKILL.md"
     },
     {
       "description": "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red \u2192 Green \u2192 Refactor. Does not shape, review, QA, or ship \u2014 single concern: spec to green tests. Use when: \"implement this spec\", \"build this\", \"TDD this\", \"code this up\", \"write the code for this ticket\", after /shape has produced a context packet. Trigger: /implement, /build (alias).",
@@ -406,7 +416,7 @@
       "source": "skills/monitor/SKILL.md"
     },
     {
-      "description": "Verify a running app works \u2014 every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; \"tests pass\" is not QA. Use when: \"run QA\", \"test this\", \"verify the feature\", \"exploratory test\", \"check the app\", \"QA this PR\", \"smoke test\", \"capture evidence\", \"manual testing\", \"scaffold qa\", \"generate qa skill\". Trigger: /qa.",
+      "description": "Verify a running app works \u2014 every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; \"tests pass\" is not QA. Use when: \"run QA\", \"test this\", \"verify the feature\", \"exploratory test\", \"check the app\", \"QA this PR\", \"smoke test\", \"capture evidence\", \"manual testing\". For \"create QA skill\" or \"generate qa skill\", use /create-repo-skill qa. Trigger: /qa.",
       "icon": "verify",
       "id": "skill:qa",
       "kind": "skill",

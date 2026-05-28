@@ -14,13 +14,14 @@ from agent_roster import load_roster, read_receipts, validate_roster  # noqa: E4
 CORE_WORKFLOW_SKILLS = [
     "ci",
     "code-review",
+    "create-repo-skill",
     "deliver",
     "demo",
     "diagnose",
     "flywheel",
     "groom",
     "hardening",
-    "harness",
+    "harness-engineering",
     "implement",
     "monitor",
     "qa",
@@ -104,7 +105,7 @@ def validate_delegation_floor() -> None:
             continue
         if "explicit user waivers" in lowered_section:
             weak.append(str(path))
-        if skill in {"shape", "research", "harness"}:
+        if skill in {"shape", "research", "harness-engineering", "create-repo-skill"}:
             lowered = text.lower()
             if "native in-thread subagents" not in lowered or "do not" not in lowered:
                 ambiguous.append(str(path))

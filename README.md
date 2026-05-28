@@ -1,6 +1,6 @@
 # Harness Kit
 
-28 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
+29 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi).
 
 Harness Kit is an operator-facing harness primitive library, not a buyer-facing
@@ -36,7 +36,8 @@ point your harnesses at a specific checkout, set
 | `/design` | Artifact-backed critique and polish for hierarchy, typography, layout, and taste |
 | `/monitor` | Watch post-change signals and escalate regressions |
 | `/groom` | Backlog management, brainstorming, rethink, scaffold |
-| `/harness` | Skill engineering, primitive management, context lifecycle |
+| `/harness-engineering` | Skill engineering, primitive management, context lifecycle |
+| `/create-repo-skill` | Generate repo-local QA, persona acceptance, and bespoke workflow skills |
 | `/reflect` | Session retrospective, harness postmortem, operator coaching |
 | `/research` | Multi-source web research, delegation, think tank |
 | `/shape` | Spec/design → context packet output |
@@ -93,7 +94,7 @@ harness-kit/
 
 1. Create `skills/{name}/SKILL.md` with frontmatter
 2. Keep it < 500 lines. Encode judgment, not procedures.
-3. Run `/harness lint` to validate quality gates
+3. Run `/harness-engineering lint` to validate quality gates
 4. Run `bootstrap.sh` — it discovers skills from the filesystem automatically
 
 ## Principles

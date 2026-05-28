@@ -1,4 +1,4 @@
-# /harness lint
+# /harness-engineering lint
 
 Validate a skill against quality gates.
 
@@ -53,4 +53,4 @@ a throwaway project and verifies `--help` works from there.
 
 ## Batch lint
 
-Run on all skills: `for s in skills/*/SKILL.md; do /harness lint "$s"; done`
+Run on all skills: `for s in skills/*/SKILL.md; do /harness-engineering lint "$s"; done`

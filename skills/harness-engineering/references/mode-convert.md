@@ -1,4 +1,4 @@
-# /harness convert
+# /harness-engineering convert
 
 Convert between agent definitions and skills.
 

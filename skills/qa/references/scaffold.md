@@ -1,7 +1,8 @@
 # QA Scaffold Template
 
-Template for `/qa scaffold`. Generates a project-local QA skill
-by investigating the codebase and designing with the user.
+Legacy template for `/qa scaffold`. Prefer `/create-repo-skill qa`; it owns
+new repo-local skill generation, shared `.agents/skills/` roots, eval seeds, and
+persona/value-proposition variants.
 
 ## Investigation Prompts
 
@@ -120,7 +121,8 @@ Recommend based on app type:
 
 ## Generated Skill Template
 
-The Deliver phase writes these files to `.claude/skills/qa/` in the target project.
+The deliver phase writes these files to `.agents/skills/qa/` in the target
+project, with harness-specific bridges only when those harness dirs exist.
 
 ### SKILL.md Structure
 
@@ -179,6 +181,17 @@ Evidence goes to \`/tmp/qa-[project-slug]/\`.
 - Evidence captured
 - Recommendation: ready to merge / needs fix
 
+## Completion Gate
+
+- Exact end-user behavior verified:
+- Value proposition exercised:
+- Persona outcome observed:
+- Live evidence that proves it:
+- Exact command/path/route exercised:
+- Repo-fit check:
+- Acceptance mutation / hardening:
+- Residual unverified paths:
+
 ## Gotchas
 
 - [App-specific failure modes from investigation]
@@ -197,6 +210,7 @@ Evidence goes to \`/tmp/qa-[project-slug]/\`.
 
 **Role:** [domain-specific role]
 **Goal:** [what they're trying to accomplish]
+**Value tested:** [product promise this persona expects the app to deliver]
 **Common actions:**
 - [action 1]
 - [action 2]
@@ -217,8 +231,12 @@ Before declaring the scaffold complete, verify:
 - [ ] Routes table has real routes from investigation (not placeholders)
 - [ ] Dev command is the actual command (not "npm start" guessed)
 - [ ] Personas reference real domain roles (not "new user")
+- [ ] Each persona names the value tested and the observable outcome
 - [ ] Evidence strategy matches the app type
+- [ ] Completion Gate is present and names live repo evidence, exact command/path, repo-fit check, and residual risk
 - [ ] Gotchas section has project-specific failure modes
 - [ ] Total SKILL.md is under 500 lines
 - [ ] No generic placeholders remain ("TODO", "[fill in]", "your-app")
-- [ ] Files are written to `.claude/skills/qa/` (not global skills/)
+- [ ] Files are written to `.agents/skills/qa/` (not global skills/)
+- [ ] Harness bridges point back to the shared skill root instead of copying
+      skill contents

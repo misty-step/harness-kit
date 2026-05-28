@@ -1,4 +1,4 @@
-# /harness engineer
+# /harness-engineering engineer
 
 Design harness improvements: hooks, enforcement, context, codification.
 

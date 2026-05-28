@@ -1,4 +1,4 @@
-# /harness sync
+# /harness-engineering sync
 
 Pull primitives from harness-kit into project-local harness directories.
 
@@ -11,4 +11,4 @@ uses symlinks instead (edits propagate instantly).
 ## Marker file convention
 
 Managed primitives have a `.harness-kit` marker file.
-/harness sync only touches directories with this marker.
+/harness-engineering sync only touches directories with this marker.

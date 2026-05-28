@@ -1,4 +1,4 @@
-# /harness eval
+# /harness-engineering eval
 
 Test whether a skill improves agent outcomes, not whether its prose sounds
 reasonable.
@@ -53,7 +53,7 @@ the grader that proves the skill helped.
 Run the structural validator before calling an eval suite ready:
 
 ```bash
-python3 skills/harness/scripts/validate-evals.py
+python3 skills/harness-engineering/scripts/validate-evals.py
 ```
 
 The validator checks every existing `skills/<name>/evals/` tree has:
@@ -67,7 +67,7 @@ does not prove the grader is semantically strong.
 
 ## Result artifacts
 
-When `/harness eval <skill>` runs a comparison, write a short markdown result
+When `/harness-engineering eval <skill>` runs a comparison, write a short markdown result
 under:
 
 ```text

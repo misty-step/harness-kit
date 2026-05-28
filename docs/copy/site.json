@@ -174,7 +174,7 @@
           "href": "reference/bootstrap.html",
           "icon": "repair",
           "task": "Install or repair the harness",
-          "use": "/harness or bootstrap.sh"
+          "use": "/harness-engineering or bootstrap.sh"
         },
         {
           "href": "reference/skills/research.html",

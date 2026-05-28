@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>qa</h1>
-      <p class="lede">Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;, &quot;scaffold qa&quot;, &quot;generate qa skill&quot;. Trigger: /qa.</p>
+      <p class="lede">Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;. For &quot;create QA skill&quot; or &quot;generate qa skill&quot;, use /create-repo-skill qa. Trigger: /qa.</p>
       <p><code class="trigger large">/qa</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/qa/SKILL.md">skills/qa/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;, &quot;scaffold qa&quot;, &quot;generate qa skill&quot;. Trigger: /qa.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; &quot;tests pass&quot; is not QA. Use when: &quot;run QA&quot;, &quot;test this&quot;, &quot;verify the feature&quot;, &quot;exploratory test&quot;, &quot;check the app&quot;, &quot;QA this PR&quot;, &quot;smoke test&quot;, &quot;capture evidence&quot;, &quot;manual testing&quot;. For &quot;create QA skill&quot; or &quot;generate qa skill&quot;, use /create-repo-skill qa. Trigger: /qa.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg><h3>Workflow role</h3><p>Verify primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -65,6 +65,8 @@ Every QA pass/fail report includes:
 ```markdown
 ## Completion Gate
 - Exact end-user behavior verified:
+- Value proposition exercised:
+- Persona outcome observed:
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:

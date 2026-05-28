@@ -93,6 +93,6 @@ For each sub-agent finding:
 
 ## Related
 
-- `/harness` — Harness engineering and context lifecycle
+- `/harness-engineering` — Harness engineering and context lifecycle
 - `/code-review` — Multi-agent review implementation
 - `/research thinktank` — Multi-model synthesis

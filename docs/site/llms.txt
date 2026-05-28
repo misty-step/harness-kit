@@ -24,6 +24,7 @@ Primitives:
 - skill:browser | skills/browser/SKILL.md | docs/site/reference/skills/browser.html
 - skill:ci | skills/ci/SKILL.md | docs/site/reference/skills/ci.html
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html
+- skill:create-repo-skill | skills/create-repo-skill/SKILL.md | docs/site/reference/skills/create-repo-skill.html
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:demo | skills/demo/SKILL.md | docs/site/reference/skills/demo.html
 - skill:deploy | skills/deploy/SKILL.md | docs/site/reference/skills/deploy.html
@@ -33,7 +34,7 @@ Primitives:
 - skill:flywheel | skills/flywheel/SKILL.md | docs/site/reference/skills/flywheel.html
 - skill:groom | skills/groom/SKILL.md | docs/site/reference/skills/groom.html
 - skill:hardening | skills/hardening/SKILL.md | docs/site/reference/skills/hardening.html
-- skill:harness | skills/harness/SKILL.md | docs/site/reference/skills/harness.html
+- skill:harness-engineering | skills/harness-engineering/SKILL.md | docs/site/reference/skills/harness-engineering.html
 - skill:implement | skills/implement/SKILL.md | docs/site/reference/skills/implement.html
 - skill:karpathy-guidelines | skills/karpathy-guidelines/SKILL.md | docs/site/reference/skills/karpathy-guidelines.html
 - skill:model-research | skills/model-research/SKILL.md | docs/site/reference/skills/model-research.html

@@ -1,4 +1,4 @@
-# /harness audit — Skill Health Assessment
+# /harness-engineering audit — Skill Health Assessment
 
 Analyze skill invocation data to assess skill health, identify waste, and
 recommend lifecycle actions.
@@ -10,7 +10,7 @@ Read `~/.claude/skill-invocations.jsonl`. Each line is a JSON object:
 
 If the file doesn't exist or is empty, report: "No invocation data found.
 Skill invocations are tracked automatically via PostToolUse hook. Once you
-have data, re-run `/harness audit`."
+have data, re-run `/harness-engineering audit`."
 
 ## Flags
 

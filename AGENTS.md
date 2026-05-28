@@ -59,7 +59,8 @@ package or admin-control plane.
 
 Use these for harness work:
 
-- `/harness`: mutate Harness Kit primitives, gates, roster, doctrine.
+- `/harness-engineering`: mutate Harness Kit primitives, gates, roster, doctrine.
+- `/create-repo-skill`: generate repo-local skills for consumer repos.
 - `/yeet`: classify, commit, push; clean tree is the deliverable.
 - `/ship`: final-mile landing and backlog closure.
 - `/deliver`: one shaped item to merge-ready; no push, no merge.
@@ -78,7 +79,7 @@ the active skill with a role, scope, output shape, and boundaries.
 - `scripts/check-docs-site.sh` — generated docs companion drift and oracle gate.
 - `scripts/record-delegation.py` / `scripts/summarize-delegations.py` —
   receipt capture and operator report.
-- `skills/harness/SKILL.md` — harness mutation contract.
+- `skills/harness-engineering/SKILL.md` — harness mutation contract.
 - `bootstrap.sh` — system-wide install; all first-party skills are global.
 
 ## Red Lines

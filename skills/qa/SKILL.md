@@ -7,8 +7,8 @@ description: |
   replay for MCP servers. Drive the running thing and confirm it behaves;
   "tests pass" is not QA. Use when: "run QA", "test this", "verify the
   feature", "exploratory test", "check the app", "QA this PR", "smoke
-  test", "capture evidence", "manual testing", "scaffold qa",
-  "generate qa skill". Trigger: /qa.
+  test", "capture evidence", "manual testing". For "create QA skill" or
+  "generate qa skill", use /create-repo-skill qa. Trigger: /qa.
 argument-hint: "[url|route|command|endpoint|feature|scaffold]"
 ---
 
@@ -43,6 +43,8 @@ Every QA pass/fail report includes:
 ```markdown
 ## Completion Gate
 - Exact end-user behavior verified:
+- Value proposition exercised:
+- Persona outcome observed:
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:
@@ -115,7 +117,7 @@ pick one.
 
 | Intent | Action |
 |---|---|
-| `"scaffold"` first arg, or "scaffold qa" / "generate qa skill" | Read `references/scaffold.md` and follow it |
+| `"scaffold"` first arg, or "scaffold qa" / "generate qa skill" | Prefer `/create-repo-skill qa`; `references/scaffold.md` is the legacy template |
 | Project-local QA skill exists (`.agent/skills/qa/` or `.claude/skills/qa/` bridged to shared root) | Defer — it already encodes this repo's shape and paths |
 | No project-local skill; need to verify something right now | Run the quick protocol below, routed by Step 0's shape |
 

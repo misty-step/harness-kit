@@ -1,23 +1,23 @@
 ---
-name: harness
+name: harness-engineering
 description: |
-  Build and repair Harness Kit primitives: skills, shared doctrine, provider
-  roster, harness configs, gates, evals, bootstrap, and sync logic. Use for
-  "improve the harness", "bootstrap is wrong", "AGENTS.md is stale", "skill
-  health", "eval skill", "sync primitives", "roster defaults".
-  Trigger: /harness, /skill, /primitive.
+  Harness engineering for Harness Kit primitives: skills, shared doctrine,
+  provider roster, harness configs, gates, evals, bootstrap, and sync logic.
+  Use for "improve the harness", "harness engineering", "bootstrap is wrong",
+  "AGENTS.md is stale", "skill health", "eval skill", "sync primitives",
+  "roster defaults". Trigger: /harness-engineering, /harness, /skill.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
 ---
 
-# /harness
+# /harness-engineering
 
-Mutate the harness. Keep it thin.
+Engineer the harness. Keep it thin.
 
 ## Route
 
 | Need | Load |
 |---|---|
-| create skill/agent | `references/mode-create.md` |
+| create global skill/agent | `references/mode-create.md` |
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
 | convert agent/skill | `references/mode-convert.md` |
@@ -25,6 +25,10 @@ Mutate the harness. Keep it thin.
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
 | audit catalog | `references/mode-audit.md` |
 | open-model defaults | `references/open-model-roster.md` |
+
+Use `/create-repo-skill` for generated repository-local skills such as bespoke
+QA and persona acceptance probes. Use this skill when changing Harness Kit
+itself.
 
 ## Contract
 
@@ -61,6 +65,8 @@ final roster reports.
 ## Quality Bar
 
 - `SKILL.md` encodes judgment, not a procedure the model already knows.
+- Instruction prose is compression, not literature. Sacrifice grammar before
+  clarity; keep terse imperatives, named failure modes, and concrete oracles.
 - Put long mode detail in `references/`; keep the entry file short.
 - Ad-hoc roster lanes beat static project subagents unless tool permissions
   must be isolated.

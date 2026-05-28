@@ -45,7 +45,7 @@ WORKFLOW_ROLES = {
     "flywheel": "Operate",
     "monitor": "Operate",
     "reflect": "Learn",
-    "harness": "Maintain",
+    "harness-engineering": "Maintain",
     "research": "Explore",
     "groom": "Plan",
     "diagnose": "Repair",

@@ -1,6 +1,9 @@
-# /harness create
+# /harness-engineering create
 
-Create a new skill or agent from scratch.
+Create a new Harness Kit source skill or agent from scratch.
+
+For a project-local skill in a consumer repo, use `/create-repo-skill`. This
+mode is for first-party catalog primitives under `skills/` or `agents/`.
 
 ## The description field is everything
 
@@ -62,6 +65,27 @@ Three layers. Each loads only when needed:
 
 Keep SKILL.md focused on what to do and what goes wrong. Move deep
 reference material (API docs, checklists, examples) to references/.
+
+## Brevity doctrine
+
+Model instructions are not essays.
+
+- Prefer fragments over paragraphs when the meaning survives.
+- Use imperative verbs: "Probe roster", "Write receipt", "Run gate".
+- Name the failure mode directly.
+- Delete throat-clearing: "it is important to", "you should consider".
+- Keep examples shorter than the rule they explain.
+- Put citations, long rationale, and variant-specific detail in references.
+
+Useful source patterns:
+
+- JuliusBrussee/caveman: token compression and terse agent dialect.
+  https://github.com/JuliusBrussee/caveman
+- Anthropic skill authoring: description selection and progressive disclosure.
+  https://anthropic.mintlify.app/en/docs/agents-and-tools/agent-skills/best-practices
+- Vercel Agent Skills: concise `SKILL.md`, reusable versioned context, and
+  avoiding duplicated reference content.
+  https://vercel.com/kb/guide/agent-skills-creating-installing-and-sharing-reusable-agent-context
 
 ## Frontmatter fields that matter
 
