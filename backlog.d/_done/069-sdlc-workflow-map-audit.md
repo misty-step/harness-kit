@@ -1,7 +1,7 @@
 # SDLC workflow map audit
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: S
 
 ## Goal
@@ -20,17 +20,17 @@ that should be carried by existing skills instead of becoming new skills.
 
 ## Oracle
 
-- [ ] Produce a lifecycle table from idea to post-ship learning:
+- [x] Produce a lifecycle table from idea to post-ship learning:
       `groom -> shape -> implement -> instrument/observe -> review ->
       refactor -> qa -> demo -> yeet -> settle -> ship -> monitor -> reflect`.
-- [ ] For each phase, name the owning skill, inputs, outputs, evidence, and
+- [x] For each phase, name the owning skill, inputs, outputs, evidence, and
       whether the boundary is too broad, too narrow, or right-sized.
-- [ ] Explicitly evaluate whether instrument/observe belongs in `/implement`,
+- [x] Explicitly evaluate whether instrument/observe belongs in `/implement`,
       `/qa`, `/monitor`, `/seed`, a new skill, or a shared contract.
-- [ ] Compare the audit against at least one real shipped Harness Kit cycle and
+- [x] Compare the audit against at least one real shipped Harness Kit cycle and
       one downstream app repo cycle.
-- [ ] Emit at most three follow-up backlog items, each with an oracle.
-- [ ] `dagger call check --source=.` passes if any skill docs change.
+- [x] Emit at most three follow-up backlog items, each with an oracle.
+- [x] `dagger call check --source=.` passes if any skill docs change.
 
 ## Notes
 
@@ -39,3 +39,22 @@ goal-mode automations, prompt-debt reflection, and observability coverage. The
 strong signal was not "add more skills"; it was "check whether the lifecycle
 surface is carved correctly and whether completion evidence is consistent
 across phases."
+
+## Closure
+
+Audit artifact: `docs/skill-catalog-audit.md`.
+
+Accepted outcome:
+
+- Keep `/create-repo-skill` broad as a thin generator router.
+- Do not add `/observe`; carry instrument/observe as a shared lifecycle
+  contract across `/shape`, `/implement`, `/qa`, `/monitor`, `/reflect`, and
+  `/groom`.
+- Use existing follow-ups instead of duplicating backlog:
+  `070-observability-coverage-loop.md`, `053-skill-quality-audit-mode.md`, and
+  `070-clean-copied-skill-reference-quality.md`.
+
+Provider receipts:
+
+- `629723ff-a563-42d2-ac78-e25be98fd2ba` (`codex`)
+- `ce043681-18d6-4bb2-803a-486eb7d0c3c2` (`claude`)

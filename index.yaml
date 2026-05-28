@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-05-28T19:17:57Z
+# Generated: 2026-05-28T19:34:42Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -12,9 +12,9 @@ skills:
     source: first-party
     tags: [a,agents,ai,architecture,assess,ci,codebase,coding,dev,dispatches]
   - name: browser
-    description: "Pick the right browser automation tool for a given task — across web and Electron apps, from CI tests to autonomous agents. Browser automation in 2026 is a testing pyramid: deterministic Playwright "
+    description: "Pick the right browser automation tool for web or Electron work: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, synthetic monitoring, or autonomous QA agents. Enco"
     source: first-party
-    tags: [2026,a,across,agents,apps,automation,autonomous,browser,ci,deterministic]
+    tags: [agents,automation,autonomous,browser,ci,e2e,electron,enco,exploratory,flows]
   - name: ci
     description: "Audit a repo's CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absen"
     source: first-party

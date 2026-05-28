@@ -160,6 +160,10 @@ across the queue. Use `/deliver <ticket>` when the target item is already
 chosen. Use `/harness-engineering` when the change touches Harness Kit primitives
 themselves: skills, agents, harness configs, registry entries, or gates.
 
+See `docs/skill-catalog-audit.md` for the current lifecycle boundary audit,
+including why instrument/observe is a shared phase contract rather than a new
+top-level skill.
+
 ## Encoded Assumptions
 
 ### Cross-Harness First

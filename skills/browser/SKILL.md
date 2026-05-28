@@ -1,22 +1,15 @@
 ---
 name: browser
 description: |
-  Pick the right browser automation tool for a given task — across web and
-  Electron apps, from CI tests to autonomous agents. Browser automation in
-  2026 is a testing pyramid: deterministic Playwright E2E at the base,
-  AI-assisted helpers in the middle, persona-driven exploratory agents on
-  top, and continuous QA agents against staging/production on top of that.
-  Findings flow down (discoveries harden into deterministic tests), not up.
-  Encodes the pyramid, the four-layer tool taxonomy (driver/mode/wrapper/
-  infra), the three distinct Playwright surfaces, and the load-bearing
-  gotchas (agent() token trap, Spectron deprecation, runtime vs authoring-
-  time AI, when selectors beat AI and when they don't).
-  Use for: "automate the browser", "script this flow", "test this web
-  app", "test this electron app", "scrape this site", "should I use
-  Playwright or Stagehand", "which browser tool", "browser agent",
-  "exploratory QA", "persona testing", "continuous QA", "synthetic
-  monitoring", "puppet this UI", "headless chrome", "visual regression",
-  "E2E tests", "self-healing tests", "autonomous QA".
+  Pick the right browser automation tool for web or Electron work: CI E2E,
+  scripted flows, scraping, visual regression, exploratory QA, persona walks,
+  synthetic monitoring, or autonomous QA agents. Encodes the browser-testing
+  pyramid: deterministic Playwright first, AI-assisted helpers only when they
+  earn it, and exploratory findings hardened into repeatable tests.
+  Use for: "automate the browser", "script this flow", "test this web app",
+  "test this electron app", "scrape this site", "Playwright or Stagehand",
+  "browser agent", "exploratory QA", "persona testing", "continuous QA",
+  "headless chrome", "visual regression", "E2E tests".
   Trigger: /browser.
 argument-hint: "[describe the task]"
 ---
