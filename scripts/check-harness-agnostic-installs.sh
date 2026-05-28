@@ -50,6 +50,10 @@ if ! matches 'install_system_roster|~/.harness-kit/agents.yaml|\\$HOME/.harness-
   fail "bootstrap must install the provider roster into a system-wide Harness Kit location"
 fi
 
+if ! matches 'legacy_system_dir=.*\\.spellbook|legacy agents.yaml' bootstrap.sh; then
+  fail "bootstrap must keep a legacy Spellbook roster alias for long-running stale instruction contexts"
+fi
+
 if ! matches 'HARNESS_KIT_ROSTER|system_harness_kit_dir|\\.harness-kit.*agents.yaml' \
   scripts/lib/agent_roster.py; then
   fail "roster helpers must fall back to a system-wide roster when repo-local roster is absent"

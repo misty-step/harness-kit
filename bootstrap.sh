@@ -289,10 +289,13 @@ install_system_file() {
 install_system_roster() {
   local source_root="${HARNESS_KIT:-$REMOTE_HARNESS_KIT}"
   local system_dir="$HOME/.harness-kit"
+  local legacy_system_dir="$HOME/.spellbook"
 
   info "Installing system roster..."
   install_system_file "$source_root/.harness-kit/agents.yaml" \
     "$system_dir/agents.yaml" "agents.yaml"
+  install_system_file "$source_root/.harness-kit/agents.yaml" \
+    "$legacy_system_dir/agents.yaml" "legacy agents.yaml"
   install_system_file "$source_root/.harness-kit/examples" \
     "$system_dir/examples" "examples/"
   install_system_file "$source_root/scripts/probe-agent-roster.py" \
