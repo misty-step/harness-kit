@@ -1,8 +1,17 @@
 # Clean-context dispatch for philosophy bench + critic
 
 Priority: P2
-Status: superseded by 061 and 063
+Status: done
 Estimate: S
+Shipped: 2026-05-29
+
+## Resolution
+
+Closed as superseded. The static-persona framing is replaced by `061`
+(subagent roles-not-files). The one durable requirement — reviewers see ONLY
+the diff + acceptance oracle, never the author's reasoning trail — is carried
+forward by `061`'s milestone critic gate ("a fresh read-only critic that sees
+ONLY the diff + the packet oracle + the todo"). No separate work remains.
 
 ## Goal
 

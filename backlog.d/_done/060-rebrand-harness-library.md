@@ -1,8 +1,21 @@
 # Rebrand the shared harness library
 
 Priority: P0 - highest
-Status: ready
+Status: done
 Estimate: M
+Shipped: 2026-05-29
+
+## Resolution
+
+Closed as already-shipped. The rebrand to **Harness Kit** landed across
+a0f0e7d (complete rebrand), d7a641c (introduce identity), e6a9f6c (Dagger
+module rename), 76bfa13 (index regen), and 4ba874d + ba1a317 (compatibility
+aliases). The single remaining old-brand string — `bootstrap.sh:292`
+`legacy_system_dir="$HOME/.spellbook"` — is the deliberate backward-compat
+path the oracle explicitly permits ("except in compatibility notes").
+Downstream proven via the misty-step migration (78e7595). Oracle met; the
+ticket body below has stale self-referential wording from the rebrand
+find-replace and is retained verbatim for history.
 
 ## Goal
 

@@ -128,7 +128,7 @@ Use existing backlog rather than creating duplicate work:
 2. `backlog.d/053-skill-quality-audit-mode.md`
    - Oracle: `/groom audit` reports description size, trigger quality,
      body-length outliers, eval/test coverage, and routing reachability.
-3. `backlog.d/070-clean-copied-skill-reference-quality.md`
+3. `backlog.d/083-clean-copied-skill-reference-quality.md`
    - Oracle: reference defects and stale examples are corrected before
      downstream `/seed` copies them into consumer repos.
 

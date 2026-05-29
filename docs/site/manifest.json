@@ -45,10 +45,6 @@
       "title": "`/groom audit` \u2014 skill quality coverage audit"
     },
     {
-      "source": "backlog.d/054-clean-context-philosophy-bench.md",
-      "title": "Clean-context dispatch for philosophy bench + critic"
-    },
-    {
       "source": "backlog.d/055-mcp-first-integration-doctrine.md",
       "title": "MCP-first integration doctrine"
     },
@@ -59,10 +55,6 @@
     {
       "source": "backlog.d/058-work-ledger-mission-control.md",
       "title": "Work ledger mission-control view"
-    },
-    {
-      "source": "backlog.d/060-rebrand-harness-library.md",
-      "title": "Rebrand the shared harness library"
     },
     {
       "source": "backlog.d/061-retire-global-static-agents.md",
@@ -91,10 +83,6 @@
     {
       "source": "backlog.d/069-harden-research-skill-runtime.md",
       "title": "Harden research skill runtime behavior"
-    },
-    {
-      "source": "backlog.d/070-clean-copied-skill-reference-quality.md",
-      "title": "Clean copied skill reference quality"
     },
     {
       "source": "backlog.d/070-observability-coverage-loop.md",
@@ -135,6 +123,10 @@
     {
       "source": "backlog.d/082-pi-roster-model-id-stale.md",
       "title": "Fix stale pi roster model id (OpenRouter kimi-k2.6 not found)"
+    },
+    {
+      "source": "backlog.d/083-clean-copied-skill-reference-quality.md",
+      "title": "Clean copied skill reference quality"
     }
   ],
   "copy_source": "docs/copy/site.json",
