@@ -1,8 +1,43 @@
 # AGENTS.md three-layer restructure + routing tables
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: M
+Shipped: 2026-05-29
+
+## Resolution
+
+Restructured `harnesses/shared/AGENTS.md` (the always-loaded global brain) into
+three signposted layers + standing contracts. 110 → 197 lines (structure is
+the deliverable; the oracle permits growth). Zero content lost.
+
+- **Layer 1 — Universal SWE Principles**: state-assumptions (first-class),
+  strategic design, TDD, delete-before-adding, test-behavior, **No internal
+  mocks** (first-class, promoted from cooper PR#120), root-cause,
+  do-not-lower-gates.
+- **Layer 2 — Agent Gotchas**: read-live/re-read-after-compaction,
+  plausible≠correct, fresh-context-beats-self-review, parallel-by-default,
+  stop-the-grind, continuous-codification, do-not-revert-user-work,
+  commission-agents.
+- **Layer 3 — Routing Tables**: 4 concrete trigger→action tables (subagent
+  type; delegate-or-solo; search-vs-research; critic & lens) naming real
+  tools/subagents/skills.
+- **Standing contracts kept standalone**: Roster (now self-declared as the
+  single source for 081's pointers), Files, Harness, Closeout, Red Lines.
+
+Coordination homes prepared: 061's dispatch doctrine lands in L2 + the Critic
+routing row; 081's pointers target the standalone Roster block.
+
+Lanes: codex (`83751bd8`) + grok-build (`8c836dff`) design — strong convergence
+on layer mapping, standalone-contract placement, gate-anchor preservation. A
+fresh adversarial critic verified zero content loss (full old→new bullet map)
+and every oracle clause. Gate anchors preserved: the 8 phrases
+check-agent-roster scans + the `## Roster` single-source heading. dagger 15/15.
+
+Downstream read-through (oracle clause): `misty-step/AGENTS.md` is already pure
+layer-4 (Project Structure, Build/Test commands, Coding Style, Testing,
+Commit/PR, Security) and restates none of the now-global L1/L2 doctrine —
+confirming the boundary is visibly clean.
 
 ## Goal
 

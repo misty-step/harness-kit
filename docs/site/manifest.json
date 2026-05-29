@@ -33,10 +33,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/051-agents-md-three-layer-restructure.md",
-      "title": "AGENTS.md three-layer restructure + routing tables"
-    },
-    {
       "source": "backlog.d/052-harness-kit-config-contract.md",
       "title": "`.harness-kit/*.yaml` repo-local config contract for `/flywheel`"
     },
