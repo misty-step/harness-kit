@@ -138,7 +138,7 @@ let the outer loop own the final session-level shipping brief.
 | Phase | Skill | What it owns | Skip when |
 |---|---|---|---|
 | shape | `/shape` | context packet, oracle, sequence | packet already has executable oracle |
-| implement | `/implement` | TDD red→green→refactor, commits on feature branch | — |
+| implement | `/implement` | TDD red→green→refactor + per-chunk milestone critic gate (AGENTS.md L2), commits on feature branch | — |
 | review | `/code-review` | parallel bench review, synthesized findings | — |
 | ci | `/ci` | dagger audit + green pipeline | `/ci` itself decides — do not pre-filter |
 | hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, or DRY hardening evidence | no phase issued a blocking hardening requirement, or an explicit waiver is recorded |

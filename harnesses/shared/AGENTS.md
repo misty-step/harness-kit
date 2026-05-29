@@ -68,6 +68,18 @@ Same-model self-critique is theater — a reviewer inheriting the author's
 context rationalizes the author's choices. Hand critics ONLY the artifact
 (diff + acceptance oracle), never your reasoning trail.
 
+### Dispatch: executor + critic by default
+Roles, not files. Most non-trivial work runs as ≥2 ad-hoc subagents — an
+**executor** that does the work and a fresh-context **critic** that tries to
+refute it; add a **planner** when the approach is non-obvious (planner →
+executor → critic). Name the role and, when useful, the lens
+(`references/lenses.md`); leave the persona to the primary, do not ship a file
+per role. Strong default, waived only for the same mechanical/trivial cases as
+the roster floor. **Milestone critic gate:** at each implementation milestone
+(chunk in the sequence) a fresh read-only critic sees only the diff + the
+packet oracle + the todo and must return no blocking gap before the work
+advances — skip only for trivial diffs (<20 LOC, single file).
+
 ### Parallel lanes by default
 When lanes do not depend on each other, run them in parallel: split scope,
 competing attempts, or reviewer/critic roles.

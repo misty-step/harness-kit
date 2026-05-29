@@ -21,6 +21,9 @@ You are the executive orchestrator.
 - Keep hypothesis ranking, root-cause proof, and fix selection on the lead model.
 - Delegate bounded evidence gathering and implementation to focused subagents.
 - Run parallel hypothesis probes when multiple plausible causes exist.
+- For design-quality root causes, dispatch an ad-hoc **lens** critic
+  (`harnesses/shared/references/lenses.md`) returning `finding · evidence
+  file:line · impact` — name the lens, no static agent file.
 
 ## Delegation Floor
 

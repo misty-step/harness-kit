@@ -90,6 +90,10 @@ Launch at least three subagents in parallel:
 - **Quality Auditor (Explore):** spot test/documentation gaps introduced by the diff
 
 Each subagent returns: top findings, one recommended change, confidence, risk.
+When a finding is a design-quality concern, dispatch the matching **lens** from
+`harnesses/shared/references/lenses.md` (ousterhout/grug for depth & complexity,
+carmack for scope, beck/cooper for test shape) as an ad-hoc critic returning
+`finding · evidence file:line · impact`.
 
 ### 3. Synthesize and choose
 

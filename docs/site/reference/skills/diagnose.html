@@ -44,6 +44,9 @@ You are the executive orchestrator.
 - Keep hypothesis ranking, root-cause proof, and fix selection on the lead model.
 - Delegate bounded evidence gathering and implementation to focused subagents.
 - Run parallel hypothesis probes when multiple plausible causes exist.
+- For design-quality root causes, dispatch an ad-hoc **lens** critic
+  (`harnesses/shared/references/lenses.md`) returning `finding · evidence
+  file:line · impact` — name the lens, no static agent file.
 
 ## Delegation Floor
 
@@ -69,8 +72,6 @@ delegation, or fewer than two available roster members.
 | Create GitHub issues from audit findings | `references/log-issues.md` |
 
 If first argument matches a domain name (stripe, quality, etc.), route to `references/audit.md`.
-If &quot;triage&quot;, &quot;incident&quot;, &quot;postmortem&quot;, &quot;production down&quot; → `references/triage.md`.
-If &quot;flaky&quot;, &quot;flake&quot;, &quot;intermittent&quot;, &quot;nondeterministic test&quot; → `references/flaky-test-investigation.md`.
 ...</code></pre>
     </section>
     <section class="checklist">

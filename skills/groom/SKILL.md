@@ -188,19 +188,19 @@ For the top 1-2 **shaped** packets (clear goal + oracle + sequence):
 - Capture the premise verdict, mandatory alternatives, outside voice.
 - If premise is reframed, rewrite the ticket or split into alternatives.
 
-### Technical-review bench — parallel agent fanout
+### Technical-review bench — parallel lens fanout
 
-Dispatch in parallel, single message, one subagent per persona:
-- `subagent_type: ousterhout` — module depth, information hiding,
-  shallow-wrapper smells.
-- `subagent_type: carmack` — scope discipline, shippability, YAGNI.
-- `subagent_type: grug` — unnecessary complexity, abstraction theater.
-- `subagent_type: beck` — TDD gaps, test-quality issues.
+Dispatch in parallel, single message, one ad-hoc critic per lens (read the
+lens from `harnesses/shared/references/lenses.md`; no static agent file):
+- **ousterhout** lens — module depth, information hiding, shallow-wrapper smells.
+- **carmack** lens — scope discipline, shippability, YAGNI.
+- **grug** lens — unnecessary complexity, abstraction theater.
+- **beck** lens — TDD gaps, test-quality issues.
 
-Scope each prompt to a concrete slice of recent code (see Codebase
-investigation below). Ask each: "what technical-debt ticket does the
-current backlog miss?" Surface every emission as a proposed new ticket
-with the reviewer's name in the `**Why:**`.
+Commission each critic with the lens's "looks for" from the rubric, scoped to a
+concrete slice of recent code (see Codebase investigation below). Ask each:
+"what technical-debt ticket does the current backlog miss?" Surface every
+emission as a proposed new ticket with the lens name in the `**Why:**`.
 
 ### Research — `/research` on unfamiliar territory
 

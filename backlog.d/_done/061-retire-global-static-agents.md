@@ -1,8 +1,47 @@
 # Subagent roles, not files: ad-hoc dispatch doctrine + milestone critic gate
 
 Priority: P0
-Status: ready
+Status: done
 Estimate: L
+Shipped: 2026-05-29
+
+## Resolution
+
+Delivered the additive **doctrine core**; split the risky retirement into
+`061b`. The "roles, not files" behavior ships now.
+
+SHIPPED (this commit):
+- `harnesses/shared/references/lenses.md` — single lens rubric (ousterhout,
+  carmack, grug, beck, cooper): essence + looks-for + failure-it-catches.
+- `harnesses/shared/AGENTS.md` Layer 2 **"Dispatch: executor + critic by
+  default"** — roles-not-files doctrine: executor+critic strong default,
+  planner/executor/critic triad, lens naming, mechanical/trivial waiver, and
+  the **milestone critic gate** (stated once, referenced elsewhere).
+- `skills/groom/SKILL.md` — bench rewired from `subagent_type: <persona>` to
+  ad-hoc lens dispatch reading the rubric; the oracle grep returns nothing.
+- `skills/implement/SKILL.md` — per-chunk milestone critic gate (fresh critic
+  sees diff+oracle+todo only; skip <20 LOC single-file).
+- `skills/deliver/SKILL.md` — names the milestone gate on its implement phase
+  (inherited by composition).
+- `skills/code-review`, `skills/refactor`, `skills/diagnose` — each states when
+  to dispatch which lens, points at the rubric, returns finding·evidence·impact.
+
+DEFERRED to `061b` (higher-risk, larger-surface — isolated focus + cross-harness
+bootstrap smoke required):
+- Retire the global static-agent install in `bootstrap.sh` except the a11y trio.
+- Delete `agents/{ousterhout,carmack,grug,beck,cooper}.md` and the role files
+  (planner/builder/critic).
+- Migrate remaining `subagent_type: critic/builder/planner` usages to ad-hoc
+  dispatch BEFORE deleting those files (they back live usage).
+
+Why split: deleting role agent files requires migrating every live
+`subagent_type:` usage first, and the bootstrap cleanup mutates `~/.claude/agents`
+globally with user-file-preservation logic — too risky to bundle with the
+additive doctrine. codex's full bootstrap design is captured in `061b`.
+
+Lanes: grok-build (`f11faf81`, lens rubric) + codex (`5d9d6443`, bootstrap
+design → 061b). Fresh critic verified split coherence + zero distillation
+errors + no dangling refs. dagger 15/15.
 
 ## Goal
 

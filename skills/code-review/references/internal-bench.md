@@ -6,6 +6,11 @@ on the diff and crafts tailored prompts for each.
 
 All reviewers run as **Explore type** (read-only).
 
+Each philosophy entry below is a **lens, not a static agent file**: read its
+rubric from `harnesses/shared/references/lenses.md` and dispatch an ad-hoc
+read-only critic embodying it (backlog 061, roles-not-files). Each returns
+findings as `finding · evidence file:line · impact`.
+
 ## Agent Catalog
 
 | Agent | Lens | Best For |

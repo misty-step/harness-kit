@@ -88,6 +88,14 @@ Spawn roster-backed **builder** lanes with:
 
 See `references/tdd-loop.md` for the full cycle and skip rules.
 
+**Milestone critic gate.** After each chunk's builder returns, dispatch a fresh
+read-only critic that sees ONLY the chunk diff + the packet oracle + the todo —
+never the builder's reasoning. It returns blocking gaps (oracle clause unmet,
+behavior lost, invariant violated). Do not advance to the next chunk until the
+critic returns no blocking gap, or the gap is explicitly waived in the
+Completion Gate. Skip for trivial diffs (<20 LOC, single file). This enforces
+the milestone gate defined in `harnesses/shared/AGENTS.md` (Layer 2 — Dispatch).
+
 ### 4. Verify exit conditions
 
 Before exiting, confirm:

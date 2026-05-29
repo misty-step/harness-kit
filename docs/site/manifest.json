@@ -53,8 +53,8 @@
       "title": "Work ledger mission-control view"
     },
     {
-      "source": "backlog.d/061-retire-global-static-agents.md",
-      "title": "Subagent roles, not files: ad-hoc dispatch doctrine + milestone critic gate"
+      "source": "backlog.d/061b-retire-global-static-agent-install.md",
+      "title": "Retire the global static-agent install (bootstrap allowlist + file deletion)"
     },
     {
       "source": "backlog.d/062-antigravity-cli-migration.md",
