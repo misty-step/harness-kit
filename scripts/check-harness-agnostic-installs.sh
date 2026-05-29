@@ -17,25 +17,6 @@ matches() {
   grep -nE "$pattern" "$@" >/dev/null
 }
 
-if matches 'into \.claude/ with no filtering' \
-  skills/seed/SKILL.md index.yaml; then
-  fail "seed must not describe repo installs as Claude-only"
-fi
-
-if matches 'Copy every skill in .+ into `?\.claude/skills/' \
-  skills/seed/SKILL.md; then
-  fail "seed must install into a shared skill root, not copy skills directly into .claude/skills/"
-fi
-
-if ! matches 'shared skill root|shared repo-local skill layer|shared skill layer' \
-  skills/seed/SKILL.md; then
-  fail "seed must name the shared skill root as the canonical install target"
-fi
-
-if ! matches '\.claude/skills/.+symlink|\.claude/skills/.+bridge|bridge layer' \
-  skills/seed/SKILL.md; then
-  fail "seed must describe .claude/skills as a bridge, not the source of truth"
-fi
 
 if matches 'GLOBAL_SKILLS=\(tailor seed\)|minimal global|/tailor or /seed|per-repo via /tailor' \
   bootstrap.sh README.md AGENTS.md CODEBASE.md; then

@@ -479,7 +479,11 @@ link_local() {
   # Per-entry symlinks make all first-party skills globally available while
   # preserving user-owned files in the harness skill dir.
   if [ -L "$skills_dir" ]; then
-    rm -f "$skills_dir"
+    local link_target
+    link_target="$(readlink "$skills_dir" || true)"
+    if [ -n "${HARNESS_KIT:-}" ] && [ "$link_target" = "$HARNESS_KIT/skills" ] || [ ! -e "$skills_dir" ]; then
+      rm -f "$skills_dir"
+    fi
   fi
 
   local skill src
@@ -529,6 +533,9 @@ link_local() {
         link_file_if_present "$harness_config/settings.json" "$harness_dir/settings.json" "settings.json"
         cleanup_symlinks_under_prefix "$harness_dir/prompts" "$HARNESS_KIT"
         remove_path_if_symlink_to_prefix "$harness_dir/persona.md" "$HARNESS_KIT" "persona.md"
+        ;;
+      antigravity-cli|antigravity-ide|antigravity)
+        link_file_if_present "$HARNESS_KIT/harnesses/shared/AGENTS.md" "$harness_dir/AGENTS.md" "AGENTS.md (← shared)"
         ;;
     esac
   fi
@@ -595,11 +602,25 @@ cleanup_source_skill_bridges
 
 installed=0
 
-for harness in claude codex pi; do
-  harness_dir="$HOME/.$harness"
+for harness in claude codex pi antigravity-cli antigravity-ide antigravity; do
+  case "$harness" in
+    antigravity-cli) harness_dir="$HOME/.gemini/antigravity-cli" ;;
+    antigravity-ide) harness_dir="$HOME/.gemini/antigravity-ide" ;;
+    antigravity)     harness_dir="$HOME/.gemini/antigravity" ;;
+    *)               harness_dir="$HOME/.$harness" ;;
+  esac
 
   # Detect harness
-  if [ ! -d "$harness_dir" ] && ! command -v "$harness" &>/dev/null; then
+  detected=0
+  if [ -d "$harness_dir" ]; then
+    detected=1
+  elif [ "$harness" = "antigravity-cli" ] && command -v agy &>/dev/null; then
+    detected=1
+  elif [ "$harness" != "antigravity-cli" ] && [ "$harness" != "antigravity-ide" ] && [ "$harness" != "antigravity" ] && command -v "$harness" &>/dev/null; then
+    detected=1
+  fi
+
+  if [ "$detected" -eq 0 ]; then
     continue
   fi
 

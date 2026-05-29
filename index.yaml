@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-05-28T19:34:42Z
+# Generated: 2026-05-29T18:53:50Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -99,10 +99,6 @@ skills:
     description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
-  - name: seed
-    description: "Vendor the system-wide Harness Kit catalog into the current repo when a project needs checked-in local copies instead of relying on global bootstrap symlinks. Copies first-party skills and agents into"
-    source: first-party
-    tags: [a,agents,bootstrap,catalog,checked-in,copies,current,first-party,global,harness]
   - name: settle
     description: "Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Doe"
     source: first-party

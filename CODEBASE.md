@@ -14,9 +14,6 @@ skills + agents + shared doctrine
 bootstrap installs every first-party skill and the provider roster system-wide
         |
         v
-optional /seed vendors local copies when a repo needs checked-in harness state
-        |
-        v
 backlog.d work flows through /groom -> /shape -> /deliver -> /settle -> /ship
         |
         v
@@ -94,10 +91,6 @@ directories, including references, scripts, and evals. Claude settings are
 copied, not symlinked, because Claude mutates `settings.json` at runtime.
 Roster helpers prefer a repo-local `.harness-kit/agents.yaml` when present, then
 fall back to the system `~/.harness-kit/agents.yaml` installed by bootstrap.
-
-`/seed` remains as an explicit repo-local vendoring path for projects that need
-checked-in harness state, offline operation, or reviewable local copies. It is
-not the default way to consume Harness Kit.
 
 ### Registry And Externals
 
@@ -224,10 +217,7 @@ to point at a specific checkout instead of the stable default search path.
 `HARNESS_KIT_DIR` pins global harness symlinks to a specific checkout.
 
 For a new or existing repo that should consume Harness Kit, bootstrap is normally
-enough. Run `/seed` only when the repo needs checked-in local copies, offline
-operation, or a reviewable vendored harness layer. Treat `.agents/skills/` as
-the optional repo-local shared skill root, with `.claude/skills/`,
-`.codex/skills/`, and Pi config as bridges.
+enough.
 
 For Harness Kit development:
 

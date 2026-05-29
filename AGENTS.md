@@ -17,9 +17,8 @@ disk; do not restate obvious filesystem facts.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
 - Harness Kit source skills live only in `skills/`. Do not commit source-repo
-  `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, or `.pi/skills/`
-  bridges; those are `/seed` output for consumer repos and duplicate the global
-  install here.
+  `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, `.pi/skills/`, or
+  `.antigravitycli/skills/` bridges; those duplicate the global install here.
 
 ## Roster Floor
 
@@ -84,7 +83,7 @@ the active skill with a role, scope, output shape, and boundaries.
 
 ## Red Lines
 
-- Cross-harness first: Claude, Codex, Pi. Harness-native features are
+- Cross-harness first: Claude, Codex, Pi, Antigravity. Harness-native features are
   optimizations, not the primary layer.
 - Skills are self-contained: scripts/libs/references live under the skill.
 - No claim primitives under `skills/`.

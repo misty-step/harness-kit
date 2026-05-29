@@ -43,7 +43,6 @@ Primitives:
 - skill:refactor | skills/refactor/SKILL.md | docs/site/reference/skills/refactor.html
 - skill:reflect | skills/reflect/SKILL.md | docs/site/reference/skills/reflect.html
 - skill:research | skills/research/SKILL.md | docs/site/reference/skills/research.html
-- skill:seed | skills/seed/SKILL.md | docs/site/reference/skills/seed.html
 - skill:settle | skills/settle/SKILL.md | docs/site/reference/skills/settle.html
 - skill:shape | skills/shape/SKILL.md | docs/site/reference/skills/shape.html
 - skill:ship | skills/ship/SKILL.md | docs/site/reference/skills/ship.html

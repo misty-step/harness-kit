@@ -24,3 +24,6 @@ skills/.external/
 
 # Provider CLI runtime metadata.
 .antigravitycli/
+.claude/
+.codex/
+.pi/

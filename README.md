@@ -1,7 +1,7 @@
 # Harness Kit
 
 29 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
-software development. One repo. All harnesses (Claude Code, Codex, Pi).
+software development. One repo. All harnesses (Claude Code, Codex, Pi, Antigravity).
 
 Harness Kit is an operator-facing harness primitive library, not a buyer-facing
 governed workflow package or admin-control plane. Read
@@ -84,7 +84,7 @@ the generated-site check passes.
 harness-kit/
 ├── skills/        # Canonical skill catalog
 ├── agents/        # Agent definitions
-├── harnesses/     # Per-harness configs (claude/, codex/, pi/)
+├── harnesses/     # Per-harness configs (claude/, codex/, pi/, antigravity-cli/, antigravity-ide/)
 │   └── shared/    # Common engineering principles
 ├── registry.yaml  # External skill sources (for embeddings)
 └── bootstrap.sh   # Discovers skills/agents/roster, symlinks to system harness dirs

@@ -54,6 +54,8 @@ For recurring UI work, use the references:
 
 - `references/design-system.md` for token and component-system judgment.
 - `references/taste-layer.md` for aesthetic direction and anti-generic critique.
+- `references/anti-slop.md` for the checkable list of AI design tells, the
+  VARIANCE/MOTION/DENSITY dials, and the pre-emit gate.
 - `references/interface-polish.md` for micro-polish checks.
 - `references/ui-surface-routing.md` for workflow composition.
 
