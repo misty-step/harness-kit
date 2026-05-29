@@ -33,14 +33,14 @@ providers:
     tier: primary
     kind: cli
     probe: pi --version
-    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
     output: json
-    model: openrouter/moonshotai/kimi-k2.6
+    model: openrouter/moonshotai/kimi-k2.5
     reasoning: xhigh
     permissions: full read bash edit write grep find ls tool list
     worktree: recommended
-    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
-    notes: Pi coding agent; default to a current SOTA open-weight lane and revisit the model regularly.
+    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    notes: Pi coding agent; SOTA open-weight lane. Pinned to kimi-k2.5 because pi's native model registry recognizes it (thinking + tools, 262K ctx) so the lane resolves clean. kimi-k2.6 is newer but absent from pi's registry, so pi routes it as a "custom model id" and prints a benign "not found for provider openrouter" warning that is NOT a failure (the lane still answers) — judge lane health by transcript content + exit code, not that warning. Revisit when pi's registry adds k2.6+.
   agy:
     tier: conditional
     kind: cli

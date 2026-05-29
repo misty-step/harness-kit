@@ -121,10 +121,6 @@
       "title": "Extract shared doctrine to a single source: kill the 19-skill copy-paste"
     },
     {
-      "source": "backlog.d/082-pi-roster-model-id-stale.md",
-      "title": "Fix stale pi roster model id (OpenRouter kimi-k2.6 not found)"
-    },
-    {
       "source": "backlog.d/083-clean-copied-skill-reference-quality.md",
       "title": "Clean copied skill reference quality"
     }

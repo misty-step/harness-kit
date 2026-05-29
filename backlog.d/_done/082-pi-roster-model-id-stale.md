@@ -1,8 +1,25 @@
 # Fix stale pi roster model id (OpenRouter kimi-k2.6 not found)
 
 Priority: P2
-Status: ready
+Status: done
 Estimate: S
+Shipped: 2026-05-29
+
+## Resolution
+
+Pinned `pi` to `moonshotai/kimi-k2.5` (was k2.6). Root cause: k2.6 is absent
+from pi's native model registry, so pi routed it as a "custom model id" and
+printed a benign `not found for provider openrouter` warning that the groom
+session misread as a hard failure (the lane actually answered). k2.5 IS in
+pi's registry with thinking + tools + 262K ctx — the only Kimi id pi
+recognizes that supports both flags the lane uses. Verified: clean smoke
+(transcript ` PI_SMOKE_OK`, no warning, succeeded receipt 69b2f6b3); system
+roster updated automatically (it symlinks this file); bootstrap.sh:295-298
+also propagates to ~/.harness-kit + legacy. opencode/DeepSeek lane id
+(`deepseek/deepseek-v4-pro`) confirmed valid on OpenRouter — no fix needed.
+dagger check 15/15. Delegation floor: config-only change grounded in
+authoritative sources (OpenRouter API + pi registry + 2 live pi smokes) —
+mechanical exception.
 
 ## Goal
 
