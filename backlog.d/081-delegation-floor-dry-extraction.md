@@ -13,6 +13,23 @@ each cross-cutting contract ONCE in `harnesses/shared/`, and replace every
 per-skill copy with a one-line pointer. A policy change should be a one-file
 edit, not a 19-file sweep.
 
+## Blocker found (2026-05-29) — NOT a mechanical sweep
+
+`scripts/check-agent-roster.py` (`delegation_floor_section()` +
+`DELEGATION_FLOOR_REQUIREMENTS`, ~line 37/85) **enforces** that every
+`CORE_WORKFLOW_SKILLS` entry contains a full `## Delegation Floor` section with
+the phrases `two or more`, `mechanical`, `emergency`, `user-forbidden`, `fewer
+than two`, `lane`, context (`give`/`scope`), `receipt`/`evidence`, `lead`. That
+is exactly the duplication 081 wants to delete — so replacing each paragraph
+with a one-line pointer makes the roster gate go RED. 081 must therefore
+**redesign that gate first**: accept either (a) a full section OR (b) a
+one-line pointer to the shared single source, and validate the canonical phrases
+ONCE against `harnesses/shared/AGENTS.md` (## Roster, the single source 051
+established). Live count is now **20** skills (grep `provider roster is
+available`), completion-gate **8**, clean-tree **2** (settle redirect dropped
+its copies). 051 dependency is satisfied. codex design lane dispatched for the
+gate redesign + pointer pattern (transcript in `.harness-kit/traces`).
+
 ## Non-Goals
 
 - Do NOT change the doctrine's meaning. This is a move + dedupe, not a rewrite.
