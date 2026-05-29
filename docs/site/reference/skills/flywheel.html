@@ -25,23 +25,28 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-operate"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>flywheel</h1>
-      <p class="lede">Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p>
+      <p class="lede">Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p>
       <p><code class="trigger large">/flywheel</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/flywheel/SKILL.md">skills/flywheel/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: &quot;flywheel&quot;, &quot;run the outer loop&quot;, &quot;next N items&quot;, &quot;overnight queue&quot;, &quot;cycle&quot;. Trigger: /flywheel.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-operate"></use></svg><h3>Workflow role</h3><p>Operate primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
       <h2>Source contract preview</h2>
       <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
       <pre class="source-excerpt"><code>Compose cycles of: pick a backlog item → `/shape` (if unshaped) →
-`/implement` → `/yeet` → `/settle` → `/ship` → `/monitor` → loop.
+`/implement` → `/yeet` → `/deliver --polish-only` → `/ship` → `/monitor` →
+loop.
 
 Abbreviated form using the convenience composer:
 pick → `/deliver` → `/yeet` → `/ship` → `/monitor` → loop.
-(`/deliver` = `/shape` → `/implement` → `/settle`.)
+(`/deliver` = `/shape` → `/implement` → clean loop; `/deliver --polish-only`
+runs that same clean loop on an existing branch.)
+
+&gt; Migration: the polish step was `/settle` until backlog 080 collapsed it into
+&gt; `/deliver --polish-only`; `/settle` is a deprecated redirect for one release.
 
 You already know how to do each of these. This skill exists only to
 encode the invariants that aren&#x27;t inferable from the leaf names.
@@ -67,9 +72,6 @@ encode the invariants that aren&#x27;t inferable from the leaf names.
 When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/flywheel` verifies that each
 substantive lifecycle phase used two or more roster members or recorded a
 valid exception. It remains the outer-loop manager; leaf skills own dispatch.
-For outer-loop judgments, use lanes for cycle strategy and risk critique, give
-them only the cycle manifest, backlog packet, and relevant receipts, and keep
-final phase selection with the lead. Direct lead-only flywheel work is limited
 ...</code></pre>
     </section>
     <section class="checklist">

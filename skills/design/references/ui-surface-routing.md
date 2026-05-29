@@ -51,9 +51,9 @@ skippable. Prefer the detector helper when available; if the detector returns
 to the usual review, CI, refactor, and QA phases. If the detector errors, fall
 back to manual path inspection.
 
-`/settle` should use the same detector during its precondition and review
-passes. A UI branch is not ship-ready until design/a11y evidence is either
-recorded or explicitly waived with a repo-fit reason.
+`/deliver --polish-only` uses the same detector during its precondition and
+review passes. A UI branch is not ship-ready until design/a11y evidence is
+either recorded or explicitly waived with a repo-fit reason.
 
 ## Evidence
 

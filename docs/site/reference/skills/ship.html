@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-ship"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>ship</h1>
-      <p class="lede">Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /settle has already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /settle first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p>
+      <p class="lede">Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /deliver (or /deliver --polish-only) already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /deliver --polish-only first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p>
       <p><code class="trigger large">/ship</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/ship/SKILL.md">skills/ship/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /settle has already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /settle first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /deliver (or /deliver --polish-only) already left the branch merge-ready — ship does not run CI, code-review, or refactor itself. If those aren&#x27;t done, run /deliver --polish-only first. Use when: &quot;ship it&quot;, &quot;merge and close out&quot;, &quot;final mile&quot;, &quot;land and reflect&quot;, &quot;finish this ticket&quot;. Trigger: /ship.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-ship"></use></svg><h3>Workflow role</h3><p>Ship primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -54,20 +54,20 @@ into the repo. One command from &quot;green&quot; to &quot;shipped and learned f
    `harness/reflect-outputs` branch for human review. This is a hard
    invariant from `reflect/SKILL.md`.
 5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
-   `/settle` already proved the branch clean. If `/settle` wasn&#x27;t run,
-   refuse and route the operator back.
+   `/deliver --polish-only` already proved the branch clean. If it wasn&#x27;t
+   run, refuse and route the operator back.
 6. **Roster receipts are required evidence.** In repos with
-   `.harness-kit/agents.yaml`, verify that `/settle` or the documented
-   landability evidence includes two or more roster-member receipts or an
-   explicit exception before final-mile merge work.
+   `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
+   documented landability evidence includes two or more roster-member receipts
+   or an explicit exception before final-mile merge work.
 
 ## Delegation Floor
 
 When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/ship` does not normally dispatch
 providers; it verifies upstream roster receipts and includes them in
 `/reflect`. If final-mile work surfaces substantive judgment, route back to
-`/settle` or dispatch two or more roster members before proceeding. Use lanes
-for release-risk critique and closure-state review, give them the merge-ready
+`/deliver --polish-only` or dispatch two or more roster members before
+proceeding. Use lanes
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-05-29T18:53:50Z
+# Generated: 2026-05-29T21:46:39Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -52,9 +52,9 @@ skills:
     source: first-party
     tags: [analysis,audit,auditing,cause,debugging,domain,fix,four-phase,hypothesis,incident]
   - name: flywheel
-    description: "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /settle, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invok"
+    description: "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel"
     source: first-party
-    tags: [archive,backlog,closure,composes,flywheel,harness,implement,in,invok,item]
+    tags: [--polish-only,archive,backlog,closure,composes,deliver,flywheel,harness,implement,in]
   - name: groom
     description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel in"
     source: first-party
@@ -100,9 +100,9 @@ skills:
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
   - name: settle
-    description: "Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Doe"
+    description: "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> — the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into delive"
     source: first-party
-    tags: [a,at,branch,ci,code,code-review,doe,feature,green,is]
+    tags: [-,--polish-only,080,backlog,branch,collapsed,delive,deliver,deprecated,existing]
   - name: shape
     description: "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"pl"
     source: first-party

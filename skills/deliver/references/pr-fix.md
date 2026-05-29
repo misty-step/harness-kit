@@ -1,4 +1,7 @@
-# Phase 1: Fix — Unblock the PR
+# PR Fix — Unblock the PR
+
+Polish-only PR-mode comment-triage reference (absorbed from the former
+`/settle`). Get a blocked PR to green; then the clean loop polishes it.
 
 Get from blocked to green. Conflicts resolved, CI passing, every review comment addressed.
 
@@ -79,7 +82,7 @@ These are not fixes. They are debt with compound interest.
 
 ### Reading Protocol
 
-**Run `skills/settle/scripts/fetch-pr-reviews.sh <PR>` first.** This script
+**Run `skills/deliver/scripts/fetch-pr-reviews.sh <PR>` first.** This script
 deterministically fetches ALL review bodies, inline comments, and PR
 conversation in full. Read the complete output before classifying anything.
 
@@ -164,9 +167,9 @@ in the same PR.
 Address comments **one at a time**, not in batches. Fix → commit → reply
 → next comment. Batch replies encourage bulk dismissal and skip evaluation.
 
-## Async Settlement
+## Wait for async automation
 
-After pushing fixes, do not declare Phase 1 complete. Automation may
+After pushing fixes, do not declare the fix pass complete. Automation may
 still be running:
 
 **GitHub mode:**
@@ -181,7 +184,7 @@ still be running:
 
 ### Merge-Readiness Gate
 
-Before exiting Phase 1:
+Before declaring the branch unblocked:
 
 **GitHub mode:**
 ```bash
@@ -197,11 +200,11 @@ dagger call check
 Verify: verdict ref exists with SHA matching HEAD, Dagger CI green.
 If no verdict exists, run `/code-review` first to generate one.
 
-If any condition fails, address the gap or escalate. Do not proceed to Phase 2.
+If any condition fails, address the gap or escalate before polishing.
 
 ## Exit Criteria
 
-Phase 1 is complete when ALL of:
+The PR-fix pass is complete when ALL of:
 
 - [ ] No merge conflicts
 - [ ] CI green (all checks passing, not pending)
@@ -209,4 +212,4 @@ Phase 1 is complete when ALL of:
 - [ ] No open/unresolved review threads
 - [ ] Merge-readiness gate passes
 
-If already green and settled on entry, skip to Phase 2.
+If already green on entry, skip straight to the polish pass (`pr-polish.md`).

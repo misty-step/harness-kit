@@ -22,7 +22,7 @@ code correctness. If CI is weak (no type check, shallow tests, no coverage
 floor), green means nothing. So this skill **audits first, then runs**.
 
 Stops at green CI. Does not review code semantics (→ `/code-review`), does
-not address review comments (→ `/settle`), does not ship.
+not address review comments (→ `/deliver --polish-only`), does not ship.
 
 ## Modes
 
@@ -155,7 +155,7 @@ new thresholds before the skill returns clean.
 
 - Review code semantics → `/code-review`
 - Shape tickets or write specs → `/shape`
-- Address review comments or coordinate merges → `/settle` (for now)
+- Address review comments or coordinate merges → `/deliver --polish-only`
 - Deploy or release → `/deploy`
 - QA against a running app → `/qa`
 - Write new test frameworks — uses what the repo has

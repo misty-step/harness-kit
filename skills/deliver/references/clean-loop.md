@@ -2,7 +2,8 @@
 
 The clean loop runs `/code-review`, `/ci`, `/refactor`, conditional
 `/design` + `/a11y`, and `/qa` iteratively until all green, capped at
-**3 iterations**.
+**3 iterations**, then a final **hindsight sanity pass** before declaring
+merge-ready.
 
 ## Iteration Cap
 
@@ -48,7 +49,21 @@ A phase is **dirty** when:
    manually instead of treating the detector failure as "no UI".
 5. Run `/qa` — skip when the diff has no user-facing surface (pure
    library / infra / refactor).
-6. If all phases are green → exit 0, `merge_ready`. Else increment iteration
+6. **Hindsight sanity pass.** Once the phases are green, read the full branch
+   diff one last time with fresh eyes — `git diff $(git merge-base HEAD
+   <base>)...HEAD` — and ask **"what production embarrassment would justify
+   rejection here?"** Look for shallow modules, pass-through layers, hidden
+   coupling, tests asserting implementation instead of behavior, stale
+   comments/docs in changed areas, and debug artifacts the phases missed. If
+   anything non-trivial surfaces, fix it and return to step 1 (it counts
+   against the cap). This is the named successor to `/settle`'s adversarial
+   self-review; it is distinct from a `/critique` lens dispatch. Skip only for
+   trivial diffs (<20 LOC, single file).
+7. **Verdict-ref freshness** (only if `scripts/lib/verdicts.sh` exists):
+   confirm `refs/verdicts/<branch>` reads `ship`/`conditional` and its SHA
+   matches HEAD. A stale SHA means changes landed after review → return to
+   step 1.
+8. If all gates are green → exit 0, `merge_ready`. Else increment iteration
    counter and repeat from step 1.
 
 ## Escalation Protocol

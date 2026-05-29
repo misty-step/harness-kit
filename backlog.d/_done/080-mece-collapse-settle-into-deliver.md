@@ -1,8 +1,37 @@
 # Collapse settle into deliver: one merge-readiness owner
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: M
+Shipped: 2026-05-29
+
+## Resolution
+
+Collapsed `/settle` into `/deliver --polish-only` — `/deliver` is now the
+single owner of "existing branch → merge-ready." Net −181 LOC.
+
+- New `--polish-only <branch|PR>` entry shim (`skills/deliver/SKILL.md` +
+  `references/polish-only.md`): validates an existing branch/PR, skips
+  shape+implement, enters the same clean loop / receipt / 3-iteration cap.
+  Does not inline phase logic (deliver's hard invariant holds).
+- Absorbed settle behaviors into the shared clean loop: **hindsight sanity
+  pass** (renamed from "adversarial self-review", distinct from `/critique`) +
+  verdict-ref freshness (`clean-loop.md`). PR-mode comment triage + full-fetch
+  + `gh pr checks` live in `polish-only.md` (kept out of the generic loop).
+- Moved settle's owned files into deliver: `references/pr-fix.md`,
+  `references/pr-polish.md`, `scripts/fetch-pr-reviews.sh`; deleted the
+  `simplify.md` moved-stub.
+- `/settle`, `/pr-fix`, `/pr-polish` are now a deprecation redirect (one
+  release). Rewired `/flywheel` (migration note only) + prose pointers in
+  ci/code-review/deploy/design/implement/ship.
+
+Lanes: codex (`a50b6837`) + grok-build (`7f6464da`) ran read-only
+design+regression critique with strong convergence (entry-shim not 2nd loop;
+cap stays 3; move pr files; redirect-then-delete is the right migration). A
+fresh adversarial critic on the diff caught 3 blocking gaps — stale
+`check-agent-roster` (settle still in workflow lists), stale `docs/site`, and
+leftover `/settle` Phase 1/2 vocab in the moved docs — all fixed. dagger check
+15/15.
 
 ## Goal
 

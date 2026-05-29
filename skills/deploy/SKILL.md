@@ -195,6 +195,6 @@ containing `bootstrap.sh` AND `skills/` AND no `.harness-kit/deploy.yaml`.
 - `/flywheel` — outer-loop caller; passes merged sha + env
 - `/monitor` — consumes this receipt, decides on rollback
 - `/diagnose` — triages anomalies post-deploy
-- `/settle` / `/land` — merge gate that must pass before `/deploy` runs
+- `/deliver --polish-only` — merge gate that must pass before `/deploy` runs
 - `references/targets.md` — platform-specific recipes
 - `references/repo-config.md` — config schema and detection rules

@@ -183,20 +183,20 @@ in the target project root (create `.groom/` if needed):
 
 ## Verdict Ref (git-native review proof)
 
-After scoring, record the verdict as a git ref so `/settle` and pre-merge hooks
-can enforce review requirements without GitHub PRs.
+After scoring, record the verdict as a git ref so `/deliver --polish-only` and
+pre-merge hooks can enforce review requirements without GitHub PRs.
 
 ```bash
 source scripts/lib/verdicts.sh
 verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|conditional|dont-ship>","reviewers":[...],"scores":{...},"sha":"<HEAD-sha>","date":"<ISO-8601>"}'
 ```
 
-- Write on every review, not just "ship" — "dont-ship" verdicts block `/settle --land`.
+- Write on every review, not just "ship" — "dont-ship" verdicts block pre-merge callers (`/deliver --polish-only` and the pre-merge hook).
 - The `sha` field MUST be `git rev-parse HEAD` at the time of review. If the branch
-  gets new commits after review, the verdict is stale and `/settle` will re-trigger review.
+  gets new commits after review, the verdict is stale and `/deliver --polish-only` will re-trigger review.
 - Verdict refs live under `refs/verdicts/<branch>` and sync via `git push/fetch`.
 - Also write a copy to `.evidence/<branch>/<date>/verdict.json` for browsability.
-- The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook, `/settle --land`), never inside `/code-review`.
+- The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
 
 Skip this step if `scripts/lib/verdicts.sh` does not exist in the target project
 (Harness Kit-only feature, not expected in downstream repos).

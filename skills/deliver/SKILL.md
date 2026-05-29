@@ -8,9 +8,11 @@ description: |
   Every run also ends with a tight operator-facing brief plus a full
   /reflect session.
   Use when: building a shaped ticket, "deliver this", "make it merge-ready",
-  driving one backlog item through review + CI + QA.
+  driving one backlog item through review + CI + QA. Also `--polish-only
+  <branch|PR>` to polish an existing branch/PR to merge-ready ("polish this",
+  "fix CI", "address PR reviews") — the absorbed former /settle loop.
   Trigger: /deliver.
-argument-hint: "[backlog-item|issue-id] [--resume <ulid>] [--abandon <ulid>] [--state-dir <path>]"
+argument-hint: "[backlog-item|issue-id] [--polish-only <branch|PR>] [--resume <ulid>] [--abandon <ulid>] [--state-dir <path>]"
 ---
 
 # /deliver
@@ -147,6 +149,33 @@ let the outer loop own the final session-level shipping brief.
 Each skill has its own contract and receipt. `/deliver` reads those
 receipts; it never re-implements the phase.
 
+## Polish-Only Mode
+
+`/deliver --polish-only <branch|PR>` is the single owner of "existing branch →
+merge-ready." It is the absorbed former `/settle` (collapsed per backlog 080).
+Use it to pick up a branch or PR that already has code and drive it green —
+no fresh ticket, no `/shape`, no `/implement`.
+
+- **Entry, not a second loop.** Polish-only resolves and validates the target
+  (feature branch with commits beyond base; clean tree; no rebase/merge in
+  progress), **skips `/shape` + `/implement`**, and enters the *same* clean loop
+  with the *same* `receipt.json` contract, exit codes, and 3-iteration cap.
+  It never re-implements a phase — the hard invariant still holds.
+- **PR mode.** When the target is a PR number (or `gh pr view` succeeds), the
+  clean loop ingests full PR review bodies via
+  `scripts/fetch-pr-reviews.sh` and remote check state via `gh pr checks`
+  before `/code-review`, and dispositions every comment (fix / defer to
+  `backlog.d/` / reject-after-steelman, one at a time). Full protocol:
+  `references/polish-only.md` + `references/pr-fix.md`.
+- **Same closeout.** Unlike the old `/settle`, polish-only ends with the full
+  `/deliver` closeout: brief + `/reflect`. This is intentional — one
+  merge-readiness contract, deliberately heavier than the old settle loop.
+- **Aliases.** `/pr-fix` and `/pr-polish` route here (via the `/settle`
+  redirect during the deprecation window).
+
+See `references/polish-only.md` for the entry protocol, PR-mode detail, and
+settle-parity checks (hindsight sanity pass, verdict-ref freshness).
+
 ## Cross-Cutting Invariants
 
 - **No claims.** Dropped per operating principle. Single local workspace.
@@ -240,6 +269,12 @@ Full protocol: `references/durability.md`.
   `.harness-kit/deliver/` conventions
 - `references/branch.md` — branch-naming, HEAD-detection, no-push rule
 - `references/worktree.md` — state-root resolution, concurrent worktrees
+- `references/polish-only.md` — `--polish-only` entry protocol, PR-mode
+  detection, settle-parity checks (hindsight sanity pass, verdict-ref)
+- `references/pr-fix.md` — PR comment triage + disposition (moved from
+  `/settle`; used by polish-only PR mode)
+- `references/pr-polish.md` — deep hindsight smell catalog + confidence
+  assessment (moved from `/settle`; `/qa` + `/hardening` own test depth)
 
 ## Non-Goals
 

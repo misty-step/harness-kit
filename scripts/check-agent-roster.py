@@ -28,7 +28,6 @@ CORE_WORKFLOW_SKILLS = [
     "refactor",
     "reflect",
     "research",
-    "settle",
     "shape",
     "ship",
     "yeet",
@@ -59,7 +58,6 @@ ADVERSARIAL_REVIEW_SKILLS = [
     "code-review",
     "implement",
     "qa",
-    "settle",
     "shape",
 ]
 

@@ -4,9 +4,9 @@ description: |
   Final mile. Take a merge-ready branch to shipped: squash-merge, archive
   the backlog ticket(s) with Closes-backlog trailers preserved into the
   merge commit, update touched docs, run /reflect, and apply its outputs.
-  Assumes /settle has already left the branch merge-ready — ship does not
-  run CI, code-review, or refactor itself. If those aren't done, run
-  /settle first.
+  Assumes /deliver (or /deliver --polish-only) already left the branch
+  merge-ready — ship does not run CI, code-review, or refactor itself. If
+  those aren't done, run /deliver --polish-only first.
   Use when: "ship it", "merge and close out", "final mile", "land and
   reflect", "finish this ticket".
   Trigger: /ship.
@@ -33,19 +33,20 @@ into the repo. One command from "green" to "shipped and learned from."
    `harness/reflect-outputs` branch for human review. This is a hard
    invariant from `reflect/SKILL.md`.
 5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
-   `/settle` already proved the branch clean. If `/settle` wasn't run,
-   refuse and route the operator back.
+   `/deliver --polish-only` already proved the branch clean. If it wasn't
+   run, refuse and route the operator back.
 6. **Roster receipts are required evidence.** In repos with
-   `.harness-kit/agents.yaml`, verify that `/settle` or the documented
-   landability evidence includes two or more roster-member receipts or an
-   explicit exception before final-mile merge work.
+   `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
+   documented landability evidence includes two or more roster-member receipts
+   or an explicit exception before final-mile merge work.
 
 ## Delegation Floor
 
 When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/ship` does not normally dispatch
 providers; it verifies upstream roster receipts and includes them in
 `/reflect`. If final-mile work surfaces substantive judgment, route back to
-`/settle` or dispatch two or more roster members before proceeding. Use lanes
+`/deliver --polish-only` or dispatch two or more roster members before
+proceeding. Use lanes
 for release-risk critique and closure-state review, give them the merge-ready
 evidence and backlog state, and record receipt evidence for accepted and
 rejected advice. Direct lead-only shipping is limited to mechanical git
@@ -62,7 +63,7 @@ Assert at start; refuse with a clear reason on any miss.
   The numeric capture is the **primary backlog ID** being shipped.
 - Working tree clean (`git status --short` empty).
 - If a PR exists for the branch: `gh pr view --json mergeable,mergeStateStatus`
-  reports mergeable. A conflicted or blocked PR means `/settle` isn't done.
+  reports mergeable. A conflicted or blocked PR means `/deliver --polish-only` isn't done.
 - Landability evidence exists for this exact HEAD. Acceptable evidence:
   GitHub mode has a mergeable PR with green required checks; git-native
   mode has a `ship` or `conditional` verdict; or git-native mode has
@@ -323,8 +324,9 @@ the merge. Behavior is otherwise identical: squash-only, trailer-preserving.
 
 ## Interactions
 
-- **Upstream:** `/settle` leaves the branch merge-ready. `/ship` assumes
-  that work is done; it does not re-run CI, code-review, or refactor.
+- **Upstream:** `/deliver --polish-only` leaves the branch merge-ready.
+  `/ship` assumes that work is done; it does not re-run CI, code-review, or
+  refactor.
 - **Invokes:** `/reflect cycle` for retro, backlog mutations, and
   harness proposals.
 - **Invoked by:** `/flywheel` as the landing + reflection stage of each

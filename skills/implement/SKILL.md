@@ -141,7 +141,7 @@ behavior the implementation changes.
 - QA against the running app (→ `/qa`)
 - CI gates / lint (→ `/ci`)
 - Simplification passes beyond TDD refactor (→ `/refactor`)
-- Ship, merge, deploy (→ human, or `/settle`)
+- Ship, merge, deploy (→ human, or `/deliver --polish-only` → `/ship`)
 
 ## Stopping Conditions
 

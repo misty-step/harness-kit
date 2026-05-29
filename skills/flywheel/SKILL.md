@@ -2,8 +2,8 @@
 name: flywheel
 description: |
   Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet,
-  /settle, /ship, and /monitor per backlog item. Closure (archive,
-  reflect, harness routing) lives in /ship; flywheel does not invoke
+  /deliver --polish-only, /ship, and /monitor per backlog item. Closure
+  (archive, reflect, harness routing) lives in /ship; flywheel does not invoke
   /reflect directly.
   Use when: "flywheel", "run the outer loop", "next N items",
   "overnight queue", "cycle".
@@ -14,11 +14,16 @@ argument-hint: "[--max-cycles N]"
 # /flywheel
 
 Compose cycles of: pick a backlog item → `/shape` (if unshaped) →
-`/implement` → `/yeet` → `/settle` → `/ship` → `/monitor` → loop.
+`/implement` → `/yeet` → `/deliver --polish-only` → `/ship` → `/monitor` →
+loop.
 
 Abbreviated form using the convenience composer:
 pick → `/deliver` → `/yeet` → `/ship` → `/monitor` → loop.
-(`/deliver` = `/shape` → `/implement` → `/settle`.)
+(`/deliver` = `/shape` → `/implement` → clean loop; `/deliver --polish-only`
+runs that same clean loop on an existing branch.)
+
+> Migration: the polish step was `/settle` until backlog 080 collapsed it into
+> `/deliver --polish-only`; `/settle` is a deprecated redirect for one release.
 
 You already know how to do each of these. This skill exists only to
 encode the invariants that aren't inferable from the leaf names.

@@ -1,6 +1,9 @@
 # pr-polish
 
-Elevate a working PR from "CI green" to "exemplary." Phase 2 of /settle.
+Elevate a working PR from "CI green" to "exemplary." The deep reference for
+`/deliver --polish-only`'s hindsight sanity pass (absorbed from the former
+`/settle` Phase 2). Test-depth and coverage are owned by `/qa` and
+`/hardening` — this doc is the architectural-hindsight + confidence lens.
 
 ## Hindsight Architecture Review
 
@@ -143,7 +146,7 @@ machine-readable findings that complement human review.
 
 ### Hard Gate
 
-All `fail` findings from assess-* tools must be addressed before exiting Phase 2.
+All `fail` findings from assess-* tools must be addressed before the polish pass exits.
 `warn` findings are advisory — fix or note, but don't block on them.
 
 ## Feature Evidence
@@ -160,7 +163,7 @@ Evidence becomes part of the auditable git history.
 
 ## Exit Criteria
 
-Phase 2 is complete when:
+The polish pass is complete when:
 - [ ] Hindsight review performed, blocking smells fixed
 - [ ] Test audit performed, gaps filled
 - [ ] Confidence assessment stated with evidence
@@ -168,4 +171,4 @@ Phase 2 is complete when:
 - [ ] Docs current with changes
 - [ ] Feature evidence captured (screenshots/GIFs) if PR introduces new workflows
 
-If this phase produced commits, return to Phase 1 — CI must stay green.
+If this pass produced commits, loop back through CI — it must stay green.

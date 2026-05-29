@@ -25,48 +25,49 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>settle</h1>
-      <p class="lede">Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Does not archive tickets. Hands off to /ship for the final mile. Use when: &quot;polish this&quot;, &quot;get this merge-ready&quot;, &quot;unblock&quot;, &quot;clean up&quot;, &quot;address reviews&quot;, &quot;fix CI&quot;, &quot;make this shippable&quot;. Trigger: /settle, /pr-fix, /pr-polish.</p>
+      <p class="lede">DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only &lt;branch|PR&gt; — the single owner of &quot;existing branch -&gt; merge-ready&quot; (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory &quot;polish this&quot;, &quot;fix CI&quot;, &quot;address PR reviews&quot;, &quot;get this merge-ready&quot; — then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.</p>
       <p><code class="trigger large">/settle</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/settle/SKILL.md">skills/settle/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Polish loop. Take a feature branch with code and tests and iterate on it via /ci, /code-review, and /refactor until the branch is lean, green, and ship-ready. Stops at merge-ready. Does not merge. Does not archive tickets. Hands off to /ship for the final mile. Use when: &quot;polish this&quot;, &quot;get this merge-ready&quot;, &quot;unblock&quot;, &quot;clean up&quot;, &quot;address reviews&quot;, &quot;fix CI&quot;, &quot;make this shippable&quot;. Trigger: /settle, /pr-fix, /pr-polish.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only &lt;branch|PR&gt; — the single owner of &quot;existing branch -&gt; merge-ready&quot; (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory &quot;polish this&quot;, &quot;fix CI&quot;, &quot;address PR reviews&quot;, &quot;get this merge-ready&quot; — then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
       <h2>Source contract preview</h2>
       <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
-      <pre class="source-excerpt"><code>Take a feature branch from &quot;works&quot; to ship-ready. Iterate `/ci` →
-`/code-review` → `/refactor` until all exit gates pass in one pass.
-Then report ship-ready and hand the operator off to `/ship`.
+      <pre class="source-excerpt"><code>`/settle` collapsed into `/deliver` (backlog 080). One skill now owns
+&quot;existing branch → merge-ready,&quot; whether the branch came from `/implement` or
+from a human. **This file is a redirect, slated for deletion next release** —
+update muscle memory now.
 
-## Stance
+## Mapping
 
-1. **Polish until green, stop at merge-ready.** `/settle` does not merge,
-   does not archive tickets, does not reflect. When the loop exits clean,
-   the operator runs `/ship`.
-2. **Compose, do not replace.** `/ci`, `/code-review`, and `/refactor` own
-   their domains. `/settle` sequences them and decides when to loop.
-3. **Executive orchestrator.** Keep review-comment disposition, risk
-   tradeoffs, and ship-readiness judgment on the lead model. Delegate
-   bounded fixes and evidence gathering to focused subagents.
-   When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), require `/code-review`,
-   `/refactor`, or `/diagnose` to produce two or more roster-member receipts
-   or an explicit exception before `/settle` calls the branch ship-ready.
-4. **Bounded iteration.** The loop has a safety cap (max 6 iterations).
-   If polish isn&#x27;t converging by then, escalate rather than thrash.
-5. **Fresh-eyes adversarial self-review is load-bearing.** The final gate is
-   reading the full diff one last time and asking &quot;what would embarrass us in
-   production if this shipped?&quot; Same-model bias is real; counter it with
-   explicit hindsight.
+| You ran | Run instead |
+|---|---|
+| `/settle` | `/deliver --polish-only` |
+| `/settle &lt;branch\|PR&gt;` | `/deliver --polish-only &lt;branch\|PR&gt;` |
+| `/pr-fix &lt;PR&gt;` | `/deliver --polish-only &lt;PR&gt;` |
+| `/pr-polish &lt;PR&gt;` | `/deliver --polish-only &lt;PR&gt;` |
 
-## Delegation Floor
+## What moved where
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/settle` verifies that each
-substantive polish loop used two or more roster members or recorded a valid
-exception. It sequences leaf skills; leaf skills own dispatch. For settle-owned
-judgment, use lanes for merge-readiness critique and residual-risk review, give
-...</code></pre>
+- The polish loop (`/ci` → `/code-review` → `/refactor` → conditional
+  `/design` + `/a11y` → `/qa`) is `/deliver`&#x27;s clean loop —
+  `skills/deliver/references/clean-loop.md`.
+- The fresh-eyes gate is the clean loop&#x27;s **hindsight sanity pass**.
+- PR-mode comment triage → `skills/deliver/references/pr-fix.md`; the
+  full-comment fetcher → `skills/deliver/scripts/fetch-pr-reviews.sh`.
+- Deep hindsight/confidence reference → `skills/deliver/references/pr-polish.md`.
+- Complexity reduction stays with `/refactor`
+  (`skills/refactor/references/simplify.md`).
+
+## Behavior change to know
+
+`/deliver --polish-only` ends with the full `/deliver` closeout — a brief
+**plus `/reflect`**. The old `/settle` stopped at merge-ready and left
+reflection to `/ship`. Same merge-readiness gates, deliberately heavier
+closeout. Full protocol: `skills/deliver/references/polish-only.md`.</code></pre>
     </section>
     <section class="checklist">
       <h2>What to verify</h2>
