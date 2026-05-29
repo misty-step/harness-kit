@@ -62,14 +62,46 @@ ADVERSARIAL_REVIEW_SKILLS = [
 ]
 
 
-def delegation_floor_section(text: str) -> str:
-    start = text.find("## Delegation Floor")
+def markdown_section(text: str, heading: str) -> str:
+    start = text.find(heading)
     if start == -1:
         return ""
     end = text.find("\n## ", start + 1)
-    if end == -1:
-        return text[start:]
-    return text[start:end]
+    return text[start:] if end == -1 else text[start:end]
+
+
+def delegation_floor_section(text: str) -> str:
+    return markdown_section(text, "## Delegation Floor")
+
+
+def has_delegation_floor_pointer(section: str) -> bool:
+    """A skill may point to the shared single source instead of restating the
+    full floor (backlog 081). The pointer must still say the floor applies
+    (one-line restatement) AND link the canonical source — never a bare 'see X'.
+    The canonical phrase requirements are validated once against
+    harnesses/shared/AGENTS.md ## Roster in validate_shared_roster_doctrine()."""
+    low = section.lower()
+    return (
+        "delegation floor applies" in low
+        and "harnesses/shared/agents.md" in low
+        and "roster" in low
+    )
+
+
+def delegation_contract_gaps(section: str) -> list:
+    """Requirement labels missing from a full delegation-floor / roster section."""
+    lowered = section.lower()
+    missing = [
+        name
+        for name, phrases in DELEGATION_FLOOR_REQUIREMENTS.items()
+        if not any(phrase in lowered for phrase in phrases)
+    ]
+    if (
+        "provider roster is available" not in lowered
+        and ".harness-kit/agents.yaml" not in lowered
+    ):
+        missing.append("roster availability")
+    return missing
 
 
 def validate_delegation_floor() -> None:
@@ -86,18 +118,14 @@ def validate_delegation_floor() -> None:
         if not section:
             missing.append(str(path))
             continue
+        # A skill may EITHER restate the full floor OR point to the shared
+        # single source (harnesses/shared/AGENTS.md ## Roster). Pointer mode
+        # passes here; the canonical phrases are validated once against the
+        # shared source in validate_shared_roster_doctrine().
+        if has_delegation_floor_pointer(section):
+            continue
         lowered_section = section.lower()
-        has_roster_contract = (
-            "provider roster is available" in section
-            or ".harness-kit/agents.yaml" in section
-        )
-        missing_requirements = [
-            name
-            for name, phrases in DELEGATION_FLOOR_REQUIREMENTS.items()
-            if not any(phrase in lowered_section for phrase in phrases)
-        ]
-        if not has_roster_contract:
-            missing_requirements.append("roster availability")
+        missing_requirements = delegation_contract_gaps(section)
         if missing_requirements:
             weak.append(f"{path} ({', '.join(missing_requirements)})")
             continue
@@ -158,6 +186,18 @@ def validate_shared_roster_doctrine() -> None:
     if missing:
         raise SystemExit(
             f"{path}: missing roster doctrine phrase(s): {', '.join(missing)}"
+        )
+    # The shared ## Roster section is the single source for the delegation
+    # floor (backlog 081): skills may point to it instead of restating it, so
+    # validate the full contract here, once.
+    roster_section = markdown_section(path.read_text(), "## Roster")
+    if not roster_section:
+        raise SystemExit(f"{path}: missing '## Roster' single-source section")
+    gaps = delegation_contract_gaps(roster_section)
+    if gaps:
+        raise SystemExit(
+            f"{path} (## Roster): missing delegation-contract requirement(s): "
+            + ", ".join(gaps)
         )
 
 
