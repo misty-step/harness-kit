@@ -66,7 +66,7 @@
     },
     {
       "source": "backlog.d/061-retire-global-static-agents.md",
-      "title": "Retire global static agents in favor of dynamic delegation guidance"
+      "title": "Subagent roles, not files: ad-hoc dispatch doctrine + milestone critic gate"
     },
     {
       "source": "backlog.d/062-antigravity-cli-migration.md",
@@ -111,6 +111,30 @@
     {
       "source": "backlog.d/074-tighten-delegation-floor-linter.md",
       "title": "Tighten delegation-floor lint from keyword scan to negative fixtures"
+    },
+    {
+      "source": "backlog.d/075-skillify-mvp.md",
+      "title": "Scaffold the /skillify MVP and core CRUD primitives"
+    },
+    {
+      "source": "backlog.d/076-frontmatter-schema-crystallize.md",
+      "title": "Crystallize frontmatter schema and trigger contracts"
+    },
+    {
+      "source": "backlog.d/077-critique-skill.md",
+      "title": "/critique: ad-hoc lens critic against a target"
+    },
+    {
+      "source": "backlog.d/080-mece-collapse-settle-into-deliver.md",
+      "title": "Collapse settle into deliver: one merge-readiness owner"
+    },
+    {
+      "source": "backlog.d/081-delegation-floor-dry-extraction.md",
+      "title": "Extract shared doctrine to a single source: kill the 19-skill copy-paste"
+    },
+    {
+      "source": "backlog.d/082-pi-roster-model-id-stale.md",
+      "title": "Fix stale pi roster model id (OpenRouter kimi-k2.6 not found)"
     }
   ],
   "copy_source": "docs/copy/site.json",

@@ -65,6 +65,14 @@ A signposted global AGENTS.md lets downstream repos (misty-step, cerberus, bitte
 
 ### Related
 
+- **`061` (subagent roles, not files)** lands its dispatch doctrine here:
+  the executor+critic default and planner/executor/critic triad belong in
+  Layer 2 (agent gotchas) + a Layer 3 routing row. Coordinate placement so the
+  two tickets don't fight over the same section.
+- **`081` (delegation-floor DRY extraction)** depends on this: once the shared
+  AGENTS.md is the signposted single source, `081` removes the 19 per-skill
+  copies of the delegation-floor paragraph and replaces them with a one-line
+  pointer. This ticket builds the home; `081` redirects the duplicates to it.
 - Cooper agent (PR #120, `f904439`) added "no internal mocks" to the Testing subsection. This restructure promotes it to a first-class L1 section.
 - Complements the global-harness bootstrap pivot by making the always-loaded
   source material tighter.
