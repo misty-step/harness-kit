@@ -30,6 +30,39 @@ available`), completion-gate **8**, clean-tree **2** (settle redirect dropped
 its copies). 051 dependency is satisfied. codex design lane dispatched for the
 gate redesign + pointer pattern (transcript in `.harness-kit/traces`).
 
+## Progress (2026-05-29)
+
+- **Step 1 DONE** (`edbf9b5`): `check-agent-roster.py` redesigned — accepts a
+  full `## Delegation Floor` section OR a one-line pointer; validates the
+  canonical contract once against `harnesses/shared/AGENTS.md ## Roster`.
+  Helpers `markdown_section`/`has_delegation_floor_pointer`/
+  `delegation_contract_gaps`. A bare "see X" is rejected (over-indirection
+  guard). Unit-verified; dagger 15/15.
+- **Step 2 REMAINING — safe & resumable** (the gate accepts both forms, so a
+  partial sweep is still green). Convert each of the 20 skills' delegation-floor
+  paragraph to this exact pointer + its preserved local lane guidance:
+
+  > ## Delegation Floor
+  >
+  > Delegation floor applies: probe the roster first; dispatch two or more
+  > providers for substantive work; direct solo only for mechanical, emergency,
+  > user-forbidden, or fewer-than-two-providers cases. See
+  > `harnesses/shared/AGENTS.md` (Roster).
+  >
+  > Local lane guidance: <keep this skill's phase-specific "use lanes for X"
+  > sentence here, verbatim from the old paragraph>.
+
+  Skills (grep `provider roster is available` in `skills/*/SKILL.md`): ci,
+  code-review, create-repo-skill, deliver, demo, design, diagnose, flywheel,
+  groom, hardening, harness-engineering, implement, monitor, qa, refactor,
+  reflect, research, shape, ship, yeet.
+- **Step 3 REMAINING**: completion-gate (8 skills) → pointer to a shared
+  completion-evidence statement; clean-tree (2 files) → pointer to
+  `harnesses/shared/AGENTS.md ## Closeout`. (codex: add a shared `## Completion
+  Evidence` section; grok: point at deliver's block — decide at implementation.)
+- Verify each batch: `python3 scripts/check-agent-roster.py` + `dagger call
+  check`. Design lanes: codex (`49190d45`) + grok-build (convergent).
+
 ## Non-Goals
 
 - Do NOT change the doctrine's meaning. This is a move + dedupe, not a rewrite.
