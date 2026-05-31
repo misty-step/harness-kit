@@ -26,9 +26,10 @@ ROSTER_PROVIDER_IDS = {
     "agy",
     "cursor-agent",
     "grok-build",
-    "opencode",
     "manual",
 }
+RETIRED_RECEIPT_PROVIDER_IDS = {"opencode"}
+RECEIPT_PROVIDER_IDS = ROSTER_PROVIDER_IDS | RETIRED_RECEIPT_PROVIDER_IDS
 
 VALID_TIERS = {"primary", "conditional", "manual", "disabled"}
 VALID_KINDS = {"cli", "bench", "manual"}
@@ -156,6 +157,17 @@ def validate_roster(roster: dict[str, Any]) -> None:
                 raise ValueError(f"{provider_id}: {field} contains secret-like text.")
             if field in {"probe", "dispatch"} and SHELL_META_RE.search(value):
                 raise ValueError(f"{provider_id}: {field} contains shell metacharacters.")
+        variants = provider.get("model_variants")
+        if variants is not None:
+            if not isinstance(variants, dict):
+                raise ValueError(f"{provider_id}: model_variants must be a mapping.")
+            for name, model in variants.items():
+                if not isinstance(name, str) or not name.strip():
+                    raise ValueError(f"{provider_id}: model_variants keys must be non-empty strings.")
+                if not isinstance(model, str) or not model.strip():
+                    raise ValueError(f"{provider_id}: model_variants values must be non-empty strings.")
+                if SECRET_RE.search(model):
+                    raise ValueError(f"{provider_id}: model_variants contains secret-like text.")
 
 
 def _validate_enum(
@@ -248,6 +260,7 @@ def dispatch_provider_lane(
     lead_provider: str,
     backlog_ref: str = "",
     path_env: str | None = None,
+    model_override: str | None = None,
 ) -> dict[str, Any]:
     """Run one provider command with process-group cleanup and receipt capture."""
     validate_roster(roster)
@@ -293,7 +306,7 @@ def dispatch_provider_lane(
         append_receipt(receipt_output, receipt)
         return receipt
 
-    command = shlex.split(provider["dispatch"]) + [prompt]
+    command = _dispatch_command(provider, prompt, model_override=model_override)
     transcript = _transcript_path(transcript_dir, provider_target)
     transcript.parent.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
@@ -330,6 +343,8 @@ def dispatch_provider_lane(
         attempt_status = "succeeded"
         lead_verdict = "pending"
         summary = "provider dispatch exited 0"
+        if model_override:
+            summary += f"; model_override={_resolve_model_override(provider, model_override)}"
     else:
         provider_status = "available"
         attempt_status = "failed"
@@ -352,6 +367,32 @@ def dispatch_provider_lane(
     )
     append_receipt(receipt_output, receipt)
     return receipt
+
+
+def _resolve_model_override(provider: dict[str, Any], model_override: str) -> str:
+    variants = provider.get("model_variants")
+    if isinstance(variants, dict) and model_override in variants:
+        return str(variants[model_override])
+    return model_override
+
+
+def _dispatch_command(
+    provider: dict[str, Any],
+    prompt: str,
+    *,
+    model_override: str | None = None,
+) -> list[str]:
+    command = shlex.split(provider["dispatch"])
+    if model_override:
+        model = _resolve_model_override(provider, model_override)
+        if "--model" in command:
+            model_index = command.index("--model")
+            if model_index == len(command) - 1:
+                raise ValueError("dispatch command has --model without a value.")
+            command[model_index + 1] = model.removeprefix("openrouter/")
+        else:
+            command.extend(["--model", model.removeprefix("openrouter/")])
+    return command + [prompt]
 
 
 def _transcript_path(transcript_dir: Path, provider_target: str) -> Path:
@@ -435,8 +476,8 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
         raise ReceiptValidationError("receipt delegation_id must be a UUID.") from error
     if not isinstance(receipt["redactions_applied"], list):
         raise ReceiptValidationError("receipt redactions_applied must be a list.")
-    if receipt["provider_target"] not in ROSTER_PROVIDER_IDS:
-        raise ReceiptValidationError("receipt provider_target is not in the roster ids.")
+    if receipt["provider_target"] not in RECEIPT_PROVIDER_IDS:
+        raise ReceiptValidationError("receipt provider_target is not a known provider id.")
     if receipt["provider_status"] not in VALID_PROVIDER_STATUS:
         raise ReceiptValidationError("receipt provider_status is invalid.")
     if receipt["attempt_status"] not in VALID_ATTEMPT_STATUS:

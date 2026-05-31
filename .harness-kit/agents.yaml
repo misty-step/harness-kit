@@ -36,11 +36,16 @@ providers:
     dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
     output: json
     model: openrouter/moonshotai/kimi-k2.5
+    model_variants:
+      default: openrouter/moonshotai/kimi-k2.5
+      latest_kimi_custom: openrouter/moonshotai/kimi-k2.6
+      long_context: openrouter/deepseek/deepseek-v4-pro
+      alternate_agentic: openrouter/minimax/minimax-m2.7
     reasoning: xhigh
     permissions: full read bash edit write grep find ls tool list
     worktree: recommended
     smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
-    notes: Pi coding agent; SOTA open-weight lane. Pinned to kimi-k2.5 because pi's native model registry recognizes it (thinking + tools, 262K ctx) so the lane resolves clean. kimi-k2.6 is newer but absent from pi's registry, so pi routes it as a "custom model id" and prints a benign "not found for provider openrouter" warning that is NOT a failure (the lane still answers) — judge lane health by transcript content + exit code, not that warning. Revisit when pi's registry adds k2.6+.
+    notes: Pi coding agent; sole open-model CLI lane. Pinned to kimi-k2.5 because pi's native model registry recognizes it (thinking + tools, 262K ctx) so the lane resolves clean. Use model_variants through Pi for Kimi, DeepSeek, MiniMax, or other open-model comparisons instead of adding another CLI.
   agy:
     tier: conditional
     kind: cli
@@ -77,18 +82,6 @@ providers:
     worktree: recommended
     smoke: grok --model grok-4.3 --permission-mode bypassPermissions --always-approve --effort max --reasoning-effort xhigh -p
     notes: xAI Grok CLI; local Grok Build entitlement may fail, so default to the working Grok CLI model.
-  opencode:
-    tier: conditional
-    kind: cli
-    probe: opencode --version
-    dispatch: opencode run --model openrouter/deepseek/deepseek-v4-pro --variant max --format json
-    output: text
-    model: openrouter/deepseek/deepseek-v4-pro
-    reasoning: max variant
-    permissions: global permission allow in opencode config
-    worktree: recommended
-    smoke: opencode run --model openrouter/deepseek/deepseek-v4-pro --variant max --format json
-    notes: OpenCode CLI; complementary SOTA open-weight lane to Pi's Kimi default.
   manual:
     tier: manual
     kind: manual

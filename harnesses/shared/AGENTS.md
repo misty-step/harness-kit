@@ -155,8 +155,9 @@ source for the delegation floor: skills point here rather than restating it.
   mutation.
 - Native in-thread subagents are supplemental fresh-context lanes. They do not
   satisfy the roster floor. Count only configured provider ids from the roster,
-  such as `claude`, `pi`, `agy`, `cursor-agent`, `grok-build`, `opencode`, or
-  `codex` as one lane among others.
+  such as `codex`, `claude`, `pi`, `agy`, `cursor-agent`, or `grok-build` as
+  one lane among others. `manual` is human-supplied evidence, not a dispatch
+  lane.
 - Use independent lanes: split scope, competing attempts, or reviewer/critic
   roles. Parallel by default when lanes do not depend on each other.
 - Record meaningful attempts via the repo receipt script.

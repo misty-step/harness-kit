@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "lib"))
@@ -60,6 +62,20 @@ ADVERSARIAL_REVIEW_SKILLS = [
     "qa",
     "shape",
 ]
+
+RETIRED_PROVIDER_REFERENCE_PATHS = [
+    # Active sources only. Closed backlog and trace receipts remain historical
+    # records and may mention retired providers.
+    Path(".harness-kit/agents.yaml"),
+    Path("scripts/lib/agent_roster.py"),
+    Path("harnesses/shared/AGENTS.md"),
+    Path("docs/copy/site.json"),
+    Path("harnesses/pi/README.md"),
+    Path("harnesses/pi/settings.json"),
+    Path("skills/harness-engineering/references/open-model-roster.md"),
+]
+RETIRED_PROVIDER_PATTERN = r"\bopen[- ]?code\b|\bopencode\b"
+OPEN_MODEL_ROSTER_PATH = Path("skills/harness-engineering/references/open-model-roster.md")
 
 
 def markdown_section(text: str, heading: str) -> str:
@@ -245,6 +261,36 @@ def validate_no_source_skill_bridges() -> None:
         )
 
 
+def validate_no_retired_provider_references() -> None:
+    hits = []
+    for path in RETIRED_PROVIDER_REFERENCE_PATHS:
+        if not path.exists():
+            continue
+        for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+            if "RETIRED_RECEIPT_PROVIDER_IDS" in line:
+                continue
+            if re.search(RETIRED_PROVIDER_PATTERN, line, flags=re.IGNORECASE):
+                hits.append(f"{path}:{lineno}")
+    if hits:
+        raise SystemExit(
+            "retired provider reference(s) in active roster/docs: "
+            + ", ".join(hits)
+        )
+
+
+def validate_open_model_roster_review_due() -> None:
+    text = OPEN_MODEL_ROSTER_PATH.read_text()
+    match = re.search(r"^roster_review_due:\s*(\d{4}-\d{2}-\d{2})$", text, re.MULTILINE)
+    if not match:
+        raise SystemExit(f"{OPEN_MODEL_ROSTER_PATH}: missing roster_review_due")
+    review_due = datetime.strptime(match.group(1), "%Y-%m-%d").date()
+    today = datetime.now(UTC).date()
+    if today > review_due:
+        raise SystemExit(
+            f"{OPEN_MODEL_ROSTER_PATH}: roster review overdue since {review_due.isoformat()}"
+        )
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
@@ -257,6 +303,8 @@ def main() -> int:
     validate_shared_roster_doctrine()
     validate_adversarial_done_review()
     validate_no_source_skill_bridges()
+    validate_no_retired_provider_references()
+    validate_open_model_roster_review_due()
     receipts = read_receipts(fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")
@@ -294,6 +342,8 @@ def main() -> int:
     print(f"skills/: {len(ADVERSARIAL_REVIEW_SKILLS)} adversarial review stance(s) valid")
     print(f"harnesses/: {len(RUNTIME_REFERENCES)} runtime delegation reference(s) valid")
     print("source repo: no repo-local skill bridges")
+    print("active roster/docs: no retired provider references")
+    print(f"{OPEN_MODEL_ROSTER_PATH}: review due date valid")
     print(f"{summary_script}: report helper valid")
     return 0
 

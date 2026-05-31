@@ -44,7 +44,7 @@
       ],
       [
         "Provider",
-        "An external agent runtime in the roster, such as Claude, Codex, Pi, OpenCode, Grok, Cursor, or Antigravity.",
+        "An external agent runtime in the roster, such as Claude, Codex, Pi, Grok, Cursor, or Antigravity.",
         "specialist"
       ],
       [

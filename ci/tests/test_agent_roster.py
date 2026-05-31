@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts" / "lib"))
 
 from agent_roster import (  # noqa: E402
+    RECEIPT_PROVIDER_IDS,
     ROSTER_PROVIDER_IDS,
     ReceiptValidationError,
     append_receipt,
@@ -40,6 +41,24 @@ class RosterValidationTests(unittest.TestCase):
         self.assertEqual(set(roster["providers"]), ROSTER_PROVIDER_IDS)
         self.assertEqual(roster["providers"]["codex"]["tier"], "primary")
         self.assertEqual(roster["providers"]["manual"]["kind"], "manual")
+
+    def test_committed_roster_excludes_opencode(self) -> None:
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
+
+        self.assertNotIn("opencode", ROSTER_PROVIDER_IDS)
+        self.assertNotIn("opencode", roster["providers"])
+        self.assertIn("opencode", RECEIPT_PROVIDER_IDS)
+
+    def test_committed_pi_provider_exposes_open_model_variants(self) -> None:
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
+        pi = roster["providers"]["pi"]
+        variants = pi["model_variants"]
+
+        self.assertEqual(variants["default"], pi["model"])
+        self.assertIn("long_context", variants)
+        self.assertTrue(
+            all(value.startswith("openrouter/") for value in variants.values())
+        )
 
     def test_agy_print_flag_is_last_before_prompt(self) -> None:
         roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
@@ -72,6 +91,13 @@ class RosterValidationTests(unittest.TestCase):
         roster["providers"]["manual"]["kind"] = "manual"
 
         with self.assertRaisesRegex(ValueError, "secret-like"):
+            validate_roster(roster)
+
+    def test_rejects_malformed_model_variants(self) -> None:
+        roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")
+        roster["providers"]["pi"]["model_variants"] = ["openrouter/example/model"]
+
+        with self.assertRaisesRegex(ValueError, "model_variants must be a mapping"):
             validate_roster(roster)
 
     def test_roster_resolution_uses_system_fallback_when_repo_roster_is_absent(
@@ -216,6 +242,20 @@ class ReceiptTests(unittest.TestCase):
         self.assertEqual(set(cli), set(manual))
         validate_receipt(cli)
         validate_receipt(manual)
+
+    def test_retired_provider_receipts_remain_valid_for_history(self) -> None:
+        receipt = build_attempt_receipt(
+            provider_target="opencode",
+            provider_status="available",
+            attempt_status="succeeded",
+            objective="historical lane",
+            input_ref="backlog.d/_done/example.md",
+            evidence_refs=[".evidence/opencode.txt"],
+            lead_verdict="accepted",
+            worktree_id="historical",
+        )
+
+        validate_receipt(receipt)
 
     def test_rejects_inline_transcript_evidence(self) -> None:
         with self.assertRaises(ReceiptValidationError):
@@ -457,6 +497,68 @@ class ReceiptTests(unittest.TestCase):
             self.assertLess(argv.index("--print-timeout"), argv.index("--print"))
             transcript = Path(receipt["evidence_refs"][0]).read_text()
             self.assertIn("sentinel prompt", transcript)
+
+    def test_dispatch_model_override_uses_roster_variant(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bin_dir = root / "bin"
+            bin_dir.mkdir()
+            argv_path = root / "argv.json"
+            fake = bin_dir / "fake-pi"
+            fake.write_text(
+                textwrap.dedent(
+                    f"""\
+                    #!{sys.executable}
+                    import json
+                    import pathlib
+                    import sys
+
+                    if "--version" in sys.argv:
+                        print("fake-pi 1.0")
+                        raise SystemExit(0)
+
+                    pathlib.Path({str(argv_path)!r}).write_text(json.dumps(sys.argv[1:]))
+                    print(sys.argv[-1])
+                    """
+                )
+            )
+            fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+            receipt_path = root / "delegations.jsonl"
+            transcript_dir = root / "traces"
+            roster = _fixture_roster(
+                "fake-pi -p --provider openrouter --model moonshotai/kimi-k2.5 --tools read",
+                probe="fake-pi --version",
+            )
+            roster["providers"]["pi"]["model_variants"] = {
+                "long_context": "openrouter/deepseek/deepseek-v4-pro"
+            }
+
+            receipt = dispatch_provider_lane(
+                roster,
+                provider_target="pi",
+                prompt="sentinel prompt",
+                objective="pi model override fixture",
+                input_ref="prompt.txt",
+                transcript_dir=transcript_dir,
+                receipt_output=receipt_path,
+                timeout_s=1,
+                grace_s=0.1,
+                lead_harness="codex",
+                lead_provider="codex",
+                path_env=str(bin_dir),
+                model_override="long_context",
+            )
+
+            self.assertEqual(receipt["attempt_status"], "succeeded")
+            argv = json.loads(argv_path.read_text())
+            self.assertEqual(
+                argv[argv.index("--model") + 1],
+                "deepseek/deepseek-v4-pro",
+            )
+            self.assertIn(
+                "model_override=openrouter/deepseek/deepseek-v4-pro",
+                receipt["summary"],
+            )
 
 
 def _fixture_roster(dispatch: str, *, probe: str) -> dict:

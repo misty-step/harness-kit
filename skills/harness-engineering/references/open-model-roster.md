@@ -1,39 +1,52 @@
-# Open-Model Roster Notes
+---
+roster_review_due: 2026-06-30
+---
 
-Last researched: 2026-05-26.
+# Pi Open-Model Roster Notes
 
-Use this when choosing complementary open-weight provider defaults for
-Harness Kit roster lanes such as Pi and OpenCode. Treat this as an operating
-snapshot, not a permanent ranking. Re-check model lists and live smokes before
-changing defaults.
+Last researched: 2026-05-31.
+
+Use this when choosing open-model defaults and variants for the Harness Kit Pi
+roster lane. Treat this as an operating snapshot, not a permanent ranking.
+Re-check model lists and live smokes before changing defaults.
 
 ## Current Default
 
 | Lane | Default | Why |
 |---|---|---|
-| Pi | `openrouter/moonshotai/kimi-k2.6` | Latest Kimi family member; live-smoked through Pi despite missing from Pi's filtered list. |
-| OpenCode | `openrouter/deepseek/deepseek-v4-pro` | Long-context reasoning/coding complement to Pi's Kimi default; live-smoked through OpenCode. |
+| Pi | `openrouter/moonshotai/kimi-k2.5` | Clean Pi registry hit with thinking + tools and a 262K context window. |
 
-Do not pin both open lanes to the same family unless a live benchmark clearly
-dominates. The point of the roster is independent failure modes.
+Pi is the open-model CLI lane. Get independent failure modes by rotating Pi
+models, not by adding another CLI wrapper. A second open-model provider lane
+must earn entry with a live roster smoke, at least one real Harness Kit task,
+and a clear failure mode that Pi model variants cannot cover.
 
 ## Model Notes
 
 ### Kimi
 
-`moonshotai/kimi-k2.6` supersedes K2.5 for this harness. OpenRouter lists it
-as released 2026-04-20 with 262K context, and Replicate describes K2.6 as a
-1T-parameter model for long-horizon coding, agent swarms, and autonomous
-software engineering. Replicate reports K2.6 benchmark signals including
-Terminal-Bench 2.0 66.7, SWE-Bench Pro 58.6, SWE-Bench Verified 80.2, and
-LiveCodeBench v6 89.6.
+#### Default — K2.5
 
-Use for: long-horizon coding, UI generation, multi-agent decomposition,
-workflow synthesis.
+`moonshotai/kimi-k2.5` is the clean dispatch-floor default because Pi's native
+model registry recognizes it and returns a warning-free smoke with thinking and
+tools. The dispatch-floor default stays on K2.5 until a newer Kimi id resolves
+cleanly in Pi's registry.
+
+Use for: default Pi delegation, long-horizon coding, UI generation,
+multi-agent decomposition, workflow synthesis.
+
+Evidence: `backlog.d/_done/082-pi-roster-model-id-stale.md` and live Pi roster
+smokes on 2026-05-29 and 2026-05-31.
+
+#### Variant — K2.6
+
+`moonshotai/kimi-k2.6` is newer and may be better for long-horizon coding, but
+it remains an opt-in variant until Pi's registry resolves it without a
+custom-model warning.
 
 Current caveat: Pi did not list K2.6 during the 2026-05-26 filtered model
-check, but accepted the exact id as a custom OpenRouter id and returned a
-successful smoke.
+check. It may still answer through a custom OpenRouter id, but that warning is
+not clean enough for the roster floor.
 
 Sources: https://openrouter.ai/moonshotai/kimi-k2.6,
 https://replicate.com/moonshotai/kimi-k2.6
@@ -56,16 +69,16 @@ Source: https://openrouter.ai/minimax/minimax-m2.7
 
 ### DeepSeek
 
-`deepseek/deepseek-v4-pro` is the OpenCode default and long-context comparison
-lane. OpenRouter lists 1M context, 1.6T total parameters, 49B active
+`deepseek/deepseek-v4-pro` is the Pi long-context comparison variant.
+OpenRouter lists 1M context, 1.6T total parameters, 49B active
 parameters, and support for `high`/`xhigh` reasoning. NIST CAISI evaluated
 DeepSeek V4 Pro in May 2026 and found it was the most capable PRC model CAISI
 had evaluated, but that its aggregate capability lagged leading U.S. frontier
 models by about 8 months; CAISI also found it cost-efficient on several
 benchmarks relative to a U.S. reference model.
 
-Use for: full-codebase analysis, large-context synthesis, cost-sensitive
-reasoning, and a DeepSeek-family counterpoint to Kimi/MiniMax.
+Use through Pi for: full-codebase analysis, large-context synthesis,
+cost-sensitive reasoning, and a DeepSeek-family counterpoint to Kimi/MiniMax.
 
 Sources: https://openrouter.ai/deepseek/deepseek-v4-pro,
 https://www.nist.gov/news-events/news/2026/05/caisi-evaluation-deepseek-v4-pro
@@ -96,10 +109,22 @@ Use for: long-running coding/autonomy trials and model-diversity experiments.
 
 Source: https://openrouter.ai/z-ai/glm-5.1
 
+## Invoking A Variant
+
+Use the committed Pi provider id and override only the model:
+
+```sh
+python3 scripts/dispatch-agent.py --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
+```
+
+`--model-override` accepts a key from `.harness-kit/agents.yaml` `model_variants`
+or a direct model id. The receipt stays attached to provider `pi` and records
+the resolved model override in its summary.
+
 ## Operating Rules
 
-- Prefer two complementary open lanes: one agentic-productivity model and one
-  long-horizon coding model.
+- Prefer one Pi lane with complementary model variants: one clean default, one
+  long-context model, and one non-Kimi agentic-productivity model.
 - Re-check provider model lists before each default change. Model family names
   drift faster than harness docs.
 - A model-list hit is not enough. Required evidence is a live CLI smoke using

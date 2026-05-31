@@ -26,6 +26,11 @@ def main() -> int:
     parser.add_argument("--backlog-ref", default="")
     parser.add_argument("--lead-harness", default="unknown")
     parser.add_argument("--lead-provider", default="unknown")
+    parser.add_argument(
+        "--model-override",
+        default=None,
+        help="Override the provider --model value; may be a roster model_variants key.",
+    )
     parser.add_argument("--timeout-s", type=float, default=600)
     parser.add_argument("--grace-s", type=float, default=2)
     parser.add_argument("--max-prompt-bytes", type=int, default=128 * 1024)
@@ -55,6 +60,7 @@ def main() -> int:
         lead_harness=args.lead_harness,
         lead_provider=args.lead_provider,
         path_env=args.path_env,
+        model_override=args.model_override,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["attempt_status"] == "succeeded" else 1
