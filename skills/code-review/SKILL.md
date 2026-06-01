@@ -5,7 +5,7 @@ description: |
   auto-fix blocking issues, loop until clean.
   Use when: "review this", "code review", "is this ready to ship",
   "check this code", "review my changes".
-  Trigger: /code-review, /review, /critique.
+  Trigger: /code-review, /review.
 argument-hint: "[branch|diff|files]"
 ---
 

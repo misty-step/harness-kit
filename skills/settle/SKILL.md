@@ -5,7 +5,7 @@ description: |
   /deliver --polish-only <branch|PR> — the single owner of "existing branch ->
   merge-ready" (backlog 080 collapsed settle into deliver). Slated for deletion
   next release.
-  Use when: muscle-memory "polish this", "fix CI", "address PR reviews",
+  Use when: muscle-memory "polish this", "address PR reviews",
   "get this merge-ready" — then run /deliver --polish-only.
   Trigger: /settle, /pr-fix, /pr-polish.
 argument-hint: "[PR-number|branch-name]"

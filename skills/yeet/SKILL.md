@@ -4,8 +4,8 @@ description: |
   End-to-end "ship it to the remote": read worktree, classify changes, tidy
   debris, split semantic commits, and push. Judgment layer over git, not a
   wrapper; decides what belongs and how reviewers should read the diff.
-  Use when: "yeet", "yeet this", "commit and push", "ship it", "tidy and
-  commit", "wrap this up and push", "get this off my machine".
+  Use when: "yeet", "yeet this", "commit and push", "ship local changes",
+  "tidy and commit", "wrap this up and push", "get this off my machine".
   Trigger: /yeet, /ship-local (alias).
 argument-hint: "[--dry-run] [--single-commit] [--no-push]"
 ---

@@ -267,7 +267,7 @@
       "source": "skills/ci/SKILL.md"
     },
     {
-      "description": "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this code\", \"review my changes\". Trigger: /code-review, /review, /critique.",
+      "description": "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this code\", \"review my changes\". Trigger: /code-review, /review.",
       "icon": "review",
       "id": "skill:code-review",
       "kind": "skill",
@@ -307,7 +307,7 @@
       "source": "skills/demo/SKILL.md"
     },
     {
-      "description": "Ship merged code to one deploy target. Thin router: detect target, run the platform recipe, capture receipt (sha, version, URL, rollback handle), stop when healthy. Does not monitor, triage, or decide whether to deploy. Use when: \"deploy\", \"ship this\", \"ship to prod\", \"release\", \"push to staging\", \"deploy this branch\", \"release cut\". Trigger: /deploy, /ship-it, /release.",
+      "description": "Ship merged code to one deploy target. Thin router: detect target, run the platform recipe, capture receipt (sha, version, URL, rollback handle), stop when healthy. Does not monitor, triage, or decide whether to deploy. Use when: \"deploy\", \"deploy to prod\", \"release\", \"push to staging\", \"deploy this branch\", \"release cut\". Trigger: /deploy, /release.",
       "icon": "catalog",
       "id": "skill:deploy",
       "kind": "skill",
@@ -467,7 +467,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> \u2014 the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory \"polish this\", \"fix CI\", \"address PR reviews\", \"get this merge-ready\" \u2014 then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.",
+      "description": "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> \u2014 the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory \"polish this\", \"address PR reviews\", \"get this merge-ready\" \u2014 then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.",
       "icon": "catalog",
       "id": "skill:settle",
       "kind": "skill",
@@ -497,7 +497,7 @@
       "source": "skills/ship/SKILL.md"
     },
     {
-      "description": "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers should read the diff. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship it\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",
+      "description": "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers should read the diff. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship local changes\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",
       "icon": "ship",
       "id": "skill:yeet",
       "kind": "skill",

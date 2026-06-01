@@ -4,9 +4,9 @@ description: |
   Ship merged code to one deploy target. Thin router: detect target, run the
   platform recipe, capture receipt (sha, version, URL, rollback handle), stop
   when healthy. Does not monitor, triage, or decide whether to deploy.
-  Use when: "deploy", "ship this", "ship to prod", "release", "push to
-  staging", "deploy this branch", "release cut".
-  Trigger: /deploy, /ship-it, /release.
+  Use when: "deploy", "deploy to prod", "release", "push to staging",
+  "deploy this branch", "release cut".
+  Trigger: /deploy, /release.
 argument-hint: "[--env <name>] [--version <ref>] [--rollback] [--dry-run]"
 ---
 
