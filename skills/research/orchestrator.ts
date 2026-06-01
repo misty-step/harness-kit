@@ -122,6 +122,11 @@ export class WebSearchOrchestrator {
         }
 
         const deduped = dedupeByCanonicalUrl(results);
+        if (deduped.length === 0) {
+          await this.log({ event: "provider_empty_after_dedupe", request, provider });
+          continue;
+        }
+
         if (this.cache) {
           await this.cache.set(request, deduped);
         }
@@ -160,14 +165,7 @@ export class WebSearchOrchestrator {
     if (lastError) {
       throw lastError;
     }
-    return {
-      results: [],
-      meta: {
-        cacheHit: false,
-        providerUsed: null,
-        providerChain,
-      },
-    };
+    throw new Error("all providers returned no usable results");
   }
 
   private async log(input: {

@@ -100,6 +100,7 @@ not the full user-facing slash command.
 - Cache: `cache/web-search-cache.json` (TTL via `WEB_SEARCH_TTL_MS`)
 - Logs: `logs/web-search.ndjson` (size-rotated)
 - `PI_WEB_SEARCH_LOG_MAX_BYTES` / `PI_WEB_SEARCH_LOG_MAX_BACKUPS` / `PI_WEB_SEARCH_LOG_ROTATE_CHECK_MS`
+- Provider HTTP requests are bounded by `WEB_SEARCH_PROVIDER_TIMEOUT_MS` (default 15000ms)
 - Cost controls:
   - `WEB_SEARCH_MAX_RESULTS` caps results per query
   - Cache dedupe prevents repeated provider calls for same normalized query

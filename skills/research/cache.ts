@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createHash, randomUUID } from "node:crypto";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { SearchRequest } from "./provider-adapter";
@@ -11,6 +11,7 @@ interface CacheEntry<T> {
 }
 
 type CacheStore<T> = Record<string, CacheEntry<T>>;
+const cacheWriteQueues = new Map<string, Promise<void>>();
 
 export interface QueryCacheOptions {
   filePath: string;
@@ -35,9 +36,19 @@ export class QueryCache<T> {
     }
 
     if (Date.now() >= entry.expiresAt) {
-      delete store[key];
-      await this.save(store);
-      return null;
+      return await withCacheWrite(this.filePath, async () => {
+        const latest = await this.load();
+        const latestEntry = latest[key];
+        if (!latestEntry) {
+          return null;
+        }
+        if (Date.now() < latestEntry.expiresAt) {
+          return latestEntry.value;
+        }
+        delete latest[key];
+        await this.save(latest);
+        return null;
+      });
     }
 
     return entry.value;
@@ -45,12 +56,14 @@ export class QueryCache<T> {
 
   async set(request: SearchRequest, value: T): Promise<void> {
     const key = cacheKey(request);
-    const store = await this.load();
-    store[key] = {
-      expiresAt: Date.now() + this.ttlMs,
-      value,
-    };
-    await this.save(store);
+    await withCacheWrite(this.filePath, async () => {
+      const store = await this.load();
+      store[key] = {
+        expiresAt: Date.now() + this.ttlMs,
+        value,
+      };
+      await this.save(store);
+    });
   }
 
   private async load(): Promise<CacheStore<T>> {
@@ -64,7 +77,26 @@ export class QueryCache<T> {
 
   private async save(store: CacheStore<T>): Promise<void> {
     await mkdir(path.dirname(this.filePath), { recursive: true });
-    await writeFile(this.filePath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+    const tmpPath = `${this.filePath}.${process.pid}.${Date.now()}.${randomUUID()}.tmp`;
+    await writeFile(tmpPath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+    await rename(tmpPath, this.filePath);
+  }
+}
+
+async function withCacheWrite<T>(filePath: string, work: () => Promise<T>): Promise<T> {
+  const previous = cacheWriteQueues.get(filePath) ?? Promise.resolve();
+  const run = previous.catch(() => undefined).then(work);
+  const tail = run.then(
+    () => undefined,
+    () => undefined
+  );
+  cacheWriteQueues.set(filePath, tail);
+  try {
+    return await run;
+  } finally {
+    if (cacheWriteQueues.get(filePath) === tail) {
+      cacheWriteQueues.delete(filePath);
+    }
   }
 }
 

@@ -9,7 +9,7 @@ import {
   ExaProvider,
   PerplexitySynthesisProvider,
 } from "./providers";
-import type { ProviderAdapter, SearchResponse, WebCommand } from "./provider-adapter";
+import type { ProviderAdapter, SearchResponse, SearchResult, WebCommand } from "./provider-adapter";
 import {
   inferRecencyDays,
   isDocsLookup,
@@ -17,16 +17,31 @@ import {
   normalizeQuery,
 } from "./query-utils";
 
-interface CliInput {
+export interface CliInput {
   command: WebCommand;
   query: string;
 }
 
-async function main(): Promise<void> {
-  const input = parseArgs(process.argv.slice(2));
-  const configDir = process.env.PI_CONFIG_DIR ?? path.resolve(process.cwd(), "..", "..");
-  const cacheTtlMs = Number(process.env.WEB_SEARCH_TTL_MS) || 30 * 60 * 1000;
-  const limit = Number(process.env.WEB_SEARCH_MAX_RESULTS) || 5;
+interface RunResearchOptions {
+  env?: Record<string, string | undefined>;
+  providers?: ProviderAdapter[];
+  synthesizer?: Pick<PerplexitySynthesisProvider, "synthesize"> | null;
+  cache?: QueryCache<SearchResult[]> | null;
+  logPath?: string | null;
+  configDir?: string;
+  cacheTtlMs?: number;
+  limit?: number;
+}
+
+export async function runResearch(
+  input: CliInput,
+  options: RunResearchOptions = {}
+): Promise<SearchResponse> {
+  const env = options.env ?? process.env;
+  const configDir = options.configDir ?? env.PI_CONFIG_DIR ?? path.resolve(process.cwd(), "..", "..");
+  const cacheTtlMs =
+    options.cacheTtlMs ?? (Number(env.WEB_SEARCH_TTL_MS) || 30 * 60 * 1000);
+  const limit = options.limit ?? (Number(env.WEB_SEARCH_MAX_RESULTS) || 5);
 
   const request = {
     query: input.query,
@@ -39,17 +54,7 @@ async function main(): Promise<void> {
     }),
   };
 
-  const providers: ProviderAdapter[] = [];
-  const useContext7 = Boolean(process.env.CONTEXT7_API_KEY) && isDocsLookup(input.query, input.command);
-  if (useContext7) {
-    providers.push(new Context7Provider(process.env.CONTEXT7_API_KEY!));
-  }
-  if (process.env.EXA_API_KEY) {
-    providers.push(new ExaProvider(process.env.EXA_API_KEY));
-  }
-  if (process.env.BRAVE_API_KEY) {
-    providers.push(new BraveProvider(process.env.BRAVE_API_KEY));
-  }
+  const providers = options.providers ?? buildProviders(input, env);
 
   if (providers.length === 0) {
     throw new Error(
@@ -57,27 +62,41 @@ async function main(): Promise<void> {
     );
   }
 
-  const cache = new QueryCache({
-    filePath: path.join(configDir, "cache", "web-search-cache.json"),
-    ttlMs: cacheTtlMs,
-  });
+  const cache =
+    options.cache === undefined
+      ? new QueryCache<SearchResult[]>({
+          filePath: path.join(configDir, "cache", "web-search-cache.json"),
+          ttlMs: cacheTtlMs,
+        })
+      : options.cache ?? undefined;
 
   const orchestrator = new WebSearchOrchestrator(providers, {
     cache,
-    logPath: path.join(configDir, "logs", "web-search.ndjson"),
+    logPath:
+      options.logPath === undefined
+        ? path.join(configDir, "logs", "web-search.ndjson")
+        : options.logPath ?? undefined,
   });
 
   const { results, meta } = await orchestrator.searchWithMeta(request);
   const confidence = assessConfidence(request, results);
 
   let synthesis: SearchResponse["synthesis"] = null;
-  if (input.command === "web-deep" && process.env.PERPLEXITY_API_KEY && results.length > 0) {
-    const synthesizer = new PerplexitySynthesisProvider(process.env.PERPLEXITY_API_KEY);
-    const generated = await synthesizer.synthesize(input.query, results);
-    synthesis = generated.citations.length > 0 ? generated : null;
+  const degraded: string[] = [];
+  const synthesizer =
+    options.synthesizer === undefined && env.PERPLEXITY_API_KEY
+      ? new PerplexitySynthesisProvider(env.PERPLEXITY_API_KEY)
+      : options.synthesizer;
+  if (input.command === "web-deep" && synthesizer && results.length > 0) {
+    try {
+      const generated = await synthesizer.synthesize(input.query, results);
+      synthesis = generated.citations.length > 0 ? generated : null;
+    } catch (error) {
+      degraded.push(`synthesis failed: ${String(error)}`);
+    }
   }
 
-  const response: SearchResponse = {
+  return {
     results,
     meta: {
       query: input.query,
@@ -90,11 +109,35 @@ async function main(): Promise<void> {
       recency_days: request.recencyDays ?? null,
       confidence: confidence.confidence,
       uncertainty: confidence.uncertainty,
+      degraded,
     },
     synthesis,
   };
+}
+
+async function main(): Promise<void> {
+  const input = parseArgs(process.argv.slice(2));
+  const response = await runResearch(input);
 
   process.stdout.write(`${JSON.stringify(response, null, 2)}\n`);
+}
+
+function buildProviders(
+  input: CliInput,
+  env: Record<string, string | undefined>
+): ProviderAdapter[] {
+  const providers: ProviderAdapter[] = [];
+  const useContext7 = Boolean(env.CONTEXT7_API_KEY) && isDocsLookup(input.query, input.command);
+  if (useContext7) {
+    providers.push(new Context7Provider(env.CONTEXT7_API_KEY!));
+  }
+  if (env.EXA_API_KEY) {
+    providers.push(new ExaProvider(env.EXA_API_KEY));
+  }
+  if (env.BRAVE_API_KEY) {
+    providers.push(new BraveProvider(env.BRAVE_API_KEY));
+  }
+  return providers;
 }
 
 function parseArgs(args: string[]): CliInput {
@@ -123,7 +166,9 @@ function parseArgs(args: string[]): CliInput {
   };
 }
 
-main().catch((error) => {
-  process.stderr.write(`${String(error)}\n`);
-  process.exit(1);
-});
+if (import.meta.main) {
+  main().catch((error) => {
+    process.stderr.write(`${String(error)}\n`);
+    process.exit(1);
+  });
+}

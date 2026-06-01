@@ -4,6 +4,90 @@ import { isoTimestampDaysAgo } from "./query-utils";
 const DEFAULT_LIMIT = 5;
 const CONTEXT7_BASE_URL = process.env.CONTEXT7_BASE_URL ?? "https://context7.com/api/v1";
 const PERPLEXITY_MODEL = process.env.PERPLEXITY_MODEL ?? "sonar";
+const DEFAULT_PROVIDER_TIMEOUT_MS = 15_000;
+
+export type ProviderFailureKind = "timeout" | "http" | "network";
+
+export class ProviderRequestError extends Error {
+  readonly provider: ProviderAdapter["name"];
+  readonly kind: ProviderFailureKind;
+  readonly status?: number;
+
+  constructor(
+    provider: ProviderAdapter["name"],
+    kind: ProviderFailureKind,
+    message: string,
+    options: { status?: number; cause?: unknown } = {}
+  ) {
+    super(message);
+    this.name = "ProviderRequestError";
+    this.provider = provider;
+    this.kind = kind;
+    this.status = options.status;
+    if (options.cause) {
+      this.cause = options.cause;
+    }
+  }
+}
+
+export interface FetchWithTimeoutOptions extends RequestInit {
+  timeoutMs?: number;
+  fetchImpl?: typeof fetch;
+}
+
+export async function fetchWithTimeout(
+  provider: ProviderAdapter["name"],
+  input: string | URL | Request,
+  options: FetchWithTimeoutOptions = {}
+): Promise<Response> {
+  const {
+    timeoutMs = providerTimeoutMs(),
+    fetchImpl = fetch,
+    ...init
+  } = options;
+  const controller = new AbortController();
+  let timedOut = false;
+  let timeoutReject: (error: ProviderRequestError) => void = () => undefined;
+  const timeout = new Promise<Response>((_, reject) => {
+    timeoutReject = reject;
+  });
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+    timeoutReject(
+      new ProviderRequestError(
+        provider,
+        "timeout",
+        `${provider} request timed out after ${timeoutMs}ms`
+      )
+    );
+  }, timeoutMs);
+  try {
+    const request = fetchImpl(input, {
+      ...init,
+      signal: controller.signal,
+    });
+    request.catch(() => undefined);
+    return await Promise.race([request, timeout]);
+  } catch (error) {
+    if (error instanceof ProviderRequestError) {
+      throw error;
+    }
+    if (timedOut || controller.signal.aborted) {
+      throw new ProviderRequestError(
+        provider,
+        "timeout",
+        `${provider} request timed out after ${timeoutMs}ms`,
+        { cause: error }
+      );
+    }
+    throw new ProviderRequestError(provider, "network", `${provider} request failed`, {
+      cause: error,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 type Context7SearchItem = {
   id?: string;
@@ -60,7 +144,7 @@ export class Context7Provider implements ProviderAdapter {
   private async searchPayload(
     query: string
   ): Promise<{ results?: Context7SearchItem[]; data?: Context7SearchItem[] }> {
-    const postResponse = await fetch(`${CONTEXT7_BASE_URL}/search`, {
+    const postResponse = await fetchWithTimeout(this.name, `${CONTEXT7_BASE_URL}/search`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -78,7 +162,7 @@ export class Context7Provider implements ProviderAdapter {
     // Context7 deployments differ; some only support GET.
     if (postResponse.status === 405) {
       const params = new URLSearchParams({ query });
-      const getResponse = await fetch(`${CONTEXT7_BASE_URL}/search?${params}`, {
+      const getResponse = await fetchWithTimeout(this.name, `${CONTEXT7_BASE_URL}/search?${params}`, {
         method: "GET",
         headers: {
           authorization: `Bearer ${this.apiKey}`,
@@ -90,15 +174,19 @@ export class Context7Provider implements ProviderAdapter {
           data?: Context7SearchItem[];
         };
       }
-      throw new Error(`context7 search failed: ${getResponse.status}`);
+      throw new ProviderRequestError(this.name, "http", `context7 search failed: ${getResponse.status}`, {
+        status: getResponse.status,
+      });
     }
 
-    throw new Error(`context7 search failed: ${postResponse.status}`);
+    throw new ProviderRequestError(this.name, "http", `context7 search failed: ${postResponse.status}`, {
+      status: postResponse.status,
+    });
   }
 
   private async fetchDocSnippet(context7Id: string): Promise<string | null> {
     try {
-      const response = await fetch(`${CONTEXT7_BASE_URL}/${context7Id}`, {
+      const response = await fetchWithTimeout(this.name, `${CONTEXT7_BASE_URL}/${context7Id}`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -133,7 +221,7 @@ export class ExaProvider implements ProviderAdapter {
     const recencyStart =
       typeof request.recencyDays === "number" ? isoTimestampDaysAgo(request.recencyDays) : null;
 
-    const response = await fetch("https://api.exa.ai/search", {
+    const response = await fetchWithTimeout(this.name, "https://api.exa.ai/search", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -147,7 +235,9 @@ export class ExaProvider implements ProviderAdapter {
     });
 
     if (!response.ok) {
-      throw new Error(`exa search failed: ${response.status}`);
+      throw new ProviderRequestError(this.name, "http", `exa search failed: ${response.status}`, {
+        status: response.status,
+      });
     }
 
     const payload = (await response.json()) as {
@@ -192,15 +282,21 @@ export class BraveProvider implements ProviderAdapter {
       query.set("freshness", freshness);
     }
 
-    const response = await fetch(`https://api.search.brave.com/res/v1/web/search?${query}`, {
+    const response = await fetchWithTimeout(
+      this.name,
+      `https://api.search.brave.com/res/v1/web/search?${query}`,
+      {
       headers: {
         Accept: "application/json",
         "X-Subscription-Token": this.apiKey,
       },
-    });
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`brave search failed: ${response.status}`);
+      throw new ProviderRequestError(this.name, "http", `brave search failed: ${response.status}`, {
+        status: response.status,
+      });
     }
 
     const payload = (await response.json()) as {
@@ -255,7 +351,7 @@ export class PerplexitySynthesisProvider implements ProviderAdapter {
       .map((result, index) => `${index + 1}. ${result.title} :: ${result.url}`)
       .join("\n");
 
-    const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    const response = await fetchWithTimeout(this.name, "https://api.perplexity.ai/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
@@ -283,7 +379,12 @@ export class PerplexitySynthesisProvider implements ProviderAdapter {
     });
 
     if (!response.ok) {
-      throw new Error(`perplexity synthesis failed: ${response.status}`);
+      throw new ProviderRequestError(
+        this.name,
+        "http",
+        `perplexity synthesis failed: ${response.status}`,
+        { status: response.status }
+      );
     }
 
     const payload = (await response.json()) as {
@@ -385,4 +486,12 @@ function extractBestDocSnippet(payload: Record<string, unknown>): string | null 
 function truncateSnippet(input: string): string {
   const trimmed = input.trim().replace(/\s+/g, " ");
   return trimmed.length > 480 ? `${trimmed.slice(0, 477)}...` : trimmed;
+}
+
+function providerTimeoutMs(): number {
+  const raw = Number(process.env.WEB_SEARCH_PROVIDER_TIMEOUT_MS);
+  if (!Number.isFinite(raw) || raw <= 0) {
+    return DEFAULT_PROVIDER_TIMEOUT_MS;
+  }
+  return Math.min(Math.floor(raw), 120_000);
 }

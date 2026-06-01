@@ -31,6 +31,7 @@ export interface SearchMeta {
   recency_days: number | null;
   confidence: ConfidenceLevel;
   uncertainty: string | null;
+  degraded: string[];
 }
 
 export interface SearchResponse {
