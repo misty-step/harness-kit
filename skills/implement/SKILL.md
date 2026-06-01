@@ -121,6 +121,7 @@ not push unless the packet explicitly says so.
 - Live evidence that proves it:
 - Exact command/path/route exercised:
 - Repo-fit check:
+- Observability / instrumentation debt:
 - Residual unverified paths:
 ```
 

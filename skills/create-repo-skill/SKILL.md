@@ -37,6 +37,9 @@ skill authoring lane, not a persona runtime or scheduling engine.
 - Include at least one eval seed or smoke oracle in the generated skill.
 - Include an acceptance block with live repo evidence, exact command/path,
   repo-fit check, and residual risk.
+- Name the repo's observable surfaces when the generated skill verifies
+  behavior that should be watched after ship: healthchecks, logs, analytics
+  coverage, receipts, evidence directories, benchmarks, or release smoke.
 - Keep generated `SKILL.md` under 300 lines unless the repo proves otherwise.
 
 ## Delegation Floor

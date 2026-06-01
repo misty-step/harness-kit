@@ -71,17 +71,14 @@ Every QA pass/fail report includes:
 - Exact command/path/route exercised:
 - Repo-fit check:
 - Acceptance mutation / hardening:
+- Observability / instrumentation debt:
 - Residual unverified paths:
 ```
 
 For internal libraries or harness changes, replace end-user behavior with the
 developer/operator behavior under test. Adjacent unit tests are supporting
 evidence only; QA must name the running surface it actually exercised.
-
-## Execution Stance
-
-You are the executive orchestrator.
-- Keep test scope, severity classification, and the final pass/fail call
+If the changed behavior has no named post-ship signal, log, receipt, benchmark,
 ...</code></pre>
     </section>
     <section class="checklist">

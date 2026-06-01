@@ -68,6 +68,8 @@ records receipt evidence and owns the trip/no-trip verdict.
 Signal query syntax (Datadog PromQL, Grafana HTTP, log greps) lives in
 `references/signals.md`. Judgment about what constitutes a real trip vs
 noise lives here.
+Observability coverage report shape, repo-local signal surfaces, and examples
+live in `references/observability-coverage.md`.
 
 ## Inputs
 
@@ -162,9 +164,13 @@ Details in `references/grace-window.md`.
 grace_window: 5m          # total watch duration
 poll_interval: 30s        # time between polls
 observability:
-  receipts: .harness-kit/traces/delegations.jsonl
+  delegation_receipts: .harness-kit/traces/delegations.jsonl
   workflow_events: .harness-kit/work/*.jsonl
   evidence_dirs: [".evidence", ".harness-kit/monitor"]
+  local_logs: ["logs/*.log"]
+  benchmark_outputs: ["benchmarks/results/*.json"]
+  release_smoke: [".evidence/release-smoke/*.json"]
+  analytics_coverage: docs/analytics-coverage.md
 healthcheck:
   url: https://app.example.com/health
   expected_status: 200
@@ -190,6 +196,12 @@ signal path.
 
 Signal backend query syntax and response parsing live in
 `references/signals.md`.
+
+When `observability:` is present, `/monitor` names the repo's dominant
+observable surfaces in the terminal event's `coverage` object. It does not
+score the repo or require every key. Missing coverage for newly changed
+behavior is a monitor finding and should route to `/reflect` or `/groom` as
+instrumentation debt.
 
 ## Grace Window Judgment
 

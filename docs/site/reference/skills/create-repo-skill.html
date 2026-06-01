@@ -61,6 +61,9 @@ skill authoring lane, not a persona runtime or scheduling engine.
 - Include at least one eval seed or smoke oracle in the generated skill.
 - Include an acceptance block with live repo evidence, exact command/path,
   repo-fit check, and residual risk.
+- Name the repo&#x27;s observable surfaces when the generated skill verifies
+  behavior that should be watched after ship: healthchecks, logs, analytics
+  coverage, receipts, evidence directories, benchmarks, or release smoke.
 - Keep generated `SKILL.md` under 300 lines unless the repo proves otherwise.
 
 ## Delegation Floor
@@ -69,9 +72,6 @@ When a provider roster is available (repo `.harness-kit/agents.yaml` or system
 `~/.harness-kit/agents.yaml`), `/create-repo-skill` starts by probing the roster
 and dispatching two or more available providers. Use split lanes: one maps repo
 truth, one attacks the generated skill for generic wording, missing oracles, and
-workflow mismatch. Give each lane scoped files, expected output, and boundaries.
-The lead owns synthesis, writes, final verification, and receipts.
-Direct lead-only work is limited to mechanical edits, emergency state
 ...</code></pre>
     </section>
     <section class="checklist">

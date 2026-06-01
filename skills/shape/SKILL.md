@@ -160,6 +160,11 @@ preference.
 - [ ] New endpoint returns 200 with valid token
 - [ ] Response time < 100ms p99
 
+## Observability Plan
+- Changed behavior to watch:
+- Named signal or evidence surface:
+- Instrumentation debt if no signal exists:
+
 ## Implementation Sequence
 1. <first chunk>
 2. <second chunk>

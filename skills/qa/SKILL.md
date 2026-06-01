@@ -47,12 +47,16 @@ Every QA pass/fail report includes:
 - Exact command/path/route exercised:
 - Repo-fit check:
 - Acceptance mutation / hardening:
+- Observability / instrumentation debt:
 - Residual unverified paths:
 ```
 
 For internal libraries or harness changes, replace end-user behavior with the
 developer/operator behavior under test. Adjacent unit tests are supporting
 evidence only; QA must name the running surface it actually exercised.
+If the changed behavior has no named post-ship signal, log, receipt, benchmark,
+or evidence artifact, report it as instrumentation debt rather than hiding it
+inside generic residual risk.
 
 ## Execution Stance
 
