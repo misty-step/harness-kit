@@ -20,6 +20,7 @@ Engineer the harness. Keep it thin.
 | create global skill/agent | `references/mode-create.md` |
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
+| clean Codex skill catalog | external `steipete-skill-cleaner` |
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
@@ -28,7 +29,9 @@ Engineer the harness. Keep it thin.
 
 Use `/create-repo-skill` for generated repository-local skills such as bespoke
 QA and persona acceptance probes. Use this skill when changing Harness Kit
-itself.
+itself. Use `/skill-cleaner` before catalog deletions, duplicate cleanup, or
+description-budget work when the external `steipete-skill-cleaner` skill is
+synced locally.
 
 ## Contract
 

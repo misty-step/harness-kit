@@ -187,3 +187,16 @@ sources:
       - soft-skill
       - stitch-skill
       - taste-skill
+
+  # steipete/agent-scripts skill-cleaner — Codex/OpenClaw skill catalog audit:
+  # prompt-budget math, duplicate copies, unused candidates, loaded roots, and
+  # compact description suggestions. Keep external rather than first-party
+  # because the analyzer intentionally reads Codex-specific roots and logs.
+  # MIT licensed upstream; local sync cache remains gitignored.
+  - repo: steipete/agent-scripts
+    ref: main
+    pin: 5dc3c2435ba70f39a7fd022a80bf12c5c2b6b0c5
+    layout: flat
+    skills_path: skills
+    alias_prefix: "steipete-"
+    include: [skill-cleaner]

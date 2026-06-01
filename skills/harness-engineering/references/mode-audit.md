@@ -3,6 +3,10 @@
 Analyze skill invocation data to assess skill health, identify waste, and
 recommend lifecycle actions.
 
+For Codex skill prompt budget, duplicate copies, unused candidates, and loaded
+roots, sync and run the external `steipete-skill-cleaner` first. Use this audit
+when the question is lifecycle strategy rather than catalog mechanics.
+
 ## Data Source
 
 Read `~/.claude/skill-invocations.jsonl`. Each line is a JSON object:

@@ -54,3 +54,7 @@ a throwaway project and verifies `--help` works from there.
 ## Batch lint
 
 Run on all skills: `for s in skills/*/SKILL.md; do /harness-engineering lint "$s"; done`
+
+For duplicate skills, long descriptions, unused candidates, and Codex
+prompt-budget pressure, sync and run the external `steipete-skill-cleaner`;
+lint checks one skill's shape, not catalog tax.
