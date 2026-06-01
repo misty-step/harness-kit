@@ -69,10 +69,6 @@
       "title": "Prompt-debt reflection loop"
     },
     {
-      "source": "backlog.d/067-positioning-boundary-for-client-facing-packages.md",
-      "title": "Positioning boundary for client-facing packages"
-    },
-    {
       "source": "backlog.d/068-harden-shared-lifecycle-scripts.md",
       "title": "Harden shared lifecycle scripts"
     },

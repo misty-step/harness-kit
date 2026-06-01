@@ -1,7 +1,7 @@
 # Positioning boundary for client-facing packages
 
 Priority: P3
-Status: ready
+Status: done
 Estimate: S
 
 ## Goal
@@ -27,23 +27,23 @@ the audience is non-operator, executive, admin, procurement, or client-facing.
 
 ## Oracle
 
-- [ ] `README.md`, `project.md`, or a small `docs/positioning.md` states that
+- [x] `README.md`, `project.md`, or a small `docs/positioning.md` states that
       Harness Kit is an operator-facing harness primitive library for senior
       engineers and platform teams.
-- [ ] The same doc names what Harness Kit is not: an enterprise admin-control
+- [x] The same doc names what Harness Kit is not: an enterprise admin-control
       plane, spend-governance dashboard, procurement-ready onboarding package,
       or nontechnical training artifact.
-- [ ] `AGENTS.md` points future agents to the positioning note before they
+- [x] `AGENTS.md` points future agents to the positioning note before they
       answer "should we hand this repo to a client / enterprise / department?"
-- [ ] The note gives the recommended split:
+- [x] The note gives the recommended split:
       client-facing governed workflow package outside this repo; Harness Kit
       underneath as implementation substrate; admin/control companion layer
       when usage governance is the real buyer need.
-- [ ] The note lists concrete evidence a future agent must gather before
+- [x] The note lists concrete evidence a future agent must gather before
       deciding the boundary has changed: installed downstream usage, packaged
       onboarding docs, support/rollback path, security/trust story, and
       admin-control surfaces.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -84,3 +84,21 @@ Harness Kit is weak as a direct handoff for:
   `063-dynamic-delegation-skill-contract.md`; those are architecture work.
 - Provides durable guardrails for future Brandt-style packaging discussions
   without making this repo own the Brandt deliverable.
+
+## Closeout
+
+- Verified `docs/positioning.md` already states the operator-facing substrate
+  boundary, non-goals, recommended package split, and revisit criteria.
+- Verified `README.md` points external/client framing back to
+  `docs/positioning.md`.
+- Verified `AGENTS.md` requires future agents to read the positioning note
+  before answering client, enterprise, department, procurement, security, or
+  executive handoff questions.
+- Provider verification: `grok-build` and `claude` independently reported
+  `BLOCKING: no`; `agy` stalled without a usable verdict and was replaced.
+
+## Verification
+
+- `nl -ba README.md | sed -n '1,30p'; nl -ba AGENTS.md | sed -n '45,60p'; nl -ba docs/positioning.md | sed -n '1,80p'`
+- `bash scripts/check-docs-site.sh`
+- `dagger call check --source=.`
