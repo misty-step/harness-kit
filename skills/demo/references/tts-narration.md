@@ -104,11 +104,9 @@ curl -s https://api.cartesia.ai/tts/bytes \
 curl -s https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "tts-1-hd",
-    "input": "'"$(cat /tmp/demo-slug/script.txt)"'",
-    "voice": "nova"
-  }' --output /tmp/demo-slug/narration.mp3
+  -d "$(jq -n --rawfile input /tmp/demo-slug/script.txt \
+    '{model: "tts-1-hd", input: $input, voice: "nova"}')" \
+  --output /tmp/demo-slug/narration.mp3
 
 # 2. Get audio duration (for Remotion timing)
 ffprobe -v error -show_entries format=duration \

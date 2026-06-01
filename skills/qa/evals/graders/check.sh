@@ -7,13 +7,13 @@ if [[ $# -ne 1 ]]; then
 fi
 
 out=$1
-grep -qi "CLI\\|command" "$out"
-grep -qi "help\\|--help" "$out"
-grep -qi "malformed\\|missing" "$out"
-grep -qi "transcript\\|evidence" "$out"
-grep -qi "tests pass\\|go test" "$out"
+grep -Eqi -- "CLI|command" "$out"
+grep -Eqi -- "help|--help" "$out"
+grep -Eqi -- "malformed|missing" "$out"
+grep -Eqi -- "transcript|evidence" "$out"
+grep -Eqi -- "tests pass|go test" "$out"
 
-if grep -Eqi "playwright|browser" "$out"; then
+if grep -Eqi -- "playwright|browser" "$out"; then
   echo "candidate reached for browser tooling on a CLI repo" >&2
   exit 1
 fi

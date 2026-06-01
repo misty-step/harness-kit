@@ -26,7 +26,7 @@ The entire `.harness-kit/` tree is gitignored.
   "phases": [
     {"name": "shape",     "status": "ok"},
     {"name": "implement", "status": "ok"},
-    {"name": "review",    "status": "dirty", "iteration": 3, "blocking_count": 2},
+    {"name": "code-review", "status": "dirty", "iteration": 3, "blocking_count": 2},
     {"name": "ci",        "status": "ok"},
     {"name": "qa",        "status": "p1", "findings": 1}
   ],
@@ -36,7 +36,7 @@ The entire `.harness-kit/` tree is gitignored.
     "qa_dir": "/tmp/qa-<slug>/",
     "demo_release": "https://github.com/org/repo/releases/tag/qa-evidence-..."
   },
-  "remaining_work": ["review: 2 blocking findings in auth.py"],
+  "remaining_work": ["code-review: 2 blocking findings in auth.py"],
   "recommended_next": "fix-and-resume | abandon | human-review",
   "cost_usd": 2.80
 }
@@ -55,7 +55,7 @@ The entire `.harness-kit/` tree is gitignored.
 
 ## State Lifecycle
 
-```
+```text
   ┌────────┐   phase ok    ┌────────────┐
   │ shape  │──────────────▶│ implement  │──────────▶ (clean loop)
   └────────┘               └────────────┘                │

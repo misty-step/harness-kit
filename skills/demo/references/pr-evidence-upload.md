@@ -16,6 +16,8 @@ up later.
 
 ```bash
 # 1. Capture evidence (screenshots, GIFs, videos)
+PR_NUMBER=123
+REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 mkdir -p /tmp/pr-evidence
 # Evidence comes from /qa — screenshots, GIFs, videos in /tmp/qa-{slug}/
 
@@ -25,20 +27,25 @@ ffmpeg -y -i /tmp/pr-evidence/walkthrough.webm \
   -loop 0 /tmp/pr-evidence/walkthrough.gif
 
 # 3. Upload to a draft release
-gh release create qa-evidence-pr-{NUMBER} \
-  --title "QA Evidence: PR #{NUMBER}" \
-  --notes "Visual QA evidence for PR #{NUMBER}" \
+gh release create "qa-evidence-pr-${PR_NUMBER}" \
+  --title "QA Evidence: PR #${PR_NUMBER}" \
+  --notes "Visual QA evidence for PR #${PR_NUMBER}" \
   --draft \
   /tmp/pr-evidence/walkthrough.gif \
   /tmp/pr-evidence/feature-demo.png
 
 # 4. Get asset URLs
-RELEASE_TAG=$(gh release list --json tagName,isDraft --jq '.[] | select(.isDraft) | .tagName' | grep "qa-evidence-pr-{NUMBER}" | head -1)
+RELEASE_TAG=$(
+  gh release list --json tagName,isDraft \
+    --jq '.[] | select(.isDraft) | .tagName' |
+    grep -F -- "qa-evidence-pr-${PR_NUMBER}" |
+    head -1
+)
 gh release view "$RELEASE_TAG" --json assets --jq '.assets[] | "\(.name): \(.url)"'
 
 # 5. Embed in PR comment
-RELEASE_BASE="https://github.com/{OWNER}/{REPO}/releases/download/{TAG}"
-gh pr comment {NUMBER} --body "$(cat <<EOF
+RELEASE_BASE="https://github.com/${REPO}/releases/download/${RELEASE_TAG}"
+gh pr comment "$PR_NUMBER" --body "$(cat <<EOF
 ## Visual QA Report
 
 ![walkthrough](${RELEASE_BASE}/walkthrough.gif)
@@ -47,7 +54,7 @@ gh pr comment {NUMBER} --body "$(cat <<EOF
 |-------|-----------|
 | /dashboard | ![dash](${RELEASE_BASE}/feature-demo.png) |
 
-[All evidence](https://github.com/{OWNER}/{REPO}/releases/tag/{TAG})
+[All evidence](https://github.com/${REPO}/releases/tag/${RELEASE_TAG})
 EOF
 )"
 ```
@@ -57,7 +64,7 @@ EOF
 - **Always convert `.webm` to `.gif`** for inline rendering. GitHub markdown
   renders GIFs inline but not video files.
 - **Use `--draft`** so the release doesn't appear in the public release list.
-- **Tag naming**: `qa-evidence-pr-{NUMBER}` or `qa-{feature-slug}` for easy identification.
+- **Tag naming**: `qa-evidence-pr-${PR_NUMBER}` or `qa-{feature-slug}` for easy identification.
 - **Keep under 10MB per asset** (GitHub release limit per file is 2GB, but
   keep GIFs reasonable for inline rendering).
 - **Link the release** at the bottom of the comment so reviewers can download

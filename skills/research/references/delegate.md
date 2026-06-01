@@ -57,7 +57,7 @@ audits frontend components, a third analyzes test coverage. All in one message.
 
 For large work (10+ subtasks, multiple phases), use DAG-based scheduling:
 
-```
+```text
 Phase 1 (no deps):    Tasks 01, 02, 03 → spawn in parallel
 Phase 2 (deps on P1): Tasks 04, 05     → blocked until P1 complete
 Phase 3 (deps on P2): Tasks 06, 07, 08 → blocked until P2 complete
@@ -73,7 +73,8 @@ For each sub-agent finding:
 
 - **Validate**: Real issue or false positive?
 - **Filter**: Generic advice? Style preference contradicting conventions?
-- **Resolve conflicts**: When sub-agents disagree, explain tradeoff, recommend
+- **Resolve conflicts**: When sub-agents disagree, explain the tradeoff,
+  recommend which evidence to trust, and name what would change the verdict.
 
 ## Output Template
 

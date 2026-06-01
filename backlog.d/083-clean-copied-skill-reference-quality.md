@@ -1,7 +1,7 @@
 # Clean copied skill reference quality
 
 Priority: P2
-Status: ready
+Status: merge-ready
 Estimate: S
 
 ## Goal
@@ -18,24 +18,24 @@ phase names to downstream repos.
 
 ## Oracle
 
-- [ ] `skills/demo/references/pr-evidence-upload.md` replaces the literal
+- [x] `skills/demo/references/pr-evidence-upload.md` replaces the literal
       `{NUMBER}` grep placeholder with a shell variable or another executable
       example that actually filters the intended PR number.
-- [ ] `skills/demo/references/tts-narration.md` avoids unsafe shell
+- [x] `skills/demo/references/tts-narration.md` avoids unsafe shell
       interpolation into JSON and shows a robust JSON construction pattern.
-- [ ] `skills/reflect/scripts/gather_evidence.sh` uses `grep --` before any
+- [x] `skills/reflect/scripts/gather_evidence.sh` uses `grep --` before any
       pattern that could be interpreted as an option.
-- [ ] `skills/research/references/delegate.md` completes the truncated conflict
+- [x] `skills/research/references/delegate.md` completes the truncated conflict
       resolution bullet and uses fenced code blocks with language tags.
-- [ ] Copied markdown references use language-tagged fences where the language
+- [x] Copied markdown references use language-tagged fences where the language
       is known.
-- [ ] `skills/deliver/references/receipt.md` uses the canonical `/code-review`
+- [x] `skills/deliver/references/receipt.md` uses the canonical `/code-review`
       phase name instead of a stale `review` alias where phase names are
       enumerated.
-- [ ] `skills/qa/evals/graders/check.sh` uses an appropriate fixed-string or
+- [x] `skills/qa/evals/graders/check.sh` uses an appropriate fixed-string or
       escaped extended-regex check; unescaped alternation must not make the
       grader pass on the wrong text.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -43,3 +43,30 @@ These are upstream quality defects because downstream repos consume the same
 references through the system-wide harness or explicit `/seed` vendoring.
 Downstream repos may patch local copies for an active PR, but the durable fix is
 in Harness Kit.
+
+## Progress
+
+- Replaced PR evidence upload placeholders with `PR_NUMBER` and `REPO`
+  variables, plus fixed-string `grep -F --` release-tag filtering.
+- Replaced TTS narration JSON string splicing with `jq -n --rawfile`.
+- Hardened shell grep invocations with `--` and explicit `grep -E` where
+  alternation is intended.
+- Completed the `/research` delegation conflict-resolution bullet and tagged
+  known text/code fences in the touched copied references.
+- Updated `/deliver` receipt examples to use `code-review` phase naming.
+- Added `ci/tests/test_reference_quality.py` to lock the fixed reference
+  defects.
+
+## Delegation Evidence
+
+- `agy`: accepted `receipt.md` lifecycle fence finding; rejected broad
+  catalog-wide fence sweep as out of scope for this S ticket.
+- `grok-build`: accepted overlapping lifecycle fence finding; core shell/JSON/
+  phase-name issues were already covered by the implementation patch.
+
+## Verification
+
+- `python3 -m unittest ci.tests.test_reference_quality`
+- `shellcheck --severity=error skills/reflect/scripts/gather_evidence.sh skills/qa/evals/graders/check.sh`
+- `python3 -m unittest discover -s ci/tests -p 'test_*.py'`
+- `dagger call check --source=.`

@@ -24,4 +24,4 @@ find . -maxdepth 2 -name '.env*' -not -path '*/node_modules/*' 2>/dev/null | hea
 
 echo ""
 echo "### Dev server config"
-grep -l 'dev.*server\|"dev"' package.json */package.json 2>/dev/null | head -5
+grep -l -- 'dev.*server\|"dev"' package.json */package.json 2>/dev/null | head -5
