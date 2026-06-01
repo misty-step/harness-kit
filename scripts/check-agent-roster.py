@@ -119,6 +119,17 @@ COMPLETION_EVIDENCE_REQUIREMENTS = {
     "residual risk": ["residual", "waiver", "follow-up"],
 }
 
+GROOM_COMPLETENESS_REQUIREMENTS = {
+    "groom completeness gate": ["groom completeness gate"],
+    "minimum strategic fanout": ["minimum strategic fanout", "at least seven"],
+    "mandatory research": ["research is mandatory", "exa", "xai/grok", "thinktank", "codebase"],
+    "product aperture": ["ideal-form", "product should become"],
+    "security privacy": ["security/privacy"],
+    "agent readiness": ["agent-readiness"],
+    "simplification deletion": ["simplification/deletion"],
+    "operator artifact": ["providers used", "accepted/rejected findings", "residual risks"],
+}
+
 RETIRED_PROVIDER_REFERENCE_PATHS = [
     # Active sources only. Closed backlog and trace receipts remain historical
     # records and may mention retired providers.
@@ -358,6 +369,20 @@ def validate_completion_evidence() -> None:
         raise SystemExit("; ".join(issues))
 
 
+def validate_groom_completeness_contract() -> None:
+    path = Path("skills/groom/SKILL.md")
+    text = path.read_text().lower()
+    issues = []
+    for label, phrases in GROOM_COMPLETENESS_REQUIREMENTS.items():
+        missing = [phrase for phrase in phrases if phrase not in text]
+        if missing:
+            issues.append(f"{label} ({', '.join(missing)})")
+    if issues:
+        raise SystemExit(
+            f"{path}: incomplete groom completeness contract: " + "; ".join(issues)
+        )
+
+
 def validate_clean_closeout_pointers() -> None:
     shared_path = Path("harnesses/shared/AGENTS.md")
     shared_section = markdown_section(shared_path.read_text(), "## Closeout")
@@ -466,6 +491,7 @@ def main() -> int:
     validate_runtime_delegation_references()
     validate_shared_roster_doctrine()
     validate_completion_evidence()
+    validate_groom_completeness_contract()
     validate_clean_closeout_pointers()
     validate_adversarial_done_review()
     validate_no_source_skill_bridges()
@@ -510,6 +536,7 @@ def main() -> int:
         "completion evidence pointer(s) valid"
     )
     print(f"skills/: {len(DOMAIN_COMPLETION_GATE_SKILLS)} local completion gate(s) valid")
+    print("skills/groom/SKILL.md: completeness contract valid")
     print(f"closeout: {len(CLEAN_CLOSEOUT_POINTER_PATHS)} shared pointer(s) valid")
     print(f"skills/: {len(ADVERSARIAL_REVIEW_SKILLS)} adversarial review stance(s) valid")
     print(f"harnesses/: {len(RUNTIME_REFERENCES)} runtime delegation reference(s) valid")

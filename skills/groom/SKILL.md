@@ -26,7 +26,8 @@ invocation runs the full loop:
 3. **Always interrogates** — challenges the premise of top items with ad-hoc
    roster lanes and the technical-review bench.
 4. **Always investigates** — dispatches Explore subagents against code hotspots.
-5. **Always researches** — delegates to `/research` for outside context on unfamiliar territory.
+5. **Always researches** — delegates to `/research` for outside context and
+   reports which research surfaces succeeded, failed, or were unavailable.
 6. **Always simplifies** — favors deletion and consolidation over addition.
 
 Emphasis flags (`--emphasis explore|rethink|moonshot|scaffold`) weight the
@@ -44,7 +45,36 @@ providers for substantive work; direct solo only for mechanical, emergency,
 user-forbidden, or fewer-than-two-providers cases. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use lanes for backlog drift, premise challenge, technical hotspots, product opportunity, or external context; the lead keeps final prioritization.
+Local lane guidance: Use lanes for backlog drift, premise challenge, technical
+hotspots, product opportunity, ideal-form design, security/privacy,
+agent-readiness, simplification/deletion, and external context; the lead keeps
+final prioritization.
+
+## Groom Completeness Gate
+
+A groom run is not an orientation report. It is complete only when the final
+artifact proves all of these:
+
+- **Roster lanes:** at least two configured providers returned or failed with
+  receipts. Native in-thread subagents can add freshness, but they do not count
+  toward the roster floor.
+- **Minimum strategic fanout:** at least seven independent perspectives ran:
+  backlog drift, premise/design challenge, product opportunity or ideal-form,
+  technical hotspots, security/privacy, agent-readiness, and
+  simplification/deletion.
+- **Research is mandatory:** `/research` fanout runs by default. The final
+  report names the state of Exa, xAI/Grok, Thinktank, and codebase research,
+  including failed, partial, or unavailable sources.
+- **Codebase evidence:** the run inspects live code, not just ticket text:
+  churn or hotspots, largest files, tests/gates, TODO/FIXME debt, dependency
+  boundaries, and visible docs/UI/API surfaces as applicable.
+- **Creative aperture:** answer what the product should become in its
+  ideal-form separately from what the next ticket should be.
+- **Operator artifact:** final output names providers used, research sources,
+  accepted/rejected findings, proposed edits/new tickets/deletions, and
+  residual risks.
+
+If any item is missing, say the groom is incomplete and keep working.
 
 ## The Always-On Loop
 
@@ -68,10 +98,11 @@ Gate: every shipped ticket archived, every stale `in-progress` flagged, duplicat
 
 ### 3. INVESTIGATE — parallel fanout (see Strategic Layer)
 
-Launch investigation bench, premise-challenge, CEO review, technical-review
-bench, codebase hotspot scans, and `/research` delegations **in a single
-message** so they run in parallel. A groom run that ran one subagent has
-failed the fanout goal.
+Launch investigation bench, premise-challenge, CEO/user-value review,
+ideal-form design, security/privacy review, agent-readiness review,
+technical-review bench, simplification/deletion review, codebase hotspot scans,
+and `/research` delegations **in a single message** so they run in parallel. A
+groom run that ran one subagent has failed the fanout goal.
 
 Gate: every dispatched subagent returned a structured report.
 
@@ -166,8 +197,8 @@ let the user ratify.
 ## Strategic Layer
 
 The interesting work. Dispatched in parallel for fresh-context judgment.
-A groom run that ran fewer than three of these perspectives has failed
-the fanout goal.
+A groom run that ran fewer than seven of these perspectives has failed the
+fanout goal even if two roster providers returned.
 
 ### Premise challenge — raw items
 
@@ -198,12 +229,13 @@ concrete slice of recent code (see Codebase investigation below). Ask each:
 "what technical-debt ticket does the current backlog miss?" Surface every
 emission as a proposed new ticket with the lens name in the `**Why:**`.
 
-### Research — `/research` on unfamiliar territory
+### Research — mandatory `/research` fanout
 
-Identify 1-2 themes where the backlog is reaching for domains we lack
-depth in (e.g. "SOTA for rate-limiting a multi-tenant queue"). Invoke
-`/research` with a focused query. Pipe results into the synthesis step —
-use them to pressure-test or to enrich a proposed ticket.
+Invoke `/research` with a focused query for outside context even when the repo
+looks familiar. Use Exa, xAI/Grok, Thinktank, and codebase research when those
+surfaces are available. Pipe results into synthesis to pressure-test or enrich
+proposed tickets. If a surface fails, times out, or is unavailable, keep the
+failure in the final artifact instead of treating silence as no evidence.
 
 ### Codebase investigation — Explore subagents
 
