@@ -1,4 +1,5 @@
 import json
+import importlib.util
 import os
 import shlex
 import stat
@@ -30,6 +31,18 @@ from agent_roster import (  # noqa: E402
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+CHECK_AGENT_ROSTER_PATH = REPO_ROOT / "scripts" / "check-agent-roster.py"
+
+
+def _load_check_agent_roster_module():
+    spec = importlib.util.spec_from_file_location(
+        "check_agent_roster", CHECK_AGENT_ROSTER_PATH
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class RosterValidationTests(unittest.TestCase):
@@ -148,6 +161,71 @@ class RosterValidationTests(unittest.TestCase):
                     os.environ.pop("HARNESS_KIT_ROSTER", None)
                 else:
                     os.environ["HARNESS_KIT_ROSTER"] = old
+
+    def test_delegation_floor_rejects_keyword_stuffing_without_commitment(self) -> None:
+        checker = _load_check_agent_roster_module()
+        weak_section = textwrap.dedent(
+            """\
+            ## Delegation Floor
+
+            When a provider roster is available, this section mentions two or more.
+            It also contains the words lane and receipt. A separate
+            sentence mentions context, give, and scope. It also names
+            mechanical, emergency, user-forbidden, fewer than two, evidence,
+            and lead. These are reminders only; the primary may decide later
+            whether any roster-backed delegation is useful.
+            """
+        )
+
+        gaps = checker.delegation_contract_gaps(weak_section)
+
+        self.assertIn("two-provider commitment", gaps)
+        self.assertIn("direct-work exception commitment", gaps)
+        self.assertIn("scoped lane handoff", gaps)
+        self.assertIn("lead-owned synthesis", gaps)
+
+    def test_delegation_floor_rejects_hedged_pattern_shaped_commitments(self) -> None:
+        checker = _load_check_agent_roster_module()
+        hedged_section = textwrap.dedent(
+            """\
+            ## Delegation Floor
+
+            When a provider roster is available, the lead may verify whether
+            the roster uses two or more members if available. Direct work only
+            matters for mechanical commands, emergency unblocks, explicit
+            user-forbidden delegation, or fewer than two providers. Use lanes
+            for review. Give them lane summaries. Context and scope are named
+            elsewhere. Receipts and evidence are mentioned.
+            """
+        )
+
+        gaps = checker.delegation_contract_gaps(hedged_section)
+
+        self.assertIn("two-provider commitment", gaps)
+        self.assertIn("direct-work exception commitment", gaps)
+        self.assertIn("scoped lane handoff", gaps)
+        self.assertIn("lead-owned synthesis", gaps)
+
+    def test_delegation_floor_accepts_complete_roster_contract_fixture(self) -> None:
+        checker = _load_check_agent_roster_module()
+        complete_section = textwrap.dedent(
+            """\
+            ## Delegation Floor
+
+            When a provider roster is available (repo `.harness-kit/agents.yaml`
+            or system `~/.harness-kit/agents.yaml`), `/fixture` starts by
+            probing the roster and dispatching two or more available roster
+            members before substantive work. Use one lane for implementation
+            and one lane for adversarial review. Give each lane scoped files,
+            commands, context, and expected output. The lead owns synthesis,
+            final verification, and receipts; reviewer output is evidence, not
+            veto. Direct lead-only work is limited to fewer than two available
+            roster members, explicit user-forbidden delegation, emergency
+            unblocks, or mechanical command execution.
+            """
+        )
+
+        self.assertEqual(checker.delegation_contract_gaps(complete_section), [])
 
 
 class ReceiptTests(unittest.TestCase):

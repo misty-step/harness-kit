@@ -49,6 +49,32 @@ DELEGATION_FLOOR_REQUIREMENTS = {
     "lead verification": ["lead"],
 }
 
+DELEGATION_FLOOR_COMMITMENTS = {
+    "two-provider commitment": [
+        r"\b(dispatch\w*|uses?|requires?|verif\w*|show)\b[^.]{0,160}\btwo or more\b",
+        r"\btwo or more\b[^.]{0,160}\b(dispatch\w*|uses?|requires?|verif\w*|show)\b",
+    ],
+    "direct-work exception commitment": [
+        r"\b(direct\w*|lead-only)\b[^.]{0,160}\b(is for|limited to|only|exceptions?|mechanical|emergency|user(?:-forbidden| forbids)|fewer than two)\b",
+        r"\b(except for|limited to)\b[^.]{0,160}\b(mechanical|emergency|user(?:-forbidden| forbids)|fewer than two)\b",
+    ],
+    "scoped lane handoff": [
+        r"\b(give|gives)\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?|them)\b[^.]{0,160}\b(scoped|scope|context|files|questions|commands|output|evidence|receipt|sources|methods|risk|boundar\w*)\b",
+        r"\bscoped\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?)\b",
+        r"\buse\b[^.]{0,80}\blanes?\b[^.]{0,160}\b(scoped|scope|context|files|questions|commands|output|evidence|receipt|sources|methods|risk|boundar\w*)\b",
+    ],
+    "lead-owned synthesis": [
+        r"\bthe lead(?: agent| model)?\b(?=[^.]{0,160}\b(owns|verif\w*|records?|accepts?|keeps|synthesis|final)\b)",
+        r"\blead agent\b(?=[^.]{0,160}\b(owns|verif\w*|records?|accepts?|keeps|synthesis|final)\b)",
+        r"\blead synthesis\b",
+    ],
+}
+
+HEDGED_COMMITMENT_PATTERN = re.compile(
+    r"\b(may|might|optional|whether|if available|at [^.]{0,40} discretion|"
+    r"decide later|reminders only|only matters)\b"
+)
+
 RUNTIME_REFERENCES = {
     "Claude Code": Path("harnesses/claude/README.md"),
     "Codex": Path("harnesses/codex/README.md"),
@@ -117,6 +143,24 @@ def delegation_contract_gaps(section: str) -> list:
         and ".harness-kit/agents.yaml" not in lowered
     ):
         missing.append("roster availability")
+    flattened = re.sub(r"\s+", " ", lowered)
+
+    def has_unhedged_match(patterns: list[str]) -> bool:
+        for pattern in patterns:
+            for match in re.finditer(pattern, flattened):
+                sentence_end = flattened.find(".", match.start())
+                if sentence_end == -1:
+                    sentence_end = min(len(flattened), match.end() + 160)
+                window = flattened[max(0, match.start() - 40) : sentence_end]
+                if not HEDGED_COMMITMENT_PATTERN.search(window):
+                    return True
+        return False
+
+    missing.extend(
+        name
+        for name, patterns in DELEGATION_FLOOR_COMMITMENTS.items()
+        if not has_unhedged_match(patterns)
+    )
     return missing
 
 
