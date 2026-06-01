@@ -24,20 +24,20 @@ as the future Google harness.
 
 ## Oracle
 
-- [ ] `harnesses/antigravity-cli/` exists with a README, plugin template, skill
+- [x] `harnesses/antigravity-cli/` exists with a README, plugin template, skill
       projection notes, rules guidance, hook guidance, and settings guidance.
-- [ ] `harnesses/antigravity-ide/` exists or `harnesses/antigravity/` clearly
+- [x] `harnesses/antigravity-ide/` exists or `harnesses/antigravity/` clearly
       documents the split between CLI and IDE paths.
-- [ ] `bootstrap.sh` detects Antigravity CLI/IDE installs and reports what it
+- [x] `bootstrap.sh` detects Antigravity CLI/IDE installs and reports what it
       would link or copy. Any mutation is conservative and reversible.
-- [ ] `bootstrap.sh` and `/seed` know how to expose skills in Antigravity
+- [x] `bootstrap.sh` and `/seed` know how to expose skills in Antigravity
       skill/plugin locations.
-- [ ] Gemini CLI docs and config remain only as legacy import/migration support.
-- [ ] `README.md`, `project.md`, `AGENTS.md`, and active harness docs name
+- [x] Gemini CLI docs and config remain only as legacy import/migration support.
+- [x] `README.md`, `project.md`, `AGENTS.md`, and active harness docs name
       Antigravity instead of Gemini CLI as the Google first-class target.
-- [ ] A local smoke check proves Antigravity sees at least one projected skill
+- [x] A local smoke check proves Antigravity sees at least one projected skill
       or plugin from this repo.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -92,3 +92,45 @@ agy --dangerously-skip-permissions --print-timeout 10m --print <prompt>
 Keep Antigravity conditional in the roster and require transcript inspection or
 a sentinel prompt for smoke tests; a zero exit code alone is not sufficient
 evidence that the prompt was followed.
+
+### 2026-06-01 closeout notes
+
+`/seed` is retired in current Harness Kit. This ticket treats that oracle clause
+as bootstrap-owned projection plus repo-local migration guidance, without
+reviving the old minimal-global `/seed` model.
+
+Projection smoke:
+
+- `agy --help` succeeded and listed `--print`, `--print-timeout`, `--add-dir`,
+  `--dangerously-skip-permissions`, and the `plugin` subcommand.
+- `agy plugin list` succeeded with `No imported plugins.`
+- `~/.gemini/antigravity-cli/skills` resolves to
+  `~/.gemini/config/skills`, and
+  `~/.gemini/antigravity-cli/skills/monitor/SKILL.md` exists.
+- Sentinel prompt `agy --print-timeout 45s --print "Reply with exactly:
+  AGY_OK"` returned `AGY_OK`, but also produced irrelevant commit-related
+  chatter and wrote local cache state. This validates the existing warning:
+  inspect Antigravity output; do not trust zero exit alone.
+
+Delegation evidence:
+
+- `claude` receipt `bc807414-5ce2-45a4-9d9e-9befbedbd5b5`: accepted the
+  missing plugin/rules/hooks/settings/migration README gaps, explicit `/seed`
+  retirement note, and smoke requirements.
+- `grok-build` receipt `478bcb89-202d-4e6d-9081-6fc4f8140d89`: accepted that
+  closeout-only was insufficient. Rejected its claim that bootstrap did not
+  project skills; live `bootstrap.sh` links first-party skills for every
+  detected harness before Antigravity-specific `AGENTS.md` wiring.
+
+Verification:
+
+- `agy --help`
+- `agy plugin list`
+- `test -e ~/.gemini/antigravity-cli/skills/monitor/SKILL.md`
+- `agy --print-timeout 45s --print "Reply with exactly: AGY_OK"` (noisy output;
+  transcript inspected)
+- `git diff --check`
+- `bash scripts/build-docs-site.sh`
+- `bash scripts/check-docs-site.sh`
+- `python3 scripts/check-agent-roster.py`
+- `dagger call check --source=.` -> 15 passed, 0 failed

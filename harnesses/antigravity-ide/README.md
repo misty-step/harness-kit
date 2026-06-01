@@ -10,3 +10,7 @@ Antigravity IDE is the Google-family developer environment provider target for H
 Global skills are automatically populated by Harness Kit's `bootstrap.sh` into:
 - `~/.gemini/antigravity-cli/skills/` (resolving to `~/.gemini/config/skills/`)
 - `~/.gemini/antigravity-ide/skills/`
+
+Bootstrap also links shared `AGENTS.md` into the Antigravity CLI and IDE roots.
+IDE settings remain user-owned; Harness Kit does not overwrite editor policy or
+workspace state.
