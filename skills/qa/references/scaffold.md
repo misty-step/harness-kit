@@ -183,14 +183,14 @@ Evidence goes to \`/tmp/qa-[project-slug]/\`.
 
 ## Completion Gate
 
-- Exact end-user behavior verified:
-- Value proposition exercised:
-- Persona outcome observed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Acceptance mutation / hardening:
-- Residual unverified paths:
+- Exact end-user behavior verified: user or operator behavior exercised through the running surface.
+- Value proposition exercised: specific promised outcome the QA walk covered.
+- Persona outcome observed: persona-specific success or failure observed in the run.
+- Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
+- Repo-fit check: local QA convention or repo contract followed.
+- Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
+- Residual risk: unverified path, uncovered persona, or none with reason.
 
 ## Gotchas
 

@@ -69,8 +69,12 @@ Assert at start; refuse with a clear reason on any miss.
   locally verified git-native branch. A `dont-ship` verdict still blocks.
 - Acceptance evidence exists for this exact HEAD: exact behavior changed,
   live evidence, command/path exercised, repo-fit check, and residual
-  unverified paths. `/ship` carries this evidence into the final report and
-  `/reflect` packet.
+  unverified paths. When the oracle depends on a fixture, contract, golden
+  file, screenshot, Gherkin feature, transcript, or equivalent acceptance
+  artifact, the evidence includes its `sha256` hash. If acceptance criteria,
+  artifact contents, or assertion strength changed, the evidence includes an
+  explicit `Contract-change acknowledgment:` line. `/ship` carries this
+  evidence into the final report and `/reflect` packet.
 
 ## Process
 
@@ -283,6 +287,10 @@ Stop and surface to the user instead of shipping:
 - Primary ID has no `backlog.d/<id>-*.md` file AND no closing trailers on
   any branch commit — shipping with no backlog association. Operator must
   add a ticket or add a marker commit and re-run.
+- Acceptance criteria, oracle artifacts, golden files, fixtures, Gherkin
+  features, CLI transcripts, screenshots with asserted data, or assertion
+  surfaces changed without an explicit `Contract-change acknowledgment:`
+  explaining why the contract changed. Route back to `/deliver --polish-only`.
 - Rebase / merge / cherry-pick in progress (`.git/MERGE_HEAD`,
   `.git/CHERRY_PICK_HEAD`, `rebase-*` dir).
 

@@ -157,12 +157,12 @@ Every Ship or Conditional verdict must include:
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior changed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Hardening recommendation / waiver:
-- Residual unverified paths:
+- Exact end-user behavior changed: behavior or internal operator behavior the diff changes.
+- Evidence that proves it: review finding, test output, QA artifact, or command result behind the verdict.
+- Exact command/path/route exercised: command, route, file path, artifact, or tool call inspected.
+- Repo-fit check: live repo pattern or contract the verdict compared against.
+- Hardening recommendation / waiver: mode recommended, mode run, or waiver reason.
+- Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
 If there is no end-user behavior because the diff is internal, say so and name

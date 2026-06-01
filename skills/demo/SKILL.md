@@ -32,11 +32,11 @@ Every demo outcome, including "no artifact needed," answers:
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior shown:
-- Live evidence or artifact:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Residual unshown paths:
+- Exact end-user behavior shown: behavior or internal operator behavior the artifact demonstrates.
+- Evidence that proves it: screenshot, GIF, video, paste, launch note, or artifact path.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call used to capture it.
+- Repo-fit check: repo convention or audience surface the artifact matches.
+- Residual risk: unshown path, unsupported state, or none with reason.
 ```
 
 For internal changes, the demo may be a PR/release-note sentence, but it still

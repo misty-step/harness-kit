@@ -82,12 +82,14 @@ Every merge-ready brief includes this block:
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior changed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Hardening run / waiver:
-- Residual unverified paths:
+- Exact end-user behavior changed: behavior or internal operator behavior delivered by this branch.
+- Evidence that proves it: test output, QA artifact, gate result, or receipt proving the behavior.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
+- Oracle / acceptance artifact hash: sha256 digest for any fixture, contract, golden file, transcript, screenshot, or equivalent acceptance source used by the oracle.
+- Contract-change acknowledgment: explicit reason when the branch changes acceptance criteria or weakens an assertion surface.
+- Repo-fit check: live repo pattern, contract, or boundary this branch follows.
+- Hardening run / waiver: hardening mode run, blocking recommendation, or waiver reason.
+- Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
 If any phase cannot fill the block with live evidence, `/deliver` is not

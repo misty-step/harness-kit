@@ -117,12 +117,12 @@ not push unless the packet explicitly says so.
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior changed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Observability / instrumentation debt:
-- Residual unverified paths:
+- Exact end-user behavior changed: behavior or internal operator behavior implemented.
+- Evidence that proves it: failing-then-passing test, oracle command, or artifact proving the behavior.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
+- Repo-fit check: live repo pattern, contract, or boundary the implementation follows.
+- Observability / instrumentation debt: named signal added, existing signal used, or debt recorded.
+- Residual risk: unverified path, deferred edge case, or none with reason.
 ```
 
 For internal-only changes, replace "end-user" with the developer/operator

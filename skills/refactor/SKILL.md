@@ -183,11 +183,11 @@ Target: <branch or scope>
 [tests/lint/assessment results]
 
 ### Completion Gate
-- Exact developer/operator behavior changed:
-- Live evidence that proves it:
-- Exact command/path exercised:
-- Repo-fit check:
-- Residual unverified paths:
+- Exact developer/operator behavior changed: simplification effect or shaped backlog outcome created.
+- Evidence that proves it: diff stat, test output, report finding, or command result proving the change.
+- Exact command/path/route exercised: command, file path, route, or tool call inspected.
+- Repo-fit check: live repo boundary, pattern, or deletion/consolidation contract followed.
+- Residual risk: unverified path, remaining complexity, or none with reason.
 
 ### Residual Risks
 [what remains and why]

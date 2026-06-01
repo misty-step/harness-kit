@@ -123,6 +123,7 @@
     "check-agent-roster",
     "check-deliver-composition",
     "check-docs-site",
+    "check-evidence-blocks",
     "check-exclusions",
     "check-frontmatter",
     "check-harness-install-paths",

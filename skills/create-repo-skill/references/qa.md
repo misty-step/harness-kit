@@ -38,14 +38,14 @@ Required acceptance block:
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior verified:
-- Value proposition exercised:
-- Persona outcome observed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Acceptance mutation / hardening:
-- Residual unverified paths:
+- Exact end-user behavior verified: user or operator behavior the generated skill must probe.
+- Value proposition exercised: specific promised outcome the QA walk covered.
+- Persona outcome observed: persona-specific success or failure observed in the run.
+- Evidence that proves it: screenshot, transcript, test output, or artifact path proving the observation.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call used.
+- Repo-fit check: live repo convention or local skill contract followed.
+- Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
+- Residual risk: unverified path, uncovered persona, or none with reason.
 ```
 
 ## Eval Seed

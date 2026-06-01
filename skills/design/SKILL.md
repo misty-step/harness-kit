@@ -101,14 +101,14 @@ For each direction, name what it sacrifices. Recommend one.
 ## Completion Gate
 
 ```markdown
-## Design Gate
-- Direction chosen:
-- Artifact/render inspected:
-- Hierarchy/content changes:
-- Typography/layout changes:
-- Copy provenance:
-- Verification evidence:
-- Residual design risk:
+## Completion Gate
+- Direction chosen: critique, polish, redesign, or scaffold decision applied.
+- Evidence that proves it: screenshot, render, artifact, or visual diff inspected.
+- Exact command/path/route exercised: URL, screenshot path, render command, or artifact path inspected.
+- Hierarchy/content changes: specific hierarchy or content issue changed or recommended.
+- Typography/layout changes: specific type, spacing, density, or layout issue changed or recommended.
+- Copy provenance: visible copy inspected for product truth versus agent process leakage.
+- Residual risk: remaining design, a11y, or QA risk after inspection.
 ```
 
 ## Gotchas

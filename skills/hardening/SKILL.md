@@ -157,15 +157,15 @@ Every hardening report includes:
 
 ```markdown
 ## Completion Gate
-- Target hardened:
-- Hardening mode:
-- Oracle / property / mutant / metric used:
-- Exact command exercised:
-- Bug or weak-test evidence found:
-- Fixes made:
-- Rerun evidence:
-- Survivors / residual risk:
-- Roster receipt ids:
+- Target hardened: function, module, fixture, contract, or acceptance surface hardened.
+- Hardening mode: property, mutation, acceptance, risk, dry, or full.
+- Oracle / property / mutant / metric used: invariant, mutant class, fixture mutation, CRAP/SCRAP, or duplicate metric.
+- Evidence that proves it: counterexample, survivor, weak-test finding, killed mutant, or risk metric observed.
+- Exact command/path/route exercised: command, fixture path, contract path, or route exercised.
+- Fixes made: production fix, test strengthening, equivalent-mutant filter, or no-code result.
+- Rerun evidence: rerun command output or artifact proving the hardening now holds.
+- Residual risk: surviving mutant, uncovered domain, equivalent mutant, or none with reason.
+- Roster receipt ids: provider receipt ids or explicit roster waiver.
 ```
 
 No "hardened" claim without the exact command and rerun evidence.

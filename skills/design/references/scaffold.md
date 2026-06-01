@@ -87,12 +87,12 @@ stronger local convention.
 
 ## Completion Gate
 
-- Artifact/render inspected:
-- Intent:
-- Design-system facts used:
-- Changes made or recommended:
-- A11y/QA evidence:
-- Residual design risk:
+- Intent: target user outcome and visual direction for this surface.
+- Evidence that proves it: screenshot, render, artifact, or visual diff inspected.
+- Exact command/path/route exercised: URL, screenshot path, render command, or artifact path inspected.
+- Design-system facts used: local tokens, components, or documented conventions applied.
+- Changes made or recommended: concrete UI changes or critique recommendations.
+- Residual risk: remaining design, a11y, or QA risk after inspection.
 
 ## Red Lines
 

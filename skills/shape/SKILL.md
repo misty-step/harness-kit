@@ -165,6 +165,31 @@ preference.
 - Named signal or evidence surface:
 - Instrumentation debt if no signal exists:
 
+When the oracle depends on a fixture, contract, golden file, screenshot,
+Gherkin feature, transcript, or other acceptance artifact, include its
+artifact hash in the packet. Prefer:
+
+```sh
+shasum -a 256 <artifact-path>
+```
+
+Name the source and hash near the oracle, for example:
+`Oracle / acceptance artifact hash: sha256:<digest> <artifact-path>`.
+If implementation intentionally changes that source, the handoff must carry
+`Contract-change acknowledgment: <why the acceptance contract changed>`.
+
+When an acceptance artifact exists, include this block:
+
+```markdown
+## Acceptance Evidence
+- Acceptance source: fixture, contract, golden file, transcript, screenshot, Gherkin feature, or executable oracle path.
+- Evidence that proves it: command output, mutation result, QA artifact, or trace proving the acceptance path is connected.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call that exercised the acceptance source.
+- Oracle / acceptance artifact hash: sha256 digest plus artifact path for each source the oracle depends on.
+- Contract-change acknowledgment: reason for an intentional acceptance-contract change, or statement that no contract changed.
+- Residual risk: unverified path, accepted survivor, or none with reason.
+```
+
 ## Implementation Sequence
 1. <first chunk>
 2. <second chunk>

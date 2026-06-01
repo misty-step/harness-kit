@@ -40,15 +40,15 @@ Every QA pass/fail report includes:
 
 ```markdown
 ## Completion Gate
-- Exact end-user behavior verified:
-- Value proposition exercised:
-- Persona outcome observed:
-- Live evidence that proves it:
-- Exact command/path/route exercised:
-- Repo-fit check:
-- Acceptance mutation / hardening:
-- Observability / instrumentation debt:
-- Residual unverified paths:
+- Exact end-user behavior verified: user or operator behavior exercised through the running surface.
+- Value proposition exercised: specific promised outcome the QA walk covered.
+- Persona outcome observed: persona-specific success or failure observed in the run.
+- Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
+- Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
+- Repo-fit check: local QA convention or repo contract followed.
+- Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
+- Observability / instrumentation debt: named post-ship signal exists, was added, or is logged as debt.
+- Residual risk: unverified path, uncovered persona, or none with reason.
 ```
 
 For internal libraries or harness changes, replace end-user behavior with the

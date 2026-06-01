@@ -509,6 +509,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_evidence_blocks(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate Completion Gate and Acceptance Evidence templates."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "scripts/check-evidence-blocks.py", "skills"])
+            .stdout()
+        )
+
+    @function
     async def check_docs_site(
         self,
         source: Annotated[
@@ -566,6 +582,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))
             tg.start_soon(run_gate, "check-skill-evals", self.check_skill_evals(source))
             tg.start_soon(run_gate, "check-agent-roster", self.check_agent_roster(source))
+            tg.start_soon(run_gate, "check-evidence-blocks", self.check_evidence_blocks(source))
             tg.start_soon(run_gate, "check-docs-site", self.check_docs_site(source))
 
         # Format results
