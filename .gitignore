@@ -26,4 +26,7 @@ skills/.external/
 .antigravitycli/
 .claude/
 .codex/
-.pi/
+.antigravity/
+
+# Temporary cache files
+cache/

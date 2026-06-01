@@ -30,6 +30,12 @@ These are the defaults every model drifts into. Treat each as a bug:
   punctuation in UI strings.
 - **Placeholder/stock content** — charts, avatars, or numbers that do not show
   real product state.
+- **Meta-copy as UI** — headings, cards, buttons, nav, or empty states that
+  explain internal implementation notes, artifact review/publication status,
+  future work, or agent uncertainty instead of naming the thing. "Top holdings,
+  if published, should be rounded and opt-in" is not a heading; it is a handoff
+  note. Legitimate user-facing policy, privacy, draft-state, or compliance copy
+  is not the defect; leaking the agent's process is.
 
 ## Three dials — set them before you build
 
@@ -65,4 +71,7 @@ template.
 4. Motion is tied to interaction, not ambient.
 5. Density matches the surface's job; headings are sized for it.
 6. Copy has no em-dashes or placeholder text.
-7. One distinctive, intentional decision — name it.
+7. No visible copy says "should", "could", "if published", "opt-in",
+   "public-safe", "placeholder", "future layer", or "metric to confirm" unless
+   the actual product domain is about those terms.
+8. One distinctive, intentional decision — name it.

@@ -92,6 +92,10 @@ For each direction, name what it sacrifices. Recommend one.
   grammar across recurring UI surfaces.
 - Prefer clearer hierarchy and better content structure over decoration.
 - Preserve domain truth; design polish must not launder weak claims.
+- Keep process out of the UI. Visible copy must not explain internal
+  implementation notes, source uncertainty, artifact review/publication status,
+  future work, or design rationale. Put that in docs or handoff; write the
+  screen as the finished surface.
 - After visible changes, verify desktop and mobile render and report evidence.
 
 ## Completion Gate
@@ -102,6 +106,7 @@ For each direction, name what it sacrifices. Recommend one.
 - Artifact/render inspected:
 - Hierarchy/content changes:
 - Typography/layout changes:
+- Copy provenance:
 - Verification evidence:
 - Residual design risk:
 ```
@@ -115,3 +120,7 @@ For each direction, name what it sacrifices. Recommend one.
   needs, or existing system.
 - Never hide UI defects behind feature explanations. Point to the visible
   artifact and the concrete change.
+- Meta-copy in UI is a design defect: headings like "if published, should be
+  rounded and opt-in" describe the agent's caution, not the user's page. Real
+  product policy, privacy notices, draft-state badges, or compliance disclosures
+  are fine when the user is meant to see them.
