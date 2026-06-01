@@ -226,7 +226,7 @@
       "source": "skills/a11y/SKILL.md"
     },
     {
-      "description": "Assess and improve codebase readiness for AI coding agents. Dispatches parallel subagents to evaluate style, testing, docs, architecture, CI, observability, security, and dev environment. Produces a scored report with prioritized remediation. Then executes the highest-impact fixes. Use when: \"agent readiness\", \"is this codebase agent-ready\", \"readiness report\", \"make this codebase agent-friendly\", \"agent-ready assessment\", \"readiness audit\", \"prepare for agents\". Trigger: /agent-readiness, /readiness.",
+      "description": "Assess and improve codebase readiness for AI coding agents across style, tests, docs, architecture, CI, observability, security, and dev setup. Produces a scored report, prioritizes remediation, then executes the highest-impact fixes. Use when: \"agent readiness\", \"is this codebase agent-ready\", \"readiness report\", \"make this codebase agent-friendly\", \"agent-ready assessment\", \"readiness audit\", \"prepare for agents\". Trigger: /agent-readiness, /readiness.",
       "icon": "catalog",
       "id": "skill:agent-readiness",
       "kind": "skill",
@@ -236,7 +236,17 @@
       "source": "skills/agent-readiness/SKILL.md"
     },
     {
-      "description": "Pick the right browser automation tool for web or Electron work: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, synthetic monitoring, or autonomous QA agents. Encodes the browser-testing pyramid: deterministic Playwright first, AI-assisted helpers only when they earn it, and exploratory findings hardened into repeatable tests. Use for: \"automate the browser\", \"script this flow\", \"test this web app\", \"test this electron app\", \"scrape this site\", \"Playwright or Stagehand\", \"browser agent\", \"exploratory QA\", \"persona testing\", \"continuous QA\", \"headless chrome\", \"visual regression\", \"E2E tests\". Trigger: /browser.",
+      "description": "Redact and package local agent-session excerpts for PRs, issues, receipts, or review evidence. Use when: \"add agent transcript\", \"attach session proof\", \"show agent provenance\", \"redact transcript\", \"PR transcript\". Trigger: /agent-transcript.",
+      "icon": "catalog",
+      "id": "skill:agent-transcript",
+      "kind": "skill",
+      "name": "agent-transcript",
+      "page": "reference/skills/agent-transcript.html",
+      "role": "Support",
+      "source": "skills/agent-transcript/SKILL.md"
+    },
+    {
+      "description": "Pick browser automation for web/Electron: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, monitoring, or browser agents. Deterministic Playwright first; harden exploratory findings into repeatable tests. Use for \"automate the browser\", \"test this web app\", \"test this electron app\", \"Playwright or Stagehand\", \"scrape this site\", \"browser agent\", \"visual regression\", \"E2E tests\". Trigger: /browser.",
       "icon": "catalog",
       "id": "skill:browser",
       "kind": "skill",
@@ -246,7 +256,7 @@
       "source": "skills/browser/SKILL.md"
     },
     {
-      "description": "Audit a repo's CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness \u2014 lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"dagger check\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
+      "description": "Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"dagger check\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
       "icon": "verify",
       "id": "skill:ci",
       "kind": "skill",
@@ -276,7 +286,7 @@
       "source": "skills/create-repo-skill/SKILL.md"
     },
     {
-      "description": "Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape \u2192 /implement \u2192 {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does not deploy. Communicates with callers via exit code + receipt.json \u2014 no stdout parsing. Every run also ends with a tight operator-facing brief plus a full /reflect session. Use when: building a shaped ticket, \"deliver this\", \"make it merge-ready\", driving one backlog item through review + CI + QA. Also `--polish-only <branch|PR>` to polish an existing branch/PR to merge-ready (\"polish this\", \"fix CI\", \"address PR reviews\") \u2014 the absorbed former /settle loop. Trigger: /deliver.",
+      "description": "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator brief + /reflect. Use for \"deliver this\", \"make it merge-ready\", shaped-ticket builds, and `--polish-only <branch|PR>` for existing branch/PR cleanup. Trigger: /deliver.",
       "icon": "operate",
       "id": "skill:deliver",
       "kind": "skill",
@@ -286,7 +296,7 @@
       "source": "skills/deliver/SKILL.md"
     },
     {
-      "description": "Capture and share what changed \u2014 every app has a demo path; the format depends on the change and the audience. The spectrum runs from a release-notes blurb (\"no demo needed, here's what moved\") through a curl + JSON paste, a terminal recording, a screenshot, a GIF, up to a polished narrated launch video. Pick the path that fits the change shape (UI / API / CLI / library / agent tool / internal-only), the audience (PR reviewer / team Slack / external customer), and the time budget. Also scaffolds a project-local demo skill for repos with recurring polished-capture needs. Use when: \"make a demo\", \"generate demo\", \"record walkthrough\", \"launch video\", \"PR evidence\", \"upload screenshots\", \"demo artifacts\", \"make a video\", \"demo this feature\", \"create a walkthrough\", \"show what changed\", \"paste the output\", \"release notes blurb\", \"scaffold demo\", \"generate demo skill\". Trigger: /demo.",
+      "description": "Capture evidence for what changed: blurb, paste, screenshot, GIF, video, launch note, or repo-local demo skill. Pick by change shape, audience, and budget. Use when: \"make a demo\", \"record walkthrough\", \"PR evidence\", \"upload screenshots\", \"show what changed\", \"release notes blurb\", \"scaffold demo\", \"generate demo skill\". Trigger: /demo.",
       "icon": "catalog",
       "id": "skill:demo",
       "kind": "skill",
@@ -296,7 +306,7 @@
       "source": "skills/demo/SKILL.md"
     },
     {
-      "description": "Ship merged code to a deploy target. Thin router \u2014 detects target from repo config, dispatches to platform-specific recipe, captures a structured receipt (sha, version, URL, rollback handle), stops when the target reports healthy. Does not monitor (\u2192 /monitor), does not triage (\u2192 /diagnose), does not decide when to deploy. Use when: \"deploy\", \"ship this\", \"ship to prod\", \"release\", \"push to staging\", \"deploy this branch\", \"release cut\". Trigger: /deploy, /ship-it, /release.",
+      "description": "Ship merged code to one deploy target. Thin router: detect target, run the platform recipe, capture receipt (sha, version, URL, rollback handle), stop when healthy. Does not monitor, triage, or decide whether to deploy. Use when: \"deploy\", \"ship this\", \"ship to prod\", \"release\", \"push to staging\", \"deploy this branch\", \"release cut\". Trigger: /deploy, /ship-it, /release.",
       "icon": "catalog",
       "id": "skill:deploy",
       "kind": "skill",
@@ -316,7 +326,7 @@
       "source": "skills/deps/SKILL.md"
     },
     {
-      "description": "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, information architecture, interaction feel, content structure, brand fit, taste, or aesthetic quality. Requires a screenshot, live URL, rendered artifact, or explicit file plus a one-sentence intent. Triggers on \"make this look better\", \"improve the design\", \"more tasteful\", \"better hierarchy\", \"polish the UI\", \"critique this screen\", \"reimagine this page\", \"layout\", \"typography\", \"visual design\", \"aesthetic\", \"design pass\", \"art direction\", \"scaffold design\", \"generate design skill\". Trigger: /design.",
+      "description": "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: \"make this look better\", \"improve the design\", \"polish the UI\", \"critique this screen\", \"design pass\", \"art direction\", \"scaffold design\". Trigger: /design.",
       "icon": "catalog",
       "id": "skill:design",
       "kind": "skill",
@@ -386,7 +396,7 @@
       "source": "skills/implement/SKILL.md"
     },
     {
-      "description": "Four behavioral guidelines to reduce common LLM coding mistakes: surface assumptions, prefer simplicity, make surgical changes, drive by verifiable goals. Distilled from Andrej Karpathy's observations on where LLM agents silently fail. Reference inline when facing a judgment call about scope, simplicity, assumptions, or success criteria. Use when: \"am I overcomplicating this\", \"should I refactor this adjacent code\", \"what are my assumptions\", \"how do I verify success\", \"/karpathy\", \"/principles\".",
+      "description": "Four LLM-agent guardrails: surface assumptions, prefer simplicity, make surgical changes, and drive by verifiable goals. Reference for scope, simplicity, assumptions, or success-criteria judgment calls. Use when: \"am I overcomplicating this\", \"what are my assumptions\", \"how do I verify success\", \"/karpathy\", \"/principles\".",
       "icon": "catalog",
       "id": "skill:karpathy-guidelines",
       "kind": "skill",
@@ -406,7 +416,7 @@
       "source": "skills/model-research/SKILL.md"
     },
     {
-      "description": "Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, flaky tests, benchmark drift, local daemon output, release regressions, or agent-session audit trails. Emit structured events. Escalate to /diagnose on trip, close clean on green. Thin watcher, not diagnostician. Use when: \"monitor signals\", \"watch the deploy\", \"is the deploy ok\", \"post-deploy watch\", \"signal watch\", \"watch production\", \"watch CI\", \"watch logs\", \"watch benchmark drift\", \"is it healthy\". Trigger: /monitor.",
+      "description": "Watch signals after deploy, release, local run, CI change, or repeated workflow. Uses telemetry when present; otherwise healthchecks, logs, CI, flaky tests, benchmark drift, daemon output, regressions, or agent traces. Emits events, escalates to /diagnose on trip, closes on green. Use when: \"monitor signals\", \"watch the deploy\", \"watch production\", \"watch CI\", \"watch logs\", \"watch benchmark drift\", \"is it healthy\". Trigger: /monitor.",
       "icon": "operate",
       "id": "skill:monitor",
       "kind": "skill",
@@ -416,7 +426,7 @@
       "source": "skills/monitor/SKILL.md"
     },
     {
-      "description": "Verify a running app works \u2014 every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for libraries, tool-call replay for MCP servers. Drive the running thing and confirm it behaves; \"tests pass\" is not QA. Use when: \"run QA\", \"test this\", \"verify the feature\", \"exploratory test\", \"check the app\", \"QA this PR\", \"smoke test\", \"capture evidence\", \"manual testing\". For \"create QA skill\" or \"generate qa skill\", use /create-repo-skill qa. Trigger: /qa.",
+      "description": "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA\", \"verify the feature\", \"test this\", \"check the app\", \"exploratory test\", \"QA this PR\", \"smoke test\", \"manual testing\", \"capture evidence\". For generated repo QA skills, use /create-repo-skill qa. Trigger: /qa.",
       "icon": "verify",
       "id": "skill:qa",
       "kind": "skill",
@@ -426,7 +436,7 @@
       "source": "skills/qa/SKILL.md"
     },
     {
-      "description": "Branch-aware simplification and refactoring workflow. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan the full codebase, research prior art, and identify the highest-impact simplification opportunity. Use when: \"refactor this\", \"simplify this diff\", \"clean this up\", \"reduce complexity\", \"pay down tech debt\", \"make this easier to maintain\", \"make this more elegant\", \"reduce the number of states\", \"clarify naming\". Trigger: /refactor.",
+      "description": "Branch-aware simplification. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan for the highest impact deletion, consolidation, or boundary improvement. Use when: \"refactor this\", \"simplify this diff\", \"clean this up\", \"reduce complexity\", \"pay down tech debt\", \"make this easier to maintain\", \"make this more elegant\", \"reduce the number of states\", \"clarify naming\". Trigger: /refactor.",
       "icon": "repair",
       "id": "skill:refactor",
       "kind": "skill",
@@ -436,7 +446,7 @@
       "source": "skills/refactor/SKILL.md"
     },
     {
-      "description": "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Distills learnings into hooks/rules/skills, mutates the backlog from evidence, and emits harness-tuning suggestions to a branch. Learning engine of the outer loop. Use when: \"done\", \"wrap up\", \"what did we learn\", \"retro\", \"reflect\", \"calibrate\", \"how could I have asked better\", \"prompt better\", \"teach me from this session\", \"what should I learn from this\", \"reflect on cycle\", \"cycle postmortem\", post-/flywheel critique. Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.",
+      "description": "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Turns evidence into hooks, rules, skills, backlog mutations, or explicit non-actions. Use when: \"done\", \"wrap up\", \"what did we learn\", \"retro\", \"calibrate\", \"prompt better\", \"teach me from this session\", \"reflect on cycle\", post-/flywheel critique. Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.",
       "icon": "learn",
       "id": "skill:reflect",
       "kind": "skill",
@@ -476,7 +486,7 @@
       "source": "skills/shape/SKILL.md"
     },
     {
-      "description": "Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply its outputs. Assumes /deliver (or /deliver --polish-only) already left the branch merge-ready \u2014 ship does not run CI, code-review, or refactor itself. If those aren't done, run /deliver --polish-only first. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
+      "description": "Final mile from merge-ready branch to shipped: squash-merge, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already made the branch ready. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
       "icon": "ship",
       "id": "skill:ship",
       "kind": "skill",
@@ -486,7 +496,7 @@
       "source": "skills/ship/SKILL.md"
     },
     {
-      "description": "End-to-end \"ship it to the remote\" in one command. Reads the whole worktree, understands what's in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pushes. Not a git wrapper \u2014 a judgment layer on top of git. Decides what belongs, what doesn't, and how to slice the diff into commits a reviewer can read. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship it\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",
+      "description": "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers should read the diff. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship it\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",
       "icon": "ship",
       "id": "skill:yeet",
       "kind": "skill",

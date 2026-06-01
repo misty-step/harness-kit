@@ -1,12 +1,9 @@
 ---
 name: ship
 description: |
-  Final mile. Take a merge-ready branch to shipped: squash-merge, archive
-  the backlog ticket(s) with Closes-backlog trailers preserved into the
-  merge commit, update touched docs, run /reflect, and apply its outputs.
-  Assumes /deliver (or /deliver --polish-only) already left the branch
-  merge-ready — ship does not run CI, code-review, or refactor itself. If
-  those aren't done, run /deliver --polish-only first.
+  Final mile from merge-ready branch to shipped: squash-merge, archive backlog
+  tickets with trailers, update touched docs, run /reflect, apply outputs.
+  Assumes /deliver or /deliver --polish-only already made the branch ready.
   Use when: "ship it", "merge and close out", "final mile", "land and
   reflect", "finish this ticket".
   Trigger: /ship.

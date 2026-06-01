@@ -1,10 +1,10 @@
 ---
 name: agent-readiness
 description: |
-  Assess and improve codebase readiness for AI coding agents. Dispatches
-  parallel subagents to evaluate style, testing, docs, architecture, CI,
-  observability, security, and dev environment. Produces a scored report
-  with prioritized remediation. Then executes the highest-impact fixes.
+  Assess and improve codebase readiness for AI coding agents across style,
+  tests, docs, architecture, CI, observability, security, and dev setup.
+  Produces a scored report, prioritizes remediation, then executes the
+  highest-impact fixes.
   Use when: "agent readiness", "is this codebase agent-ready",
   "readiness report", "make this codebase agent-friendly",
   "agent-ready assessment", "readiness audit", "prepare for agents".

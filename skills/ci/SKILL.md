@@ -1,13 +1,9 @@
 ---
 name: ci
 description: |
-  Audit a repo's CI gates, strengthen what is weak, then drive the pipeline
-  green. Owns confidence in correctness — lint, types, tests, coverage,
-  secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded,
-  not escalated. Acts on its assessment; never returns a report where action
-  would suffice. Never returns red without a structured diagnosis.
-  Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry
-  flakes. Escalates only genuine algorithm/logic failures.
+  Audit CI gates, strengthen weak coverage, then drive green. Dagger owns
+  the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on
+  mechanical fixes and never returns red without structured diagnosis.
   Use when: "run ci", "check ci", "fix ci", "audit ci", "is ci passing",
   "run the gates", "dagger check", "why is ci failing", "strengthen ci",
   "tighten ci", "ci is red", "gates failing".
@@ -34,10 +30,8 @@ not address review comments (→ `/deliver --polish-only`), does not ship.
 
 1. **Audit before run.** A weak pipeline passing is worse than a strong
    one failing. Inventory coverage before trusting green.
-   When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), probe the roster and dispatch two
-   or more available roster members for CI-audit, red-gate investigation,
-   or weak-coverage analysis before changing gate policy. `/ci` remains the
-   canonical gate owner and `dagger call check` remains the proof.
+   For CI-audit, red-gate investigation, or gate-policy changes, use the
+   Delegation Floor before changing policy or claiming green.
 2. **Dagger-mandatory, auto-scaffolded.** Missing `dagger.json` is a gap
    the skill closes itself, not a blocker that halts work. Scaffold a
    TypeScript Dagger module, fold every existing gate into `check()`,
@@ -71,8 +65,12 @@ validation commands and apply mechanical repairs directly after the lane
 decision is made. Direct lead-only CI work is limited to mechanical command
 execution, emergency unblocks, explicit user-forbidden delegation, or an
 explicit waiver when fewer than two roster members are available.
-6. **Bounded self-heal.** See `references/self-heal.md` for the fix-vs-
-   escalate decision. Algorithm and logic failures escalate.
+
+## Bounded Self-Heal
+
+See `references/self-heal.md` for the fix-vs-escalate decision. Auto-fix
+format/lint drift, regenerate lockfiles when deterministic, and retry flakes
+within the bounded policy. Algorithm and logic failures escalate.
 
 ## Process
 
@@ -175,7 +173,7 @@ migration, runner, responder, or job entrypoint — the `/ci` report must:
 Helper fixtures, unit coverage, and adjacent lanes do **not** count as
 runtime verification unless they invoke that exact path.
 
-## Anti-Patterns
+## Gotchas
 
 - **Reporting red and exiting** when the failure was a trivially
   auto-fixable format drift.

@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>ci</h1>
-      <p class="lede">Audit a repo&#x27;s CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p>
+      <p class="lede">Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p>
       <p><code class="trigger large">/ci</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/ci/SKILL.md">skills/ci/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Audit a repo&#x27;s CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absence is auto-scaffolded, not escalated. Acts on its assessment; never returns a report where action would suffice. Never returns red without a structured diagnosis. Bounded self-heal: auto-fix lint/format, regenerate lockfiles, retry flakes. Escalates only genuine algorithm/logic failures. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: &quot;run ci&quot;, &quot;check ci&quot;, &quot;fix ci&quot;, &quot;audit ci&quot;, &quot;is ci passing&quot;, &quot;run the gates&quot;, &quot;dagger check&quot;, &quot;why is ci failing&quot;, &quot;strengthen ci&quot;, &quot;tighten ci&quot;, &quot;ci is red&quot;, &quot;gates failing&quot;. Trigger: /ci, /gates.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-verify"></use></svg><h3>Workflow role</h3><p>Verify primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -53,10 +53,8 @@ not address review comments (→ `/deliver --polish-only`), does not ship.
 
 1. **Audit before run.** A weak pipeline passing is worse than a strong
    one failing. Inventory coverage before trusting green.
-   When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), probe the roster and dispatch two
-   or more available roster members for CI-audit, red-gate investigation,
-   or weak-coverage analysis before changing gate policy. `/ci` remains the
-   canonical gate owner and `dagger call check` remains the proof.
+   For CI-audit, red-gate investigation, or gate-policy changes, use the
+   Delegation Floor before changing policy or claiming green.
 2. **Dagger-mandatory, auto-scaffolded.** Missing `dagger.json` is a gap
    the skill closes itself, not a blocker that halts work. Scaffold a
    TypeScript Dagger module, fold every existing gate into `check()`,
@@ -68,6 +66,9 @@ not address review comments (→ `/deliver --polish-only`), does not ship.
    gate owner. Agent-first, local-first, provider-independent.
 3. **Act, do not propose.** The skill has executive authority within its
    domain: mechanical strengthenings (adding missing gates, wiring
+   uncovered scripts, consolidating duplicate workflows, hardening
+   thresholds upward, scaffolding Dagger) are applied directly. Do NOT
+   emit &quot;proposals&quot; or &quot;diff previews&quot; awaiting approval. Only escalate
 ...</code></pre>
     </section>
     <section class="checklist">

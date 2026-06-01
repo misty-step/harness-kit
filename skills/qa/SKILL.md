@@ -1,14 +1,12 @@
 ---
 name: qa
 description: |
-  Verify a running app works — every app has a QA path; the right shape
-  depends on the app. Browser walks for web apps, request-replay for APIs,
-  shell smoke for CLIs, consumer-build checks for libraries, tool-call
-  replay for MCP servers. Drive the running thing and confirm it behaves;
-  "tests pass" is not QA. Use when: "run QA", "test this", "verify the
-  feature", "exploratory test", "check the app", "QA this PR", "smoke
-  test", "capture evidence", "manual testing". For "create QA skill" or
-  "generate qa skill", use /create-repo-skill qa. Trigger: /qa.
+  Verify the running thing works. Browser walks for web, request replay for
+  APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay
+  for MCP. "Tests pass" is not QA. Use when: "run QA", "verify the feature",
+  "test this", "check the app", "exploratory test", "QA this PR",
+  "smoke test", "manual testing", "capture evidence".
+  For generated repo QA skills, use /create-repo-skill qa. Trigger: /qa.
 argument-hint: "[url|route|command|endpoint|feature|scaffold]"
 ---
 

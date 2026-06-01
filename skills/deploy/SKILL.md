@@ -1,11 +1,9 @@
 ---
 name: deploy
 description: |
-  Ship merged code to a deploy target. Thin router — detects target from
-  repo config, dispatches to platform-specific recipe, captures a
-  structured receipt (sha, version, URL, rollback handle), stops when the
-  target reports healthy. Does not monitor (→ /monitor), does not triage
-  (→ /diagnose), does not decide when to deploy.
+  Ship merged code to one deploy target. Thin router: detect target, run the
+  platform recipe, capture receipt (sha, version, URL, rollback handle), stop
+  when healthy. Does not monitor, triage, or decide whether to deploy.
   Use when: "deploy", "ship this", "ship to prod", "release", "push to
   staging", "deploy this branch", "release cut".
   Trigger: /deploy, /ship-it, /release.

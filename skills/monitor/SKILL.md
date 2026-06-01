@@ -1,15 +1,12 @@
 ---
 name: monitor
 description: |
-  Watch project signals after a deploy, release, local run, CI change, or
-  repeated workflow. Every repo has a monitor path: production telemetry
-  when present; otherwise healthchecks, logs, CI failures, flaky tests,
-  benchmark drift, local daemon output, release regressions, or
-  agent-session audit trails. Emit structured events. Escalate to
-  /diagnose on trip, close clean on green. Thin watcher, not diagnostician.
-  Use when: "monitor signals", "watch the deploy", "is the deploy ok",
-  "post-deploy watch", "signal watch", "watch production",
-  "watch CI", "watch logs", "watch benchmark drift", "is it healthy".
+  Watch signals after deploy, release, local run, CI change, or repeated
+  workflow. Uses telemetry when present; otherwise healthchecks, logs, CI,
+  flaky tests, benchmark drift, daemon output, regressions, or agent traces.
+  Emits events, escalates to /diagnose on trip, closes on green. Use when:
+  "monitor signals", "watch the deploy", "watch production", "watch CI",
+  "watch logs", "watch benchmark drift", "is it healthy".
   Trigger: /monitor.
 argument-hint: "[<deploy-receipt-ref>] [--grace <duration>] [--config <path>]"
 ---

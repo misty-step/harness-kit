@@ -1,15 +1,12 @@
 ---
 name: browser
 description: |
-  Pick the right browser automation tool for web or Electron work: CI E2E,
-  scripted flows, scraping, visual regression, exploratory QA, persona walks,
-  synthetic monitoring, or autonomous QA agents. Encodes the browser-testing
-  pyramid: deterministic Playwright first, AI-assisted helpers only when they
-  earn it, and exploratory findings hardened into repeatable tests.
-  Use for: "automate the browser", "script this flow", "test this web app",
-  "test this electron app", "scrape this site", "Playwright or Stagehand",
-  "browser agent", "exploratory QA", "persona testing", "continuous QA",
-  "headless chrome", "visual regression", "E2E tests".
+  Pick browser automation for web/Electron: CI E2E, scripted flows, scraping,
+  visual regression, exploratory QA, persona walks, monitoring, or browser
+  agents. Deterministic Playwright first; harden exploratory findings into
+  repeatable tests. Use for "automate the browser", "test this web app",
+  "test this electron app", "Playwright or Stagehand", "scrape this site",
+  "browser agent", "visual regression", "E2E tests".
   Trigger: /browser.
 argument-hint: "[describe the task]"
 ---

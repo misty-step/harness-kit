@@ -2,13 +2,10 @@
 name: reflect
 description: |
   Session retrospective, operator coaching, harness postmortem, codification,
-  and outer-loop cycle critique. Distills learnings into hooks/rules/skills,
-  mutates the backlog from evidence, and emits harness-tuning suggestions to
-  a branch. Learning engine of the outer loop.
-  Use when: "done", "wrap up", "what did we learn", "retro", "reflect",
-  "calibrate", "how could I have asked better", "prompt better",
-  "teach me from this session", "what should I learn from this",
-  "reflect on cycle", "cycle postmortem", post-/flywheel critique.
+  and outer-loop cycle critique. Turns evidence into hooks, rules, skills,
+  backlog mutations, or explicit non-actions. Use when: "done", "wrap up",
+  "what did we learn", "retro", "calibrate", "prompt better",
+  "teach me from this session", "reflect on cycle", post-/flywheel critique.
   Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.
 argument-hint: "[distill|calibrate|coach|tune-repo|append|cycle] [context]"
 ---

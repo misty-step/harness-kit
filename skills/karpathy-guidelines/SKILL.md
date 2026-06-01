@@ -1,14 +1,11 @@
 ---
 name: karpathy-guidelines
 description: |
-  Four behavioral guidelines to reduce common LLM coding mistakes:
-  surface assumptions, prefer simplicity, make surgical changes, drive
-  by verifiable goals. Distilled from Andrej Karpathy's observations on
-  where LLM agents silently fail. Reference inline when facing a
-  judgment call about scope, simplicity, assumptions, or success
-  criteria. Use when: "am I overcomplicating this", "should I refactor
-  this adjacent code", "what are my assumptions", "how do I verify
-  success", "/karpathy", "/principles".
+  Four LLM-agent guardrails: surface assumptions, prefer simplicity, make
+  surgical changes, and drive by verifiable goals. Reference for scope,
+  simplicity, assumptions, or success-criteria judgment calls. Use when:
+  "am I overcomplicating this", "what are my assumptions",
+  "how do I verify success", "/karpathy", "/principles".
 argument-hint: "[think | simple | surgical | goal]"
 ---
 

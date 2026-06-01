@@ -1,16 +1,11 @@
 ---
 name: deliver
 description: |
-  Inner-loop composer. Takes one backlog item to merge-ready code. Composes
-  /shape → /implement → {/code-review + /ci + /refactor + /qa} (clean loop)
-  and stops. Does not push, does not merge, does not deploy. Communicates
-  with callers via exit code + receipt.json — no stdout parsing.
-  Every run also ends with a tight operator-facing brief plus a full
-  /reflect session.
-  Use when: building a shaped ticket, "deliver this", "make it merge-ready",
-  driving one backlog item through review + CI + QA. Also `--polish-only
-  <branch|PR>` to polish an existing branch/PR to merge-ready ("polish this",
-  "fix CI", "address PR reviews") — the absorbed former /settle loop.
+  Inner-loop composer for one backlog item to merge-ready code. Composes
+  /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before
+  push, merge, or deploy. Emits receipt.json plus operator brief + /reflect.
+  Use for "deliver this", "make it merge-ready", shaped-ticket builds, and
+  `--polish-only <branch|PR>` for existing branch/PR cleanup.
   Trigger: /deliver.
 argument-hint: "[backlog-item|issue-id] [--polish-only <branch|PR>] [--resume <ulid>] [--abandon <ulid>] [--state-dir <path>]"
 ---
@@ -57,6 +52,9 @@ human operator.
 The delivery brief is short and punchy. It is not a file inventory, a raw
 changelog, or a generic "green tests" note. Default shape: 1-2 short
 paragraphs or 4-6 flat bullets.
+When a public PR or issue needs agent provenance, use `/agent-transcript` to
+render a redacted local excerpt and ask before publishing it. Never paste raw
+session logs into the brief or receipt.
 
 The delivery brief must answer:
 - What ticket was worked and what changed.

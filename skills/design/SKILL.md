@@ -1,16 +1,11 @@
 ---
 name: design
 description: |
-  Artifact-backed interface design critique and polish. Use when an existing
-  screen, report, dashboard, website, game, or tool should feel better:
-  visual hierarchy, typography, layout, density, information architecture,
-  interaction feel, content structure, brand fit, taste, or aesthetic quality.
-  Requires a screenshot, live URL, rendered artifact, or explicit file plus
-  a one-sentence intent. Triggers on "make this look better", "improve the
-  design", "more tasteful", "better hierarchy", "polish the UI",
-  "critique this screen", "reimagine this page", "layout", "typography",
-  "visual design", "aesthetic", "design pass", "art direction",
-  "scaffold design", "generate design skill".
+  Artifact-backed interface critique and polish for hierarchy, typography,
+  layout, density, IA, interaction feel, content, brand fit, and taste.
+  Requires screenshot, URL, rendered artifact, or explicit file plus intent.
+  Use when: "make this look better", "improve the design", "polish the UI",
+  "critique this screen", "design pass", "art direction", "scaffold design".
   Trigger: /design.
 argument-hint: "[audit|redesign|polish|critique|scaffold] <artifact-or-surface>"
 ---
@@ -110,3 +105,13 @@ For each direction, name what it sacrifices. Recommend one.
 - Verification evidence:
 - Residual design risk:
 ```
+
+## Gotchas
+
+- Design critique without an inspected artifact is speculation.
+- Aesthetic preference is not blocking unless it hurts comprehension, trust,
+  conversion, accessibility, or domain fit.
+- Generic "modernize" moves are slop when they ignore the audience, density
+  needs, or existing system.
+- Never hide UI defects behind feature explanations. Point to the visible
+  artifact and the concrete change.

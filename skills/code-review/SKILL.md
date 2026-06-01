@@ -36,7 +36,9 @@ Reviewer output is not automatic veto. The lead verifies fixes, records receipts
    - Bench size always in [3, 5]; selection is deterministic per diff
    Read `references/bench-map.md` for the full algorithm and
    `references/internal-bench.md` for each agent's lens. Then craft a
-   tailored prompt per selected reviewer.
+   tailored prompt per selected reviewer. Load
+   `references/deep-review-lens.md` when the diff needs root-cause,
+   provenance, or long-running autoreview discipline.
 
 3. **Dispatch all three tiers in parallel:**
 
@@ -198,8 +200,9 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - Also write a copy to `.evidence/<branch>/<date>/verdict.json` for browsability.
 - The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
 
-Skip this step if `scripts/lib/verdicts.sh` does not exist in the target project
-(Harness Kit-only feature, not expected in downstream repos).
+Run the snippet from the target project root. Skip this step if
+`scripts/lib/verdicts.sh` does not exist there (Harness Kit-only feature, not
+expected in downstream repos).
 
 ## Gotchas
 

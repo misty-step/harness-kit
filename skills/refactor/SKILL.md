@@ -1,10 +1,9 @@
 ---
 name: refactor
 description: |
-  Branch-aware simplification and refactoring workflow. On feature branches,
-  compare against base and simplify the diff before merge. On primary branch,
-  scan the full codebase, research prior art, and identify the highest-impact
-  simplification opportunity.
+  Branch-aware simplification. On feature branches, compare against base and
+  simplify the diff before merge. On primary branch, scan for the highest
+  impact deletion, consolidation, or boundary improvement.
   Use when: "refactor this", "simplify this diff", "clean this up",
   "reduce complexity", "pay down tech debt", "make this easier to maintain",
   "make this more elegant", "reduce the number of states", "clarify naming".

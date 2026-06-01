@@ -21,6 +21,7 @@ Onboarding path:
 Primitives:
 - skill:a11y | skills/a11y/SKILL.md | docs/site/reference/skills/a11y.html
 - skill:agent-readiness | skills/agent-readiness/SKILL.md | docs/site/reference/skills/agent-readiness.html
+- skill:agent-transcript | skills/agent-transcript/SKILL.md | docs/site/reference/skills/agent-transcript.html
 - skill:browser | skills/browser/SKILL.md | docs/site/reference/skills/browser.html
 - skill:ci | skills/ci/SKILL.md | docs/site/reference/skills/ci.html
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html

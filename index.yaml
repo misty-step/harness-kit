@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-01T15:21:36Z
+# Generated: 2026-06-01T15:51:44Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -8,17 +8,21 @@ skills:
     source: first-party
     tags: [2,aa,accessibility,aud,audit,compliance,critique,find,fix,fixes]
   - name: agent-readiness
-    description: "Assess and improve codebase readiness for AI coding agents. Dispatches parallel subagents to evaluate style, testing, docs, architecture, CI, observability, security, and dev environment. Produces a s"
+    description: "Assess and improve codebase readiness for AI coding agents across style, tests, docs, architecture, CI, observability, security, and dev setup. Produces a scored report, prioritizes remediation, then "
     source: first-party
-    tags: [a,agents,ai,architecture,assess,ci,codebase,coding,dev,dispatches]
+    tags: [a,across,agents,ai,architecture,assess,ci,codebase,coding,dev]
+  - name: agent-transcript
+    description: "Redact and package local agent-session excerpts for PRs, issues, receipts, or review evidence. Use when: \"add agent transcript\", \"attach session proof\", \"show agent provenance\", \"redact transcript\", \""
+    source: first-party
+    tags: [add,agent,agent-session,attach,evidence,excerpts,issues,local,or,package]
   - name: browser
-    description: "Pick the right browser automation tool for web or Electron work: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, synthetic monitoring, or autonomous QA agents. Enco"
+    description: "Pick browser automation for web/Electron: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, monitoring, or browser agents. Deterministic Playwright first; harden expl"
     source: first-party
-    tags: [agents,automation,autonomous,browser,ci,e2e,electron,enco,exploratory,flows]
+    tags: [agents,automation,browser,ci,deterministic,e2e,electron,expl,exploratory,first]
   - name: ci
-    description: "Audit a repo's CI gates, strengthen what is weak, then drive the pipeline green. Owns confidence in correctness — lint, types, tests, coverage, secrets. Dagger is the canonical pipeline owner; absen"
+    description: "Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without struc"
     source: first-party
-    tags: [a,absen,audit,canonical,ci,confidence,correctness,coverage,dagger,drive]
+    tags: [acts,audit,auto-scaffolded,canonical,ci,coverage,dagger,directly,drive,fixes]
   - name: code-review
     description: "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this co"
     source: first-party
@@ -28,25 +32,25 @@ skills:
     source: first-party
     tags: [a,acceptance,create,discovery,generate,intent,live,local,make,persona]
   - name: deliver
-    description: "Inner-loop composer. Takes one backlog item to merge-ready code. Composes /shape → /implement → {/code-review + /ci + /refactor + /qa} (clean loop) and stops. Does not push, does not merge, does n"
+    description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator "
     source: first-party
-    tags: [backlog,ci,clean,code,code-review,composer,composes,implement,inner-loop,item]
+    tags: [backlog,before,ci,code,code-review,composer,composes,deploy,emits,implement]
   - name: demo
-    description: "Capture and share what changed — every app has a demo path; the format depends on the change and the audience. The spectrum runs from a release-notes blurb (\"no demo needed, here's what moved\") thro"
+    description: "Capture evidence for what changed: blurb, paste, screenshot, GIF, video, launch note, or repo-local demo skill. Pick by change shape, audience, and budget. Use when: \"make a demo\", \"record walkthrough"
     source: first-party
-    tags: [a,app,audience,blurb,capture,change,changed,demo,depends,every]
+    tags: [a,audience,blurb,budget,by,capture,change,changed,demo,evidence]
   - name: deploy
-    description: "Ship merged code to a deploy target. Thin router — detects target from repo config, dispatches to platform-specific recipe, captures a structured receipt (sha, version, URL, rollback handle), stops "
+    description: "Ship merged code to one deploy target. Thin router: detect target, run the platform recipe, capture receipt (sha, version, URL, rollback handle), stop when healthy. Does not monitor, triage, or decide"
     source: first-party
-    tags: [a,captures,code,config,deploy,detects,dispatches,handle,merged,platform-specific]
+    tags: [capture,code,decide,deploy,detect,handle,healthy,merged,monitor,one]
   - name: deps
     description: "Analyze, test, and upgrade dependencies. One curated PR, not 47 version bumps. Reachability analysis, behavioral diffs, risk assessment. Package-manager agnostic. Use when: \"upgrade deps\", \"dependency"
     source: first-party
     tags: [47,agnostic,analysis,analyze,assessment,behavioral,bumps,curated,dependencies,dependency]
   - name: design
-    description: "Artifact-backed interface design critique and polish. Use when an existing screen, report, dashboard, website, game, or tool should feel better: visual hierarchy, typography, layout, density, informat"
+    description: "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit "
     source: first-party
-    tags: [an,artifact-backed,better,critique,dashboard,density,design,existing,feel,game]
+    tags: [artifact,artifact-backed,brand,content,critique,density,explicit,feel,fit,hierarchy]
   - name: diagnose
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause → pattern analysis → hypothesis test → fix. Use"
     source: first-party
@@ -72,29 +76,29 @@ skills:
     source: first-party
     tags: [a,atomic,branch,build,code,concern,context,feature,green,on]
   - name: karpathy-guidelines
-    description: "Four behavioral guidelines to reduce common LLM coding mistakes: surface assumptions, prefer simplicity, make surgical changes, drive by verifiable goals. Distilled from Andrej Karpathy's observations"
+    description: "Four LLM-agent guardrails: surface assumptions, prefer simplicity, make surgical changes, and drive by verifiable goals. Reference for scope, simplicity, assumptions, or success-criteria judgment call"
     source: first-party
-    tags: [andrej,assumptions,behavioral,by,changes,coding,common,distilled,drive,four]
+    tags: [assumptions,by,call,changes,drive,four,goals,guardrails,judgment,llm-agent]
   - name: model-research
     description: "Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces"
     source: first-party
     tags: [ai-powered,apps,availability,benchmarks,compare,compares,family,finds,latest,llm]
   - name: monitor
-    description: "Watch project signals after a deploy, release, local run, CI change, or repeated workflow. Every repo has a monitor path: production telemetry when present; otherwise healthchecks, logs, CI failures, "
+    description: "Watch signals after deploy, release, local run, CI change, or repeated workflow. Uses telemetry when present; otherwise healthchecks, logs, CI, flaky tests, benchmark drift, daemon output, regressions"
     source: first-party
-    tags: [a,after,change,ci,deploy,every,failures,healthchecks,local,logs]
+    tags: [after,benchmark,change,ci,daemon,deploy,drift,flaky,healthchecks,local]
   - name: qa
-    description: "Verify a running app works — every app has a QA path; the right shape depends on the app. Browser walks for web apps, request-replay for APIs, shell smoke for CLIs, consumer-build checks for librari"
+    description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party
-    tags: [a,apis,app,apps,browser,checks,clis,consumer-build,depends,every]
+    tags: [apis,browser,builds,clis,consumer,is,libraries,mcp,pass,qa]
   - name: refactor
-    description: "Branch-aware simplification and refactoring workflow. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan the full codebase, research prior art, and i"
+    description: "Branch-aware simplification. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan for the highest impact deletion, consolidation, or boundary improveme"
     source: first-party
-    tags: [against,art,base,before,branch,branch-aware,branches,codebase,compare,diff]
+    tags: [against,base,before,boundary,branch,branch-aware,branches,compare,consolidation,deletion]
   - name: reflect
-    description: "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Distills learnings into hooks/rules/skills, mutates the backlog from evidence, and emits harn"
+    description: "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Turns evidence into hooks, rules, skills, backlog mutations, or explicit non-actions. Use whe"
     source: first-party
-    tags: [backlog,coaching,codification,critique,cycle,distills,emits,evidence,harn,harness]
+    tags: [backlog,coaching,codification,critique,cycle,evidence,explicit,harness,hooks,mutations]
   - name: research
     description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party
@@ -108,13 +112,13 @@ skills:
     source: first-party
     tags: [a,buildable,context,critique,design,exploration,feature,idea,is,output]
   - name: ship
-    description: "Final mile. Take a merge-ready branch to shipped: squash-merge, archive the backlog ticket(s) with Closes-backlog trailers preserved into the merge commit, update touched docs, run /reflect, and apply"
+    description: "Final mile from merge-ready branch to shipped: squash-merge, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already"
     source: first-party
-    tags: [a,apply,archive,backlog,branch,closes-backlog,commit,docs,final,merge]
+    tags: [--polish-only,already,apply,archive,assumes,backlog,branch,deliver,docs,final]
   - name: yeet
-    description: "End-to-end \"ship it to the remote\" in one command. Reads the whole worktree, understands what's in flight, tidies debris, splits pending work into semantically-meaningful conventional commits, and pus"
+    description: "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers shoul"
     source: first-party
-    tags: [command,commits,conventional,debris,end-to-end,flight,in,it,one,pending]
+    tags: [a,belongs,changes,classify,commits,debris,decides,end-to-end,git,how]
 
 agents:
   - name: a11y-auditor

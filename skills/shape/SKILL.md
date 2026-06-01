@@ -168,6 +168,9 @@ preference.
 - <how it could fail, how to undo it>
 ```
 
+For CLI work, load `references/cli-design.md` and include its `## CLI Surface`
+block in the context packet.
+
 If you can't write an oracle, the goal isn't clear enough. Go back to Phase 2.
 
 ## Gotchas

@@ -1,20 +1,11 @@
 ---
 name: demo
 description: |
-  Capture and share what changed — every app has a demo path; the format
-  depends on the change and the audience. The spectrum runs from a
-  release-notes blurb ("no demo needed, here's what moved") through a
-  curl + JSON paste, a terminal recording, a screenshot, a GIF, up to a
-  polished narrated launch video. Pick the path that fits the change
-  shape (UI / API / CLI / library / agent tool / internal-only), the
-  audience (PR reviewer / team Slack / external customer), and the time
-  budget. Also scaffolds a project-local demo skill for repos with
-  recurring polished-capture needs.
-  Use when: "make a demo", "generate demo", "record walkthrough",
-  "launch video", "PR evidence", "upload screenshots",
-  "demo artifacts", "make a video", "demo this feature",
-  "create a walkthrough", "show what changed", "paste the output",
-  "release notes blurb", "scaffold demo", "generate demo skill".
+  Capture evidence for what changed: blurb, paste, screenshot, GIF, video,
+  launch note, or repo-local demo skill. Pick by change shape, audience, and
+  budget. Use when: "make a demo", "record walkthrough", "PR evidence",
+  "upload screenshots", "show what changed", "release notes blurb",
+  "scaffold demo", "generate demo skill".
   Trigger: /demo.
 argument-hint: "[evidence-dir|feature|scaffold] [--format blurb|paste|screenshot|gif|video|launch] [upload]"
 ---

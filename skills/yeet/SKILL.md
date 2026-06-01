@@ -1,11 +1,9 @@
 ---
 name: yeet
 description: |
-  End-to-end "ship it to the remote" in one command. Reads the whole worktree,
-  understands what's in flight, tidies debris, splits pending work into
-  semantically-meaningful conventional commits, and pushes.
-  Not a git wrapper — a judgment layer on top of git. Decides what belongs,
-  what doesn't, and how to slice the diff into commits a reviewer can read.
+  End-to-end "ship it to the remote": read worktree, classify changes, tidy
+  debris, split semantic commits, and push. Judgment layer over git, not a
+  wrapper; decides what belongs and how reviewers should read the diff.
   Use when: "yeet", "yeet this", "commit and push", "ship it", "tidy and
   commit", "wrap this up and push", "get this off my machine".
   Trigger: /yeet, /ship-local (alias).
