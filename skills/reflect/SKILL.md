@@ -7,7 +7,7 @@ description: |
   "what did we learn", "retro", "calibrate", "prompt better",
   "teach me from this session", "reflect on cycle", post-/flywheel critique.
   Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.
-argument-hint: "[distill|calibrate|coach|tune-repo|append|cycle] [context]"
+argument-hint: "[distill|calibrate|coach|prompt-debt|tune-repo|append|cycle] [context]"
 ---
 
 # /reflect
@@ -42,6 +42,7 @@ Every finding becomes one of three things:
 | **distill** (default) | End-of-session retrospective -> codified artifacts + operator coaching | `references/distill.md` |
 | **calibrate** | Mid-session harness postmortem — fix the harness before the code | `references/calibrate.md` |
 | **coach** | Deep dive on prompt quality, technical specificity, and concept building | `references/coach.md` |
+| **prompt-debt** | Promote repeated corrections and repeated workflow patterns into one codification proposal | `references/prompt-debt.md` |
 | **tune-repo** | Refresh context artifacts, detect drift, update repo guidance | `references/tune-repo.md` |
 | **append** | Append issue-scoped retro notes for `/groom` to consume later | `references/retro-format.md` |
 | **cycle** | Bounded end-of-ship retrospective invoked by `/ship` — emit backlog mutations, harness-tuning proposals, and a cycle summary for the caller to apply | `references/cycle.md` |
@@ -52,6 +53,8 @@ If no mode is provided, run `distill`.
 Interpret natural-language requests as:
 - "how could I have asked better", "teach me from this", "help me prompt better"
   -> `coach`
+- "same correction again", "why do I keep repeating this", "codify this
+  pattern", "prompt debt" -> `prompt-debt`
 - "why did you do that", "you made the wrong call", "fix your instructions"
   -> `calibrate`
 - "tune this repo", "refresh AGENTS", "context drift"
@@ -94,6 +97,34 @@ When encoding knowledge, always target the highest-leverage mechanism:
 Type system > Lint rule > Hook > Test > CI > Skill/reference > AGENTS.md > Memory
 ```
 
+## Prompt Debt
+
+Prompt debt is a repeated human correction, repeated request, or repeated
+decision pattern that should become a durable harness artifact instead of
+remaining chat-only advice. Use available local surfaces only: repo-local
+reflect notes, review scores, delegation receipts, traces, session summaries,
+and durable memory notes. Chronicle-derived context may inform the pattern, but
+do not quote private personal detail.
+
+Promote a pattern when it appears at least twice across sessions, or once when
+it prevented a shipped regression, runaway spend, data loss, or client-facing
+artifact error. Emit one highest-leverage proposal by default:
+
+```markdown
+## Prompt Debt
+
+- Pattern:
+- Evidence count:
+- Safe evidence snippets:
+- Recommended target:
+- Acceptance criteria:
+- Residual risk:
+```
+
+Apply the codification hierarchy above. Prefer type, lint, hook, test, or CI
+coverage before skill prose; use AGENTS.md for always-on routing; use memory
+only for preference-level defaults that cannot be enforced.
+
 ## Cycle Mode Authority (outer-loop only)
 
 `cycle` is a **bounded invocation**: `/ship` calls it at the end of the
@@ -130,8 +161,9 @@ short form when the caller does not supply one.
 
 ### Output Contract
 
-Three categories. The two structured categories must be cleanly separable
-so the caller can apply them under different policies.
+Three required categories plus one optional prompt-debt category. The
+structured categories must be cleanly separable so the caller can apply them
+under different policies.
 
 1. **Backlog mutations** (structured, machine-consumable). For each:
    - action: `create` | `edit` | `reprioritize` | `delete`
@@ -152,7 +184,17 @@ so the caller can apply them under different policies.
    a harness branch (`/ship` uses `harness/reflect-outputs`). A `cycle`
    run that mutates harness files on the current branch is a bug.
 
-3. **Cycle summary** (human-readable narrative). What shipped, what was
+3. **Prompt-debt proposal** (optional, structured). Include at most one by
+   default, only when repeated corrections or high-severity prompt patterns
+   are visible in cycle evidence:
+   - pattern: short name
+   - evidence_count: sanitized count, not raw transcript text
+   - safe_evidence_snippets: redacted commands, file paths, or short examples
+   - recommended_target: codification target from the hierarchy
+   - acceptance_criteria: how the future run proves the debt is paid down
+   - residual_risk: what remains ambiguous or intentionally manual
+
+4. **Cycle summary** (human-readable narrative). What shipped, what was
    learned, what went well, what went poorly. Also written to the
    standard retro location (`.groom/retro/<primary-id>.md` or the
    `.harness-kit/reflect/<cycle-id>/` receipts dir, matching whatever

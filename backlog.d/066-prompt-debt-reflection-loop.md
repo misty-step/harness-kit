@@ -1,7 +1,7 @@
 # Prompt-debt reflection loop
 
 Priority: P2
-Status: ready
+Status: merge-ready
 Estimate: S
 
 ## Goal
@@ -28,27 +28,27 @@ has seen it recur.
 
 ## Oracle
 
-- [ ] `skills/reflect/SKILL.md` gains a prompt-debt mode or subsection that
+- [x] `skills/reflect/SKILL.md` gains a prompt-debt mode or subsection that
       detects repeated corrections, repeated requests, and repeated decision
       patterns from available local surfaces.
-- [ ] `skills/reflect/references/` gains a short reference defining promotion
+- [x] `skills/reflect/references/` gains a short reference defining promotion
       thresholds:
       repeated at least twice across sessions, or once if it prevented a
       shipped regression, runaway spend, data loss, or client-facing artifact
       error.
-- [ ] `/reflect cycle` output can include a `prompt_debt` proposal with:
+- [x] `/reflect cycle` output can include a `prompt_debt` proposal with:
       pattern name, safe evidence snippets or counts, recommended codification
       target, acceptance criteria, and residual risk.
-- [ ] `skills/monitor/SKILL.md` names prompt-debt checks as a valid local
+- [x] `skills/monitor/SKILL.md` names prompt-debt checks as a valid local
       monitoring path for repeated workflows: when the same workflow requires
       repeated human correction, escalate to `/reflect` rather than continuing
       to watch passively.
-- [ ] The reference explicitly applies the codification hierarchy:
+- [x] The reference explicitly applies the codification hierarchy:
       type/lint/hook/test/CI before skill/AGENTS/memory, with memory as the
       fallback for preference-level defaults.
-- [ ] A sample brief is added under a reference or eval fixture using sanitized
+- [x] A sample brief is added under a reference or eval fixture using sanitized
       counts only, not sensitive personal Chronicle details.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -102,3 +102,31 @@ long advisory memo.
   fail in practice despite satisfying static quality checks.
 - Feeds `065-repo-grounded-acceptance-contract.md` when the recurring prompt
   debt is "you claimed done without live evidence."
+
+## Progress
+
+- Added `/reflect prompt-debt` routing and a prompt-debt subsection to
+  `skills/reflect/SKILL.md`.
+- Added optional `prompt_debt` output to `/reflect cycle` with pattern,
+  sanitized evidence count/snippets, recommended target, acceptance criteria,
+  and residual risk.
+- Added `skills/reflect/references/prompt-debt.md` with sources, thresholds,
+  codification hierarchy, redaction rules, and a sanitized sample brief.
+- Taught `/monitor` to treat repeated human correction loops as local monitor
+  findings that escalate to `/reflect prompt-debt`.
+
+## Delegation Evidence
+
+- `grok-build` and `claude` planning lanes both identified the same minimal
+  additive implementation shape. Accepted.
+- Final `claude` critic reported `BLOCKING: no`; accepted.
+- Final `grok-build` critic reported blockers because the diff packet omitted
+  the new untracked reference file. Rejected as packet error, not a code gap.
+
+## Verification
+
+- `python3 scripts/check-frontmatter.py`
+- `git diff --check`
+- `rg -n 'Cycle summary|prompt-debt|prompt_debt|category 3|Output Contract|argument-hint' skills scripts ci harnesses docs README.md AGENTS.md`
+- `bash scripts/check-docs-site.sh`
+- `dagger call check --source=.`

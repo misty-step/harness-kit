@@ -35,6 +35,12 @@ smoke artifacts. If a change creates behavior that cannot be observed after
 ship, flag that as a monitor finding and route it to `/reflect` or `/groom`
 as instrumentation debt.
 
+Repeated human corrections are also a local monitoring signal. When the same
+workflow needs the same correction across repeated runs, stop passively
+watching and escalate to `/reflect prompt-debt` with sanitized counts,
+available receipt refs, and the workflow name. Do not store raw private
+transcripts or Chronicle detail in the monitor event.
+
 ## Execution Stance
 
 You are a thin watcher.
@@ -260,6 +266,9 @@ HARNESS_KIT_HEALTHCHECK_URL=https://app.example.com/health /monitor
 - **Do not extend the grace window to avoid escalation.** If the signal
   tripped, it tripped. Kicking the can wastes time and teaches the caller
   to distrust monitor output.
+- **Do not normalize repeated correction loops.** If the same workflow needs
+  the same human correction repeatedly, emit a monitor finding and hand off to
+  `/reflect prompt-debt` instead of silently continuing the watch.
 - **Healthcheck connection refused is a hard trip.** Do not treat it as
   transient. If the host is unreachable two polls in a row you have
   already lost users.
