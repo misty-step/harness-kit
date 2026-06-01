@@ -216,6 +216,80 @@ test_archive_uses_git_mv() {
   fi
 }
 
+test_archive_aborts_when_root_cd_fails_before_git_mv() {
+  local marker="$TEST_DIR/git-mv-attempted"
+  _backlog_cd_repo_root() {
+    return 1
+  }
+  git() {
+    if [ "${1:-}" = "mv" ]; then
+      : >"$marker"
+      return 0
+    fi
+    command git "$@"
+  }
+
+  local actual
+  if backlog_archive 031 >/tmp/backlog_cd_fail.$$ 2>&1; then
+    actual=0
+  else
+    actual=$?
+  fi
+  local output
+  output="$(cat /tmp/backlog_cd_fail.$$)"
+  rm -f /tmp/backlog_cd_fail.$$
+  unset -f _backlog_cd_repo_root
+  unset -f git
+
+  assert_eq "backlog_archive fails when root cd fails" "1" "$actual"
+  if printf '%s\n' "$output" | grep -q "could not cd"; then
+    assert_eq "backlog_archive explains root cd failure" "0" "0"
+  else
+    assert_eq "backlog_archive explains root cd failure" "0" "1"
+    echo "  stderr was: $output"
+  fi
+  if [ -e "$marker" ]; then
+    assert_eq "backlog_archive does not attempt git mv after cd failure" "0" "1"
+  else
+    assert_eq "backlog_archive does not attempt git mv after cd failure" "0" "0"
+  fi
+}
+
+test_archive_aborts_when_git_mv_fails() {
+  local marker="$TEST_DIR/git-mv-attempted"
+  git() {
+    if [ "${1:-}" = "mv" ]; then
+      printf '%s\n' "$*" >>"$marker"
+      return 1
+    fi
+    command git "$@"
+  }
+
+  local actual
+  if backlog_archive 031 >/tmp/backlog_git_mv_fail.$$ 2>&1; then
+    actual=0
+  else
+    actual=$?
+  fi
+  local output
+  output="$(cat /tmp/backlog_git_mv_fail.$$)"
+  rm -f /tmp/backlog_git_mv_fail.$$
+  unset -f git
+
+  assert_eq "backlog_archive fails when git mv fails" "1" "$actual"
+  if printf '%s\n' "$output" | grep -q "could not move"; then
+    assert_eq "backlog_archive explains git mv failure" "0" "0"
+  else
+    assert_eq "backlog_archive explains git mv failure" "0" "1"
+    echo "  stderr was: $output"
+  fi
+  if [ -e "$marker" ]; then
+    assert_eq "backlog_archive attempted git mv before failing" "0" "0"
+  else
+    assert_eq "backlog_archive attempted git mv before failing" "0" "1"
+  fi
+}
+
 test_archive_is_idempotent() {
   backlog_archive 031
   git commit -q -m "archive 031"

@@ -140,12 +140,21 @@ backlog_archive() {
     return 1
   fi
 
-  mkdir -p "$root/backlog.d/_done"
+  if ! mkdir -p "$root/backlog.d/_done"; then
+    echo "backlog_archive: could not create archive directory under '$root'" >&2
+    return 1
+  fi
   (
-    cd "$root"
+    _backlog_cd_repo_root "$root" || {
+      echo "backlog_archive: could not cd to repo root '$root'" >&2
+      exit 1
+    }
     while IFS= read -r active_match; do
       [ -n "$active_match" ] || continue
-      git mv "backlog.d/$active_match" "backlog.d/_done/$active_match"
+      if ! git mv "backlog.d/$active_match" "backlog.d/_done/$active_match"; then
+        echo "backlog_archive: could not move backlog.d/$active_match into backlog.d/_done/" >&2
+        exit 1
+      fi
     done <<EOF
 $active_matches
 EOF
@@ -160,6 +169,12 @@ EOF
 _backlog_validate_id() {
   local id="$1"
   [[ "$id" =~ ^[0-9]+$ ]]
+}
+
+# Change to the repository root. Separated so tests can force the failure path
+# without damaging the temporary repository.
+_backlog_cd_repo_root() {
+  cd "$1"
 }
 
 # Return the first `<id>-*.md` basename in <dir>, or empty string if none.

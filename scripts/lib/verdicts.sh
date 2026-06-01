@@ -20,12 +20,12 @@ VERDICT_REQUIRED_FIELDS='["branch","verdict","sha","date"]'
 _verdict_validate_json() {
   local json="$1"
   # Check it's valid JSON
-  if ! echo "$json" | python3 -c "import sys,json; json.load(sys.stdin)" 2>/dev/null; then
+  if ! printf '%s' "$json" | python3 -c "import sys,json; json.load(sys.stdin)" 2>/dev/null; then
     return 1
   fi
   # Check required fields
   local missing
-  missing="$(echo "$json" | python3 -c "
+  missing="$(printf '%s' "$json" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
 required = $VERDICT_REQUIRED_FIELDS
@@ -47,7 +47,7 @@ verdict_write() {
     return 1
   fi
   local blob_sha
-  blob_sha="$(echo "$json" | git hash-object -w --stdin)"
+  blob_sha="$(printf '%s' "$json" | git hash-object -w --stdin)"
   git update-ref "${VERDICTS_REF_PREFIX}/${branch}" "$blob_sha"
 }
 
@@ -68,11 +68,15 @@ verdict_read() {
 # Returns: 0 if valid, 1 if missing or stale
 verdict_validate() {
   local branch="$1"
+  local head_sha
+  if ! head_sha="$(git rev-parse --verify "${branch}^{commit}" 2>/dev/null)"; then
+    echo "verdict_validate: could not resolve target '$branch'" >&2
+    return 1
+  fi
   local json
   json="$(verdict_read "$branch")" || return 1
-  local verdict_sha head_sha
-  verdict_sha="$(echo "$json" | python3 -c "import sys,json; print(json.load(sys.stdin)['sha'])")"
-  head_sha="$(git rev-parse "$branch" 2>/dev/null || git rev-parse HEAD)"
+  local verdict_sha
+  verdict_sha="$(printf '%s' "$json" | python3 -c "import sys,json; print(json.load(sys.stdin)['sha'])")"
   [ "$verdict_sha" = "$head_sha" ]
 }
 
@@ -84,7 +88,7 @@ verdict_check_landable() {
   verdict_validate "$branch" || return 1
   local json verdict_value
   json="$(verdict_read "$branch")" || return 1
-  verdict_value="$(echo "$json" | python3 -c "import sys,json; print(json.load(sys.stdin)['verdict'])" 2>/dev/null)" || return 1
+  verdict_value="$(printf '%s' "$json" | python3 -c "import sys,json; print(json.load(sys.stdin)['verdict'])" 2>/dev/null)" || return 1
   case "$verdict_value" in
     ship | conditional) return 0 ;;
     dont-ship) return 2 ;;

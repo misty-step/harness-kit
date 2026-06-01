@@ -90,7 +90,43 @@ test_verdict_validate_fails_when_sha_stale() {
 }
 
 test_verdict_validate_fails_without_verdict() {
+  git branch no-verdict-branch
   assert_exit "verdict_validate fails without verdict" 1 verdict_validate no-verdict-branch
+}
+
+test_verdict_validate_explains_unresolved_branch_without_verdict() {
+  local output actual
+  if output="$(verdict_validate no-verdict-branch 2>&1)"; then
+    actual=0
+  else
+    actual=$?
+  fi
+  assert_eq "verdict_validate rejects unresolved branch without verdict" "1" "$actual"
+  if printf '%s\n' "$output" | grep -q "could not resolve"; then
+    assert_eq "verdict_validate explains unresolved branch without verdict" "0" "0"
+  else
+    assert_eq "verdict_validate explains unresolved branch without verdict" "0" "1"
+    echo "  stderr was: $output"
+  fi
+}
+
+test_verdict_validate_fails_for_unresolved_branch_even_when_sha_matches_head() {
+  local sha output actual
+  sha="$(git rev-parse HEAD)"
+  local json='{"branch":"missing-branch","base":"master","verdict":"ship","reviewers":["critic"],"scores":{"correctness":8},"sha":"'"$sha"'","date":"2026-04-06T15:00:00Z"}'
+  verdict_write missing-branch "$json"
+  if output="$(verdict_validate missing-branch 2>&1)"; then
+    actual=0
+  else
+    actual=$?
+  fi
+  assert_eq "verdict_validate rejects unresolved branch instead of using HEAD" "1" "$actual"
+  if printf '%s\n' "$output" | grep -q "could not resolve"; then
+    assert_eq "verdict_validate explains unresolved target" "0" "0"
+  else
+    assert_eq "verdict_validate explains unresolved target" "0" "1"
+    echo "  stderr was: $output"
+  fi
 }
 
 test_verdict_delete_removes_ref() {
@@ -118,6 +154,16 @@ test_verdict_write_rejects_invalid_json() {
 
 test_verdict_write_rejects_missing_fields() {
   assert_exit "verdict_write rejects missing sha" 1 verdict_write feat-foo '{"branch":"feat-foo","verdict":"ship"}'
+}
+
+test_verdict_write_preserves_json_bytes_with_edge_characters() {
+  local sha json expected_size actual_size
+  sha="$(git rev-parse HEAD)"
+  json='{"branch":"feat-foo","base":"master","verdict":"ship","reviewers":["critic"],"scores":{"correctness":8},"sha":"'"$sha"'","date":"2026-04-06T15:00:00Z","note":"edge chars: \"quote\" \\backslash $dollar [brackets]"}'
+  verdict_write feat-foo "$json"
+  expected_size="$(printf '%s' "$json" | wc -c | tr -d ' ')"
+  actual_size="$(git cat-file -s "${VERDICTS_REF_PREFIX}/feat-foo")"
+  assert_eq "verdict_write stores exact JSON bytes without echo newline" "$expected_size" "$actual_size"
 }
 
 test_check_landable_passes_ship() {

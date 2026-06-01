@@ -1,7 +1,7 @@
 # Harden shared lifecycle scripts
 
 Priority: P1
-Status: ready
+Status: merge-ready
 Estimate: S
 
 ## Goal
@@ -27,20 +27,38 @@ Harness Kit bugs, not downstream repo bugs:
 
 ## Oracle
 
-- [ ] `verdict_validate` fails with a non-zero exit and actionable message when
+- [x] `verdict_validate` fails with a non-zero exit and actionable message when
       the requested branch, ref, or commit cannot be resolved.
-- [ ] `verdict_validate` never substitutes `HEAD` for an unresolved caller
+- [x] `verdict_validate` never substitutes `HEAD` for an unresolved caller
       argument.
-- [ ] Verdict JSON is passed to Python with exact bytes via `printf '%s'` or an
+- [x] Verdict JSON is passed to Python with exact bytes via `printf '%s'` or an
       equivalent mechanism; `echo "$json"` is not used for JSON transport.
-- [ ] Verdict validation covers unresolved branch input and valid JSON with
+- [x] Verdict validation covers unresolved branch input and valid JSON with
       edge characters.
-- [ ] `backlog_close` guards the root-directory change before `git mv`; failure
+- [x] `backlog_close` guards the root-directory change before `git mv`; failure
       aborts before any move is attempted.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
 This should be fixed in Harness Kit because bootstrap and `/seed` expose these
 helpers to target repos. Patching only the generated Conviction copies would
 leave the canonical source with the same fail-open behavior.
+
+## Progress
+
+- `verdict_validate` now resolves the requested target first, reports
+  unresolved targets, and never falls back to `HEAD`.
+- Verdict JSON is piped with `printf '%s'` everywhere payload bytes enter
+  Python or Git blob storage.
+- `backlog_archive` now fails closed when archive directory creation, repo-root
+  `cd`, or `git mv` fails.
+- Added regression tests for unresolved verdict targets, exact JSON byte
+  storage with edge characters, failed repo-root `cd`, and failed `git mv`.
+
+## Verification
+
+- `bash scripts/lib/test_verdicts.sh`
+- `bash scripts/lib/test_backlog.sh`
+- `shellcheck --severity=error scripts/lib/backlog.sh scripts/lib/test_backlog.sh scripts/lib/verdicts.sh scripts/lib/test_verdicts.sh`
+- `dagger call check --source=.`
