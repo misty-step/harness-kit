@@ -26,6 +26,13 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use one lane to map complexity and another to challenge behavior-preservation risk; add a builder lane for the selected change.
 
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields for behavior preservation, deletion/consolidation choice, and residual
+risk.
+
 ## Deslop Pass
 
 When invoked after implementation or review, run a behavior-preserving deslop
@@ -185,6 +192,13 @@ Target: <branch or scope>
 - Exact command/path/route exercised: command, file path, route, or tool call inspected.
 - Repo-fit check: live repo boundary, pattern, or deletion/consolidation contract followed.
 - Residual risk: unverified path, remaining complexity, or none with reason.
+
+Completion evidence core applies: behavior changed or verified, live evidence,
+exact command/path/route, repo-fit check, and residual risk. See
+`harnesses/shared/AGENTS.md` (Completion Evidence).
+
+Local fields require developer/operator behavior wording for internal-only
+refactors.
 
 ### Residual Risks
 [what remains and why]

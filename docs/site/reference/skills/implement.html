@@ -52,6 +52,12 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use one bounded builder lane and one adversarial validator/refactor lane; give them the context packet, oracle, boundaries, repo anchors, and what would embarrass us if green tests missed it.
 
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields required by the implementation final message.
+
 ## Contract
 
 **Input.** A context packet: goal, non-goals, constraints, repo anchors,
@@ -74,10 +80,6 @@ See `references/context-packet.md` for the full shape.
 - All tests green (new + existing)
 - Working tree clean (no debug prints, no scratch files)
 - Commits in repo convention — one logical unit per commit
-- Final message: branch ref + oracle checklist status + Completion Gate
-
-**Stops at:** green tests + clean tree. Does not run `/code-review`,
-`/qa`, `/ci`, or open a PR.
 ...</code></pre>
     </section>
     <section class="checklist">

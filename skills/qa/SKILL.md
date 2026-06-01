@@ -37,6 +37,8 @@ left as residual risk.
 ## Completion Gate
 
 Every QA pass/fail report includes:
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
+core; this phase keeps QA-specific local fields.
 
 ```markdown
 ## Completion Gate

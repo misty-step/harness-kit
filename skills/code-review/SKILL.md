@@ -24,6 +24,12 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
 
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields below for review verdicts.
+
 ## Marshal Protocol
 
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
@@ -155,6 +161,12 @@ review cannot name a live evidence path that would catch the likely failure.
 ## Completion Gate
 
 Every Ship or Conditional verdict must include:
+
+Completion evidence core applies: behavior changed or verified, live evidence,
+exact command/path/route, repo-fit check, and residual risk. See
+`harnesses/shared/AGENTS.md` (Completion Evidence).
+
+Local fields include hardening recommendation / waiver.
 
 ```markdown
 ## Completion Gate

@@ -45,9 +45,9 @@ decides whether to deploy. Humans merge.
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a &quot;best effort&quot; pass.
 - Clean closeout is part of merge-readiness. Before writing `merge_ready` or
-  presenting delivery as complete, `git status --short --untracked-files=all`
-  must be empty or every visible path must be classified into a follow-up
-  commit, deletion, move-out, durable ignore, or explicit handoff.
+  presenting delivery as complete, shared Closeout applies; every visible path
+  must be classified into a follow-up commit, deletion, move-out, durable
+  ignore, or explicit handoff. See `harnesses/shared/AGENTS.md` (Closeout).
 
 ## Delegation Floor
 
@@ -57,6 +57,12 @@ user-forbidden, or fewer-than-two-providers cases. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Phase skills dispatch their own lanes; /deliver verifies roster-member receipts or explicit exceptions before calling work merge-ready.
+
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields in the merge-ready block below.
 
 ## Closeout Contract
 
@@ -72,11 +78,6 @@ The delivery brief is short and punchy. It is not a file inventory, a raw
 changelog, or a generic &quot;green tests&quot; note. Default shape: 1-2 short
 paragraphs or 4-6 flat bullets.
 When a public PR or issue needs agent provenance, use `/agent-transcript` to
-render a redacted local excerpt and ask before publishing it. Never paste raw
-session logs into the brief or receipt.
-
-The delivery brief must answer:
-- What ticket was worked and what changed.
 ...</code></pre>
     </section>
     <section class="checklist">

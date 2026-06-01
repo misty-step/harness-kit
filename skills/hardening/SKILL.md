@@ -151,6 +151,8 @@ Risk analysis chooses where to spend hardening effort.
 ## Completion Gate
 
 Every hardening report includes:
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
+core; this phase keeps hardening-specific local fields.
 
 ```markdown
 ## Completion Gate

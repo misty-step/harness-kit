@@ -29,6 +29,8 @@ the demo path here is a different path.
 ## Completion Gate
 
 Every demo outcome, including "no artifact needed," answers:
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
+core; this phase keeps artifact-specific local fields.
 
 ```markdown
 ## Completion Gate

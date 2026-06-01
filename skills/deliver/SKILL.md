@@ -21,9 +21,9 @@ decides whether to deploy. Humans merge.
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a "best effort" pass.
 - Clean closeout is part of merge-readiness. Before writing `merge_ready` or
-  presenting delivery as complete, `git status --short --untracked-files=all`
-  must be empty or every visible path must be classified into a follow-up
-  commit, deletion, move-out, durable ignore, or explicit handoff.
+  presenting delivery as complete, shared Closeout applies; every visible path
+  must be classified into a follow-up commit, deletion, move-out, durable
+  ignore, or explicit handoff. See `harnesses/shared/AGENTS.md` (Closeout).
 
 ## Delegation Floor
 
@@ -33,6 +33,12 @@ user-forbidden, or fewer-than-two-providers cases. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Phase skills dispatch their own lanes; /deliver verifies roster-member receipts or explicit exceptions before calling work merge-ready.
+
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields in the merge-ready block below.
 
 ## Closeout Contract
 
@@ -73,7 +79,14 @@ The delivery brief must answer:
 - What hardening triggers were found by implementation, review, CI, or QA; if
   `/hardening` did not run, why the route was waived.
 
-Every merge-ready brief includes this block:
+Every merge-ready brief includes this gate:
+
+Completion evidence core applies: behavior changed or verified, live evidence,
+exact command/path/route, repo-fit check, and residual risk. See
+`harnesses/shared/AGENTS.md` (Completion Evidence).
+
+Local fields include oracle hash, contract-change acknowledgment, and
+hardening run / waiver.
 
 ```markdown
 ## Completion Gate

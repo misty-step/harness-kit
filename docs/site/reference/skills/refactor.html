@@ -49,6 +49,13 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use one lane to map complexity and another to challenge behavior-preservation risk; add a builder lane for the selected change.
 
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields for behavior preservation, deletion/consolidation choice, and residual
+risk.
+
 ## Deslop Pass
 
 When invoked after implementation or review, run a behavior-preserving deslop
@@ -72,10 +79,6 @@ Detect the current branch and primary branch first:
    (fallback `main`, then `master`)
 
 If current branch != primary branch: run **Feature Branch Mode**.
-If current branch == primary branch: run **Primary Branch Mode**.
-
-If current branch resolves to `HEAD`, the primary branch cannot be discovered,
-or the detected base is ambiguous, stop and require `--base &lt;branch&gt;`. Fail
 ...</code></pre>
     </section>
     <section class="checklist">

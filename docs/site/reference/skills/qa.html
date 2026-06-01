@@ -61,6 +61,8 @@ left as residual risk.
 ## Completion Gate
 
 Every QA pass/fail report includes:
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
+core; this phase keeps QA-specific local fields.
 
 ```markdown
 ## Completion Gate
@@ -69,8 +71,6 @@ Every QA pass/fail report includes:
 - Persona outcome observed: persona-specific success or failure observed in the run.
 - Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
-- Repo-fit check: local QA convention or repo contract followed.
-- Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
 ...</code></pre>
     </section>
     <section class="checklist">

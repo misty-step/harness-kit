@@ -53,7 +53,7 @@ Assert at start; refuse with a clear reason on any miss.
 - On a feature branch (not `master` / `main` / default protected branch).
 - Branch name matches `^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`.
   The numeric capture is the **primary backlog ID** being shipped.
-- Working tree clean (`git status --short` empty).
+- Working tree clean. See `harnesses/shared/AGENTS.md` (Closeout).
 - If a PR exists for the branch: `gh pr view --json mergeable,mergeStateStatus`
   reports mergeable. A conflicted or blocked PR means `/deliver --polish-only` isn't done.
 - Landability evidence exists for this exact HEAD. Acceptable evidence:

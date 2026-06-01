@@ -1,7 +1,7 @@
 # Extract shared doctrine to a single source: kill the 19-skill copy-paste
 
 Priority: P1
-Status: in-progress
+Status: merge-ready
 Estimate: M
 
 ## Goal
@@ -78,6 +78,39 @@ gate redesign + pointer pattern (transcript in `.harness-kit/traces`).
   `9fae8c24-35c7-463d-a5e3-b5b8c8e59d4c`) both argued to split Step 3 until
   a shared `## Completion Evidence` anchor is shaped and gated.
 
+## Progress (2026-06-01, Step 3)
+
+- **Step 3 DONE** (`deliver/081-delegation-floor-dry`): added shared
+  `harnesses/shared/AGENTS.md ## Completion Evidence` and kept phase-specific
+  completion fields local instead of flattening QA, design, hardening, and demo.
+- Added `scripts/check-agent-roster.py` validation for the shared Completion
+  Evidence anchor, four core completion-evidence pointers, four local domain
+  gates, and four shared Closeout pointers.
+- Dedupe kept the local clean-tree semantics that fresh critics found
+  load-bearing (`deliver` merge-ready, `ship` precondition, `yeet` operational
+  checks), while pointing their universal closeout rule at shared Closeout.
+
+## What Was Built
+
+- `harnesses/shared/AGENTS.md` now owns the universal completion-evidence core
+  and explicitly marks shared Closeout as the single source for clean-tree
+  closeout.
+- 20 workflow skills point at the shared Roster source with preserved
+  `Local lane guidance`.
+- `code-review`, `deliver`, `implement`, and `refactor` point at shared
+  Completion Evidence and keep only local fields inline.
+- `demo`, `design`, `hardening`, and `qa` keep local domain gates and cite shared
+  Completion Evidence for the common evidence principle.
+- Root `AGENTS.md`, `deliver`, `ship`, and `yeet` point at shared Closeout for
+  the universal clean-tree rule.
+
+## Verification
+
+- `python3 scripts/check-agent-roster.py`
+- `python3 scripts/check-frontmatter.py`
+- `scripts/build-docs-site.sh && scripts/check-docs-site.sh`
+- `dagger call check --source=.`
+
 ## Non-Goals
 
 - Do NOT change the doctrine's meaning. This is a move + dedupe, not a rewrite.
@@ -119,17 +152,17 @@ tests > type system > code > docs > lore
 | Inline-everything generator | Templating skill bodies at build | DRY source-of-truth | Build complexity; opaque rendered skills | reject |
 
 ## Oracle (Definition of Done)
-- [ ] `grep -rl "When a provider roster is available" skills/*/SKILL.md | wc -l`
+- [x] `grep -rl "When a provider roster is available" skills/*/SKILL.md | wc -l`
       returns 0 (the paragraph lives once in `harnesses/shared/`).
-- [ ] Each of the 19 skills retains a ≤2-line statement that the delegation
+- [x] Each of the 19 skills retains a ≤2-line statement that the delegation
       floor applies + a pointer to the shared source; its phase-specific lane
       guidance is preserved.
-- [ ] Completion-Gate and clean-tree closeout each have a single canonical
+- [x] Completion-Gate and clean-tree closeout each have a single canonical
       definition referenced by the skills that used to inline them.
-- [ ] A reviewer reading any one skill can still tell, without opening another
+- [x] A reviewer reading any one skill can still tell, without opening another
       file, that the floor/gate/closeout applies (one-line restatement + link).
-- [ ] `scripts/generate-index.sh` green; no dangling references.
-- [ ] `dagger call check --source=.` passes; a spot-check of 3 skills'
+- [x] `scripts/generate-index.sh` green; no dangling references.
+- [x] `dagger call check --source=.` passes; a spot-check of 3 skills'
       behavior (groom, deliver, code-review) is unchanged.
 
 ## Implementation Sequence

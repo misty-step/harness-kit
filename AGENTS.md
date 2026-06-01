@@ -9,10 +9,10 @@ disk; do not restate obvious filesystem facts.
 - Base branch: `master`.
 - Gate: `dagger call check --source=.`. Green means all 15 Harness Kit CI lanes
   pass. `/ci` owns the exact lane list in `ci/src/harness_kit_ci/main.py`.
-- Clean-tree closeout: no run is complete while
-  `git status --short --untracked-files=all` shows paths. Commit, delete,
-  move out, or ignore every file. Treat untracked `backlog.d/NNN-*.md` as
-  signal unless the user explicitly says scratch/delete.
+- Clean-tree closeout: shared Closeout applies; see
+  `harnesses/shared/AGENTS.md` (Closeout). Harness Kit additionally treats
+  untracked `backlog.d/NNN-*.md` as signal unless the user explicitly says
+  scratch/delete.
 - `index.yaml` is generated. Never edit it by hand.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.

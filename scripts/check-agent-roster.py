@@ -90,6 +90,35 @@ ADVERSARIAL_REVIEW_SKILLS = [
     "shape",
 ]
 
+COMPLETION_EVIDENCE_CORE_SKILLS = [
+    "code-review",
+    "deliver",
+    "implement",
+    "refactor",
+]
+
+DOMAIN_COMPLETION_GATE_SKILLS = [
+    "demo",
+    "design",
+    "hardening",
+    "qa",
+]
+
+CLEAN_CLOSEOUT_POINTER_PATHS = [
+    Path("AGENTS.md"),
+    Path("skills/deliver/SKILL.md"),
+    Path("skills/ship/SKILL.md"),
+    Path("skills/yeet/SKILL.md"),
+]
+
+COMPLETION_EVIDENCE_REQUIREMENTS = {
+    "behavior": ["behavior", "end-user", "developer", "operator"],
+    "live evidence": ["live evidence"],
+    "exercised surface": ["command", "path", "route", "artifact", "surface"],
+    "repo fit": ["repo-fit"],
+    "residual risk": ["residual", "waiver", "follow-up"],
+}
+
 RETIRED_PROVIDER_REFERENCE_PATHS = [
     # Active sources only. Closed backlog and trace receipts remain historical
     # records and may mention retired providers.
@@ -173,6 +202,15 @@ def delegation_contract_gaps(section: str) -> list:
         if not has_unhedged_match(patterns)
     )
     return missing
+
+
+def phrase_group_gaps(text: str, requirements: dict[str, list[str]]) -> list[str]:
+    lowered = text.lower()
+    return [
+        name
+        for name, phrases in requirements.items()
+        if not any(phrase in lowered for phrase in phrases)
+    ]
 
 
 def validate_delegation_floor() -> None:
@@ -275,6 +313,74 @@ def validate_shared_roster_doctrine() -> None:
         )
 
 
+def validate_completion_evidence() -> None:
+    shared_path = Path("harnesses/shared/AGENTS.md")
+    shared_section = markdown_section(shared_path.read_text(), "## Completion Evidence")
+    if not shared_section:
+        raise SystemExit(f"{shared_path}: missing '## Completion Evidence' section")
+    gaps = phrase_group_gaps(shared_section, COMPLETION_EVIDENCE_REQUIREMENTS)
+    if gaps:
+        raise SystemExit(
+            f"{shared_path} (## Completion Evidence): missing requirement(s): "
+            + ", ".join(gaps)
+        )
+
+    issues = []
+    for skill in COMPLETION_EVIDENCE_CORE_SKILLS:
+        path = Path("skills") / skill / "SKILL.md"
+        text = path.read_text().lower()
+        missing = [
+            phrase
+            for phrase in [
+                "completion evidence core applies",
+                "harnesses/shared/agents.md",
+                "completion evidence",
+                "local fields",
+            ]
+            if phrase not in text
+        ]
+        if missing:
+            issues.append(
+                f"{path}: missing completion evidence pointer ({', '.join(missing)})"
+            )
+
+    for skill in DOMAIN_COMPLETION_GATE_SKILLS:
+        path = Path("skills") / skill / "SKILL.md"
+        text = path.read_text().lower()
+        if "## completion gate" not in text and "### completion gate" not in text:
+            issues.append(f"{path}: missing local completion gate")
+        if (
+            "harnesses/shared/agents.md" not in text
+            or "completion evidence" not in text
+        ):
+            issues.append(f"{path}: missing shared Completion Evidence pointer")
+    if issues:
+        raise SystemExit("; ".join(issues))
+
+
+def validate_clean_closeout_pointers() -> None:
+    shared_path = Path("harnesses/shared/AGENTS.md")
+    shared_section = markdown_section(shared_path.read_text(), "## Closeout")
+    required = [
+        "single source for clean-tree closeout",
+        "git status --short --untracked-files=all",
+        "committed, deleted, moved out, or durably ignored",
+    ]
+    missing = [phrase for phrase in required if phrase not in shared_section.lower()]
+    if missing:
+        raise SystemExit(
+            f"{shared_path} (## Closeout): missing phrase(s): " + ", ".join(missing)
+        )
+
+    issues = []
+    for path in CLEAN_CLOSEOUT_POINTER_PATHS:
+        text = path.read_text().lower()
+        if "harnesses/shared/agents.md" not in text or "closeout" not in text:
+            issues.append(f"{path}: missing shared Closeout pointer")
+    if issues:
+        raise SystemExit("; ".join(issues))
+
+
 def validate_adversarial_done_review() -> None:
     shared_path = Path("harnesses/shared/AGENTS.md")
     shared_text = shared_path.read_text().lower()
@@ -359,6 +465,8 @@ def main() -> int:
     validate_delegation_floor()
     validate_runtime_delegation_references()
     validate_shared_roster_doctrine()
+    validate_completion_evidence()
+    validate_clean_closeout_pointers()
     validate_adversarial_done_review()
     validate_no_source_skill_bridges()
     validate_no_retired_provider_references()
@@ -397,6 +505,12 @@ def main() -> int:
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
+    print(
+        f"skills/: {len(COMPLETION_EVIDENCE_CORE_SKILLS)} "
+        "completion evidence pointer(s) valid"
+    )
+    print(f"skills/: {len(DOMAIN_COMPLETION_GATE_SKILLS)} local completion gate(s) valid")
+    print(f"closeout: {len(CLEAN_CLOSEOUT_POINTER_PATHS)} shared pointer(s) valid")
     print(f"skills/: {len(ADVERSARIAL_REVIEW_SKILLS)} adversarial review stance(s) valid")
     print(f"harnesses/: {len(RUNTIME_REFERENCES)} runtime delegation reference(s) valid")
     print("source repo: no repo-local skill bridges")

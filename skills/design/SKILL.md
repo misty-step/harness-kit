@@ -101,6 +101,9 @@ For each direction, name what it sacrifices. Recommend one.
 
 ## Completion Gate
 
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
+core; this phase keeps design-specific local fields.
+
 ```markdown
 ## Completion Gate
 - Direction chosen: critique, polish, redesign, or scaffold decision applied.

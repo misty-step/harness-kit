@@ -28,6 +28,12 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use one bounded builder lane and one adversarial validator/refactor lane; give them the context packet, oracle, boundaries, repo anchors, and what would embarrass us if green tests missed it.
 
+## Completion Evidence
+
+Completion evidence core applies: use `harnesses/shared/AGENTS.md`
+(Completion Evidence) as the universal evidence shape, then fill the local
+fields required by the implementation final message.
+
 ## Contract
 
 **Input.** A context packet: goal, non-goals, constraints, repo anchors,
@@ -124,6 +130,13 @@ not push unless the packet explicitly says so.
 - Observability / instrumentation debt: named signal added, existing signal used, or debt recorded.
 - Residual risk: unverified path, deferred edge case, or none with reason.
 ```
+
+Completion evidence core applies: behavior changed or verified, live evidence,
+exact command/path/route, repo-fit check, and residual risk. See
+`harnesses/shared/AGENTS.md` (Completion Evidence).
+
+Local fields include observability / instrumentation debt when the changed
+behavior has no named signal.
 
 For internal-only changes, replace "end-user" with the developer/operator
 behavior the implementation changes.

@@ -169,6 +169,24 @@ preservation; user forbids delegation; fewer than two providers available.
 
 Provider output is evidence, not authority. The lead owns the result.
 
+## Completion Evidence
+
+This section is the shared core for completion gates. Skills point here instead
+of restating the universal evidence shape, then add local fields for their
+phase.
+
+Every completion claim must name:
+
+- Exact behavior changed or verified: end-user, developer, or operator.
+- Live evidence that proves it, not just a green aggregate gate.
+- Exact command, path, route, artifact, or rendered surface exercised.
+- Repo-fit check: follows local patterns and does not weaken gates.
+- Residual unverified paths, waiver, or follow-up.
+
+Skills may extend this core with phase-specific fields such as hardening
+survivors, design risk, persona outcome, or artifact location. They must not
+replace live evidence with a generic "tests passed" claim.
+
 ## Files
 
 - Shared `AGENTS.md`: universal operating rules only.
@@ -192,6 +210,9 @@ quality matters, it is probably wrong.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 
 ## Closeout
+
+This section is the single source for clean-tree closeout. Skills may add local
+phase preconditions, but they point here for the universal rule.
 
 - A run is not complete while
   `git status --short --untracked-files=all` shows paths.
