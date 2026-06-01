@@ -115,6 +115,14 @@
     {
       "source": "backlog.d/083-clean-copied-skill-reference-quality.md",
       "title": "Clean copied skill reference quality"
+    },
+    {
+      "source": "backlog.d/084-agent-readiness-sdlc-contract.md",
+      "title": "Agent-readiness SDLC contract and repo profile CRUD"
+    },
+    {
+      "source": "backlog.d/085-formal-spec-hardening-pipeline.md",
+      "title": "Formal spec-to-hardening pipeline"
     }
   ],
   "copy_source": "docs/copy/site.json",
