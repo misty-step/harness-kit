@@ -1,8 +1,33 @@
 # Bounded roster lane dispatch
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: S
+Shipped: 2026-06-01
+
+## Resolution
+
+Shipped on `master` before this archive pass. Harness Kit now has
+`scripts/dispatch-agent.py` as the CLI boundary and
+`dispatch_provider_lane()` in `scripts/lib/agent_roster.py` as the reusable
+helper. Dispatch loads configured roster commands, refuses unavailable/manual
+providers before command execution, appends the prompt as a separate argv
+element, writes transcript evidence under `.harness-kit/traces/provider-lanes`,
+uses `start_new_session=True`, and kills the process group after timeout with
+SIGTERM then SIGKILL.
+
+Verification on `deliver/072-bounded-roster-lane-dispatch`:
+
+- `python3 -m unittest ci.tests.test_agent_roster` — 23 tests OK, including the
+  unavailable-provider refusal and SIGTERM-ignoring process-group timeout case.
+- `python3 scripts/dispatch-agent.py --help` — CLI exposes provider, objective,
+  input, prompt-file, timeout, grace, transcript-dir, receipt, and roster args.
+- `git show HEAD:scripts/lib/agent_roster.py` confirmed
+  `dispatch_provider_lane`, `start_new_session=True`, SIGTERM, and SIGKILL.
+
+Closeout gate for this archive commit:
+`python3 scripts/check-agent-roster.py` and `dagger call check --source=.`
+both passed.
 
 ## Goal
 
@@ -45,14 +70,14 @@ that `probe-agent-roster.py` and `record-delegation.py` already use.
 
 ## Oracle
 
-- [ ] `python3 -m unittest ci.tests.test_agent_roster` includes a fake provider
+- [x] `python3 -m unittest ci.tests.test_agent_roster` includes a fake provider
       that ignores `SIGTERM`; the dispatch helper times out, kills the process
       group, writes a transcript, and records a failed receipt.
-- [ ] The same test suite covers unavailable providers refusing dispatch before
+- [x] The same test suite covers unavailable providers refusing dispatch before
       a provider command is run.
-- [ ] `python3 scripts/dispatch-agent.py --help` succeeds.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
-- [ ] `dagger call check --source=.` passes.
+- [x] `python3 scripts/dispatch-agent.py --help` succeeds.
+- [x] `python3 scripts/check-agent-roster.py` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Non-Goals
 

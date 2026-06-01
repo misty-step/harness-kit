@@ -81,10 +81,6 @@
       "title": "Observability coverage loop"
     },
     {
-      "source": "backlog.d/072-bounded-roster-lane-dispatch.md",
-      "title": "Bounded roster lane dispatch"
-    },
-    {
       "source": "backlog.d/073-mechanical-hardening-evidence-gates.md",
       "title": "Mechanical hardening evidence gates"
     },
