@@ -14,21 +14,19 @@ argument-hint: "[distill|calibrate|coach|prompt-debt|tune-repo|append|cycle] [co
 
 Structured reflection that improves both the harness and the operator.
 
-If a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), include `.harness-kit/traces/` delegation
-receipts in the evidence set when they are relevant. Reflection should convert
+When roster receipts exist, include `.harness-kit/traces/` delegation receipts
+in the evidence set when they are relevant. Reflection should convert
 provider-lane results and failure modes into backlog, harness, or coaching
 outputs without inventing hidden rankings.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/reflect` uses two or more roster
-members for substantive postmortem, coaching, or harness-tuning analysis.
-Use lanes to surface independent failure interpretations and improvement
-proposals. Give lanes scoped session context, receipts, changed files, and
-evidence questions; the lead owns synthesis, codification choices, and
-receipts. Direct lead-only reflection is limited to mechanical summary
-formatting, emergency unblocks, explicit user-forbidden delegation, or an
-explicit waiver when fewer than two roster members are available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes to surface independent failure interpretations and improvement proposals; the lead owns synthesis and codification choices.
 
 Every finding becomes one of three things:
 - a codified artifact

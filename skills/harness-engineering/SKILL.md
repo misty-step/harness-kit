@@ -52,18 +52,12 @@ synced locally.
 
 ## Delegation Floor
 
-If a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), dispatch two or more providers for
-substantive harness work and record receipts. Use lanes for doctrine critique,
-runtime compatibility, gate design, and regression risk. Give each lane scoped
-files and expected output; the lead owns final semantics, verification, and
-receipt evidence. Direct work is for mechanical commands, emergency unblocks,
-explicit user-forbidden delegation, or fewer than two available providers.
-Do not treat a missing repo-local roster as a waiver. Run the resolver-backed
-probe, which falls back to the system Harness Kit roster:
-`python3 $HARNESS_KIT_ROOT/scripts/probe-agent-roster.py`.
-Native in-thread subagents may supplement the investigation, but they do not
-satisfy the roster floor. Count only configured provider ids in receipts and
-final roster reports.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gate design, and regression risk; native in-thread subagents may supplement but do not satisfy the roster floor. Do not treat a missing repo-local roster as a waiver; use the resolver-backed probe.
 
 ## Quality Bar
 

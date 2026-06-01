@@ -57,14 +57,12 @@ not address review comments (→ `/deliver --polish-only`), does not ship.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), the lead agent uses two or more roster
-lanes for audit, failure diagnosis, and gate-strengthening judgment. The lead
-gives each lane scoped commands, failing output, and relevant config, then
-records the lane evidence in receipts before deciding. The lead may run exact
-validation commands and apply mechanical repairs directly after the lane
-decision is made. Direct lead-only CI work is limited to mechanical command
-execution, emergency unblocks, explicit user-forbidden delegation, or an
-explicit waiver when fewer than two roster members are available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes for audit, failure diagnosis, and gate-strengthening judgment; the lead may run exact validation commands and mechanical repairs after deciding from the evidence.
 
 ## Bounded Self-Heal
 

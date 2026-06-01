@@ -36,15 +36,12 @@ One command. Executive authority. No approval gates.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/yeet` uses two or more roster members
-for substantive worktree classification, commit-boundary design, or risky
-cleanup decisions. Use lanes for diff classification and risk review; give
-them scoped status, diff, and backlog context while withholding final commit
-intent until synthesis. The lead owns final staging, commit messages,
-verification, and receipts. Direct lead-only yeet work is limited to
-mechanical git commands, emergency unblocks, explicit user-forbidden
-delegation, or an explicit waiver when fewer than two roster members are
-available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes for diff classification and risk review; withhold final commit intent until synthesis, then the lead owns staging, messages, verification, and receipts.
 
 ## Modes
 

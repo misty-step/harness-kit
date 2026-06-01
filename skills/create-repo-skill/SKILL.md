@@ -44,19 +44,12 @@ skill authoring lane, not a persona runtime or scheduling engine.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system
-`~/.harness-kit/agents.yaml`), `/create-repo-skill` starts by probing the roster
-and dispatching two or more available providers. Use split lanes: one maps repo
-truth, one attacks the generated skill for generic wording, missing oracles, and
-workflow mismatch. Give each lane scoped files, expected output, and boundaries.
-The lead owns synthesis, writes, final verification, and receipts.
-Direct lead-only work is limited to mechanical edits, emergency state
-preservation, explicit user-forbidden delegation, or fewer than two available
-providers.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
 
-Native in-thread subagents may supplement the investigation, but they do not
-satisfy the roster floor. Count only configured provider ids in receipts and
-final roster reports.
+Local lane guidance: Use split lanes: one maps repo truth, one attacks the generated skill for generic wording, missing oracles, and workflow mismatch; native in-thread subagents may supplement but do not satisfy the roster floor.
 
 ## Output
 

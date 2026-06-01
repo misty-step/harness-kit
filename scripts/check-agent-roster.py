@@ -19,6 +19,7 @@ CORE_WORKFLOW_SKILLS = [
     "create-repo-skill",
     "deliver",
     "demo",
+    "design",
     "diagnose",
     "flywheel",
     "groom",
@@ -130,6 +131,16 @@ def has_delegation_floor_pointer(section: str) -> bool:
     )
 
 
+def has_local_lane_guidance(section: str) -> bool:
+    """Pointer-mode skill sections must preserve local phase guidance.
+
+    Backlog 081 intentionally removes generic delegation-floor boilerplate, not
+    the skill-specific sentence that tells operators what lanes to use.
+    """
+    match = re.search(r"(?im)^local lane guidance:\s*(.+)$", section)
+    return bool(match and match.group(1).strip())
+
+
 def delegation_contract_gaps(section: str) -> list:
     """Requirement labels missing from a full delegation-floor / roster section."""
     lowered = section.lower()
@@ -178,11 +189,18 @@ def validate_delegation_floor() -> None:
         if not section:
             missing.append(str(path))
             continue
+        if skill in {"shape", "research", "harness-engineering", "create-repo-skill"}:
+            lowered = text.lower()
+            if "native in-thread subagents" not in lowered or "do not" not in lowered:
+                ambiguous.append(str(path))
+                continue
         # A skill may EITHER restate the full floor OR point to the shared
         # single source (harnesses/shared/AGENTS.md ## Roster). Pointer mode
         # passes here; the canonical phrases are validated once against the
         # shared source in validate_shared_roster_doctrine().
         if has_delegation_floor_pointer(section):
+            if not has_local_lane_guidance(section):
+                weak.append(f"{path} (missing local lane guidance)")
             continue
         lowered_section = section.lower()
         missing_requirements = delegation_contract_gaps(section)
@@ -191,10 +209,6 @@ def validate_delegation_floor() -> None:
             continue
         if "explicit user waivers" in lowered_section:
             weak.append(str(path))
-        if skill in {"shape", "research", "harness-engineering", "create-repo-skill"}:
-            lowered = text.lower()
-            if "native in-thread subagents" not in lowered or "do not" not in lowered:
-                ambiguous.append(str(path))
 
     errors = []
     if missing:

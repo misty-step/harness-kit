@@ -27,15 +27,12 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/diagnose` starts by probing the
-roster and dispatching two or more available roster members for independent
-evidence or hypothesis lanes before selecting a fix. Use separate lanes for
-competing root causes, reproduction, config/service checks, or proposed fix
-validation. Give lanes scoped symptoms, logs, repro steps, suspected files,
-and evidence expectations. The lead agent owns the root-cause verdict, fix
-choice, proof, and receipts. Direct lead-only diagnosis is limited to
-mechanical command execution, emergency unblocks, explicit user-forbidden
-delegation, or fewer than two available roster members.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use independent evidence or hypothesis lanes for competing root causes, reproduction, config/service checks, and proposed fix validation.
 
 ## Routing
 

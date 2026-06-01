@@ -23,20 +23,12 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-If a provider roster is available (repo `.harness-kit/agents.yaml` or system
-`~/.harness-kit/agents.yaml`), `/research` starts by probing the roster and
-dispatching two or more available roster
-members for independent research lanes. Use lanes with distinct sources,
-methods, or model families; web search, Thinktank, and provider CLIs are
-evidence inputs, not substitutes for lead synthesis. Record meaningful
-external attempts with the repo receipt tool. Direct lead-only research is
-limited to mechanical lookup, emergency unblocks, explicit user-forbidden
-delegation, or an explicit waiver when fewer than two roster members are available.
-Do not check only the repo-local path. Run the resolver-backed probe, which
-falls back from repo roster to the system Harness Kit roster:
-`python3 $HARNESS_KIT_ROOT/scripts/probe-agent-roster.py`.
-Native in-thread subagents are useful for fresh context, but they are not
-external roster members. They do not count toward the two-provider floor.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes with distinct sources, methods, or model families; web search, Thinktank, and provider CLIs are evidence inputs, not substitutes for lead synthesis. Native in-thread subagents do not count toward the roster floor.
 
 ## Absorbed Skills
 

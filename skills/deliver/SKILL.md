@@ -27,17 +27,12 @@ decides whether to deploy. Humans merge.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/deliver` begins by probing the roster
-and requires every substantive phase to show two or more roster-member
-receipts or an explicit exception. `/deliver` remains a composer, not a
-provider scheduler: phase skills dispatch their own lanes, while `/deliver`
-checks that the floor was met before it calls the work merge-ready. Direct
-lead-only delivery is limited to mechanical command execution, emergency
-unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members. Give phase lanes the shaped packet, boundaries, and evidence
-requirements; receipts must show accepted, rejected, failed, or waived lanes.
-The lead owns phase sequencing, synthesis, final verification, and the
-merge-ready verdict.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Phase skills dispatch their own lanes; /deliver verifies roster-member receipts or explicit exceptions before calling work merge-ready.
 
 ## Closeout Contract
 

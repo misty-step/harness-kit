@@ -39,17 +39,12 @@ into the repo. One command from "green" to "shipped and learned from."
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/ship` does not normally dispatch
-providers; it verifies upstream roster receipts and includes them in
-`/reflect`. If final-mile work surfaces substantive judgment, route back to
-`/deliver --polish-only` or dispatch two or more roster members before
-proceeding. Use lanes
-for release-risk critique and closure-state review, give them the merge-ready
-evidence and backlog state, and record receipt evidence for accepted and
-rejected advice. Direct lead-only shipping is limited to mechanical git
-operations, emergency unblocks, explicit user-forbidden delegation, or an
-explicit waiver when fewer than two roster members are available. The lead owns
-the final ship/no-ship decision.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Normally verify upstream roster receipts; if final-mile work surfaces substantive judgment, route back to /deliver --polish-only or dispatch release-risk and closure-state review lanes.
 
 ## Prerequisites
 

@@ -1,7 +1,7 @@
 # Extract shared doctrine to a single source: kill the 19-skill copy-paste
 
 Priority: P1
-Status: ready
+Status: in-progress
 Estimate: M
 
 ## Goal
@@ -62,6 +62,21 @@ gate redesign + pointer pattern (transcript in `.harness-kit/traces`).
   Evidence` section; grok: point at deliver's block — decide at implementation.)
 - Verify each batch: `python3 scripts/check-agent-roster.py` + `dagger call
   check`. Design lanes: codex (`49190d45`) + grok-build (convergent).
+
+## Progress (2026-06-01)
+
+- **Step 2 DONE** (`deliver/081-delegation-floor-dry`): converted the live
+  root-skill delegation-floor boilerplate to the short
+  `Delegation floor applies...` pointer plus `Local lane guidance:` for 20
+  skills, including `design` after live grep showed it carried the old paragraph.
+- Tightened `scripts/check-agent-roster.py` so pointer-mode sections still
+  require non-empty local lane guidance and cannot bypass the native-subagent
+  boundary check for `shape`, `research`, `harness-engineering`, or
+  `create-repo-skill`.
+- **Step 3 still remaining**: Completion Gate and clean-tree/Closeout dedupe.
+  Fresh critic lanes (`cc23f2fd-c781-40cf-aa16-98ebc3ba650a`,
+  `9fae8c24-35c7-463d-a5e3-b5b8c8e59d4c`) both argued to split Step 3 until
+  a shared `## Completion Evidence` anchor is shaped and gated.
 
 ## Non-Goals
 

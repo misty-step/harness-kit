@@ -46,16 +46,12 @@ encode the invariants that aren't inferable from the leaf names.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/flywheel` verifies that each
-substantive lifecycle phase used two or more roster members or recorded a
-valid exception. It remains the outer-loop manager; leaf skills own dispatch.
-For outer-loop judgments, use lanes for cycle strategy and risk critique, give
-them only the cycle manifest, backlog packet, and relevant receipts, and keep
-final phase selection with the lead. Direct lead-only flywheel work is limited
-to mechanical command execution, emergency unblocks, explicit user-forbidden
-delegation, or an explicit waiver when fewer than two roster members are
-available. The lead records receipt evidence and verifies the resulting cycle
-state before advancing.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Leaf skills own dispatch; /flywheel verifies phase receipts and uses lanes only for cycle strategy, risk critique, and closure-state review.
 
 ## Gotchas
 

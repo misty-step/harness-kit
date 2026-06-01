@@ -71,15 +71,12 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/qa` starts by probing the roster and
-dispatching two or more available roster members for execution and
-adversarial verification before declaring pass/fail. Use one lane to drive
-the running surface and another to attack the evidence, edge cases, and
-product judgment that support the pass claim. The lead agent owns scope,
-severity, final verdict, and receipts.
-Direct lead-only QA is limited to mechanical command execution, emergency
-unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use one lane to drive the running surface and another to attack the evidence, edge cases, and product judgment behind the pass claim.
 
 ## Step 0: Identify the app's shape
 

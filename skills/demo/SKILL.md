@@ -54,15 +54,12 @@ You are the executive orchestrator.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/demo` uses two or more roster members
-for substantive artifact planning, capture critique, or external-facing
-release evidence. Use one lane for capture plan and another for cold quality
-review. Give each lane scoped audience, changed behavior, and artifact
-constraints; receipts record proposed evidence, rejected artifacts, and final
-proof. The lead owns audience fit, sufficiency, and receipts. Direct lead-only
-demo work is limited to mechanical capture commands, emergency unblocks,
-explicit user-forbidden delegation, or an explicit waiver when fewer than two
-roster members are available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use one lane for capture planning and another for cold quality review against the scoped audience, changed behavior, and artifact constraints.
 
 ## Shape detection (always step one)
 

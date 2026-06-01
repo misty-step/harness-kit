@@ -17,11 +17,12 @@ results, fix blockers, loop until clean.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/code-review` starts by probing the
-roster and dispatching two or more non-lead roster members for independent adversarial review lanes calibrated to what would embarrass us in production, not every nit.
-The internal philosophy bench and Thinktank are additive; they do not replace the roster floor.
-Give reviewers the diff, acceptance criteria, and risk lens, not the author's reasoning; the lead accepts, rejects, or downgrades findings as evidence.
-Reviewer output is not automatic veto. The lead verifies fixes, records receipts, and only works directly for mechanical command execution, emergency unblocks, explicit user-forbidden delegation, or an explicit waiver when fewer than two roster members are available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
 
 ## Marshal Protocol
 

@@ -32,15 +32,12 @@ You are the lead hardening engineer.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system
-`~/.harness-kit/agents.yaml`), `/hardening` starts by probing the roster and
-dispatching two or more available roster members. Use one lane to identify
-hardening candidates and one lane to challenge the chosen oracle, domains,
-mutants, and residual risk. Give lanes scoped code, acceptance criteria, and
-test-strength evidence. The lead owns synthesis, edits, verification, and
-receipts. Direct lead-only work is limited to mechanical command execution,
-emergency unblocks, explicit user-forbidden delegation, or fewer than two
-available roster members.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use one lane to identify hardening candidates and one lane to challenge the chosen oracle, domains, mutants, and residual risk.
 
 ## Routing
 

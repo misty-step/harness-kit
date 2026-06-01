@@ -39,16 +39,12 @@ gathering to focused subagents in parallel.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/groom` starts by probing the roster
-and dispatching two or more available roster members for investigation before
-the lead mutates backlog state or recommends priorities. Use lanes for
-backlog drift, premise challenge, technical hotspots, product opportunity,
-or external context. The lead agent keeps synthesis and prioritization; do
-not delegate final backlog judgment. Give each lane bounded files or questions,
-then record receipt evidence for accepted and rejected recommendations. Direct
-lead-only grooming is limited to mechanical ticket moves, emergency unblocks,
-explicit user-forbidden delegation, or an explicit waiver when fewer than two
-roster members are available.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use lanes for backlog drift, premise challenge, technical hotspots, product opportunity, or external context; the lead keeps final prioritization.
 
 ## The Always-On Loop
 

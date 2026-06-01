@@ -54,23 +54,25 @@ Accept: raw idea, backlog.d/ item, issue ID, or observation.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/shape` starts by probing the roster
-and dispatching two or more available roster members before converging on a
-problem frame or solution. Use one lane to map repo constraints and another
-for prior-art or premise challenge; add more lanes when product, technical,
-or customer-risk perspectives diverge. The lead agent owns synthesis,
-questions to the user, final context-packet wording, and receipts. Direct
-lead-only shaping is limited to mechanical packet formatting, emergency
-unblocks, explicit user-forbidden delegation, or fewer than two available
-roster members.
-Native in-thread subagents can add fresh-context signal, but they do not
-satisfy the roster floor. At least two real provider ids and two distinct
-model/provider classes must be dispatched or waived explicitly.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use one lane to map repo constraints and another for prior-art or premise challenge; native in-thread subagents may add signal but do not satisfy the roster floor.
 
 Spawn parallel sub-agents to gather context fast: one to map the relevant
 codebase area (files, patterns, constraints), another to search for prior art
 (how do other projects solve this? check codebase first, then /research).
 For non-trivial shapes, fill the bench instead of running a two-agent
+formality: include at least one repo investigator, one product/premise critic,
+one architecture critic, one implementation-risk reviewer, and one test/oracle
+reviewer when the available harness can support it. Use the lead model for
+synthesis; record meaningful external lanes as delegation receipts.
+Synthesize their findings before proceeding.
+
+If `exemplars.md` exists at project root, read it. Include relevant exemplar
+techniques in the context packet with specific files to study during build.
 ...</code></pre>
     </section>
     <section class="checklist">

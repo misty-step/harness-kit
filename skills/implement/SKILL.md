@@ -21,12 +21,12 @@ Spec in, green tests out. One packet, one feature branch, one concern.
 
 ## Delegation Floor
 
-When a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), `/implement` starts by probing the
-roster and dispatching two or more available roster members before code or
-tests are produced. Use one lane for the bounded builder attempt and another for adversarial validator/refactor scrutiny: attack the completion claim and name what would embarrass us if green tests missed it.
-Give lanes the context packet, oracle, boundaries, and relevant repo anchors, not hidden lead reasoning.
-The lead agent owns prompt framing, conflict resolution, final verification, and receipts; critic output is evidence, not veto.
-The lead should not write the implementation directly except for mechanical command execution, emergency unblocks, explicit user-forbidden delegation, or fewer than two available roster members.
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use one bounded builder lane and one adversarial validator/refactor lane; give them the context packet, oracle, boundaries, repo anchors, and what would embarrass us if green tests missed it.
 
 ## Contract
 
