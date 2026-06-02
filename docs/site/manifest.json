@@ -57,56 +57,16 @@
       "title": "Retire the global static-agent install (bootstrap allowlist + file deletion)"
     },
     {
-      "source": "backlog.d/062-antigravity-cli-migration.md",
-      "title": "Migrate Gemini support to Antigravity CLI and IDE"
-    },
-    {
       "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
       "title": "Repo-grounded acceptance contract for workflow skills"
-    },
-    {
-      "source": "backlog.d/066-prompt-debt-reflection-loop.md",
-      "title": "Prompt-debt reflection loop"
-    },
-    {
-      "source": "backlog.d/068-harden-shared-lifecycle-scripts.md",
-      "title": "Harden shared lifecycle scripts"
-    },
-    {
-      "source": "backlog.d/069-harden-research-skill-runtime.md",
-      "title": "Harden research skill runtime behavior"
-    },
-    {
-      "source": "backlog.d/070-observability-coverage-loop.md",
-      "title": "Observability coverage loop"
-    },
-    {
-      "source": "backlog.d/073-mechanical-hardening-evidence-gates.md",
-      "title": "Mechanical hardening evidence gates"
-    },
-    {
-      "source": "backlog.d/074-tighten-delegation-floor-linter.md",
-      "title": "Tighten delegation-floor lint from keyword scan to negative fixtures"
     },
     {
       "source": "backlog.d/075-skillify-mvp.md",
       "title": "Scaffold the /skillify MVP and core CRUD primitives"
     },
     {
-      "source": "backlog.d/076-frontmatter-schema-crystallize.md",
-      "title": "Crystallize frontmatter schema and trigger contracts"
-    },
-    {
       "source": "backlog.d/077-critique-skill.md",
       "title": "/critique: ad-hoc lens critic against a target"
-    },
-    {
-      "source": "backlog.d/081-delegation-floor-dry-extraction.md",
-      "title": "Extract shared doctrine to a single source: kill the 19-skill copy-paste"
-    },
-    {
-      "source": "backlog.d/083-clean-copied-skill-reference-quality.md",
-      "title": "Clean copied skill reference quality"
     },
     {
       "source": "backlog.d/084-agent-readiness-sdlc-contract.md",
