@@ -22,9 +22,9 @@ a narrated video. Same skill, different output.
 
 The failure mode this skill exists to prevent is the silent skip —
 shipping a change with no visible record of what moved, because the
-repo doesn't have `.evidence/` or a video pipeline. The repo not
-having those surfaces doesn't mean there's nothing to show. It means
-the demo path here is a different path.
+repo doesn't have a video pipeline or GitHub upload path. The canonical
+artifact surface is `.evidence/<branch>/<date>/`; if a repo cannot use it,
+the demo path must name its durable alternative.
 
 ## Completion Gate
 
@@ -158,11 +158,11 @@ inspects artifacts cold to prevent self-grading.
    artifacts (GIFs, cropped stills) are reproducible from source.
 3. **Critique.** Fresh subagent, no context from the implementer.
    Validates source, pairing, text delta, coverage, quality.
-4. **Publish.** Embed in the target surface. `gh release create
-   qa-evidence-pr-{N} --draft` + PR comment is one option among many;
-   PR description with inline images, release notes with an embedded
-   GIF, `git notes` for durable annotation, and Slack/email for
-   audience-facing posts are all equally valid. Pick the surface by
+4. **Publish.** Write artifacts to `.evidence/<branch>/<date>/` and commit
+   them with the branch. Embed or link that path in the target surface.
+   A draft GitHub release plus PR comment is an optional mirror when reviewers
+   need inline asset URLs; PR description path links, release notes, `git notes`,
+   and Slack/email for audience-facing posts are all valid. Pick the surface by
    audience, not by habit.
 
 ### FFmpeg quick reference
@@ -188,7 +188,8 @@ from shape; pick the surface from audience.
 |---|---|
 | PR description (markdown + inline images) | Reviewers; the default |
 | Release notes / changelog entry | Users reading between versions |
-| Draft GitHub release (`gh release create --draft`) | Large assets (videos, multi-GIF), persistent URLs for PR comments |
+| `.evidence/<branch>/<date>/` | Canonical offline storage; default for QA/demo artifacts |
+| Draft GitHub release (`gh release create --draft`) | Optional mirror for large assets or inline PR URLs |
 | Commit message body | Long-term record, especially for no-artifact outcomes |
 | `git notes` | Durable annotation without touching history |
 | Team Slack / internal post | Timely visual update; lossy over time |
@@ -203,7 +204,7 @@ When a repo vendors or specializes this skill, the local guidance should
   type — e.g., "Next.js app; defaults are screenshot (single change) or
   paired before/after GIF (interaction change)."
 - Pick the default surface — e.g., "PR description with inline images;
-  draft releases for anything >5MB."
+  draft releases only when PR comments need inline URLs."
 - Name the repo's actual capture tooling — Chrome MCP? Playwright
   video? `vhs` tapes checked into `demo/`? `asciinema` uploads? If none
   exist yet, name the lightest-weight option that fits the stack.
@@ -221,9 +222,10 @@ add concrete local demo defaults that earn the checked-in copy.
 
 ## Gotchas
 
-- **Every app has a demo path.** The absence of `.evidence/`,
-  Playwright video, Remotion, or `gh release` is a sign that the
-  path is different here, not that there is none.
+- **Every app has a demo path.** The absence of Playwright video,
+  Remotion, or `gh release` is a sign that the path is different here,
+  not that there is none. `.evidence/<branch>/<date>/` is the default
+  durable surface unless the repo declares another.
 - **"No demo needed" is a recorded outcome, not a skip.** For
   internal changes, the sentence-in-the-PR-description IS the demo.
   Write it; don't elide it.

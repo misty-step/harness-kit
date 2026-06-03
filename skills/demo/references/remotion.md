@@ -89,9 +89,9 @@ import { Composition } from 'remotion';
   height={1080}
   defaultProps={{
     steps: [
-      { image: '/tmp/qa-slug/01-dashboard.png', caption: 'Dashboard loads' },
-      { image: '/tmp/qa-slug/02-create.png', caption: 'Create new item' },
-      { image: '/tmp/qa-slug/03-success.png', caption: 'Success state' },
+      { image: `${process.env.EVIDENCE_DIR}/01-dashboard.png`, caption: 'Dashboard loads' },
+      { image: `${process.env.EVIDENCE_DIR}/02-create.png`, caption: 'Create new item' },
+      { image: `${process.env.EVIDENCE_DIR}/03-success.png`, caption: 'Success state' },
     ]
   }}
 />
@@ -208,9 +208,9 @@ bun run dev  # Start the recorder
 
 Typical workflow: `/qa` captures evidence → `/demo` composes with Remotion
 
-1. QA produces screenshots in `/tmp/qa-{slug}/`
+1. QA produces screenshots in `.evidence/<branch>/<date>/`
 2. Create a Remotion composition that sequences them
 3. Add title cards, captions, transitions
 4. Optionally add narration (see tts-narration.md)
 5. Render to MP4
-6. Upload via draft release or share directly
+6. Commit under `.evidence/`; optionally mirror via draft release for inline PR URLs

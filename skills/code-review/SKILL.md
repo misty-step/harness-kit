@@ -221,7 +221,10 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - The `sha` field MUST be `git rev-parse HEAD` at the time of review. If the branch
   gets new commits after review, the verdict is stale and `/deliver --polish-only` will re-trigger review.
 - Verdict refs live under `refs/verdicts/<branch>` and sync via `git push/fetch`.
-- Also write a copy to `.evidence/<branch>/<date>/verdict.json` for browsability.
+- Also write `.evidence/<branch>/<date>/review-synthesis.md` and
+  `.evidence/<branch>/<date>/verdict.json` for browsability. Use
+  `scripts/lib/evidence.sh` when present. These files are committed evidence;
+  provider transcripts can remain in the review state dir.
 - The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
 
 Run the snippet from the target project root. Skip this step if

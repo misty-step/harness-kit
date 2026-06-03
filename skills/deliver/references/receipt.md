@@ -32,9 +32,10 @@ The entire `.harness-kit/` tree is gitignored.
   ],
   "evidence": {
     "review_dir": "<state-dir>/review/",
+    "evidence_dir": ".evidence/<branch>/<date>/",
     "ci_dir": "<state-dir>/ci/",
-    "qa_dir": "/tmp/qa-<slug>/",
-    "demo_release": "https://github.com/org/repo/releases/tag/qa-evidence-..."
+    "qa_dir": ".evidence/<branch>/<date>/",
+    "demo_mirror": "https://github.com/org/repo/releases/tag/qa-evidence-..."
   },
   "remaining_work": ["code-review: 2 blocking findings in auth.py"],
   "recommended_next": "fix-and-resume | abandon | human-review",

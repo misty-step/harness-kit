@@ -1,7 +1,7 @@
 # Offline evidence and artifact storage in Git
 
 Priority: high
-Status: pending
+Status: done
 Estimate: M
 
 Blocks: 026, 027. Raised from medium → high during 2026-04-14 grooming —
@@ -91,14 +91,14 @@ grep-friendly, and works offline.
 
 ## Oracle
 
-- [ ] `/qa` writes captures to `.evidence/<branch>/<date>/` (not `/tmp`)
-- [ ] `/demo` writes artifacts to `.evidence/` without GitHub API calls
-- [ ] `.gitattributes` tracks binary evidence via LFS
-- [ ] `/code-review` writes `review-synthesis.md` + `verdict.json` to `.evidence/`
-- [ ] Merge commit includes `QA-Evidence:` trailer linking to evidence directory
-- [ ] Evidence is retrievable from a fresh clone (pointer files at minimum)
-- [ ] Works fully offline (no network calls during evidence capture/storage)
-- [ ] `/settle` git-native mode reads evidence from `.evidence/`
+- [x] `/qa` writes captures to `.evidence/<branch>/<date>/` (not `/tmp`)
+- [x] `/demo` writes artifacts to `.evidence/` without GitHub API calls
+- [x] `.gitattributes` tracks binary evidence via LFS
+- [x] `/code-review` writes `review-synthesis.md` + `verdict.json` to `.evidence/`
+- [x] Merge commit includes `QA-Evidence:` trailer linking to evidence directory
+- [x] Evidence is retrievable from a fresh clone (pointer files at minimum)
+- [x] Works fully offline (no network calls during evidence capture/storage)
+- [x] `/settle` git-native mode reads evidence from `.evidence/`
 
 ## Implementation Sequence
 
@@ -116,3 +116,39 @@ grep-friendly, and works offline.
 - Replacing `.groom/review-scores.ndjson` (that's a cross-branch aggregate)
 - Automatic LFS server setup (user's responsibility)
 - Removing GitHub release upload entirely (keep as optional for repos that use PRs)
+
+## What Was Built
+
+Delivered on `deliver/024-offline-evidence-storage`.
+
+- Added scoped `.gitattributes` LFS rules for `.evidence/**/*.png`,
+  `.evidence/**/*.gif`, `.evidence/**/*.webm`, and `.evidence/**/*.mp4`.
+- Added `scripts/lib/evidence.sh` for `.evidence/<branch>/<date>/` creation,
+  branch slugging, and `QA-Evidence:` trailer emission when evidence exists.
+- Added `scripts/check-offline-evidence-storage.py` and the Dagger
+  `check-offline-evidence-storage` lane so the contract cannot drift back to
+  `/tmp` or mandatory GitHub release storage.
+- Updated `/qa`, `/demo`, `/code-review`, `/deliver --polish-only`, `/settle`
+  redirect references, and `/ship` to treat `.evidence/<branch>/<date>/` as
+  canonical offline storage. Draft GitHub releases remain optional PR mirrors.
+- Regenerated the docs companion so the public gate count and demo skill copy
+  reflect the new contract.
+
+## Verification
+
+- Provider lanes:
+  - `claude`: `8bb59044-8d0e-424a-bc3f-b8afd633fe43`
+  - `grok-build`: `db70afd9-ee2e-4430-b593-a71b8ce46a93`
+- Acceptance artifact hash before closeout:
+  `ee4b8b2f90e595f39925fcda53b8f10abeb62fbe1ccb850d41995e3fed69136f`
+- `bash scripts/lib/test_evidence.sh`
+- `python3 scripts/check-offline-evidence-storage.py`
+- `python3 -m py_compile scripts/check-offline-evidence-storage.py ci/src/harness_kit_ci/main.py ci/tests/test_reference_quality.py`
+- `shellcheck --severity=error scripts/lib/evidence.sh scripts/lib/test_evidence.sh`
+- `python3 -m unittest ci.tests.test_reference_quality`
+- `python3 scripts/check-frontmatter.py`
+- `python3 scripts/check-agent-roster.py`
+- `python3 scripts/check-evidence-blocks.py skills`
+- `bash scripts/check-docs-site.sh`
+- `git diff --check`
+- `dagger call check --source=.` -> 17 passed, 0 failed

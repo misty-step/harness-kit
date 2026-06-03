@@ -22,8 +22,8 @@ class ReferenceQualityTests(unittest.TestCase):
     def test_tts_narration_uses_jq_for_script_json(self) -> None:
         content = self.read("skills/demo/references/tts-narration.md")
 
-        self.assertIn("jq -n --rawfile input /tmp/demo-slug/script.txt", content)
-        self.assertNotIn('"input": "\'"$(cat /tmp/demo-slug/script.txt)"\'"', content)
+        self.assertIn('jq -n --rawfile input "$EVIDENCE_DIR/script.txt"', content)
+        self.assertNotIn('"input": "\'"$(cat "$EVIDENCE_DIR/script.txt")"\'"', content)
 
     def test_reflect_grep_uses_end_of_options_before_pattern(self) -> None:
         content = self.read("skills/reflect/scripts/gather_evidence.sh")

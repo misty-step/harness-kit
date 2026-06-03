@@ -1,0 +1,6 @@
+# Canonical QA/demo evidence is git-native. Binary artifacts under .evidence
+# are LFS-tracked when LFS is configured; fresh clones still retain pointer files.
+.evidence/**/*.png filter=lfs diff=lfs merge=lfs -text
+.evidence/**/*.gif filter=lfs diff=lfs merge=lfs -text
+.evidence/**/*.webm filter=lfs diff=lfs merge=lfs -text
+.evidence/**/*.mp4 filter=lfs diff=lfs merge=lfs -text

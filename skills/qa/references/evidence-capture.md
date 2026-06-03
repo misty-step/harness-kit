@@ -6,10 +6,17 @@ terminal output.
 ## Directory Convention
 
 ```bash
-mkdir -p /tmp/qa-{slug}
-# All evidence for a QA session goes here
-# slug = feature name or PR number
+source scripts/lib/evidence.sh 2>/dev/null || true
+EVIDENCE_DIR="$(evidence_dir_create 2>/dev/null || printf '.evidence/manual/%s/\n' "$(date -u +%Y-%m-%d)")"
+mkdir -p "$EVIDENCE_DIR"
+# All evidence for a QA session goes here: .evidence/<branch>/<date>/
 ```
+
+The canonical storage surface is git-native and offline-capable:
+`.evidence/<branch>/<date>/`. Binary screenshots and recordings are tracked
+by `.gitattributes` via Git LFS when LFS is configured; without an LFS server,
+fresh clones still retain pointer files. Use temporary directories only outside
+a git repo or when the target repo has no evidence convention.
 
 ## Screenshots
 
@@ -26,10 +33,10 @@ single-frame capture.
 ### agent-browser
 ```bash
 # Standard screenshot
-agent-browser screenshot /tmp/qa-{slug}/page.png
+agent-browser screenshot "$EVIDENCE_DIR/page.png"
 
 # Annotated screenshot (labels on interactive elements)
-agent-browser screenshot --annotate /tmp/qa-{slug}/annotated.png
+agent-browser screenshot --annotate "$EVIDENCE_DIR/annotated.png"
 ```
 Annotated screenshots are the best format for bug reports — visible labels
 map directly to actionable element refs.
@@ -54,14 +61,14 @@ This is the fastest path to inline-renderable GIFs for PRs.
 ### agent-browser → ffmpeg
 ```bash
 # Record as WebM
-agent-browser record start /tmp/qa-{slug}/walkthrough.webm
+agent-browser record start "$EVIDENCE_DIR/walkthrough.webm"
 # ... interact with the app ...
 agent-browser record stop
 
 # Convert to GIF (GitHub renders GIFs inline, not WebM)
-ffmpeg -y -i /tmp/qa-{slug}/walkthrough.webm \
+ffmpeg -y -i "$EVIDENCE_DIR/walkthrough.webm" \
   -vf "fps=8,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer" \
-  -loop 0 /tmp/qa-{slug}/walkthrough.gif
+  -loop 0 "$EVIDENCE_DIR/walkthrough.gif"
 ```
 
 ### Playwright trace → screenshots
@@ -75,7 +82,7 @@ npx playwright show-trace trace.zip
 
 ### agent-browser
 ```bash
-agent-browser record start /tmp/qa-{slug}/session.webm
+agent-browser record start "$EVIDENCE_DIR/session.webm"
 # ... full QA session ...
 agent-browser record stop
 ```
@@ -90,7 +97,7 @@ Every session is automatically recorded. Access via:
 ### Playwright
 ```javascript
 const context = await browser.newContext({
-  recordVideo: { dir: '/tmp/qa-{slug}/' }
+  recordVideo: { dir: process.env.EVIDENCE_DIR }
 });
 // Video saved on context.close()
 await context.close();
@@ -101,25 +108,25 @@ await context.close();
 ### Script capture
 ```bash
 # Record terminal session
-script -q /tmp/qa-{slug}/terminal-session.txt \
+script -q "$EVIDENCE_DIR/terminal-session.txt" \
   your-cli command --args
 
 # Or with timing for playback
-script -t 2>/tmp/qa-{slug}/timing.txt /tmp/qa-{slug}/session.txt
+script -t 2>"$EVIDENCE_DIR/timing.txt" "$EVIDENCE_DIR/session.txt"
 ```
 
 ### Asciinema (richer terminal recording)
 ```bash
-asciinema rec /tmp/qa-{slug}/session.cast
+asciinema rec "$EVIDENCE_DIR/session.cast"
 # Convert to GIF:
 # pip install agg  (asciinema gif generator)
-agg /tmp/qa-{slug}/session.cast /tmp/qa-{slug}/terminal.gif
+agg "$EVIDENCE_DIR/session.cast" "$EVIDENCE_DIR/terminal.gif"
 ```
 
 ### Simple output capture
 ```bash
-your-cli command --args > /tmp/qa-{slug}/output.txt 2>&1
-echo "Exit code: $?" >> /tmp/qa-{slug}/output.txt
+your-cli command --args > "$EVIDENCE_DIR/output.txt" 2>&1
+echo "Exit code: $?" >> "$EVIDENCE_DIR/output.txt"
 ```
 
 ## API Evidence
@@ -127,18 +134,18 @@ echo "Exit code: $?" >> /tmp/qa-{slug}/output.txt
 ```bash
 # Capture response with headers and status
 curl -s -w "\n\nHTTP Status: %{http_code}\nTime: %{time_total}s\n" \
-  http://localhost:3000/api/endpoint | tee /tmp/qa-{slug}/api-response.json
+  http://localhost:3000/api/endpoint | tee "$EVIDENCE_DIR/api-response.json"
 
 # POST with body
 curl -s -X POST http://localhost:3000/api/endpoint \
   -H "Content-Type: application/json" \
-  -d '{"key": "value"}' | jq . > /tmp/qa-{slug}/api-post-response.json
+  -d '{"key": "value"}' | jq . > "$EVIDENCE_DIR/api-post-response.json"
 ```
 
 ## Evidence Naming Convention
 
 ```
-/tmp/qa-{slug}/
+.evidence/<branch>/<date>/
 ├── 01-dashboard-home.png           # Numbered for sequence
 ├── 02-create-form.png
 ├── 03-submit-success.png
@@ -155,5 +162,6 @@ names that indicate what the screenshot shows.
 
 ## Uploading Evidence
 
-Use `/demo upload` to attach evidence to PRs via draft GitHub releases.
-See the `/demo` skill for the full upload protocol.
+Commit `.evidence/<branch>/<date>/` on the feature branch. Use `/demo upload`
+only as an optional GitHub mirror when PR comments need inline image URLs.
+See the `/demo` skill for the full protocol.

@@ -96,10 +96,11 @@ Present the feature table and ask:
 
 Recommend based on project context:
 
-- **PR evidence:** Draft GitHub release + PR comment (default)
+- **PR evidence:** `.evidence/<branch>/<date>/` committed to the branch (default)
+- **PR inline visuals:** Optional draft GitHub release + PR comment mirror
 - **README/docs:** Committed GIF in `docs/` or repo root
 - **External:** S3, Cloudflare R2, or hosted service
-- **None:** `/tmp/demo-evidence/` only
+- **None:** No artifact; record the no-artifact demo sentence in the PR/changelog
 
 ## Generated Skill Template
 
@@ -151,7 +152,9 @@ Rules:
 
 ### Upload
 
-[Upload strategy from design phase]
+[Upload strategy from design phase. Default to committed
+`.evidence/<branch>/<date>/`; use hosted mirrors only when the audience needs
+inline URLs.]
 
 ## FFmpeg Quick Reference
 
@@ -169,7 +172,7 @@ ffmpeg -y -i input.webm \
 - GIFs must have >10 frames (not a slideshow) and be < 5MB
 - Self-grading is worthless — critic must inspect artifacts cold
 - WebM doesn't render in PR comments — convert to GIF
-- Never commit binary artifacts to the repo
+- Binary artifacts belong under `.evidence/` and are LFS-tracked when LFS is configured
 ```
 
 ### references/capture-plan.md Structure

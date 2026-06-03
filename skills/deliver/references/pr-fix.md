@@ -180,7 +180,9 @@ still be running:
 
 **Git-native mode:**
 1. Re-run `dagger call check` after all fixes
-2. No async bots to wait for — local CI is synchronous
+2. Read current branch evidence from `.evidence/<branch>/<date>/` when QA/demo
+   artifacts exist. Do not require GitHub release assets in local mode.
+3. No async bots to wait for — local CI is synchronous
 
 ### Merge-Readiness Gate
 
@@ -195,9 +197,11 @@ Verify: at least one approving review, all checks passing, no unresolved threads
 **Git-native mode:**
 ```bash
 source scripts/lib/verdicts.sh && verdict_validate <branch>
+source scripts/lib/evidence.sh && evidence_dir
 dagger call check
 ```
-Verify: verdict ref exists with SHA matching HEAD, Dagger CI green.
+Verify: verdict ref exists with SHA matching HEAD, Dagger CI green, and any
+QA/demo artifacts are under `.evidence/<branch>/<date>/`.
 If no verdict exists, run `/code-review` first to generate one.
 
 If any condition fails, address the gap or escalate before polishing.

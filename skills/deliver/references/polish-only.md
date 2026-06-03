@@ -29,6 +29,9 @@ not a "stage everything" — polish-only never commits random debris.
 - **Local mode** — no PR. Findings come from local `/ci` + `/code-review`.
 
 Mode changes only *where findings come from*, never *what the loop does*.
+Both modes read and write QA/demo/review artifacts under
+`.evidence/<branch>/<date>/`; GitHub release assets are optional PR mirrors,
+not the source of truth.
 
 ## PR mode: review ingestion before `/code-review`
 

@@ -1,50 +1,61 @@
 # Evidence Handling
 
-**Principle (2026-04-15 decision):** Evidence is out-of-band and NOT
-version-controlled. Per-phase skills own their own emission; `/deliver`
-never writes evidence itself, only records pointers in the receipt.
+**Principle (2026-06-02 decision):** Evidence is git-native by default.
+Per-phase skills own their own emission; `/deliver` never writes evidence
+itself, only records pointers in the receipt.
+
+## Canonical Surface
+
+Use `.evidence/<branch>/<date>/` for QA, demo, and review artifacts that
+should survive a fresh clone. Branch names are slugged by `scripts/lib/evidence.sh`
+when available.
+
+```bash
+source scripts/lib/evidence.sh
+EVIDENCE_DIR="$(evidence_dir_create)"
+```
+
+Binary evidence under `.evidence/` is scoped to Git LFS by `.gitattributes`.
+When no LFS server is available, fresh clones still retain pointer files at
+minimum. GitHub draft releases, PR comments, Slack posts, and similar surfaces
+are mirrors or audience packaging, not canonical storage.
 
 ## Per-Phase Emission
 
 | Phase | Emits | Where |
 |---|---|---|
-| `/code-review` | review synthesis, verdict, bench transcripts | `<state-dir>/review/` (gitignored) |
-| `/ci` | dagger logs, failing-check tails | `<state-dir>/ci/` (gitignored) |
-| `/qa` | screenshots, walkthroughs, findings | Its own scaffolded output dir (e.g. `/tmp/qa-<slug>/`); receipt records pointer |
-| `/demo` | GIFs, launch videos | GitHub draft release via `/demo upload` (already works) |
+| `/code-review` | review synthesis, verdict, bench transcripts | synthesis + verdict in `.evidence/<branch>/<date>/`; transcripts may stay under `<state-dir>/review/` |
+| `/ci` | dagger logs, failing-check tails | `<state-dir>/ci/` (gitignored), with durable summaries linked from `.evidence/` when needed |
+| `/qa` | screenshots, walkthroughs, findings | `.evidence/<branch>/<date>/` |
+| `/demo` | GIFs, launch videos, screenshots, paste artifacts | `.evidence/<branch>/<date>/`; optional GitHub draft release mirror |
 | `/refactor` | None durable | — |
 | `/implement` | None durable (test output transient) | — |
 
-## What Is NOT in Git
+## What Is in Git
 
-- No `.evidence/` directory
-- No LFS pointers for QA artifacts
-- No committed screenshots, videos, or test transcripts
+- `.evidence/<branch>/<date>/` directories that prove QA/demo/review outcomes.
+- LFS pointer files for binary evidence when LFS is configured.
+- Text summaries such as `qa-report.md`, `review-synthesis.md`, or command
+  transcripts that are safe to commit.
 
-Review transcripts and CI logs live under `.harness-kit/deliver/` which is
-gitignored wholesale. Demo artifacts live on GitHub releases.
+## What Stays Gitignored
 
-## Gitignore Convention
-
-`.harness-kit/` is gitignored repo-wide. `/deliver` state (`state.json`,
-`receipt.json`, `review/`, `ci/`) lands under
-`.harness-kit/deliver/<ulid>/`. Demo artifacts land on GitHub releases.
-
-Nothing `/deliver` or its phase skills emit should be tracked by git.
-If a phase emits something that should be permanent (commit-worthy
-docs, migrations, etc.), that emission belongs in the **diff** on the
-feature branch, not in `<state-dir>`.
+Review transcripts and CI logs can still live under `.harness-kit/deliver/`,
+which is gitignored wholesale. Large raw provider transcripts stay out of git
+unless rendered/redacted through `/agent-transcript` and explicitly chosen for
+publication.
 
 ## Outer-Loop Override
 
-When `/flywheel` invokes `/deliver`, it passes
-`--state-dir backlog.d/_cycles/<ulid>/evidence/deliver/`. The cycle's
-evidence directory is also gitignored at its top level; the outer loop
-owns its own retention policy.
+When `/flywheel` invokes `/deliver`, it may pass
+`--state-dir backlog.d/_cycles/<ulid>/evidence/deliver/` for machine receipts.
+That does not replace `.evidence/<branch>/<date>/` for branch-carried QA/demo
+artifacts.
 
 ## Composer's Role
 
-`/deliver` itself writes exactly two files: `state.json` and
-`receipt.json`. It does not write review transcripts, CI logs, screenshots,
-or any other evidence. If the phase skill did not emit it, the receipt
-does not reference it.
+`/deliver` itself writes exactly two files: `state.json` and `receipt.json`.
+It does not write review transcripts, CI logs, screenshots, or any other
+evidence. If a phase skill emits committed evidence, the receipt records the
+`.evidence/<branch>/<date>/` pointer. If the phase skill did not emit it, the
+receipt does not invent it.

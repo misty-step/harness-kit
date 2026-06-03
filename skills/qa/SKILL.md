@@ -126,13 +126,25 @@ pick one.
 
 Shaped by Step 0. Pick the matching sub-protocol.
 
+Set evidence root before capture:
+
+```bash
+source scripts/lib/evidence.sh 2>/dev/null || true
+EVIDENCE_DIR="$(evidence_dir_create 2>/dev/null || printf '.evidence/manual/%s/\n' "$(date -u +%Y-%m-%d)")"
+mkdir -p "$EVIDENCE_DIR"
+```
+
+Use `EVIDENCE_DIR` for screenshots, transcripts, request captures, and notes.
+Only fall back to a temporary directory when the target is not in a git repo
+and has no evidence helper.
+
 ### If the app is a browser web app
 
 1. Start the dev server (or hit a preview URL).
 2. Navigate to the affected routes.
 3. Verify in order: happy path, edge cases, console errors, network
    panel failures.
-4. Capture evidence to `/tmp/qa-{slug}/` — screenshots on anomaly,
+4. Capture evidence to `$EVIDENCE_DIR` — screenshots on anomaly,
    accessibility snapshot on ambiguity.
 5. Classify findings: P0 (blocks ship), P1 (fix before merge),
    P2 (log and move).
@@ -149,7 +161,7 @@ across tools, read `references/evidence-capture.md`.
 3. For each: check status code, response shape against the documented
    contract, and error-path behavior (bad auth, missing field,
    malformed body).
-4. Capture evidence to `/tmp/qa-{slug}/`: request/response pairs as
+4. Capture evidence to `$EVIDENCE_DIR`: request/response pairs as
    `.json` or `.http` transcripts, plus a short findings note.
 5. Classify P0/P1/P2.
 
@@ -161,7 +173,7 @@ across tools, read `references/evidence-capture.md`.
 3. Exercise malformed-input paths: missing required args, bad flag
    values, nonexistent files. Audit exit codes (should be non-zero)
    and error messages (should name the problem).
-4. Capture evidence to `/tmp/qa-{slug}/`: terminal transcripts
+4. Capture evidence to `$EVIDENCE_DIR`: terminal transcripts
    (`script -q` or tee'd stdout/stderr).
 5. Classify P0/P1/P2.
 
@@ -169,7 +181,7 @@ across tools, read `references/evidence-capture.md`.
 
 1. Build the distributable (`npm pack`, `cargo build --release`,
    `python -m build`, etc.).
-2. Install into a throwaway consumer project (`/tmp/qa-{slug}/consumer`).
+2. Install into a throwaway consumer project (`$EVIDENCE_DIR/consumer`).
 3. Import the public API; call the entry points the change touched.
 4. Check the type surface (TypeScript: `tsc --noEmit` in the consumer;
    Rust: consumer `cargo check`; Python: `mypy` against a stub).
@@ -186,7 +198,7 @@ across tools, read `references/evidence-capture.md`.
 3. Verify: success responses match the documented schema; error
    responses are structured (not thrown exceptions that kill the
    server); the server survives a malformed request.
-4. Capture evidence to `/tmp/qa-{slug}/`: tool-call transcripts
+4. Capture evidence to `$EVIDENCE_DIR`: tool-call transcripts
    (input JSON, output JSON, server logs).
 5. Classify P0/P1/P2.
 

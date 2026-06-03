@@ -1,10 +1,6 @@
 {
   "backlog": [
     {
-      "source": "backlog.d/024-offline-evidence-storage.md",
-      "title": "Offline evidence and artifact storage in Git"
-    },
-    {
       "source": "backlog.d/025-dagger-merge-gate.md",
       "title": "Dagger as merge gate \u2014 replace GitHub Actions CI"
     },
@@ -85,6 +81,7 @@
     "check-harness-install-paths",
     "check-index-drift",
     "check-no-claims",
+    "check-offline-evidence-storage",
     "check-portable-paths",
     "check-review-score-trends",
     "check-skill-evals",

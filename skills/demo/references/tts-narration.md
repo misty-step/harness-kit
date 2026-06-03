@@ -22,6 +22,8 @@ a clear best-fit.
 Simplest integration. Six voices, one endpoint.
 
 ```bash
+source scripts/lib/evidence.sh
+EVIDENCE_DIR="$(evidence_dir_create)"
 curl -s https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -30,7 +32,7 @@ curl -s https://api.openai.com/v1/audio/speech \
     "input": "Welcome to the feature walkthrough. Let me show you what we built.",
     "voice": "alloy"
   }' \
-  --output /tmp/demo-slug/narration.mp3
+  --output "$EVIDENCE_DIR/narration.mp3"
 ```
 
 ### Voices
@@ -46,6 +48,8 @@ curl -s https://api.openai.com/v1/audio/speech \
 Best quality. Voice cloning from 1 minute of audio. Music generation.
 
 ```bash
+source scripts/lib/evidence.sh
+EVIDENCE_DIR="$(evidence_dir_create)"
 curl -s https://api.elevenlabs.io/v1/text-to-speech/{voice_id} \
   -H "xi-api-key: $ELEVENLABS_API_KEY" \
   -H "Content-Type: application/json" \
@@ -57,7 +61,7 @@ curl -s https://api.elevenlabs.io/v1/text-to-speech/{voice_id} \
       "similarity_boost": 0.75
     }
   }' \
-  --output /tmp/demo-slug/narration.mp3
+  --output "$EVIDENCE_DIR/narration.mp3"
 ```
 
 ### Voice library
@@ -76,6 +80,8 @@ ElevenLabs offers music generation — useful for background tracks:
 Ultra-low latency. Best for real-time or interactive narration.
 
 ```bash
+source scripts/lib/evidence.sh
+EVIDENCE_DIR="$(evidence_dir_create)"
 curl -s https://api.cartesia.ai/tts/bytes \
   -H "X-API-Key: $CARTESIA_API_KEY" \
   -H "Cartesia-Version: 2024-06-10" \
@@ -86,7 +92,7 @@ curl -s https://api.cartesia.ai/tts/bytes \
     "voice": { "mode": "id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091" },
     "output_format": { "container": "mp3", "bit_rate": 128000 }
   }' \
-  --output /tmp/demo-slug/narration.mp3
+  --output "$EVIDENCE_DIR/narration.mp3"
 ```
 
 ## Narration Workflow
@@ -101,24 +107,26 @@ curl -s https://api.cartesia.ai/tts/bytes \
 
 ```bash
 # 1. Generate narration
+source scripts/lib/evidence.sh
+EVIDENCE_DIR="$(evidence_dir_create)"
 curl -s https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
-  -d "$(jq -n --rawfile input /tmp/demo-slug/script.txt \
+  -d "$(jq -n --rawfile input "$EVIDENCE_DIR/script.txt" \
     '{model: "tts-1-hd", input: $input, voice: "nova"}')" \
-  --output /tmp/demo-slug/narration.mp3
+  --output "$EVIDENCE_DIR/narration.mp3"
 
 # 2. Get audio duration (for Remotion timing)
 ffprobe -v error -show_entries format=duration \
   -of default=noprint_wrappers=1:nokey=1 \
-  /tmp/demo-slug/narration.mp3
+  "$EVIDENCE_DIR/narration.mp3"
 
 # 3. Compose in Remotion (set durationInFrames from audio duration)
 # 4. Or mux directly with ffmpeg:
-ffmpeg -y -i /tmp/demo-slug/walkthrough.mp4 \
-  -i /tmp/demo-slug/narration.mp3 \
+ffmpeg -y -i "$EVIDENCE_DIR/walkthrough.mp4" \
+  -i "$EVIDENCE_DIR/narration.mp3" \
   -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 \
-  -shortest /tmp/demo-slug/narrated-walkthrough.mp4
+  -shortest "$EVIDENCE_DIR/narrated-walkthrough.mp4"
 ```
 
 ## Auto-Captioning
@@ -128,18 +136,18 @@ ffmpeg -y -i /tmp/demo-slug/walkthrough.mp4 \
 ```bash
 curl -s https://api.openai.com/v1/audio/transcriptions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F file="@/tmp/demo-slug/narration.mp3" \
+  -F file=@"$EVIDENCE_DIR/narration.mp3" \
   -F model="whisper-1" \
   -F response_format="srt" \
-  > /tmp/demo-slug/captions.srt
+  > "$EVIDENCE_DIR/captions.srt"
 ```
 
 ### Burn captions into video
 
 ```bash
-ffmpeg -y -i /tmp/demo-slug/narrated-walkthrough.mp4 \
-  -vf "subtitles=/tmp/demo-slug/captions.srt:force_style='FontSize=24,PrimaryColour=&HFFFFFF&'" \
-  /tmp/demo-slug/final.mp4
+ffmpeg -y -i "$EVIDENCE_DIR/narrated-walkthrough.mp4" \
+  -vf "subtitles=$EVIDENCE_DIR/captions.srt:force_style='FontSize=24,PrimaryColour=&HFFFFFF&'" \
+  "$EVIDENCE_DIR/final.mp4"
 ```
 
 ### Remotion captions
@@ -152,10 +160,10 @@ as React components — more polished than burned-in SRT subtitles.
 ### From file
 ```bash
 # Mix narration + music (music at -20dB under narration)
-ffmpeg -y -i /tmp/demo-slug/narration.mp3 \
-  -i /tmp/demo-slug/music.mp3 \
+ffmpeg -y -i "$EVIDENCE_DIR/narration.mp3" \
+  -i "$EVIDENCE_DIR/music.mp3" \
   -filter_complex "[1:a]volume=0.1[music];[0:a][music]amix=inputs=2:duration=first" \
-  /tmp/demo-slug/mixed-audio.mp3
+  "$EVIDENCE_DIR/mixed-audio.mp3"
 ```
 
 ### Generated

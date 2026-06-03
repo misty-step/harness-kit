@@ -541,6 +541,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_offline_evidence_storage(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate the git-native offline evidence storage contract."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "scripts/check-offline-evidence-storage.py"])
+            .stdout()
+        )
+
+    @function
     async def check_docs_site(
         self,
         source: Annotated[
@@ -604,6 +620,11 @@ print('skills/: no claims primitives found.')
                 self.check_review_score_trends(source),
             )
             tg.start_soon(run_gate, "check-evidence-blocks", self.check_evidence_blocks(source))
+            tg.start_soon(
+                run_gate,
+                "check-offline-evidence-storage",
+                self.check_offline_evidence_storage(source),
+            )
             tg.start_soon(run_gate, "check-docs-site", self.check_docs_site(source))
 
         # Format results

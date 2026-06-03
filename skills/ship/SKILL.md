@@ -68,8 +68,8 @@ Assert at start; refuse with a clear reason on any miss.
   file, screenshot, Gherkin feature, transcript, or equivalent acceptance
   artifact, the evidence includes its `sha256` hash. If acceptance criteria,
   artifact contents, or assertion strength changed, the evidence includes an
-  explicit `Contract-change acknowledgment:` line. `/ship` carries this
-  evidence into the final report and `/reflect` packet.
+  explicit `Contract-change acknowledgment:` line. If `.evidence/<branch>/<date>/`
+  is non-empty, `/ship` carries it into the final commit as `QA-Evidence:`.
 
 ## Process
 
@@ -142,6 +142,16 @@ for id in $CLOSING_IDS; do
         --if-exists addIfDifferent \
         --trailer "Closes-backlog: $id")"
 done
+if [ -f scripts/lib/evidence.sh ]; then
+  source scripts/lib/evidence.sh
+  evidence="$(evidence_trailer "$(evidence_dir)" 2>/dev/null || true)"
+  if [ -n "$evidence" ]; then
+    msg="$(printf '%s' "$msg" \
+      | git interpret-trailers \
+          --if-exists addIfDifferent \
+          --trailer "$evidence")"
+  fi
+fi
 git commit -m "$msg"
 ```
 
@@ -158,7 +168,7 @@ explicitly:
 ```sh
 body="$(git log --format=%B master..HEAD \
         | git interpret-trailers --parse --no-divider \
-        | grep -E '^(Closes-backlog|Ships-backlog|Refs-backlog):' \
+        | grep -E '^(Closes-backlog|Ships-backlog|Refs-backlog|QA-Evidence):' \
         | sort -u)"
 gh pr merge --squash --body "$body"
 ```
@@ -190,7 +200,8 @@ git log -1 --format=%B | git interpret-trailers --parse --no-divider
 The output must contain `Closes-backlog: <id>` for every ID in the
 closing set. If any are missing, **stop and escalate** — the squash body
 construction dropped them and the fix must happen before `/groom` next
-sweeps.
+sweeps. If the shipping branch had a non-empty `.evidence/<branch>/<date>/`,
+the output must also contain `QA-Evidence: <path>`.
 
 ### 7. Invoke `/reflect cycle`
 
@@ -251,6 +262,8 @@ Emit a single block covering:
 
 - Merged SHA on master and PR number (if GitHub).
 - Closing IDs archived.
+- QA evidence trailer path, or "none" when the branch had no committed
+  `.evidence/<branch>/<date>/` artifacts.
 - Reference IDs noted.
 - Docs touched (path list) or "none required."
 - Reflect outputs grouped by category: backlog mutations applied, harness
