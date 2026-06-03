@@ -71,6 +71,7 @@ CI gates:
 - check-offline-evidence-storage
 - check-portable-paths
 - check-review-score-trends
+- check-shape-renderer
 - check-skill-evals
 - check-vendored-copies
 - lint-python

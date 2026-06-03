@@ -132,6 +132,13 @@ Gate: every dispatched subagent returned a structured report.
 
 - **Premise audit.** For each top-priority ticket, five-whys the stated
   goal. Symptom or root cause? If symptom, reframe.
+- **PRD ticket audit.** For each top shaped or ready ticket, apply
+  `/shape`'s `references/prd-ticket-quality.md`: user, problem, why now, UX
+  enabled, deliverable type, technical design, ADR decision, alternatives,
+  executable/report oracle, evidence artifacts, and residual risk must be
+  explicit before implementation. Flag `Status: ready` tickets that still use
+  unresolved target language such as "preferably", "confirm later", or "pick
+  during implementation".
 - **Cross-reference.** Findings that appeared from 2+ perspectives are
   highest signal.
 - **Theme extraction.** Group into 2-4 strategic themes. A theme shares a
@@ -156,6 +163,9 @@ One theme at a time. For each:
 - Rough effort (S / M / L / XL).
 - New ticket files, edits to existing tickets, or deletion candidates.
 - Every emission carries a one-line `**Why:**` justification tying back to a concrete perspective.
+- Any new or rewritten M+ ticket carries the PRD top blocks from
+  `/shape`'s `references/prd-ticket-quality.md`; otherwise emit it as raw
+  backlog idea, not `Status: ready`.
 
 User decides per theme: write / edit / delete / skip. Silence is not consent.
 

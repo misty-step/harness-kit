@@ -34,11 +34,7 @@
     },
     {
       "source": "backlog.d/092-html-first-docs-and-image-primitives.md",
-      "title": "HTML-first docs companion with sparse generated image primitives"
-    },
-    {
-      "source": "backlog.d/093-jj-first-agent-vcs.md",
-      "title": "jj-first agent VCS and portable execution contract"
+      "title": "Add one trustworthy workflow figure to the docs companion"
     },
     {
       "source": "backlog.d/094-agent-legible-source-of-truth-readiness.md",
@@ -75,6 +71,7 @@
     "check-offline-evidence-storage",
     "check-portable-paths",
     "check-review-score-trends",
+    "check-shape-renderer",
     "check-skill-evals",
     "check-vendored-copies",
     "lint-python",

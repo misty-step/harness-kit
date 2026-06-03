@@ -659,6 +659,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_shape_renderer(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate the /shape static HTML context-packet renderer."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "skills/shape/scripts/render_context_packet_doc.py", "--self-test"])
+            .stdout()
+        )
+
+    @function
     async def check_git_hooks(
         self,
         source: Annotated[
@@ -815,6 +831,7 @@ print('skills/: no claims primitives found.')
                 "check-review-score-trends",
                 self.check_review_score_trends(source),
             )
+            tg.start_soon(run_gate, "check-shape-renderer", self.check_shape_renderer(source))
             tg.start_soon(run_gate, "check-git-hooks", self.check_git_hooks(source))
             tg.start_soon(run_gate, "check-bench-map", self.check_bench_map(source))
             tg.start_soon(run_gate, "check-evidence-blocks", self.check_evidence_blocks(source))

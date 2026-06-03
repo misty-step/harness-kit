@@ -98,12 +98,29 @@ techniques in the context packet with specific files to study during build.
 ### Phase 4: Context Packet
 
 The output of shape. This is what `/deliver` and `/implement` consume.
+For M+ shaped tickets, read `references/prd-ticket-quality.md` and make the
+packet a compact PRD plus technical design. The deliverable type, user, UX
+enabled, technical architecture, ADR decision, alternatives, oracle, and
+residual risk must be visible before implementation details.
 
 ```markdown
 # Context Packet: <title>
 
+## PRD Summary
+- User: <operator, maintainer, reviewer, customer, or agent workflow>
+- Problem: <pain or opportunity>
+- Why now: <priority reason>
+- UX enabled: <what changes for the user>
+- Deliverable type: <working code | research report | docs artifact | harness primitive | cleanup | migration | decision memo>
+- Success signal: <first observable proof>
+
 ## Goal
 <1 sentence — what outcome, not mechanism>
+
+## Product Requirements
+- P0: <non-negotiable user outcome or constraint>
+- P1: <useful but bounded follow-on>
+- Non-goals: <scope that stays out>
 
 ## Non-Goals
 - <what NOT to do, even if it seems like a good idea>
@@ -135,6 +152,14 @@ Include at least 6 rows for M+ shapes.
 
 Explain the scoring in prose; numbers alone are not evidence.
 
+## Technical Design
+- Chosen architecture: <selected system shape>
+- Files/systems touched: <bounded surfaces>
+- Data/control flow: <how behavior moves through the system>
+- Build/check boundary: <what fails where>
+- ADR decision: required / not required, with reason and escalation trigger.
+- Design X vs Y: <main rejected alternatives and why>
+
 ## Agent Readiness
 - Profile source: `.harness-kit/agent-readiness.yaml` if present, otherwise `missing`.
 - Stack feedback strength: compiler/type/lint/test strictness for the chosen stack.
@@ -162,6 +187,12 @@ preference.
 - [ ] All existing auth tests pass
 - [ ] New endpoint returns 200 with valid token
 - [ ] Response time < 100ms p99
+
+## Deliverable
+- Output: <exact artifact or behavior left behind>
+- Acceptance oracle: <command, rendered artifact, report shape, or decision record>
+- Evidence artifacts: <receipts, screenshots, fixtures, hashes, traces, or links>
+- Residual risk: <what remains unproven>
 
 ## Observability Plan
 - Changed behavior to watch:
@@ -230,6 +261,32 @@ or mutation testing the default path for low-risk work.
 - <how it could fail, how to undo it>
 ```
 
+### Phase 5: Visual HTML Handoff
+
+For non-trivial shaped work that explicitly includes visual documentation,
+generated-image documentation, public docs, workflow-diagram, or reader-facing
+handoff requirements, render a static HTML handoff after the context packet:
+
+```sh
+python3 skills/shape/scripts/render_context_packet_doc.py <packet-or-backlog.md> \
+  --output .evidence/shape-<id>/context-packet.html
+```
+
+Use `/design` on the rendered artifact before closeout. Give `/design` the file
+path, audience, intent, source packet, and the PRD hierarchy to protect. The
+critique must cover hierarchy, typography, density, table/code fit, mobile
+layout, content fidelity, and residual visual risk. For other M+ shapes, this
+handoff is optional; do not rationalize every packet into visual docs.
+
+Open the generated HTML in a browser before closeout. Inspect desktop and
+mobile-width layout; verify long tables, code/path text, implementation steps,
+and the review gate are visible and non-overlapping. Record the exact
+file URL/path inspected and the evidence in the context packet's Acceptance
+Evidence or closeout. The HTML handoff is reviewer-facing documentation, not
+the source of truth; the Markdown packet/backlog item remains authoritative.
+If no browser is available, record an explicit waiver plus the strongest
+available static/render check; do not claim design verification.
+
 For CLI work, load `references/cli-design.md` and include its `## CLI Surface`
 block in the context packet.
 
@@ -241,6 +298,12 @@ If you can't write an oracle, the goal isn't clear enough. Go back to Phase 2.
 - **Alternatives-in-name-only:** Three "options" that are the same idea in three outfits is one option. Real divergence means structurally distinct approaches — typically one minimal-viable, one ideal, and one that inverts a load-bearing assumption. If you can't articulate how each would fail differently, go back. For M+ effort, the philosophy bench (ousterhout/carmack/grug) is persona diversity, not foundation diversity — also use `/research` and the roster floor for genuinely heterogeneous signal.
 - **Vague oracles:** "It should work" is not an oracle. "These 3 tests pass and this endpoint returns 200" is. See `references/executable-oracles.md`.
 - **Checkbox oracles:** Prose checklists drift. Write oracles as commands that return pass/fail, not prose that requires interpretation.
+- **Buried deliverable:** If a reader must reach the implementation sequence to
+  know whether the output is code, research, docs, or a decision, the packet is
+  not ready.
+- **Ready-but-vague PRD:** `Status: ready` cannot contain unresolved target
+  language like "preferably", "confirm later", or "pick during implementation"
+  for a load-bearing scope choice.
 - **Speccing after building:** A context packet written after implementation is documentation, not specification. Spec first.
 - **50 repo anchors:** If everything is an anchor, nothing is. Pick 3-10 files whose patterns MUST be followed.
 - **Skipping non-goals:** Agents drift toward scope expansion. Non-goals are load-bearing constraints. Write them.

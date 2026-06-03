@@ -1,14 +1,30 @@
 # jj-first agent VCS and portable execution contract
 
-Priority: P1
-Status: shaped
+Priority: P3
+Status: parked
 Estimate: L
 
 ## Goal
 
-Make Harness Kit operate jj-first for agent local work while preserving Git
-compatibility for remotes, evidence objects, hooks that still earn their keep,
-and existing Dagger gates.
+Capture the jj-first VCS research and keep a bounded future migration path
+available, while preserving Codex/Git-worktree as the default agent workspace
+model for Harness Kit.
+
+## Decision Update — 2026-06-03
+
+Park this ticket. Codex Desktop is the primary work surface and is opinionated
+around Git worktrees for new threads. That is a good fit for agent workflows:
+isolated directories, normal `.git` behavior, GitHub compatibility, existing
+hooks, and simple cleanup. Jujutsu remains interesting for human/operator local
+history and targeted experiments, but making it the default now would require
+topology detection, hook/shim work, dual-view closeout, and new verdict gates
+just to preserve behavior Git worktrees already give us.
+
+Do not ship jj-first doctrine, hooks, or skill rewrites until a later run proves
+that jj materially improves daily Codex work enough to justify the added
+surface area. The next useful jj slice, if reactivated, is read-only topology
+detection only; no mutation helpers, no Git shim, and no WorktreeCreate
+replacement as a first move.
 
 ## Non-Goals
 
@@ -29,8 +45,14 @@ and existing Dagger gates.
 - Cross-harness first: Codex, Claude, Pi, Antigravity, and human shell use must
   all see the same filesystem-level contracts.
 - Dagger remains the canonical gate: `dagger call check --source=.`.
-- Colocated jj is the default migration form: `.jj/` adds agent-safe local
-  history while `.git/` remains available for Git remotes and plumbing.
+- Colocated jj is the default migration form for normal checkouts: `.jj/` adds
+  agent-safe local history while `.git/` remains available for Git remotes and
+  plumbing.
+- Git-worktree checkouts need a separate path: jj does not support Git's
+  `git-worktree` feature as a colocated workspace. Existing Codex worktrees can
+  dogfood jj as non-colocated jj workspaces backed by the common Git directory,
+  but helpers must detect and report that topology instead of assuming
+  colocation.
 - Closeout must become dual-view before it becomes jj-only: Git cleanliness and
   jj cleanliness must agree at receipt boundaries.
 - Verdict, backlog, and evidence contracts must remain inspectable by local
@@ -144,9 +166,10 @@ skill/script routing, not a broad rewrite.
 
 | Option | Shape | Strength | Failure Mode | Verdict |
 |---|---|---|---|---|
-| Status quo Git-first | Keep Git CLI as the only supported workflow | Maximum compatibility; no migration risk | Agents keep losing time to staging/index/branch confusion and weaker undo | Reject as end-state |
-| Colocated jj operator path | Add jj-first local workflow while preserving `.git` plumbing and remotes | Captures jj safety with low blast radius | Dual-tool confusion unless routing/oracles are explicit | Choose |
-| VCS helper contract | Add small scripts for root/status/head/branch/commit identity with Git and jj backends | Deep interface; lets skills stop hardcoding VCS probes | Can become shallow wrapper soup if it mirrors every Git command | Choose as first implementation slice |
+| Codex Git-worktree default | Keep Codex/Git worktrees as the default agent workspace | Maximum compatibility with the actual primary work surface; simple cleanup; normal GitHub and hook behavior | Keeps Git staging/index footguns and weaker undo | Choose now |
+| Colocated jj operator path | Add jj-first local workflow while preserving `.git` plumbing and remotes | Captures jj safety with low blast radius in normal checkouts | Dual-tool confusion unless routing/oracles are explicit; unsupported inside Git worktrees | Defer |
+| Git-worktree-backed jj workspace | Add non-colocated jj metadata to an existing Git worktree with `jj git init --git-repo=<common .git>` | Lets Codex worktrees dogfood jj without moving the checkout | Not colocated; auto import/export assumptions differ and sibling worktrees can surprise operators | Research only |
+| VCS helper contract | Add small scripts for root/status/head/branch/commit identity with Git and jj backends | Deep interface; lets skills stop hardcoding VCS probes | Can become shallow wrapper soup if it mirrors every Git command | Only if reactivated |
 | jj-only rewrite | Remove Git workflow and make `.jj` the only VCS source | Clean conceptual story for jj enthusiasts | Breaks remotes, hooks, verdict refs, users, and many agent tools | Reject |
 | Git shim around jj workspaces | Put a `git` shim in front of tools that insist on worktrees | Helps Claude/Codex parallelism quickly | Hidden indirection can mask safety failures; tool-specific | Defer as optional integration |
 | Dagger-everything | Run all agent commands, bootstrap, skill execution, and gates through Dagger | Hermetic and portable | Heavy daemon/container dependency for simple reads and bootstrap | Reject |
@@ -168,10 +191,11 @@ skill/script routing, not a broad rewrite.
 | Nix/Flox/Devbox execution | 3 | 2 | 5 | 3 | 3 | 3 | 3 |
 | Worktree manager first | 3 | 3 | 4 | 4 | 4 | 3 | 3 |
 
-The selected shape is `colocated jj operator path` plus a bounded `VCS helper
-contract`. It scores best because it moves the repo toward the requested
-jj-first agent outcome while preserving the Git-compatible evidence layer that
-already makes Harness Kit portable.
+The current selected shape is **Codex Git-worktree default**. The parked future
+shape, if reactivated, is a bounded read-only `VCS helper contract` first. A
+full jj-first posture is not selected because it fights the primary Codex
+workspace model and risks turning Harness Kit simplification into VCS
+compatibility infrastructure.
 
 ## Agent Readiness
 
@@ -242,11 +266,13 @@ already makes Harness Kit portable.
 
 - [ ] A VCS contract document exists under `skills/harness-engineering/` or a
       new `references/` file and states the supported backends: Git-only,
-      colocated jj+Git, and unsupported jj-native-only.
+      colocated jj+Git, Git-worktree-backed non-colocated jj workspace, and
+      unsupported jj-native-only.
 - [ ] Read-only VCS helper(s) expose root, status, head SHA, branch/bookmark,
       and dirty state without changing repository state.
-- [ ] Fixture tests create temporary Git and colocated jj repos and prove helper
-      output is stable for clean, dirty, untracked, and branch/bookmark states.
+- [ ] Fixture tests create temporary Git, colocated jj, and Git-worktree-backed
+      non-colocated jj repos and prove helper output is stable for clean,
+      dirty, untracked, and branch/bookmark states.
 - [ ] Shared Closeout doctrine and affected skills route through the helper or
       explicitly document dual Git/jj commands.
 - [ ] `scripts/lib/verdicts.sh` either remains Git-plumbing-only by design with
@@ -263,8 +289,9 @@ already makes Harness Kit portable.
 
 ## Acceptance Evidence
 
-- Acceptance source: temporary Git and colocated jj repo fixtures plus Dagger
-  gate coverage for helper scripts and any skill prose lint.
+- Acceptance source: temporary Git, colocated jj, and Git-worktree-backed
+  non-colocated jj repo fixtures plus Dagger gate coverage for helper scripts
+  and any skill prose lint.
 - Evidence that proves it: helper self-test output, Dagger gate output, and
   explicit command transcripts showing Git and jj views agree or fail loudly.
 - Exact command/path/route exercised:
@@ -311,18 +338,14 @@ already makes Harness Kit portable.
 
 ## Implementation Sequence
 
-1. Add a narrow read-only VCS helper contract and tests for Git-only and
-   colocated jj repos.
-2. Add a Dagger gate or targeted script self-test for the helper without
-   changing mutation paths.
-3. Patch shared Closeout and the smallest set of skill references to route
-   status/root/head detection through the helper or through explicit jj/Git
-   dual commands.
-4. Add a verdict-staleness and hook-gap spike: prove whether
-   `scripts/lib/verdicts.sh` remains valid in colocated jj and whether verdict
-   enforcement must move from merge hook into Dagger.
-5. Only after the read-only and verdict slices are green, shape mutation
-   helpers for `/yeet`, `/ship`, and `scripts/heal-commit.sh`.
+1. Reactivate only if Git-worktree pain shows up repeatedly in daily Codex work
+   or jj proves a measurable recovery/review advantage.
+2. First reactivated slice must be read-only topology detection for Git-only,
+   colocated jj, native jj workspace, and Git-worktree-backed non-colocated jj.
+3. Do not add mutation helpers, Git shims, or WorktreeCreate replacements until
+   topology detection and dual-view closeout are proven.
+4. Before any jj-default posture, move verdict/merge safety into Dagger or a
+   push-time gate that cannot be skipped by jj workflows.
 
 ## Risk + Rollout
 

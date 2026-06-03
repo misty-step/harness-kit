@@ -85,6 +85,14 @@ lore
 - Preserve artifact output contracts: design claims should point at files,
   screenshots, renders, or summaries that can be inspected later.
 
+## Relationship to 092
+
+`092` may borrow this ticket's provenance and source-policy discipline for
+generated documentation images, but it should not wait for or absorb the full
+`/design` scaffold work. `DESIGN.md`, `design-contract.md`, and design evals
+remain owned here; docs companion image manifest/checker work remains owned by
+`092`.
+
 ## Alternatives Considered
 
 | Option | Shape | Strength | Failure Mode | Verdict |

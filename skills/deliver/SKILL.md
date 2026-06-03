@@ -140,6 +140,12 @@ let the outer loop own the final session-level shipping brief.
 
 ## Composition
 
+Before `/implement`, verify the ticket or context packet has a visible PRD
+surface: named user, problem/why now, UX enabled, deliverable type, chosen
+technical design, ADR decision, alternatives with verdicts, acceptance oracle,
+and evidence artifact plan. If the target is M+ and lacks these fields, route
+back to `/shape` instead of treating implementation choices as delivery work.
+
 ```
 /deliver [backlog-item|issue-id] [--resume <ulid>] [--state-dir <path>]
     │

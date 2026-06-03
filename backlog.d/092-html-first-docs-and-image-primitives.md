@@ -1,133 +1,241 @@
-# HTML-first docs companion with sparse generated image primitives
+# Add one trustworthy workflow figure to the docs companion
 
 Priority: P1
-Status: pending
+Status: ready
 Estimate: M
 
 ## Goal
 
-Explore whether Harness Kit should prefer generated static HTML as the
-reader-facing documentation artifact, while keeping source docs agent-readable
-and allowing sparse generated images only when they make a workflow, primitive,
-or acceptance contract easier to understand.
+Help a Harness Kit operator understand the ship workflow faster with one
+committed, checked, text-backed figure in the generated HTML docs.
 
-This is an exploration and implementation ticket, not an immediate shared
-doctrine change. The first slice should prove a bounded docs primitive before
-teaching agents to prefer it broadly.
+## PRD Summary
 
-## Context
+- User: the technical operator reading the "Ship a repo change with review and
+  gates" workflow before using or reviewing Harness Kit.
+- Problem: the workflow depends on delegation receipts, evidence, gates, and
+  clean-tree closeout. In prose alone, that path is easy to skim past and hard
+  to inspect quickly.
+- Why now: `087` is shaping broader design-contract discipline. This ticket can
+  prove the smaller docs-image primitive first.
+- UX enabled: the reader gets one visual map of the workflow, plus the same
+  source-of-truth text in HTML and `llms.txt`.
+- Deliverable type: working code plus generated docs artifact.
+- Success signal: docs build and checker self-test prove the image is declared,
+  copied, accessible, text-backed, size-bounded, and removable without any API
+  call in CI.
 
-Harness Kit already has a static HTML docs companion generated from repo
-sources. The interesting next step is not "HTML instead of Markdown" as an
-absolute rule; it is a disciplined source-to-HTML workflow where Markdown,
-JSON, or structured manifests remain useful source surfaces, and generated HTML
-becomes the polished reader-facing artifact.
+## Product Requirements
 
-Generated images may add value when used sparingly: diagrams of harness
-lifecycles, workflow state, acceptance evidence, or provider/delegation routing.
-They are also a high-slop risk if they become decoration, unstated marketing
-claims, binary churn, or inaccessible stand-ins for actual documentation.
+- P0: add exactly one figure to the existing "Ship a repo change with review
+  and gates" workflow page.
+- P0: keep text authoritative. The page must still explain the workflow without
+  the image.
+- P0: keep builds deterministic and offline. CI validates committed files; it
+  never calls an image-generation API.
+- P0: enforce alt text, a text-equivalent anchor, source policy, review note,
+  file path, and a 250 KiB default size cap.
+- P0: fail on missing files, undeclared images, unused declarations, bad paths,
+  missing alt/text/provenance, size overflow, stale output, and source/generated
+  byte drift.
+- P1: record enough provenance for a future operator to regenerate or delete the
+  figure without guessing.
+- Non-goals: no runtime generation, no new docs framework, no image across the
+  catalog, no `/design` scaffold, no HTML-as-canonical-source doctrine change.
+
+## Technical Design
+
+- Chosen architecture: add one `images` entry to `docs/copy/site.json`, store
+  one reviewed source asset under `docs/copy/images/`, copy it to
+  `docs/site/assets/images/`, and render a `<figure>` with a nearby
+  text-equivalent block.
+- Files/systems touched: `docs/copy/site.json`, `docs/copy/images/`,
+  `scripts/build-docs-site.py`, `scripts/check-docs-site.py`, and generated
+  `docs/site/**`.
+- Data/control flow: source JSON plus source image -> builder validation and
+  byte copy -> generated workflow HTML, `manifest.json`, and `llms.txt` ->
+  checker validation and stale-site comparison.
+- Build/check boundary: the builder validates shape and copies bytes; the
+  checker owns negative fixtures, undeclared/unused detection, metadata
+  completeness, byte equality, size/path budgets, and rollback proof.
+- ADR decision: not required for this slice because it extends the existing
+  static docs companion. Require an ADR if image governance expands across
+  many pages, HTML becomes source authority, runtime generation enters the
+  build, or `site.json` stops being the docs-copy source.
+- Design X vs Y: choose a `site.json` image entry over Markdown-only,
+  Mermaid-only, sibling manifest, runtime generation, and a full `087` merger.
+  It is the smallest interface that proves the primitive and stays easy to
+  delete.
+
+## Deliverable
+
+- Output: one manifest-declared source image, one generated workflow figure,
+  one text-equivalent section, and builder/checker support.
+- Acceptance oracle: `bash scripts/build-docs-site.sh`,
+  `bash scripts/check-docs-site.sh --self-test`,
+  `python3 scripts/check-agent-roster.py`, and
+  `dagger call check --source=.` pass.
+- Evidence artifacts: manifest row, source asset hash, generated page hash,
+  generated `manifest.json` and `llms.txt` hashes, negative checker fixtures,
+  and the browser-reviewed HTML PRD handoff.
+- Residual risk: the checker can prove contract coverage; a human still judges
+  whether the figure is visually truthful and worth keeping.
 
 ## Constraints / Invariants
 
-- Do not hand-edit generated `docs/site/**` output.
-- Keep docs static and deterministic at build/check time.
-- Do not add a new frontend framework, hosted docs product, CDN dependency, or
-  image-generation service runtime.
-- Images are never the canonical explanation of a primitive, workflow, gate, or
-  acceptance contract; the HTML text and agent-readable source must still stand
-  alone.
-- Generated images require purpose, provenance, alt text, deterministic
-  filenames, size/count budgets, and a clear regeneration note.
-- Generated images are committed static assets after human/operator review. CI
-  must check declared assets; it must not call an image-generation API or
-  regenerate images.
-- Image generation model/API names are time-sensitive. Implementation must
-  verify current official OpenAI image-generation docs before pinning model or
-  API details.
-- No decorative hero art, mood boards, or one-image-per-skill defaults.
-- Default budget: at most one generated image per generated docs page, at most
-  one generated image in the first implementation slice, and at most 250 KiB
-  per generated image unless the ticket explicitly raises the budget.
+- Do not hand-edit generated `docs/site/**`.
 - Do not weaken `scripts/check-docs-site.sh`,
   `python3 scripts/check-agent-roster.py`, or `dagger call check --source=.`
-  to make docs generation pass.
+- Do not persist a model/API name from memory. Verify current official OpenAI
+  image-generation docs before recording generation provenance.
+- Keep `087` as source-policy and provenance inspiration only. Do not import
+  its broader design-contract scaffolding here.
+- If a simple text layout explains the workflow better than the image, keep the
+  page text-only and close the ticket with that evidence.
+
+## Authority Order
+
+checker self-tests > generated-site parity > committed manifest/assets > docs
+copy source > current official API docs > memory
+
+## Repo Anchors
+
+- `docs/copy/site.json` - docs copy source and selected home for the first
+  image declaration.
+- `scripts/build-docs-site.py` - deterministic builder; validates, copies, and
+  renders the figure.
+- `scripts/check-docs-site.py` - docs oracle; owns negative tests and stale-site
+  comparison.
+- `docs/site/manifest.json` and `docs/site/llms.txt` - generated surfaces that
+  must remain useful without image inspection.
+- `backlog.d/087-open-design-design-contracts.md` - Open Design-inspired
+  provenance discipline, not an implementation dependency.
+
+## Alternatives Considered
+
+| Option | Why It Could Work | Why It Fails Here | Verdict |
+|---|---|---|---|
+| Text-only HTML | safest and simplest | does not test the image primitive | reject |
+| Mermaid | source-reviewable diagram | adds renderer drift instead of asset discipline | defer |
+| Sibling image manifest | clean separation | extra parser/check surface for one image | reject |
+| `site.json` image entry | one source, one checker path, easy rollback | can crowd `site.json` if overused | choose |
+| Runtime generation | fresh assets on demand | nondeterministic, credentialed, CI-hostile | reject |
+| Full `087` merger | stronger design system story | too broad for this docs slice | reject |
+
+## Tradeoff Matrix
+
+| Option | Fit | Size | Reversible | Testable | Burden |
+|---|---:|---:|---:|---:|---:|
+| Text-only HTML | 3 | 5 | 5 | 4 | 5 |
+| Mermaid | 3 | 4 | 4 | 3 | 4 |
+| Sibling manifest | 4 | 3 | 4 | 4 | 3 |
+| `site.json` image entry | 5 | 4 | 5 | 5 | 4 |
+| Runtime generation | 2 | 2 | 2 | 2 | 1 |
+| Full `087` merger | 3 | 1 | 2 | 3 | 2 |
+
+The selected design is intentionally modest. It tests one real workflow page,
+adds no runtime dependency, and can be removed by deleting one manifest entry
+and one source asset.
+
+## Agent Readiness
+
+- Profile source: missing; use existing Harness Kit script/checker patterns.
+- Stack feedback strength: strong. Python stdlib builder/checker, docs
+  self-test, Dagger gate, no network runtime.
+- Infrastructure path: local scripts plus committed static assets.
+- Mock policy impact: preserved. Test public checker behavior through fixture
+  mutations; do not mock builder internals.
 
 ## Oracle
 
-- [ ] A source manifest such as `docs/copy/site.json` or a small sibling docs
-      asset manifest can declare every generated image with: purpose, page
-      target, prompt, model/API version, generation timestamp, operator,
-      relevant generation parameters, provenance note, alt text, text-equivalent
-      explanation link, source policy, file path, max size, and regeneration
-      command/reference.
-- [ ] `scripts/build-docs-site.py` can render static HTML pages that include
-      declared image assets without requiring hand edits to generated output.
-- [ ] `scripts/check-docs-site.py` fails when a generated image is missing,
-      unused, lacks alt text, lacks provenance, exceeds the configured budget,
-      or appears in generated HTML without manifest coverage.
-- [ ] CI/check scripts never call an image-generation API. They validate the
-      committed asset and manifest only.
-- [ ] The first implementation slice names one specific target page and image
-      type before generation, preferably a delegation lifecycle or completion
-      evidence flow diagram where an image clarifies a real repo mechanic.
-- [ ] The docs companion still emits agent-readable text surfaces, including
-      `llms.txt` or equivalent, so image-backed pages remain understandable to
-      humans and agents without image inspection.
-- [ ] Existing docs-site checks still cover stale generated output, primitive
-      coverage, workflow pages, icon coverage, private-text bans, and source
-      links.
-- [ ] The ticket includes a no-image path for pages where text, tables, or
-      simple HTML structure are clearer than generated imagery.
-- [ ] Official OpenAI documentation is checked during implementation before any
-      model/API name or prompt template is persisted.
-- [ ] A rollback path is documented and tested: removing the image manifest row
-      and asset, rebuilding docs, and rerunning the docs check returns the page
-      to a text-only form.
-- [ ] Negative checker tests prove that missing image files, missing alt text,
-      missing provenance, and over-budget assets fail.
+- [ ] `docs/copy/site.json` declares the single image with page target, purpose,
+      source asset path, alt text, text-equivalent anchor, source policy, review
+      note, max size, and regeneration reference.
+- [ ] `scripts/build-docs-site.py` copies the committed source asset byte for
+      byte and renders the figure plus text-equivalent block.
+- [ ] `scripts/check-docs-site.py --self-test` fails for missing source files,
+      undeclared `<img>` tags, unused declarations, empty alt text, missing
+      text-equivalent anchors, missing source policy/review note, over-budget
+      assets, invalid asset paths, stale output, and byte drift.
+- [ ] Generated `docs/site/manifest.json` and `docs/site/llms.txt` still make
+      the workflow understandable without the image.
+- [ ] Removing the image entry and asset, rebuilding, and rerunning the docs
+      check returns the page to a valid text-only form.
 - [ ] `bash scripts/build-docs-site.sh`,
       `bash scripts/check-docs-site.sh --self-test`,
       `python3 scripts/check-agent-roster.py`, and
       `dagger call check --source=.` pass.
 
+## Acceptance Evidence
+
+- Acceptance source: `docs/copy/site.json`, the committed source image,
+  generated workflow HTML, `docs/site/manifest.json`, `docs/site/llms.txt`, and
+  docs-site checker self-tests.
+- Evidence that proves it: negative checker mutations, stale-site rebuild
+  comparison, source/generated hash equality, and Dagger's `check-docs-site`
+  lane.
+- Artifact hashes: implementation must record the final manifest row, source
+  asset, generated page, generated manifest, and generated `llms.txt` hashes.
+- Contract-change acknowledgment: this expands docs-site acceptance coverage; it
+  does not weaken any existing docs check.
+
+## Formal Spec
+
+- Formal Spec Required: yes.
+- Trigger: user-facing generated docs behavior plus acceptance that is best
+  proven through manifest/HTML fixtures and negative mutations.
+- Acceptance oracle: `bash scripts/check-docs-site.sh --self-test`.
+- Waiver path: the operator may reject the image itself. Missing checker
+  coverage, missing text-equivalent content, and CI/API calls are not waivable.
+
 ## Implementation Sequence
 
-1. Audit the current docs companion source/generator/checker surfaces and
-   decide whether image declarations belong in `docs/copy/site.json` or a
-   sibling manifest.
-2. Add the smallest manifest and generator support for one documentation image
-   class, preferably a workflow or evidence-lifecycle diagram.
-3. Add checker coverage for missing/unused/unattributed/no-alt/over-budget
-   image assets and for generated HTML that references undeclared images.
-4. Verify the current official OpenAI image-generation API/model surface before
-   writing any persisted generation recipe.
-5. Generate or stage at most one useful image asset for the first slice, with a
-   text-equivalent explanation in the page body.
-6. Add the rollback note and negative checker tests.
-7. Run the docs checks, roster check, and full Harness Kit gate.
+1. Confirm the workflow page and draw the smallest useful delegation/evidence
+   flow figure.
+2. Add the `site.json` image entry and committed source asset.
+3. Teach the builder to validate, copy, render the figure, and render the
+   text-equivalent block.
+4. Teach the checker the image contract and negative fixtures.
+5. Verify current official OpenAI image-generation docs before recording
+   provenance.
+6. Run the build, docs self-test, roster check, and Dagger gate.
+
+## Observability Plan
+
+- Changed behavior to watch: generated docs include one declared, committed
+  figure without losing text authority or deterministic builds.
+- Evidence surface: workflow HTML, `docs/site/manifest.json`, `docs/site/llms.txt`,
+  and `check-docs-site` failure messages.
+- Runtime telemetry: none. This is static documentation.
+
+## Risk + Rollout
+
+- Image becomes false authority: require text-equivalent content and human
+  review before commit.
+- Binary churn: cap at one image and 250 KiB.
+- Accessibility regression: enforce alt text and local text equivalent.
+- API drift: record current API source only as provenance; never make CI depend
+  on model availability.
+- Rollback: delete the image entry and source asset, rebuild docs, rerun the
+  checker.
 
 ## Delegation Evidence
 
-- `codex` GPT-5.5 low investigator lane:
-  `019e8e5c-be4d-7570-ae5a-c0ead6b33cbf`; receipt
-  `4a147b32-5636-4cdd-ab60-19f59233d673`. Accepted recommendation: create
-  this ticket, keep doctrine unchanged for now, make HTML the reader-facing
-  artifact while preserving deterministic source/generator/check surfaces.
-- `codex` GPT-5.5 low adversarial critic lane:
-  `019e8e5c-be51-7920-b3f3-4f9974e9b72a`; receipt
-  `a8ff243f-54f1-4537-9129-7fdf73290f1b`. Accepted risks: image generation can
-  create slop, binary churn, accessibility gaps, and stale generated docs
-  unless the manifest/checker enforces provenance, alt text, count/size
-  budgets, and text-equivalent explanations.
-- `claude` low read-only critic lane; receipt
-  `d62d6dbe-52e7-4c85-8da9-38cb0dd0db4b`. Accepted revisions: make the image
-  budget numeric, define provenance fields, commit generated images instead of
-  regenerating in CI, name a first-slice target page/image type, and require a
-  rollback path plus negative checker tests.
+- `codex`, receipt `66de956b-fa78-4e13-b508-1705109a64ba`, product clarity
+  critic. Accepted: make the first screen about one decision, merge repeated
+  goal/decision/acceptance prose, and keep the hard constraints.
+- `agy`, receipt `eb324d00-3dbb-4d8d-a4e5-f5acb961cc13`, Carmack/Ousterhout
+  architecture critic. Accepted: reduce schema theater and keep the module
+  boundary small. Rejected: removing provenance entirely, because source policy
+  and review notes are the guardrail against generated-image slop.
+- `pi`, receipt `c1552361-3c83-4e89-b54b-137c3be823b4`, design critic attempt.
+  Rejected as evidence: provider returned an empty transcript.
+- Earlier shaping receipts preserved the core constraints: one first-slice
+  image, `site.json` as the source, committed bytes only, no CI/API calls,
+  text-equivalent content, negative checker fixtures, and rollback proof.
 
 ## Residual Risk
 
-The first implementation will need current official OpenAI docs verification
-because "latest image generation model" is intentionally time-sensitive. This
-ticket should not pin a model name from memory.
+The implementation still needs current official OpenAI docs verification before
+recording generation provenance. The ticket intentionally does not pin a model
+name from memory.
