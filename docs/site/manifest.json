@@ -7,10 +7,6 @@
     {
       "source": "backlog.d/049-bounded-payload-discipline-reference.md",
       "title": "Bounded-payload discipline reference (shared skill note)"
-    },
-    {
-      "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
-      "title": "Repo-grounded acceptance contract for workflow skills"
     }
   ],
   "copy_source": "docs/copy/site.json",
