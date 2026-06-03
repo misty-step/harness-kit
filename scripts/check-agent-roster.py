@@ -6,12 +6,13 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
+import json
 from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "lib"))
 
-from agent_roster import load_roster, read_receipts, validate_roster  # noqa: E402
+from agent_roster import SECRET_RE, load_roster, read_receipts, validate_roster  # noqa: E402
 
 CORE_WORKFLOW_SKILLS = [
     "ci",
@@ -143,6 +144,23 @@ RETIRED_PROVIDER_REFERENCE_PATHS = [
 ]
 RETIRED_PROVIDER_PATTERN = r"\bopen[- ]?code\b|\bopencode\b"
 OPEN_MODEL_ROSTER_PATH = Path("skills/harness-engineering/references/open-model-roster.md")
+WORK_RECORD_FIELDS = {
+    "schema_version",
+    "record_type",
+    "trace_id",
+    "created_at",
+    "backlog_ref",
+    "spec_ref",
+    "branch",
+    "commits",
+    "reviewer_verdict_refs",
+    "qa_refs",
+    "demo_refs",
+    "transcript_refs",
+    "shipped_ref",
+    "waiver_reason",
+    "metadata",
+}
 
 
 def markdown_section(text: str, heading: str) -> str:
@@ -480,9 +498,65 @@ def validate_open_model_roster_review_due() -> None:
         )
 
 
+def validate_no_secret_like_values(value: object, *, path: str) -> None:
+    if isinstance(value, dict):
+        for key, child in value.items():
+            validate_no_secret_like_values(key, path=f"{path}.{key}")
+            validate_no_secret_like_values(child, path=f"{path}.{key}")
+        return
+    if isinstance(value, list):
+        for index, child in enumerate(value):
+            validate_no_secret_like_values(child, path=f"{path}[{index}]")
+        return
+    if isinstance(value, str) and SECRET_RE.search(value):
+        raise SystemExit(f"secret-like value in work-record fixture at {path}")
+
+
+def validate_work_records(path: Path) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise SystemExit(f"{path}:{lineno}: invalid JSON: {error}") from error
+        if not isinstance(record, dict):
+            raise SystemExit(f"{path}:{lineno}: work record must be a JSON object")
+        missing = WORK_RECORD_FIELDS - set(record)
+        extra = set(record) - WORK_RECORD_FIELDS
+        if missing:
+            raise SystemExit(f"{path}:{lineno}: missing work-record fields: {sorted(missing)}")
+        if extra:
+            raise SystemExit(f"{path}:{lineno}: unknown work-record fields: {sorted(extra)}")
+        if record["schema_version"] != 1:
+            raise SystemExit(f"{path}:{lineno}: schema_version must be 1")
+        if record["record_type"] != "agent-session-trace":
+            raise SystemExit(f"{path}:{lineno}: record_type must be agent-session-trace")
+        if not str(record["trace_id"]).startswith("trace-"):
+            raise SystemExit(f"{path}:{lineno}: trace_id must start with trace-")
+        if not record["transcript_refs"] and not record["waiver_reason"]:
+            raise SystemExit(f"{path}:{lineno}: transcript_refs or waiver_reason required")
+        for list_field in (
+            "commits",
+            "reviewer_verdict_refs",
+            "qa_refs",
+            "demo_refs",
+            "transcript_refs",
+        ):
+            if not isinstance(record[list_field], list):
+                raise SystemExit(f"{path}:{lineno}: {list_field} must be a list")
+        if not isinstance(record["metadata"], dict):
+            raise SystemExit(f"{path}:{lineno}: metadata must be an object")
+        validate_no_secret_like_values(record, path=f"{path}:{lineno}")
+        records.append(record)
+    return records
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
+    work_record_fixture_path = Path(".harness-kit/examples/work-record.jsonl")
     gitignore_path = Path(".gitignore")
     summary_script = Path("scripts/summarize-delegations.py")
 
@@ -498,8 +572,11 @@ def main() -> int:
     validate_no_retired_provider_references()
     validate_open_model_roster_review_due()
     receipts = read_receipts(fixture_path)
+    work_records = validate_work_records(work_record_fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")
+    if not work_records:
+        raise SystemExit(f"{work_record_fixture_path}: must contain at least one work record fixture")
     if not summary_script.exists():
         raise SystemExit(f"{summary_script}: missing roster report helper")
     completed = subprocess.run(
@@ -516,7 +593,12 @@ def main() -> int:
 
     gitignore = gitignore_path.read_text()
     if ".harness-kit/traces/*.jsonl" not in gitignore:
-        raise SystemExit(".gitignore must ignore runtime delegation JSONL traces")
+        raise SystemExit(".gitignore must ignore runtime JSONL traces")
+    trace_skill = Path("skills/trace/SKILL.md")
+    trace_script = Path("skills/trace/scripts/trace_record.py")
+    for path in (trace_skill, trace_script):
+        if ".harness-kit/traces/work-records.jsonl" not in path.read_text():
+            raise SystemExit(f"{path}: must name the work-record JSONL store")
 
     forbidden_dirs = [
         ".harness-kit/auth",
@@ -530,6 +612,7 @@ def main() -> int:
 
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
+    print(f"{work_record_fixture_path}: {len(work_records)} work record fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
     print(
         f"skills/: {len(COMPLETION_EVIDENCE_CORE_SKILLS)} "

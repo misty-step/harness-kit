@@ -9,10 +9,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/056-agent-session-trace-lifecycle.md",
-      "title": "Agent session trace lifecycle"
-    },
-    {
       "source": "backlog.d/058-work-ledger-mission-control.md",
       "title": "Work ledger mission-control view"
     },
@@ -63,7 +59,8 @@
     "lint-shell",
     "lint-yaml",
     "test-bun",
-    "test-harness-kit-config-loader"
+    "test-harness-kit-config-loader",
+    "test-trace-record"
   ],
   "generated_by": "scripts/build-docs-site.py",
   "icons": [
@@ -423,6 +420,16 @@
       "page": "reference/skills/ship.html",
       "role": "Ship",
       "source": "skills/ship/SKILL.md"
+    },
+    {
+      "description": "Capture agent-session work records as local JSONL audit evidence. Links a backlog/spec, branch, commits, review verdicts, QA/demo evidence, transcript refs, and shipped ref without storing raw private transcripts. Use when: \"trace this work\", \"write work record\", \"agent session trace\", \"journal this delivery\", \"link transcript evidence\". Trigger: /trace, /journal.",
+      "icon": "catalog",
+      "id": "skill:trace",
+      "kind": "skill",
+      "name": "trace",
+      "page": "reference/skills/trace.html",
+      "role": "Support",
+      "source": "skills/trace/SKILL.md"
     },
     {
       "description": "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers should read the diff. Use when: \"yeet\", \"yeet this\", \"commit and push\", \"ship local changes\", \"tidy and commit\", \"wrap this up and push\", \"get this off my machine\". Trigger: /yeet, /ship-local (alias).",

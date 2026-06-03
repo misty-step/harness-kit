@@ -1,8 +1,21 @@
 # Agent session trace lifecycle
 
 Priority: P1
-Status: pending
+Status: done
 Estimate: M
+
+## What Was Built
+
+- Added `/trace` as a first-party work-record primitive for agent-session
+  lifecycle evidence.
+- Added a self-contained JSONL appender at
+  `skills/trace/scripts/trace_record.py` with transcript-or-waiver enforcement,
+  obvious-secret rejection, and a focused self-test.
+- Added `.harness-kit/examples/work-record.jsonl` plus roster validation for
+  the trace work-record schema and runtime store convention.
+- Extended `/ship` so final-mile shipping records a trace handoff after the
+  merged SHA exists, or refuses without trace inputs or an explicit waiver.
+- Added a Dagger lane for the trace helper self-test.
 
 ## Goal
 

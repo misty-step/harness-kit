@@ -72,6 +72,11 @@ Assert at start; refuse with a clear reason on any miss.
   artifact contents, or assertion strength changed, the evidence includes an
   explicit `Contract-change acknowledgment:` line. If `.evidence/<branch>/<date>/`
   is non-empty, `/ship` carries it into the final commit as `QA-Evidence:`.
+- Trace handoff inputs exist or a waiver is explicit: transcript refs, review
+  receipt refs, QA/demo refs, or another durable trace source are available for
+  `/trace` after merge. If no transcript or trace artifact is available, the
+  operator provides a `Trace-waiver: <reason>` line. Raw session logs do not
+  satisfy this prerequisite.
 
 ## Process
 
@@ -207,7 +212,29 @@ construction dropped them and the fix must happen before `/groom` next
 sweeps. If the shipping branch had a non-empty `.evidence/<branch>/<date>/`,
 the output must also contain `QA-Evidence: <path>`.
 
-### 7. Invoke `/reflect cycle`
+### 7. Record trace handoff
+
+After the merge SHA is known, write or link the final work record. Preferred
+local form:
+
+```sh
+python3 skills/trace/scripts/trace_record.py append \
+  --backlog "<primary-id>" \
+  --branch "<pre-merge-branch>" \
+  --commit "<branch-head-before-merge>" \
+  --reviewer-verdict-ref "<receipt-or-verdict-ref>" \
+  --qa-ref "<qa-evidence-ref>" \
+  --demo-ref "<demo-ref-if-any>" \
+  --transcript-ref "<redacted-transcript-ref>" \
+  --shipped-ref "master@<merged-sha>"
+```
+
+If no safe transcript exists, use `--waiver-reason "<why no transcript was
+available>"`. If no local JSONL store is appropriate, the final report must
+name another durable trace ref such as a Git note or PR body section. Do not
+persist raw session logs.
+
+### 8. Invoke `/reflect cycle`
 
 Bounded scope: the just-shipped work only. Pass as context:
 
@@ -222,7 +249,7 @@ Capture reflect's outputs:
 - Harness-tuning proposals (skill/agent/hook/AGENTS.md edits).
 - Retro notes and coaching output.
 
-### 8. Apply reflect's backlog mutations on master
+### 9. Apply reflect's backlog mutations on master
 
 Reflect may propose new tickets, edits to open tickets, or deletions. Apply
 them in-tree: add files to `backlog.d/`, edit existing tickets. Commit to
@@ -234,7 +261,7 @@ chore(backlog): apply reflect outputs from shipping <primary-id>
 
 If reflect proposed no backlog mutations, skip this commit.
 
-### 9. Apply harness-tuning outputs to a harness branch
+### 10. Apply harness-tuning outputs to a harness branch
 
 Reflect's harness proposals **never** land on master. Create or checkout
 the branch:
@@ -260,7 +287,7 @@ Return to master before finishing:
 git checkout master
 ```
 
-### 10. Final report
+### 11. Final report
 
 Emit a single block covering:
 
@@ -269,6 +296,7 @@ Emit a single block covering:
 - QA evidence trailer path, or "none" when the branch had no committed
   `.evidence/<branch>/<date>/` artifacts.
 - Reference IDs noted.
+- Trace/work-record ref, or explicit no-trace/no-transcript waiver.
 - Docs touched (path list) or "none required."
 - Reflect outputs grouped by category: backlog mutations applied, harness
   proposals on `harness/reflect-outputs`, retro notes, coaching.
@@ -298,6 +326,9 @@ Stop and surface to the user instead of shipping:
   refuse.
 - If a PR exists, it is not mergeable per
   `gh pr view --json mergeable,mergeStateStatus`.
+- No trace handoff inputs and no explicit `Trace-waiver: <reason>` line.
+  Operator must provide a transcript/ref source or a waiver reason before
+  merge.
 - Primary ID has no `backlog.d/<id>-*.md` file AND no closing trailers on
   any branch commit — shipping with no backlog association. Operator must
   add a ticket or add a marker commit and re-run.

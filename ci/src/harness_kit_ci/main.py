@@ -236,6 +236,22 @@ class HarnessKitCi:
         )
 
     @function
+    async def test_trace_record(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run the trace work-record helper self-test."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "skills/trace/scripts/test_trace_record.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_exclusions(
         self,
         source: Annotated[
@@ -637,6 +653,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-index-drift", self.check_index_drift(source))
             tg.start_soon(run_gate, "check-vendored-copies", self.check_vendored_copies(source))
             tg.start_soon(run_gate, "test-bun", self.test_bun(source))
+            tg.start_soon(run_gate, "test-trace-record", self.test_trace_record(source))
             tg.start_soon(run_gate, "check-exclusions", self.check_exclusions(source))
             tg.start_soon(run_gate, "check-portable-paths", self.check_portable_paths(source))
             tg.start_soon(

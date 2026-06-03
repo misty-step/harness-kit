@@ -47,6 +47,7 @@ Primitives:
 - skill:settle | skills/settle/SKILL.md | docs/site/reference/skills/settle.html
 - skill:shape | skills/shape/SKILL.md | docs/site/reference/skills/shape.html
 - skill:ship | skills/ship/SKILL.md | docs/site/reference/skills/ship.html
+- skill:trace | skills/trace/SKILL.md | docs/site/reference/skills/trace.html
 - skill:yeet | skills/yeet/SKILL.md | docs/site/reference/skills/yeet.html
 - agent:a11y-auditor | agents/a11y-auditor.md | docs/site/reference/agents/a11y-auditor.html
 - agent:a11y-critic | agents/a11y-critic.md | docs/site/reference/agents/a11y-critic.html
@@ -81,3 +82,4 @@ CI gates:
 - lint-yaml
 - test-bun
 - test-harness-kit-config-loader
+- test-trace-record
