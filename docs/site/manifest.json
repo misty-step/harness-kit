@@ -11,6 +11,10 @@
     {
       "source": "backlog.d/086-commit-qa-assistant.md",
       "title": "Commit-triggered QA assistant evidence lane"
+    },
+    {
+      "source": "backlog.d/087-open-design-design-contracts.md",
+      "title": "Open Design-informed design contracts for /design"
     }
   ],
   "copy_source": "docs/copy/site.json",
