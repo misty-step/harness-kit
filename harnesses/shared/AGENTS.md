@@ -132,6 +132,11 @@ Concrete trigger → action. When a row matches, take the action.
 | Need external ecosystem facts (libraries, CVEs, recent changes) | `/research` |
 | Need model/provider comparison | `/model-research` |
 
+### Integration shape
+| Trigger | Action |
+|---|---|
+| Integrating an external system | Read `meta/INTEGRATION_GUIDE.md` before choosing MCP, skill, CLI, or script |
+
 ### Critic & philosophy lens
 | Trigger | Action |
 |---|---|

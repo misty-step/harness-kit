@@ -1,8 +1,17 @@
 # MCP-first integration doctrine
 
 Priority: P2
-Status: pending
+Status: done
 Estimate: S
+
+## What Was Built
+
+- Added `meta/INTEGRATION_GUIDE.md` as the external-system integration
+  reference for MCP-first shape decisions.
+- Added a shared `AGENTS.md` Layer 3 routing row for external-system
+  integrations.
+- Kept internal Harness Kit scripts out of scope so bootstrap, gates, and local
+  helpers do not get accidental MCP surface.
 
 ## Goal
 

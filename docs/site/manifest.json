@@ -9,10 +9,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/055-mcp-first-integration-doctrine.md",
-      "title": "MCP-first integration doctrine"
-    },
-    {
       "source": "backlog.d/056-agent-session-trace-lifecycle.md",
       "title": "Agent session trace lifecycle"
     },
