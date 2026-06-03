@@ -31,6 +31,10 @@
     {
       "source": "backlog.d/091-transcript-mining-effectiveness-loop.md",
       "title": "Opt-in transcript mining and effectiveness loop"
+    },
+    {
+      "source": "backlog.d/092-html-first-docs-and-image-primitives.md",
+      "title": "HTML-first docs companion with sparse generated image primitives"
     }
   ],
   "copy_source": "docs/copy/site.json",
