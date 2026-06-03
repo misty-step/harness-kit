@@ -26,6 +26,7 @@ Primitives:
 - skill:ci | skills/ci/SKILL.md | docs/site/reference/skills/ci.html
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html
 - skill:create-repo-skill | skills/create-repo-skill/SKILL.md | docs/site/reference/skills/create-repo-skill.html
+- skill:critique | skills/critique/SKILL.md | docs/site/reference/skills/critique.html
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:demo | skills/demo/SKILL.md | docs/site/reference/skills/demo.html
 - skill:deploy | skills/deploy/SKILL.md | docs/site/reference/skills/deploy.html
@@ -56,6 +57,7 @@ Primitives:
 
 CI gates:
 - check-agent-roster
+- check-bench-map
 - check-deliver-composition
 - check-docs-site
 - check-evidence-blocks

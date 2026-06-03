@@ -11,16 +11,13 @@
     {
       "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
       "title": "Repo-grounded acceptance contract for workflow skills"
-    },
-    {
-      "source": "backlog.d/077-critique-skill.md",
-      "title": "/critique: ad-hoc lens critic against a target"
     }
   ],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
     "check-agent-roster",
+    "check-bench-map",
     "check-deliver-composition",
     "check-docs-site",
     "check-evidence-blocks",
@@ -194,6 +191,16 @@
       "page": "reference/skills/create-repo-skill.html",
       "role": "Support",
       "source": "skills/create-repo-skill/SKILL.md"
+    },
+    {
+      "description": "Run one targeted, read-only architecture or quality critique through a named lens from the shared rubric. Use when: \"critique this module\", \"run an Ousterhout pass\", \"lens critique\", \"architecture critique\". Trigger: /critique.",
+      "icon": "catalog",
+      "id": "skill:critique",
+      "kind": "skill",
+      "name": "critique",
+      "page": "reference/skills/critique.html",
+      "role": "Support",
+      "source": "skills/critique/SKILL.md"
     },
     {
       "description": "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator brief + /reflect. Use for \"deliver this\", \"make it merge-ready\", shaped-ticket builds, and `--polish-only <branch|PR>` for existing branch/PR cleanup. Trigger: /deliver.",

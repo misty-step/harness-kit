@@ -49,32 +49,30 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
 
-## Work Ledger
-
-When `.harness-kit/work/ledger.jsonl` is available, `/code-review` calls
-`scripts/work-ledger.py append` with `phase_started` before dispatch,
-`next_action_changed` after reviewer lanes are recorded, `blocker_added` for
-blocking findings, and `phase_completed` when the verdict is clean. Provider
-receipt ids belong in evidence refs; roster lane labels belong in
-`spawned_agents`.
-
 ## Completion Evidence
 
 Completion evidence core applies: use `harnesses/shared/AGENTS.md`
 (Completion Evidence) as the universal evidence shape, then fill the local
 fields below for review verdicts.
 
-## Context Loading
+## Marshal Protocol
 
-Before reviewing any diff, the marshal and reviewer subagents must attempt to
-load `references/review-patterns.md` from the current repo&#x27;s `/code-review`
-skill directory. If present, treat each catalog entry as a local rule for diffs
-in that entry&#x27;s domain. Every finding must cite the matching catalog entry ID
-(`P-NN`) when one applies; when no entry applies, say that explicitly in the
-finding or synthesis.
+1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
+   Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-If `review-patterns.md` is missing, emit one warning in the review output:
-`no review-patterns.md present - consider seeding one from Harness Kit&#x27;s template`.
+2. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
+   selection algorithm in `references/bench-map.yaml`:
+   - `git diff --name-only $BASE...HEAD` → changed files
+   - Start from `default`; for every rule whose glob matches any changed file,
+     apply `replace`, union `add`, de-dupe, then cap at 5 (critic pinned)
+   - Bench size always in [3, 5]; selection is deterministic per diff
+   Read `references/bench-map.md` for the full algorithm and
+   `references/internal-bench.md` for each reviewer lens. Then craft a
+   tailored prompt per selected reviewer. Load
+   `references/deep-review-lens.md` when the diff needs root-cause,
+   provenance, or long-running autoreview discipline.
+
+3. **Dispatch all three tiers in parallel:**
 ...</code></pre>
     </section>
     <section class="checklist">

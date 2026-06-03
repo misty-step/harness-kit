@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-03T15:25:57Z
+# Generated: 2026-06-03T15:30:51Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -31,6 +31,10 @@ skills:
     description: "Generate a repository-local skill from live repo discovery and user intent. Use when: \"create QA skill\", \"generate repo skill\", \"make a local skill\", \"persona acceptance skill\", \"value proposition QA\""
     source: first-party
     tags: [a,acceptance,create,discovery,generate,intent,live,local,make,persona]
+  - name: critique
+    description: "Run one targeted, read-only architecture or quality critique through a named lens from the shared rubric. Use when: \"critique this module\", \"run an Ousterhout pass\", \"lens critique\", \"architecture cri"
+    source: first-party
+    tags: [a,an,architecture,cri,critique,lens,module,named,one,or]
   - name: deliver
     description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator "
     source: first-party

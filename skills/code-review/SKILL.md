@@ -24,38 +24,11 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
 
-## Work Ledger
-
-When `.harness-kit/work/ledger.jsonl` is available, `/code-review` calls
-`scripts/work-ledger.py append` with `phase_started` before dispatch,
-`next_action_changed` after reviewer lanes are recorded, `blocker_added` for
-blocking findings, and `phase_completed` when the verdict is clean. Provider
-receipt ids belong in evidence refs; roster lane labels belong in
-`spawned_agents`.
-
 ## Completion Evidence
 
 Completion evidence core applies: use `harnesses/shared/AGENTS.md`
 (Completion Evidence) as the universal evidence shape, then fill the local
 fields below for review verdicts.
-
-## Context Loading
-
-Before reviewing any diff, the marshal and reviewer subagents must attempt to
-load `references/review-patterns.md` from the current repo's `/code-review`
-skill directory. If present, treat each catalog entry as a local rule for diffs
-in that entry's domain. Every finding must cite the matching catalog entry ID
-(`P-NN`) when one applies; when no entry applies, say that explicitly in the
-finding or synthesis.
-
-If `review-patterns.md` is missing, emit one warning in the review output:
-`no review-patterns.md present - consider seeding one from Harness Kit's template`.
-Proceed with the review; absence of a catalog is not a blocker by itself.
-
-Also load repo convention docs such as `AGENTS.md`, `CLAUDE.md`, or equivalent
-when present, focusing on invariants, footguns, and review rules. Cite the
-specific section when a finding comes from those docs rather than the pattern
-catalog.
 
 ## Marshal Protocol
 
@@ -65,32 +38,14 @@ catalog.
 2. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
    selection algorithm in `references/bench-map.yaml`:
    - `git diff --name-only $BASE...HEAD` → changed files
-   - Start from `default`; union `add` lenses for every rule whose glob
-     matches any changed file; de-dupe; cap at 5 (critic pinned)
+   - Start from `default`; for every rule whose glob matches any changed file,
+     apply `replace`, union `add`, de-dupe, then cap at 5 (critic pinned)
    - Bench size always in [3, 5]; selection is deterministic per diff
    Read `references/bench-map.md` for the full algorithm and
-   `references/internal-bench.md` for each selected lens. Then craft a
+   `references/internal-bench.md` for each reviewer lens. Then craft a
    tailored prompt per selected reviewer. Load
    `references/deep-review-lens.md` when the diff needs root-cause,
    provenance, or long-running autoreview discipline.
-
-   **Internal bench context contract:** for `critic`, `ousterhout`,
-   `carmack`, `grug`, `beck`, and `cooper`, pass only:
-   - the PR diff (`git diff $BASE...HEAD`, or an explicit diff supplied by
-     the caller)
-   - the backlog Oracle / acceptance criteria for the work item, when present
-   - `references/review-patterns.md` when present; this is standing
-     repo-local acceptance criteria, not author narrative
-   - repo convention docs (`AGENTS.md`, `CLAUDE.md`, or equivalent) when
-     present, limited to invariants, footguns, and review rules
-
-   Do not include session summaries, exploration transcripts, author
-   reasoning, implementation narratives, or prior reviewer output. This guards
-   the Walden Yan / Multi-Agents What's Actually Working failure mode:
-   same-model reviewers inheriting author context rationalize choices instead
-   of independently finding bugs; 58% of clean-context bugs are severe. If a
-   reviewer needs missing acceptance criteria, it should ask for that specific
-   artifact rather than accepting narrative context.
 
 3. **Dispatch all three tiers in parallel:**
 
@@ -216,49 +171,30 @@ Local fields include hardening recommendation / waiver.
 ```markdown
 ## Completion Gate
 - Exact end-user behavior changed: behavior or internal operator behavior the diff changes.
-- Base/ref reviewed: base commit/branch and head commit reviewed.
-- Files inspected: changed paths or path families the verdict actually inspected.
-- Live repo evidence read: files, docs, config, tests, or runtime artifacts read before judging.
-- Acceptance source: oracle, ticket, spec, fixture, contract, route, command, or explicit absence.
 - Evidence that proves it: review finding, test output, QA artifact, or command result behind the verdict.
 - Exact command/path/route exercised: command, route, file path, artifact, or tool call inspected.
 - Repo-fit check: live repo pattern or contract the verdict compared against.
 - Hardening recommendation / waiver: mode recommended, mode run, or waiver reason.
-- Unverified runtime paths: changed executable paths not exercised, or a reason there are none.
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
 If there is no end-user behavior because the diff is internal, say so and name
 the developer/operator behavior that changed instead.
-Do not issue Ship or Conditional when the evidence is generic, stale, names no
-base/ref, skips changed executable paths, or only proves that a structural gate
-passed.
 
 ## Review Scoring
 
 After the final verdict, append one JSON line to `.groom/review-scores.ndjson`
-in the target project root (create `.groom/` if needed). This is mandatory:
-the review is incomplete until the row is appended.
+in the target project root (create `.groom/` if needed):
 
 ```json
-{"date":"2026-04-06","branch":"feat/auth","sha":"abc123","pr":42,"correctness":8,"depth":7,"simplicity":9,"craft":8,"verdict":"ship","providers":["claude","thinktank","codex","gemini"],"findings_total":4,"findings_accepted":3,"findings_false_positive":1,"post_merge_bugs_found":0}
+{"date":"2026-04-06","pr":42,"correctness":8,"depth":7,"simplicity":9,"craft":8,"verdict":"ship","providers":["claude","thinktank","codex","gemini"]}
 ```
 
 - Scores (1-10) reflect cross-provider consensus, not any single reviewer.
-- `branch` is the reviewed branch; `sha` is `git rev-parse HEAD` at verdict time.
 - `pr` is the PR number, or `null` when reviewing a branch without a PR.
 - `verdict`: `"ship"`, `"conditional"`, or `"dont-ship"`.
 - `providers`: which review tiers contributed.
-- `findings_total`: total findings considered in synthesis.
-- `findings_accepted`: findings accepted as real or actionable.
-- `findings_false_positive`: findings rejected after steelman as non-issues.
-- `post_merge_bugs_found`: later calibration count when known; use `0` when no
-  post-merge bug is known during the review.
 - This file is committed to git (not gitignored). `/groom` reads it for quality trends.
-- Run `python3 scripts/review-score-trends.py .groom/review-scores.ndjson` when
-  the target repo has the helper. If the last 5-row window reports a regression
-  or high false-positive rate, include the named skill-tuning target in the
-  review synthesis and `/reflect` handoff.
 
 ## Verdict Ref (git-native review proof)
 
@@ -274,10 +210,7 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - The `sha` field MUST be `git rev-parse HEAD` at the time of review. If the branch
   gets new commits after review, the verdict is stale and `/deliver --polish-only` will re-trigger review.
 - Verdict refs live under `refs/verdicts/<branch>` and sync via `git push/fetch`.
-- Also write `.evidence/<branch>/<date>/review-synthesis.md` and
-  `.evidence/<branch>/<date>/verdict.json` for browsability. Use
-  `scripts/lib/evidence.sh` when present. These files are committed evidence;
-  provider transcripts can remain in the review state dir.
+- Also write a copy to `.evidence/<branch>/<date>/verdict.json` for browsability.
 - The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
 
 Run the snippet from the target project root. Skip this step if

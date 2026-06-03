@@ -7,6 +7,17 @@ lens, give it scope + an evidence contract, synthesize its findings yourself.
 Used by the AGENTS.md Layer 3 "Critic & philosophy lens" routing, `/code-review`,
 `/critique`, `/groom`, `/refactor`, and `/shape`.
 
+## critic
+**Essence:** adversarial freshness — test the claim against the artifact and
+oracle, not the author's rationale.
+**Looks for:**
+- Missing acceptance evidence, stale SHA evidence, or unexercised paths.
+- Diff claims that do not match the changed files.
+- Risk hidden by generated files, broad summaries, or self-review.
+- Blocking ambiguity in the oracle, scope, or residual risk.
+**Catches:** plausible "done" claims that would fail production because no
+fresh reviewer tried to refute the actual artifact.
+
 ## ousterhout
 **Essence:** deep modules — a simple interface over a powerful implementation;
 information hiding manages complexity.
@@ -61,6 +72,22 @@ collaborators.
 - Missing integration coverage where modules meet.
 **Catches:** internal mocks that let contract/edge-case integration bugs ship
 while the whole suite stays green.
+
+## security
+**Essence:** trust-boundary discipline — untrusted input, authority, secrets,
+and network or filesystem effects must preserve explicit invariants.
+**Looks for:**
+- Missing authentication, authorization, origin, CSRF, or tenant checks on new
+  routes, middleware, jobs, or command paths.
+- Secrets, tokens, credentials, or sensitive payloads reaching logs, errors,
+  traces, fixtures, prompts, commits, or client-visible output.
+- SSRF, path traversal, open redirect, injection, unsafe deserialization, or
+  input-laundering through fetch, URL, filesystem, shell, SQL, or template
+  boundaries.
+- Cryptography, signing, session, token, or expiry logic built from ad-hoc
+  string handling or unauthenticated state.
+**Catches:** confused-deputy and trust-boundary bugs that pass happy-path tests
+because no adversarial path exercised the authority or input boundary.
 
 ## Adding a lens
 A lens is name + essence + "looks for" + "the failure it catches." Keep it to

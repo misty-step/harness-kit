@@ -1,17 +1,17 @@
-# Static path-glob → reviewer-lens map for /code-review
+# Static path-glob → reviewer lens map for /code-review
 #
 # Selection algorithm (implemented by the marshal):
-#   1. Start with `default` (always 3 lenses).
-#   2. For each rule whose `paths` glob matches ANY changed file, union its `add` lenses.
-#   3. De-duplicate. Cap at 5 total; if over, drop lenses contributed by the
-#      rule with the fewest file matches (critic is never dropped).
+#   1. Start with `default` (always 3 reviewers).
+#   2. For each rule whose `paths` glob matches ANY changed file, remove its
+#      optional `replace` reviewers, then union its `add` reviewers.
+#   3. De-duplicate. Cap at 5 total; critic is never dropped.
 #   4. Always include `critic`.
 #
 # Invariant: bench size is in [3, 5] for any diff. Selection is deterministic:
 # same diff → same bench.
 #
-# Reviewer labels are ad-hoc critic lenses, not static agent files. See
-# bench-map.md for how to add rules and override behavior.
+# Reviewer ids must be lens names from harnesses/shared/references/lenses.md
+# or explicit Explore-type agent files under agents/. See bench-map.md.
 
 default: [critic, ousterhout, grug]
 
@@ -60,8 +60,12 @@ rules:
       - "**/*session*.{ts,tsx,js,jsx,py,rs,go}"
       - "**/*crypto*.{ts,py,rs,go}"
       - "**/*token*.{ts,py,rs,go}"
+      - "**/*secret*.{ts,tsx,js,jsx,py,rs,go}"
+      - "**/*fetch*.{ts,tsx,js,jsx,py,rs,go}"
+      - "**/*url*.{ts,tsx,js,jsx,py,rs,go}"
       - "**/middleware/**"
-    add: [critic, beck]
+    replace: [grug]
+    add: [security]
 
   # --- Data layer -----------------------------------------------------------
   - name: migrations-and-sql
@@ -101,7 +105,7 @@ rules:
       - "**/*_test.go"
       - "**/tests/**"
       - "**/__tests__/**"
-    add: [beck]
+    add: [cooper]
 
   # --- Docs (lightweight review) -------------------------------------------
   - name: docs-only

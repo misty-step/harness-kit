@@ -20,15 +20,19 @@ findings as `finding · evidence file:line · impact`.
 | **grug** | Complexity hunting, over-abstraction, premature generality | Large diffs, new abstractions, framework-heavy code |
 | **carmack** | Shippability, pragmatism, direct implementation | Feature work, performance-sensitive code |
 | **beck** | TDD discipline, simple design, YAGNI | Test changes, untested code, test quality |
+| **cooper** | Boundary-only mocks, real owned-module integration | Test diffs, internal mocks, fragile isolation |
+| **security** | Trust boundaries, authority, secrets, SSRF/input effects | Auth, crypto, middleware, fetch/URL, secrets |
 
 ## Selection Heuristics
 
 - **Always include critic** — the baseline scoring agent.
 - **API/module changes** → ousterhout (module depth) + carmack (shippability)
 - **Large diffs with new abstractions** → grug (complexity) + ousterhout (depth)
-- **Test-heavy or untested code** → beck (TDD) + critic
+- **Test-heavy code** → cooper (no internal mocks) + critic
+- **Untested implementation code** → beck (TDD) + critic
 - **Performance-sensitive** → carmack (direct implementation) + critic
-- **Security-sensitive** → critic + define an ad-hoc security-focused agent
+- **Security-sensitive** → security (trust boundary) + critic; when selected by
+  the bench map, security replaces `grug` rather than adding a sixth reviewer
 
 The marshal may also define **ad-hoc agents** with custom prompts for
 concerns specific to the repo or diff that the named agents don't cover.

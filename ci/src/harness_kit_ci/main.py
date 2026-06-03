@@ -623,6 +623,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_bench_map(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate code-review bench-map reviewer ids and replacement fixtures."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "scripts/check-bench-map.py"])
+            .stdout()
+        )
+
+    @function
     async def check_evidence_blocks(
         self,
         source: Annotated[
@@ -747,6 +763,7 @@ print('skills/: no claims primitives found.')
                 self.check_review_score_trends(source),
             )
             tg.start_soon(run_gate, "check-git-hooks", self.check_git_hooks(source))
+            tg.start_soon(run_gate, "check-bench-map", self.check_bench_map(source))
             tg.start_soon(run_gate, "check-evidence-blocks", self.check_evidence_blocks(source))
             tg.start_soon(
                 run_gate,
