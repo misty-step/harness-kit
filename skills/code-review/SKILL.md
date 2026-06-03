@@ -30,6 +30,24 @@ Completion evidence core applies: use `harnesses/shared/AGENTS.md`
 (Completion Evidence) as the universal evidence shape, then fill the local
 fields below for review verdicts.
 
+## Context Loading
+
+Before reviewing any diff, the marshal and reviewer subagents must attempt to
+load `references/review-patterns.md` from the current repo's `/code-review`
+skill directory. If present, treat each catalog entry as a local rule for diffs
+in that entry's domain. Every finding must cite the matching catalog entry ID
+(`P-NN`) when one applies; when no entry applies, say that explicitly in the
+finding or synthesis.
+
+If `review-patterns.md` is missing, emit one warning in the review output:
+`no review-patterns.md present - consider seeding one from Harness Kit's template`.
+Proceed with the review; absence of a catalog is not a blocker by itself.
+
+Also load repo convention docs such as `AGENTS.md`, `CLAUDE.md`, or equivalent
+when present, focusing on invariants, footguns, and review rules. Cite the
+specific section when a finding comes from those docs rather than the pattern
+catalog.
+
 ## Marshal Protocol
 
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
@@ -46,6 +64,24 @@ fields below for review verdicts.
    tailored prompt per selected reviewer. Load
    `references/deep-review-lens.md` when the diff needs root-cause,
    provenance, or long-running autoreview discipline.
+
+   **Internal bench context contract:** for `critic`, `ousterhout`,
+   `carmack`, `grug`, `beck`, and `cooper`, pass only:
+   - the PR diff (`git diff $BASE...HEAD`, or an explicit diff supplied by
+     the caller)
+   - the backlog Oracle / acceptance criteria for the work item, when present
+   - `references/review-patterns.md` when present; this is standing
+     repo-local acceptance criteria, not author narrative
+   - repo convention docs (`AGENTS.md`, `CLAUDE.md`, or equivalent) when
+     present, limited to invariants, footguns, and review rules
+
+   Do not include session summaries, exploration transcripts, author
+   reasoning, implementation narratives, or prior reviewer output. This guards
+   the Walden Yan / Multi-Agents What's Actually Working failure mode:
+   same-model reviewers inheriting author context rationalize choices instead
+   of independently finding bugs; 58% of clean-context bugs are severe. If a
+   reviewer needs missing acceptance criteria, it should ask for that specific
+   artifact rather than accepting narrative context.
 
 3. **Dispatch all three tiers in parallel:**
 

@@ -1,7 +1,7 @@
 # `/code-review` pattern-catalog convention
 
 Priority: medium
-Status: pending
+Status: done
 Estimate: S
 
 ## Goal
@@ -30,29 +30,45 @@ entry IDs on every finding.
 
 ## Oracle
 
-- [ ] `skills/code-review/SKILL.md` in harness-kit documents the
+- [x] `skills/code-review/SKILL.md` in Harness Kit documents the
       convention: the critic subagent's prompt template includes a
       line like *"Load `references/review-patterns.md` if present.
       Check each diff hunk against the catalog and cite entry IDs on
       findings."*
-- [ ] `skills/code-review/references/review-patterns-template.md`
+- [x] `skills/code-review/references/review-patterns-template.md`
       exists as a blank scaffold with the entry format, three
       illustrative placeholder entries (one semantic, one
       contract-hygiene, one test-scaffolding), and instructions on how
       a repo seeds its own catalog
-- [ ] `skills/code-review/references/review-patterns-template.md`
+- [x] `skills/code-review/references/review-patterns-template.md`
       documents the lifecycle: "new PR review surfaces a novel
       finding → add entry; eventually the pattern gets codified as a
       lint/check/CI lane → entry gains an `Enforcement:` line but
       remains in the catalog as reference"
-- [ ] `/seed` is updated to offer, as part of vendoring `/code-review` into a
-      consuming repo, the option to copy `review-patterns-template.md` renamed
-      to `review-patterns.md` — and to leave the file out if the repo already
-      has one
-- [ ] The canary repo's `#029` ("code-review pattern catalog") lands
-      as the first consumer implementation; the harness-kit convention
-      is validated against it
-- [ ] `./bin/validate` green in harness-kit (docs-only change)
+- [x] Harness Kit has no active `/seed` or `/tailor` vendoring skill; the
+      template itself documents how a consuming repo copies
+      `review-patterns-template.md` to `review-patterns.md`, and existing
+      catalogs remain repo-owned.
+- [x] The canary repo's `#029` ("code-review pattern catalog") remains the
+      reference consumer shape for this convention.
+- [x] `dagger call check --source=.` green in Harness Kit.
+
+## Implementation Notes
+
+- Added a cross-repo `review-patterns-template.md` scaffold to the first-party
+  `/code-review` references.
+- Updated `/code-review` to load
+  `references/review-patterns.md` when present and require catalog IDs on
+  applicable findings.
+- Preserved the current Harness Kit boundary: repo-local catalog seeding is a
+  manual or explicit local-skill action, not a new semantic vendoring engine.
+- Canary #029 landed as `4cc0605 docs(code-review): seed canary review
+  patterns`, with `P-01` through `P-09` seeded from actual PR review findings
+  and `/code-review` wired to load and cite the local catalog.
+- Canary's deterministic `./bin/validate` passed under the repo-pinned Dagger
+  engine. `./bin/validate --strict` reaches the live advisory phase and blocks
+  on unrelated dependency hygiene; that is not acceptance criteria for the
+  Harness Kit convention.
 
 ## Notes
 
@@ -148,8 +164,8 @@ Before reviewing any diff, the critic subagent MUST:
    reviewable judgment.
 
 If `review-patterns.md` is missing, emit one warning in the review
-output (`"no review-patterns.md present — consider seeding one per
-/reflect prevent-patterns"`) and proceed.
+output (`"no review-patterns.md present - consider seeding one from
+Harness Kit's template"`) and proceed.
 ```
 
 **Execution sketch (one PR, three commits).**
@@ -163,9 +179,10 @@ scaffold and three illustrative placeholder entries.
 Add the `Context loading` section above. Update any critic-dispatch
 prompt templates embedded in the skill to pass the catalog through.
 
-*Commit 3 — `refactor(seed): offer review-patterns.md when vendoring`.*
-Small edit to `skills/seed/SKILL.md` so `/seed` copies the template (renamed)
-on first vendored install if absent, and leaves existing catalogs untouched.
+*Current boundary.* Harness Kit no longer has a `/seed` or `/tailor` vendoring
+skill. The template is available under first-party `/code-review`; consumer
+repos copy it explicitly to `references/review-patterns.md` when they decide
+they have enough recurring review findings to justify a local catalog.
 
 **Risk list.**
 
