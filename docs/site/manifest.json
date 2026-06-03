@@ -15,6 +15,22 @@
     {
       "source": "backlog.d/087-open-design-design-contracts.md",
       "title": "Open Design-informed design contracts for /design"
+    },
+    {
+      "source": "backlog.d/088-meta-observability-spine.md",
+      "title": "Meta-observability spine for skill analytics"
+    },
+    {
+      "source": "backlog.d/089-token-cost-observability-schema.md",
+      "title": "Token and cost observability schema"
+    },
+    {
+      "source": "backlog.d/090-cross-harness-invocation-telemetry.md",
+      "title": "Cross-harness skill invocation telemetry"
+    },
+    {
+      "source": "backlog.d/091-transcript-mining-effectiveness-loop.md",
+      "title": "Opt-in transcript mining and effectiveness loop"
     }
   ],
   "copy_source": "docs/copy/site.json",
