@@ -77,6 +77,11 @@ live in `references/observability-coverage.md`.
 | signal config | `.harness-kit/monitor.yaml` | repo-specific signal path; absent → healthcheck-only if `$HARNESS_KIT_HEALTHCHECK_URL` is set |
 | poll interval | config `poll_interval` | 30 seconds |
 
+When config is present, validate it with
+`scripts/load-harness-kit-config.py monitor --repo <repo>`. The executable
+schema lives at `meta/config-schemas/monitor.schema.yaml`; invalid signal or
+observability keys are tooling failures, not monitor alerts.
+
 ## Contract
 
 **Emits exactly one terminal event per invocation.** Either `monitor.done`

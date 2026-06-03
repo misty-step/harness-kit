@@ -55,6 +55,10 @@ encode the invariants that aren&#x27;t inferable from the leaf names.
 
 - Flywheel composes. Phase logic lives in the leaf skill. Flywheel has none.
 - State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
+- If `.harness-kit/flywheel.yaml` exists, load it once at cycle start with the
+  Harness Kit config loader and use it only for cycle tuning: cadence,
+  `max_cycles`, token budget, backlog include filters, and stop conditions.
+  If absent, use invocation flags and built-in defaults.
 - Provider-roster behavior lives in the leaf workflow skills. If the repo has
   `.harness-kit/agents.yaml`, `/flywheel` expects two or more roster-member
   receipts or explicit exceptions in phase evidence, but it does not dispatch
@@ -66,13 +70,6 @@ encode the invariants that aren&#x27;t inferable from the leaf names.
 - Ship before deploy. Always.
 - Harness edits from reflect never touch master. `/ship` routes them to
   `harness/reflect-outputs` for human review.
-
-## Delegation Floor
-
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
-`harnesses/shared/AGENTS.md` (Roster).
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -58,7 +58,9 @@ If detection finds a config but `--env` was not supplied and the config
 declares multiple envs, abort and require `--env`. Fail closed.
 
 See `references/repo-config.md` for the full detection table and config
-schema.
+schema. When `.harness-kit/deploy.yaml` is present, validate it with
+`scripts/load-harness-kit-config.py deploy --repo <repo> --optional` from the
+Harness Kit source repo or an equivalent installed loader before using values.
 
 ### 2. Validate (parallel)
 

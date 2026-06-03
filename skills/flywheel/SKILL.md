@@ -32,6 +32,10 @@ encode the invariants that aren't inferable from the leaf names.
 
 - Flywheel composes. Phase logic lives in the leaf skill. Flywheel has none.
 - State lives in leaf receipts, git, and `backlog.d/`. Flywheel has none.
+- If `.harness-kit/flywheel.yaml` exists, load it once at cycle start with the
+  Harness Kit config loader and use it only for cycle tuning: cadence,
+  `max_cycles`, token budget, backlog include filters, and stop conditions.
+  If absent, use invocation flags and built-in defaults.
 - Provider-roster behavior lives in the leaf workflow skills. If the repo has
   `.harness-kit/agents.yaml`, `/flywheel` expects two or more roster-member
   receipts or explicit exceptions in phase evidence, but it does not dispatch

@@ -40,7 +40,7 @@ Available tool:
 - $builder is a writable repo container rooted at /src with the linting tools installed.
 
 Targeted validation commands:
-- lint-yaml: find . -maxdepth 2 \\( -name '*.yaml' -o -name '*.yml' \\) | xargs python3 -c 'import sys,yaml; [yaml.safe_load(open(f)) for f in sys.argv[1:]]'
+- lint-yaml: find . \\( -name '*.yaml' -o -name '*.yml' \\) -not -path './ci/*' | xargs python3 -c 'import sys,yaml; [yaml.safe_load(open(f)) for f in sys.argv[1:]]'
 - lint-shell: find . -name '*.sh' -not -path './ci/*' | xargs shellcheck --severity=error
 - lint-python: find . -name '*.py' -not -path './ci/*' | xargs -I{{}} python3 -m py_compile {{}}
 - check-frontmatter: python3 scripts/check-frontmatter.py
@@ -62,6 +62,7 @@ def _lint_container(source: dagger.Directory) -> dagger.Container:
                 "-y",
                 "-qq",
                 "--no-install-recommends",
+                "git",
                 "shellcheck",
             ]
         )
@@ -113,7 +114,8 @@ class HarnessKitCi:
             _lint_container(source)
             .with_exec([
                 "sh", "-c",
-                "find . -maxdepth 2 -name '*.yaml' -o -name '*.yml' "
+                "find . \\( -name '*.yaml' -o -name '*.yml' \\) "
+                "-not -path './ci/*' "
                 "| xargs python3 -c "
                 "'import sys,yaml; [yaml.safe_load(open(f)) for f in sys.argv[1:]]'",
             ])
@@ -589,6 +591,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def test_harness_kit_config_loader(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run loader regression tests for .harness-kit/*.yaml contracts."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "scripts/test-load-harness-kit-config.sh"])
+            .stdout()
+        )
+
+    @function
     async def check(
         self,
         source: Annotated[
@@ -643,6 +661,11 @@ print('skills/: no claims primitives found.')
                 self.check_offline_evidence_storage(source),
             )
             tg.start_soon(run_gate, "check-docs-site", self.check_docs_site(source))
+            tg.start_soon(
+                run_gate,
+                "test-harness-kit-config-loader",
+                self.test_harness_kit_config_loader(source),
+            )
 
         # Format results
         lines = ["Harness Kit CI Results", "=" * 40]

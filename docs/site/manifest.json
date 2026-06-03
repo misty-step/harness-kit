@@ -9,10 +9,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/052-harness-kit-config-contract.md",
-      "title": "`.harness-kit/*.yaml` repo-local config contract for `/flywheel`"
-    },
-    {
       "source": "backlog.d/053-skill-quality-audit-mode.md",
       "title": "`/groom audit` \u2014 skill quality coverage audit"
     },
@@ -74,7 +70,8 @@
     "lint-python",
     "lint-shell",
     "lint-yaml",
-    "test-bun"
+    "test-bun",
+    "test-harness-kit-config-loader"
   ],
   "generated_by": "scripts/build-docs-site.py",
   "icons": [

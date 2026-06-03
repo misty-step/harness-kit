@@ -80,3 +80,4 @@ CI gates:
 - lint-shell
 - lint-yaml
 - test-bun
+- test-harness-kit-config-loader
