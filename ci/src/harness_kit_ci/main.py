@@ -525,6 +525,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def check_git_hooks(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run git hook behavior tests."""
+        return await (
+            _repair_container(source)
+            .with_exec(["bash", ".githooks/test_pre_merge_commit.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_evidence_blocks(
         self,
         source: Annotated[
@@ -619,6 +635,7 @@ print('skills/: no claims primitives found.')
                 "check-review-score-trends",
                 self.check_review_score_trends(source),
             )
+            tg.start_soon(run_gate, "check-git-hooks", self.check_git_hooks(source))
             tg.start_soon(run_gate, "check-evidence-blocks", self.check_evidence_blocks(source))
             tg.start_soon(
                 run_gate,

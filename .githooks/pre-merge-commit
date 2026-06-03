@@ -1,59 +1,91 @@
 #!/usr/bin/env bash
-# Verdict gate for non-fast-forward merges.
-# Blocks merge commits unless a valid review verdict exists for the topic branch.
-# Escape hatch: HARNESS_KIT_NO_REVIEW=1
+# Verdict + Dagger gate for non-fast-forward merges.
+# Blocks merge commits unless a valid review verdict exists for the topic branch
+# and the repo's Dagger gate passes when merging into master/main.
+# Escape hatches: HARNESS_KIT_NO_REVIEW=1, HARNESS_KIT_NO_DAGGER=1
 set -euo pipefail
 
 repo_root="$(git rev-parse --show-toplevel)"
 
+yellow=$'\033[33m'
+reset=$'\033[0m'
+
 if [ "${HARNESS_KIT_NO_REVIEW:-}" = "1" ]; then
   echo "pre-merge-commit: bypassing verdict gate (HARNESS_KIT_NO_REVIEW=1)" >&2
+else
+  # Recover topic branch name. MERGE_HEAD and MERGE_MSG are unavailable during
+  # pre-merge-commit. Git exposes GIT_REFLOG_ACTION="merge <branch>" and
+  # GITHEAD_<sha>=<branch> in the environment instead.
+  branch=""
+  if [ -n "${GIT_REFLOG_ACTION:-}" ]; then
+    branch="${GIT_REFLOG_ACTION#merge }"
+    # If stripping didn't change the value, it wasn't "merge <branch>"
+    [ "$branch" = "$GIT_REFLOG_ACTION" ] && branch=""
+  fi
+
+  # Fallback: GITHEAD_<sha>=<branch> env var
+  if [ -z "$branch" ]; then
+    branch="$(env | sed -n 's/^GITHEAD_[0-9a-f]*=//p' | head -1)"
+  fi
+
+  # Fail-open for the verdict gate if branch detection is ambiguous; keep the
+  # Dagger gate below because it depends on the current branch, not the topic.
+  if [ -z "$branch" ]; then
+    echo "${yellow}pre-merge-commit: cannot determine topic branch — allowing verdict gate${reset}" >&2
+  else
+    verdicts_lib="$repo_root/scripts/lib/verdicts.sh"
+    if [ -f "$verdicts_lib" ]; then
+      # shellcheck source=scripts/lib/verdicts.sh
+      source "$verdicts_lib"
+
+      rc=0
+      verdict_check_landable "$branch" || rc=$?
+      if [ "$rc" -eq 1 ]; then
+        echo "pre-merge-commit: no valid verdict for '$branch'." >&2
+        echo "  Run /code-review first, or bypass with:" >&2
+        echo "  HARNESS_KIT_NO_REVIEW=1 git merge --no-ff \"$branch\"" >&2
+        exit 1
+      elif [ "$rc" -eq 2 ]; then
+        echo "pre-merge-commit: verdict is 'dont-ship' for '$branch'." >&2
+        echo "  Address review findings and re-run /code-review." >&2
+        exit 1
+      elif [ "$rc" -ne 0 ]; then
+        echo "pre-merge-commit: unexpected verdict check failure (rc=$rc)." >&2
+        exit 1
+      fi
+    fi
+  fi
+fi
+
+current_branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+case "$current_branch" in
+  master | main) ;;
+  *) exit 0 ;;
+esac
+
+[ -f "$repo_root/dagger.json" ] || exit 0
+
+if [ "${HARNESS_KIT_NO_DAGGER:-}" = "1" ]; then
+  echo "pre-merge-commit: bypassing Dagger gate (HARNESS_KIT_NO_DAGGER=1)" >&2
   exit 0
 fi
 
-# Recover topic branch name. MERGE_HEAD and MERGE_MSG are unavailable during
-# pre-merge-commit. Git exposes GIT_REFLOG_ACTION="merge <branch>" and
-# GITHEAD_<sha>=<branch> in the environment instead.
-branch=""
-if [ -n "${GIT_REFLOG_ACTION:-}" ]; then
-  branch="${GIT_REFLOG_ACTION#merge }"
-  # If stripping didn't change the value, it wasn't "merge <branch>"
-  [ "$branch" = "$GIT_REFLOG_ACTION" ] && branch=""
-fi
-
-# Fallback: GITHEAD_<sha>=<branch> env var
-if [ -z "$branch" ]; then
-  branch="$(env | sed -n 's/^GITHEAD_[0-9a-f]*=//p' | head -1)"
-fi
-
-# Fail-open: if we cannot determine the branch, warn loudly but allow.
-# Blocking on ambiguous state is worse than letting one merge through
-# unguarded (see def0cb9 for the prior hook that blocked unconditionally).
-if [ -z "$branch" ]; then
-  yellow=$'\033[33m'
-  reset=$'\033[0m'
-  echo "${yellow}pre-merge-commit: cannot determine topic branch — allowing merge${reset}" >&2
-  exit 0
-fi
-
-verdicts_lib="$repo_root/scripts/lib/verdicts.sh"
-[ -f "$verdicts_lib" ] || exit 0
-
-# shellcheck source=scripts/lib/verdicts.sh
-source "$verdicts_lib"
-
-rc=0
-verdict_check_landable "$branch" || rc=$?
-if [ "$rc" -eq 1 ]; then
-  echo "pre-merge-commit: no valid verdict for '$branch'." >&2
-  echo "  Run /code-review first, or bypass with:" >&2
-  echo "  HARNESS_KIT_NO_REVIEW=1 git merge --no-ff \"$branch\"" >&2
+if ! command -v dagger >/dev/null 2>&1; then
+  echo "pre-merge-commit: dagger not installed; cannot merge without Dagger gate." >&2
+  echo "  Install dagger or bypass explicitly with HARNESS_KIT_NO_DAGGER=1." >&2
   exit 1
-elif [ "$rc" -eq 2 ]; then
-  echo "pre-merge-commit: verdict is 'dont-ship' for '$branch'." >&2
-  echo "  Address review findings and re-run /code-review." >&2
+fi
+
+if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
+  echo "pre-merge-commit: Docker is unavailable; cannot run Dagger gate." >&2
+  echo "  Start Docker or bypass explicitly with HARNESS_KIT_NO_DAGGER=1." >&2
   exit 1
-elif [ "$rc" -ne 0 ]; then
-  echo "pre-merge-commit: unexpected verdict check failure (rc=$rc)." >&2
+fi
+
+echo "pre-merge-commit: running dagger call check --source=." >&2
+if ! (cd "$repo_root" && dagger call check --source=.); then
+  echo "pre-merge-commit: dagger call check --source=. failed." >&2
+  echo "  Run /ci or dagger call check --source=. before merging." >&2
+  echo "  Bypass explicitly with HARNESS_KIT_NO_DAGGER=1." >&2
   exit 1
 fi

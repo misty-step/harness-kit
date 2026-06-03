@@ -1,10 +1,6 @@
 {
   "backlog": [
     {
-      "source": "backlog.d/025-dagger-merge-gate.md",
-      "title": "Dagger as merge gate \u2014 replace GitHub Actions CI"
-    },
-    {
       "source": "backlog.d/026-multi-machine-sync.md",
       "title": "Multi-machine sync for claims and verdicts"
     },
@@ -78,6 +74,7 @@
     "check-evidence-blocks",
     "check-exclusions",
     "check-frontmatter",
+    "check-git-hooks",
     "check-harness-install-paths",
     "check-index-drift",
     "check-no-claims",

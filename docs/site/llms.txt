@@ -67,6 +67,7 @@ CI gates:
 - check-evidence-blocks
 - check-exclusions
 - check-frontmatter
+- check-git-hooks
 - check-harness-install-paths
 - check-index-drift
 - check-no-claims

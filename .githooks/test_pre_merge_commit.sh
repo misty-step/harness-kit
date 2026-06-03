@@ -17,6 +17,7 @@ setup() {
   git config core.hooksPath .empty-hooks
   git config user.name "Test User"
   git config user.email "test@example.com"
+  printf '{"name":"hook-test"}\n' > dagger.json
   git commit --allow-empty -m "initial on master" -q
 
   # Install the hook
@@ -28,6 +29,27 @@ setup() {
   # Symlink verdicts.sh so the hook can source it
   mkdir -p scripts/lib
   ln -s "$REPO_ROOT/scripts/lib/verdicts.sh" scripts/lib/verdicts.sh
+
+  FAKE_BIN="$TEST_DIR/fake-bin"
+  mkdir -p "$FAKE_BIN"
+  DAGGER_LOG="$TEST_DIR/dagger.log"
+  export DAGGER_LOG
+  export DAGGER_EXIT=0
+  export DOCKER_EXIT=0
+  cat > "$FAKE_BIN/dagger" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$DAGGER_LOG"
+exit "${DAGGER_EXIT:-0}"
+EOF
+  cat > "$FAKE_BIN/docker" <<'EOF'
+#!/usr/bin/env bash
+if [ "${1:-}" = "info" ]; then
+  exit "${DOCKER_EXIT:-0}"
+fi
+exit 0
+EOF
+  chmod +x "$FAKE_BIN/dagger" "$FAKE_BIN/docker"
+  export PATH="$FAKE_BIN:$PATH"
 
   # Create a divergent feature branch (so --no-ff produces a merge commit)
   git checkout -b feat-x -q
@@ -109,6 +131,61 @@ test_hook_reports_dont_ship_verdict() {
 test_merge_allowed_ship() {
   write_verdict feat-x ship
   assert_exit "merge allowed with ship verdict" 0 git merge --no-ff feat-x
+}
+
+test_merge_blocked_dagger_fail() {
+  write_verdict feat-x ship
+  export DAGGER_EXIT=1
+  assert_exit "merge blocked when Dagger fails" 1 git merge --no-ff feat-x
+}
+
+test_hook_reports_dagger_failure() {
+  local output rc=0
+  write_verdict feat-x ship
+  export DAGGER_EXIT=1
+  output="$(run_hook_direct 2>&1)" || rc=$?
+  assert_exit "hook blocks failing Dagger directly" 0 test "$rc" -eq 1
+  assert_contains "hook explains Dagger failure" "dagger call check --source=. failed" "$output"
+}
+
+test_merge_runs_dagger_with_source() {
+  write_verdict feat-x ship
+  assert_exit "merge allowed with ship verdict and Dagger pass" 0 git merge --no-ff feat-x
+  assert_contains "Dagger called with source argument" "call check --source=." "$(cat "$DAGGER_LOG")"
+}
+
+test_merge_blocked_docker_unavailable() {
+  write_verdict feat-x ship
+  export DOCKER_EXIT=1
+  assert_exit "merge blocked when Docker unavailable" 1 git merge --no-ff feat-x
+}
+
+test_merge_bypass_dagger_env() {
+  write_verdict feat-x ship
+  export DAGGER_EXIT=1
+  assert_exit "merge bypasses Dagger with HARNESS_KIT_NO_DAGGER=1" 0 \
+    env HARNESS_KIT_NO_DAGGER=1 git merge --no-ff feat-x
+}
+
+test_review_bypass_still_runs_dagger() {
+  export DAGGER_EXIT=1
+  assert_exit "review bypass still runs Dagger gate" 1 \
+    env HARNESS_KIT_NO_REVIEW=1 git merge --no-ff feat-x
+}
+
+test_merge_no_dagger_json_skips_dagger() {
+  write_verdict feat-x ship
+  rm dagger.json
+  export DAGGER_EXIT=1
+  assert_exit "merge skips Dagger without dagger.json" 0 git merge --no-ff feat-x
+}
+
+test_merge_non_master_target_skips_dagger() {
+  write_verdict feat-x ship
+  git checkout -b integration -q
+  git commit --allow-empty -m "integration diverges" -q
+  export DAGGER_EXIT=1
+  assert_exit "merge into non-master skips Dagger" 0 git merge --no-ff feat-x
 }
 
 test_merge_bypass_env() {

@@ -58,6 +58,7 @@ GATE_DESCRIPTIONS = {
     "check-docs-site": "Rebuilds the static docs companion and fails on stale pages, missing primitives, broken workflow pages, or invalid icon/copy references.",
     "check-exclusions": "Blocks code-suppression comments, broad type escapes, and skipped tests.",
     "check-frontmatter": "Validates skill frontmatter fields and size limits.",
+    "check-git-hooks": "Runs git hook behavior tests, including the merge-time verdict and Dagger gates.",
     "check-harness-install-paths": "Guards global, cross-harness install wording for /seed and /tailor.",
     "check-index-drift": "Regenerates index.yaml and fails if the committed catalog is stale.",
     "check-no-claims": "Prevents removed claim-coordination primitives from returning under skills/.",

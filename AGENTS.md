@@ -7,7 +7,7 @@ disk; do not restate obvious filesystem facts.
 ## Non-Negotiables
 
 - Base branch: `master`.
-- Gate: `dagger call check --source=.`. Green means all 15 Harness Kit CI lanes
+- Gate: `dagger call check --source=.`. Green means all 17 Harness Kit CI lanes
   pass. `/ci` owns the exact lane list in `ci/src/harness_kit_ci/main.py`.
 - Clean-tree closeout: shared Closeout applies; see
   `harnesses/shared/AGENTS.md` (Closeout). Harness Kit additionally treats

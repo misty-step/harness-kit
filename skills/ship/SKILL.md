@@ -62,6 +62,8 @@ Assert at start; refuse with a clear reason on any miss.
   operator-provided/current-session local gate receipts from `/ci` or the
   repo's documented gate. Do not require a PR or verdict solely to land a
   locally verified git-native branch. A `dont-ship` verdict still blocks.
+  For Harness Kit and any repo with `dagger.json`, the documented gate is
+  `dagger call check --source=.` on the exact HEAD being landed.
 - Acceptance evidence exists for this exact HEAD: exact behavior changed,
   live evidence, command/path exercised, repo-fit check, and residual
   unverified paths. When the oracle depends on a fixture, contract, golden
@@ -180,6 +182,7 @@ block. Match the repo's squash-subject convention (look at recent
 **Git-native mode** (no PR, no `gh`, or no GitHub remote):
 
 ```sh
+dagger call check --source=.
 git checkout master
 git merge --squash <branch>
 git commit -F <constructed-message-file>
@@ -187,7 +190,8 @@ git commit -F <constructed-message-file>
 
 Detect mode by: remote URL + `gh` on PATH + `gh pr view` exit code.
 GitHub mode is preferred when available because it records the merge in
-the PR timeline.
+the PR timeline. The Dagger command is explicit here because squash merges do
+not invoke Git's `pre-merge-commit` hook.
 
 ### 6. Pull master and verify trailers
 
@@ -288,6 +292,8 @@ Stop and surface to the user instead of shipping:
 - No same-HEAD landability evidence exists: no green PR checks, no
   landable verdict, and no operator-provided/current-session local gate
   receipt.
+- In a repo with `dagger.json`, `dagger call check --source=.` has not passed
+  on the exact HEAD being landed.
 - In GitHub mode, `gh pr checks` is red. Do not add a `--force` flag;
   refuse.
 - If a PR exists, it is not mergeable per
