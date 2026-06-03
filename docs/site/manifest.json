@@ -1,10 +1,6 @@
 {
   "backlog": [
     {
-      "source": "backlog.d/027-end-to-end-offline-validation.md",
-      "title": "End-to-end offline validation test"
-    },
-    {
       "source": "backlog.d/031-harness-auto-tune-gepa.md",
       "title": "GEPA-style harness auto-tune from cycle events"
     },
