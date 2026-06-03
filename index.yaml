@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-03T15:24:33Z
+# Generated: 2026-06-03T15:25:57Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -115,6 +115,10 @@ skills:
     description: "Final mile from merge-ready branch to shipped: squash-merge, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already"
     source: first-party
     tags: [--polish-only,already,apply,archive,assumes,backlog,branch,deliver,docs,final]
+  - name: skillify
+    description: "Turn proven agent-session patterns into first-party Harness Kit skills. Use when: \"skillify this conversation\", \"make this into a skill\", \"generate a skill from current transcript\", \"extract reusable "
+    source: first-party
+    tags: [a,agent-session,conversation,current,extract,first-party,generate,harness,kit,make]
   - name: trace
     description: "Capture agent-session work records as local JSONL audit evidence. Links a backlog/spec, branch, commits, review verdicts, QA/demo evidence, transcript refs, and shipped ref without storing raw private"
     source: first-party
