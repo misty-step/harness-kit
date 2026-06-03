@@ -111,6 +111,8 @@ CLEAN_CLOSEOUT_POINTER_PATHS = [
     Path("skills/ship/SKILL.md"),
     Path("skills/yeet/SKILL.md"),
 ]
+ROOT_AGENTS_PATH = Path("AGENTS.md")
+SHARED_AGENTS_PATH = Path("harnesses/shared/AGENTS.md")
 
 COMPLETION_EVIDENCE_REQUIREMENTS = {
     "behavior": ["behavior", "end-user", "developer", "operator"],
@@ -625,6 +627,46 @@ def validate_source_agent_catalog() -> None:
         raise SystemExit("agents/: " + "; ".join(detail))
 
 
+def validate_agents_placement_doctrine() -> None:
+    root = ROOT_AGENTS_PATH.read_text()
+    shared = SHARED_AGENTS_PATH.read_text()
+    issues = []
+
+    root_forbidden = [
+        "all 27 Harness Kit CI lanes",
+        "## Root Skills",
+        "Use these for harness work:",
+        "docs/copy/site.json",
+        "scripts/build-docs-site.sh",
+        "scripts/check-docs-site.sh",
+        "scripts/record-delegation.py",
+        "scripts/summarize-delegations.py",
+        "skills/harness-engineering/SKILL.md",
+    ]
+    for phrase in root_forbidden:
+        if phrase in root:
+            issues.append(f"{ROOT_AGENTS_PATH}: remove drift-prone catalog/prose phrase: {phrase!r}")
+    if "generated skill catalog for skill discovery" not in root:
+        issues.append(f"{ROOT_AGENTS_PATH}: must point to generated skill catalog instead of mirroring skills")
+    if "Harness Kit architecture constraints:" not in root:
+        issues.append(f"{ROOT_AGENTS_PATH}: root Red Lines must name Harness Kit architecture scope")
+
+    shared_forbidden = [
+        "Harness Kit source checkout",
+        "not for the Harness Kit source",
+    ]
+    for phrase in shared_forbidden:
+        if phrase in shared:
+            issues.append(f"{SHARED_AGENTS_PATH}: shared doctrine contains source-repo-specific phrase: {phrase!r}")
+    if "Universal agent safety rules:" not in shared:
+        issues.append(f"{SHARED_AGENTS_PATH}: shared Red Lines must name universal safety scope")
+    if "consumer-repo artifacts" not in shared:
+        issues.append(f"{SHARED_AGENTS_PATH}: shared Harness section must frame vendored bridges as consumer-repo artifacts")
+
+    if issues:
+        raise SystemExit("; ".join(issues))
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
@@ -645,6 +687,7 @@ def main() -> int:
     validate_no_retired_provider_references()
     validate_open_model_roster_review_due()
     validate_source_agent_catalog()
+    validate_agents_placement_doctrine()
     receipts = read_receipts(fixture_path)
     work_records = validate_work_records(work_record_fixture_path)
     work_ledger_records = validate_work_ledger(work_ledger_fixture_path)
@@ -709,6 +752,7 @@ def main() -> int:
     print("active roster/docs: no retired provider references")
     print(f"{OPEN_MODEL_ROSTER_PATH}: review due date valid")
     print(f"agents/: {len(ALLOWED_SOURCE_AGENTS)} source agent file(s) valid")
+    print("AGENTS doctrine placement: valid")
     print(f"{summary_script}: report helper valid")
     return 0
 

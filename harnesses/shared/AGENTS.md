@@ -217,8 +217,8 @@ quality matters, it is probably wrong.
   is primary. Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
 - System bootstrap installs every first-party skill into each detected harness.
-  `.agents/skills/` is the optional repo-local vendored root with per-harness
-  bridges for consumer repos, not for the Harness Kit source checkout itself.
+  Repo-local vendored skill roots with per-harness bridges are exceptional
+  consumer-repo artifacts and must earn their complexity.
 - Unknown or unmarked harness artifacts are user-owned. Preserve or ask.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 
@@ -235,6 +235,8 @@ phase preconditions, but they point here for the universal rule.
 - Report verification and residual risk.
 
 ## Red Lines
+
+Universal agent safety rules:
 
 - No secret leakage.
 - No destructive Git unless explicitly requested.

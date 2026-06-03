@@ -7,8 +7,8 @@ disk; do not restate obvious filesystem facts.
 ## Non-Negotiables
 
 - Base branch: `master`.
-- Gate: `dagger call check --source=.`. Green means all 27 Harness Kit CI lanes
-  pass. `/ci` owns the exact lane list in `ci/src/harness_kit_ci/main.py`.
+- Gate: `dagger call check --source=.`. Green means all lanes pass; `/ci` owns
+  the exact lane list in `ci/src/harness_kit_ci/main.py`.
 - Clean-tree closeout: shared Closeout applies; see
   `harnesses/shared/AGENTS.md` (Closeout). Harness Kit additionally treats
   untracked `backlog.d/NNN-*.md` as signal unless the user explicitly says
@@ -45,34 +45,21 @@ nontechnical team, read `docs/positioning.md`. Harness Kit is implementation
 substrate for technical operators, not the buyer-facing governed workflow
 package or admin-control plane.
 
-## Root Skills
-
-Use these for harness work:
-
-- `/harness-engineering`: mutate Harness Kit primitives, gates, roster, doctrine.
-- `/create-repo-skill`: generate repo-local skills for consumer repos.
-- `/yeet`: classify, commit, push; clean tree is the deliverable.
-- `/ship`: final-mile landing and backlog closure.
-- `/deliver`: one shaped item to merge-ready; no push, no merge.
+## Harness Work
 
 Do not define static project subagents here. Spawn roster/ad-hoc lanes from
-the active skill with a role, scope, output shape, and boundaries.
+the active skill with a role, scope, output shape, and boundaries. Use the
+generated skill catalog for skill discovery; do not mirror the catalog here.
 
 ## Hot Paths
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
-- `.harness-kit/agents.yaml` / `~/.harness-kit/agents.yaml` — provider roster and
-  default commands.
-- `scripts/check-agent-roster.py` — roster + delegation-floor gate.
-- `docs/copy/site.json` — public-facing docs companion copy and icon map.
-- `scripts/build-docs-site.sh` — regenerates `docs/site/` from live repo sources.
-- `scripts/check-docs-site.sh` — generated docs companion drift and oracle gate.
-- `scripts/record-delegation.py` / `scripts/summarize-delegations.py` —
-  receipt capture and operator report.
-- `skills/harness-engineering/SKILL.md` — harness mutation contract.
+- `scripts/check-agent-roster.py` — roster, doctrine, and source-harness gate.
 - `bootstrap.sh` — system-wide install; all first-party skills are global.
 
 ## Red Lines
+
+Harness Kit architecture constraints:
 
 - Cross-harness first: Claude, Codex, Pi, Antigravity. Harness-native features are
   optimizations, not the primary layer.
