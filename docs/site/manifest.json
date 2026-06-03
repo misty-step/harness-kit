@@ -35,6 +35,10 @@
     {
       "source": "backlog.d/092-html-first-docs-and-image-primitives.md",
       "title": "HTML-first docs companion with sparse generated image primitives"
+    },
+    {
+      "source": "backlog.d/093-jj-first-agent-vcs.md",
+      "title": "jj-first agent VCS and portable execution contract"
     }
   ],
   "copy_source": "docs/copy/site.json",
