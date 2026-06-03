@@ -43,11 +43,16 @@ core; this phase keeps QA-specific local fields.
 ```markdown
 ## Completion Gate
 - Exact end-user behavior verified: user or operator behavior exercised through the running surface.
+- App shape and live path chosen: browser, API, CLI, library, MCP, hybrid, or other concrete surface.
 - Value proposition exercised: specific promised outcome the QA walk covered.
 - Persona outcome observed: persona-specific success or failure observed in the run.
+- Live repo evidence read: package/config/docs/routes/commands/tests used to choose the QA path.
+- Acceptance source: oracle, ticket, spec, fixture, route, command, or explicit absence.
 - Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
+- Artifact/evidence location: committed evidence path, temp artifact path, screenshot, transcript, or log.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Repo-fit check: local QA convention or repo contract followed.
+- Adjacent-tests justification: why adjacent tests are sufficient, or why they are not runtime proof.
 - Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
 - Observability / instrumentation debt: named post-ship signal exists, was added, or is logged as debt.
 - Residual risk: unverified path, uncovered persona, or none with reason.
@@ -56,6 +61,8 @@ core; this phase keeps QA-specific local fields.
 For internal libraries or harness changes, replace end-user behavior with the
 developer/operator behavior under test. Adjacent unit tests are supporting
 evidence only; QA must name the running surface it actually exercised.
+Adjacent tests are enough only when they invoke the exact changed public
+surface; otherwise QA must say what live path remains unverified.
 If the changed behavior has no named post-ship signal, log, receipt, benchmark,
 or evidence artifact, report it as instrumentation debt rather than hiding it
 inside generic residual risk.

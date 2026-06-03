@@ -101,6 +101,8 @@ hardening run / waiver.
 ```markdown
 ## Completion Gate
 - Exact end-user behavior changed: behavior or internal operator behavior delivered by this branch.
+- Live repo evidence read: files, docs, configs, tests, receipts, or runtime artifacts used to judge fit.
+- Acceptance source: ticket oracle, context packet, spec, fixture, contract, route, command, or explicit absence.
 - Evidence that proves it: test output, QA artifact, gate result, or receipt proving the behavior.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Oracle / acceptance artifact hash: sha256 digest for any fixture, contract, golden file, transcript, screenshot, or equivalent acceptance source used by the oracle.
@@ -114,6 +116,10 @@ If any phase cannot fill the block with live evidence, `/deliver` is not
 merge-ready. "Gate passed" is necessary evidence, not the whole acceptance
 argument. Hardening recommendations are recorded in the receipt; they extend
 the clean loop only when a phase verdict makes the test-strength gap blocking.
+Treat "structurally valid but not repo-fit" as dirty: generic repo-local
+skills, stale commands, unexercised executable paths, scaffold-only proof, or
+adjacent tests that do not invoke the changed surface keep `/deliver` out of
+merge-ready.
 
 `/reflect` remains mandatory. Do not collapse reflection into the delivery
 brief. The brief explains the delivered result; `/reflect` captures the

@@ -61,6 +61,27 @@ Generated local skill includes:
 - A closeout note naming what the lead accepted, rejected, and left risky.
 - A generated-skill quality gate: fail on placeholders, guessed commands,
   missing live surfaces, or no eval seed.
+- A post-generate acceptance block comparing the generated skill to live repo
+  language, commands, docs, shared root, bridge topology, observable surfaces,
+  and known user corrections.
+
+## Post-Generate Acceptance
+
+Before claiming the generated repo skill is usable, compare it against live repo
+evidence. Passing frontmatter or scaffold validation is structural proof only.
+
+```markdown
+## Acceptance Evidence
+- Live repo evidence read: repo files, docs, commands, routes, configs, harness roots, and user corrections inspected.
+- Acceptance source: user request, repo-local workflow, value proposition, ticket, or explicit absence.
+- Evidence that proves it: diff, smoke output, eval result, generated artifact path, or transcript proving the repo-local workflow is connected.
+- Exact command/path/route exercised: command, URL, route, tool call, generated path, or smoke oracle run.
+- Oracle / acceptance artifact hash: sha256 digest for any fixture, transcript, screenshot, or contract used by the generated skill, or state that no artifact-backed oracle exists.
+- Contract-change acknowledgment: reason when generating the skill changes an existing repo-local acceptance contract, or state that no contract changed.
+- Repo-fit check: language, commands, docs, shared root, bridge topology, and observable surfaces match this repo.
+- Structural gate: frontmatter, eval seed, scaffold validation, or smoke check result.
+- Residual risk: missing product truth, untested command, skipped bridge, or none with reason.
+```
 
 ## Gotchas
 

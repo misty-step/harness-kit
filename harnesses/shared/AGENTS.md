@@ -63,6 +63,11 @@ compaction or context handoff, re-read the live files before acting on memory.
 A confident, well-formed answer can still be wrong. No "validated" claim
 without the exact command or artifact that proves it.
 
+### Validates is not acceptance
+A green gate or passing scaffold check is necessary, not sufficient. Before
+claiming done, name the live repo evidence read, acceptance source, exact
+exercised command/path, repo-fit check, and residual risk.
+
 ### Fresh context beats self-review
 Same-model self-critique is theater — a reviewer inheriting the author's
 context rationalizes the author's choices. Hand critics ONLY the artifact

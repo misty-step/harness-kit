@@ -64,9 +64,11 @@ Assert at start; refuse with a clear reason on any miss.
   locally verified git-native branch. A `dont-ship` verdict still blocks.
   For Harness Kit and any repo with `dagger.json`, the documented gate is
   `dagger call check --source=.` on the exact HEAD being landed.
-- Acceptance evidence exists for this exact HEAD: exact behavior changed,
-  live evidence, command/path exercised, repo-fit check, and residual
-  unverified paths. When the oracle depends on a fixture, contract, golden
+- Acceptance evidence exists for this exact HEAD (`git rev-parse HEAD`):
+  exact behavior changed, live repo evidence read, acceptance source,
+  command/path exercised, repo-fit check, and residual unverified paths.
+  Refuse stale evidence that names a different SHA or omits the SHA when the
+  upstream phase could have produced one. When the oracle depends on a fixture, contract, golden
   file, screenshot, Gherkin feature, transcript, or equivalent acceptance
   artifact, the evidence includes its `sha256` hash. If acceptance criteria,
   artifact contents, or assertion strength changed, the evidence includes an
@@ -251,6 +253,7 @@ Bounded scope: the just-shipped work only. Pass as context:
 - Merged SHA on master.
 - Closing backlog IDs.
 - Reference IDs (non-closing).
+- Accepted Acceptance Evidence refs for the exact shipped HEAD.
 
 Capture reflect's outputs:
 
@@ -309,6 +312,7 @@ Emit a single block covering:
 - Docs touched (path list) or "none required."
 - Reflect outputs grouped by category: backlog mutations applied, harness
   proposals on `harness/reflect-outputs`, retro notes, coaching.
+- Accepted Acceptance Evidence refs carried into `/reflect` and final report.
 - Harness branch name.
 - Roster delegation report: provider lanes used upstream and in final-mile
   work, why each was dispatched, parallel/split/competing-worktree pattern,

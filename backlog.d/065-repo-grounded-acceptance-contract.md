@@ -28,30 +28,30 @@ generic, stale, or untested against the changed executable path.
 
 ## Oracle
 
-- [ ] `skills/code-review/SKILL.md` requires every ship verdict to include:
+- [x] `skills/code-review/SKILL.md` requires every ship verdict to include:
       base/ref reviewed, files inspected, acceptance source, exact gates or
       executable paths exercised, and residual unverified runtime paths.
-- [ ] `skills/qa/SKILL.md` names "repo-fit evidence" explicitly: app shape,
+- [x] `skills/qa/SKILL.md` names "repo-fit evidence" explicitly: app shape,
       live path chosen, concrete command/URL/tool call, artifact location, and
       why adjacent tests were or were not enough.
-- [ ] `skills/ship/SKILL.md` refuses to land merge-ready work that lacks
+- [x] `skills/ship/SKILL.md` refuses to land merge-ready work that lacks
       acceptance evidence for the exact HEAD, and carries accepted evidence
       refs into the final report and `/reflect` packet.
-- [ ] `skills/seed/SKILL.md` adds a post-install acceptance section that
+- [x] `skills/create-repo-skill/SKILL.md` adds a post-generate acceptance section that
       compares vendored harness state against live repo language, commands,
       docs, shared skill root, bridge topology, and known user corrections from
       session history.
-- [ ] `skills/deliver/SKILL.md` treats "valid but not repo-fit" as dirty:
+- [x] `skills/deliver/SKILL.md` treats "valid but not repo-fit" as dirty:
       if review, QA, or repo-local vendoring evidence says the output is
       generic, stale, or unexercised, `/deliver` exits with remaining work instead of
       merge-ready.
-- [ ] `harnesses/shared/AGENTS.md` gets a compact always-on rule:
+- [x] `harnesses/shared/AGENTS.md` gets a compact always-on rule:
       "validates is not acceptance; name the live repo evidence and the
       repo-fit check before claiming done."
-- [ ] A regression case exists under the most appropriate skill eval suite
+- [x] A regression case exists under the most appropriate skill eval suite
       where a synthetic harness passes structural checks but fails repo-fit
       evidence because commands, language, or skill-root adoption are wrong.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Notes
 
@@ -96,6 +96,41 @@ Each relevant skill should produce a short acceptance block:
 
 This block is deliberately boring. It should be easy to paste into receipts,
 review verdicts, QA notes, and final human briefs.
+
+### Implementation Notes
+
+- `skills/seed/SKILL.md` is retired/not present on current `master`; the live
+  repo-local vendoring/generation owner is `/create-repo-skill`, so the oracle
+  was satisfied there rather than reviving `/seed`.
+- `/code-review`, `/qa`, `/deliver`, and `/ship` now name live repo evidence,
+  acceptance source, exact exercised command/path/route, repo-fit check, and
+  residual risk in their existing `Completion Gate` flow.
+- `/create-repo-skill` and `/harness-engineering` now include schema-valid
+  post-generate/post-sync `Acceptance Evidence` templates for repo-fit proof.
+- New eval case: `skills/code-review/evals/cases/repo-fit-evidence.md`; grader:
+  `skills/code-review/evals/graders/check-repo-fit.sh`.
+
+### Delegation Evidence
+
+- `claude` (`3019a7c9-b794-40ec-a270-e5d7044e6607`) identified the exact
+  missing fields in code-review, QA, ship, deliver, and create-repo-skill, and
+  caught the dead `/seed` path plus the `Acceptance Evidence` checker trap.
+- `grok-build` (`f99ea110-90ab-4eb1-b711-a481ec6c2f67`) converged on the
+  shared "validates is not acceptance" rule, repo-fit fields, and code-review
+  eval placement; its narrower patch recommendation was rejected where the
+  backlog oracle explicitly named QA, deliver, and ship.
+
+### Verification
+
+- `bash scripts/build-docs-site.sh`
+- `bash scripts/generate-index.sh`
+- `git diff --check`
+- `python3 scripts/check-evidence-blocks.py skills`
+- `python3 scripts/check-agent-roster.py`
+- `python3 skills/harness-engineering/scripts/validate-evals.py`
+- `bash scripts/check-docs-site.sh`
+- `skills/code-review/evals/graders/check-repo-fit.sh <sample-output>`
+- `dagger call check --source=.` -> 16 passed, 0 failed
 
 ### Relationship to other tickets
 

@@ -70,6 +70,25 @@ Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gat
 - New mechanisms include a gate, eval, or smoke path.
 - Every run ends clean: no untracked or modified files.
 
+## Post-Sync Acceptance
+
+After changing skills, shared doctrine, generated docs, bootstrap, roster, or
+harness projections, prove the output is repo-fit, not merely structurally
+valid.
+
+```markdown
+## Acceptance Evidence
+- Live repo evidence read: source skill, shared doctrine, generated docs, bootstrap output, roster, or harness projection inspected.
+- Acceptance source: backlog oracle, skill contract, generated index/docs contract, bootstrap contract, or explicit absence.
+- Evidence that proves it: command output, diff, generated artifact, bootstrap transcript, eval result, or Dagger output.
+- Exact command/path/route exercised: check, generator, bootstrap, smoke path, projection path, or route run.
+- Oracle / acceptance artifact hash: sha256 digest for any fixture, generated artifact, transcript, or contract used as the oracle, or state that no artifact-backed oracle exists.
+- Contract-change acknowledgment: reason when the change alters an acceptance contract, generated source, or assertion surface, or state that no contract changed.
+- Repo-fit check: source/generator/projection agree; no stale generated docs, wrong skill root, stale command, or copied bridge remains.
+- Structural gate: frontmatter, roster, evidence-block, docs, index, eval, or Dagger gate result.
+- Residual risk: skipped harness, external dependency, or none with reason.
+```
+
 ## Gotchas
 
 - Stale AGENTS prose is worse than missing prose.

@@ -216,15 +216,23 @@ Local fields include hardening recommendation / waiver.
 ```markdown
 ## Completion Gate
 - Exact end-user behavior changed: behavior or internal operator behavior the diff changes.
+- Base/ref reviewed: base commit/branch and head commit reviewed.
+- Files inspected: changed paths or path families the verdict actually inspected.
+- Live repo evidence read: files, docs, config, tests, or runtime artifacts read before judging.
+- Acceptance source: oracle, ticket, spec, fixture, contract, route, command, or explicit absence.
 - Evidence that proves it: review finding, test output, QA artifact, or command result behind the verdict.
 - Exact command/path/route exercised: command, route, file path, artifact, or tool call inspected.
 - Repo-fit check: live repo pattern or contract the verdict compared against.
 - Hardening recommendation / waiver: mode recommended, mode run, or waiver reason.
+- Unverified runtime paths: changed executable paths not exercised, or a reason there are none.
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
 If there is no end-user behavior because the diff is internal, say so and name
 the developer/operator behavior that changed instead.
+Do not issue Ship or Conditional when the evidence is generic, stale, names no
+base/ref, skips changed executable paths, or only proves that a structural gate
+passed.
 
 ## Review Scoring
 
