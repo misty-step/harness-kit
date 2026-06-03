@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-BLOCK_HEADINGS = {"Completion Gate", "Acceptance Evidence"}
+BLOCK_HEADINGS = {"Completion Gate", "Acceptance Evidence", "Formal Spec"}
 
 REQUIRED_FIELDS = {
     "Completion Gate": (
@@ -24,6 +24,14 @@ REQUIRED_FIELDS = {
         "Oracle / acceptance artifact hash",
         "Contract-change acknowledgment",
         "Residual risk",
+    ),
+    "Formal Spec": (
+        "Formal Spec Required",
+        "Informal spec",
+        "Formal examples",
+        "Acceptance oracle",
+        "Hardening budget",
+        "Waiver path",
     ),
 }
 
@@ -79,7 +87,7 @@ def parse_evidence_blocks(path: Path, text: str) -> list[EvidenceBlock]:
 
         heading_match = HEADING_RE.match(stripped)
         heading = heading_match.group(2) if heading_match else ""
-        if heading_match and heading in BLOCK_HEADINGS:
+        if not in_fence and heading_match and heading in BLOCK_HEADINGS:
             start_line = index + 1
             start_level = len(heading_match.group(1))
             fields: dict[str, tuple[str, int]] = {}

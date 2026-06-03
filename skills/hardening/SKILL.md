@@ -62,6 +62,7 @@ default fast path:
 | `/qa` relies on examples, fixtures, Gherkin, contracts, or golden files whose values should matter | `/hardening acceptance` |
 | `/ci` reports missing hardening visibility for a repo that needs it | `/hardening risk` |
 | `/deliver` carries a blocking phase verdict naming a test-strength gap | the mode named by that phase |
+| A context packet declares `Formal Spec Required: yes` | run the formal-spec ladder in `references/formal-spec-ladder.md` |
 
 ## Target Selection
 
@@ -182,6 +183,9 @@ No "hardened" claim without the exact command and rerun evidence.
   mechanics.
 - Do not add slow mutation gates to the normal fast path unless a repo-local
   ticket explicitly chooses that tradeoff.
+- Formal-spec ladder evidence is opt-in. Do not route ordinary tickets through
+  the ladder unless the packet names `Formal Spec Required: yes` and the
+  triggering criteria.
 
 ## Source Inspiration
 

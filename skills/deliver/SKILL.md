@@ -103,8 +103,8 @@ Completion evidence core applies: behavior changed or verified, live evidence,
 exact command/path/route, repo-fit check, and residual risk. See
 `harnesses/shared/AGENTS.md` (Completion Evidence).
 
-Local fields include oracle hash, contract-change acknowledgment, and
-hardening run / waiver.
+Local fields include oracle hash, contract-change acknowledgment, hardening
+run / waiver, and formal-spec ladder evidence when the packet required it.
 
 ```markdown
 ## Completion Gate
@@ -118,6 +118,7 @@ hardening run / waiver.
 - Agent readiness delta: improved, preserved, or regressed; regressions name the contract-change note and waiver.
 - Repo-fit check: live repo pattern, contract, or boundary this branch follows.
 - Hardening run / waiver: hardening mode run, blocking recommendation, or waiver reason.
+- Formal-spec ladder evidence: when `Formal Spec Required: yes`, commands run, survivor disposition, critic/verifier result, or named waiver path.
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
@@ -174,7 +175,7 @@ let the outer loop own the final session-level shipping brief.
 | implement | `/implement` | TDD red→green→refactor + per-chunk milestone critic gate (AGENTS.md L2), commits on feature branch | — |
 | review | `/code-review` | parallel bench review, synthesized findings | — |
 | ci | `/ci` | dagger audit + green pipeline | `/ci` itself decides — do not pre-filter |
-| hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, or DRY hardening evidence | no phase issued a blocking hardening requirement, or an explicit waiver is recorded |
+| hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, DRY, or formal-spec ladder evidence | no phase issued a blocking hardening requirement, no packet declared `Formal Spec Required: yes`, or an explicit waiver is recorded |
 | refactor | `/refactor` | diff-aware simplification | trivial diffs (<20 LOC, single file) |
 | design | `/design` + `/a11y` | visual intent, taste, and accessibility evidence | no UI paths by detector or equivalent diff inspection |
 | qa | `/qa` | browser-driven exploratory test, evidence | no user-facing surface (pure library/refactor) |

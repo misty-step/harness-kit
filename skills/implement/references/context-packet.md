@@ -74,6 +74,14 @@ relevant tests. Lets the builder ground itself without guessing.
 Specific test files/cases the builder must produce. Sharpens the oracle
 from "tests pass" to "these tests exist and pass."
 
+### `formal spec`
+
+Optional, but hard-gated when present as `Formal Spec Required: yes`. The block
+must include an informal spec, formal examples, acceptance oracle, hardening
+budget, and waiver path. In that case `/implement` starts with a failing
+acceptance test from the formal examples before unit tests or production code.
+Packets without the flag stay on the ordinary red-green-refactor path.
+
 ## Packet resolution order
 
 `/implement` looks for the packet in this order and stops at the first hit:

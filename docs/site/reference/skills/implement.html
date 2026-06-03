@@ -73,13 +73,10 @@ Required packet fields (hard gate — missing any = stop):
 - `oracle` (how we know it&#x27;s done, ideally executable commands)
 - `implementation sequence` (ordered steps, or explicit &quot;single chunk&quot;)
 
-See `references/context-packet.md` for the full shape.
-
-**Output.**
-- Code + tests on a feature branch (`&lt;type&gt;/&lt;slug&gt;` from current branch)
-- All tests green (new + existing)
-- Working tree clean (no debug prints, no scratch files)
-- Commits in repo convention — one logical unit per commit
+If the packet contains `Formal Spec Required: yes`, also require a `Formal
+Spec` block with: informal spec, formal examples, acceptance oracle, hardening
+budget, and waiver path. Missing or vague formal-spec fields are packet
+incompleteness, not builder judgment.
 ...</code></pre>
     </section>
     <section class="checklist">

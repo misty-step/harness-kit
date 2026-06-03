@@ -193,6 +193,35 @@ When an acceptance artifact exists, include this block:
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 
+For high-risk or ambiguity-heavy changes, require the formal-spec ladder when
+two or more are true:
+
+- core business rules, money/security/auth behavior, data migrations,
+  permissions, or cross-service contracts change;
+- user-facing behavior is best expressed as examples, scenarios, CLI
+  transcripts, API fixtures, or golden files;
+- a regression would be expensive to detect manually after merge;
+- changed code has high complexity, low coverage, or a known weak oracle;
+- implementation needs multiple agents or long-running milestones where
+  context drift is likely.
+
+When the ladder triggers, the packet must include this block before
+implementation starts:
+
+```markdown
+## Formal Spec
+- Formal Spec Required: yes (cite the trigger criteria)
+- Informal spec: plain-language behavior and business rule.
+- Formal examples: Gherkin scenarios, fixture paths, CLI transcripts, API examples, or golden files.
+- Acceptance oracle: executable command or route that must fail before implementation and pass after.
+- Hardening budget: named hardening modes and bounded time/scope cap.
+- Waiver path: who/what may waive acceptance-first, property, mutation, or acceptance-mutation evidence and how residual risk is recorded.
+```
+
+If the ladder does not trigger, omit the block or state `Formal Spec Required:
+no` in the risk notes with the reason. Do not make Gherkin, property testing,
+or mutation testing the default path for low-risk work.
+
 ## Implementation Sequence
 1. <first chunk>
 2. <second chunk>

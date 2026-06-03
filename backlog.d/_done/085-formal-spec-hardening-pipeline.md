@@ -1,7 +1,7 @@
 # Formal spec-to-hardening pipeline
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: M
 
 ## Goal
@@ -69,22 +69,22 @@ Use this ladder only for high-risk or ambiguity-heavy changes:
 
 ## Oracle
 
-- [ ] `/shape` defines when a packet must include `Formal Spec Required: yes`
+- [x] `/shape` defines when a packet must include `Formal Spec Required: yes`
       and which fields are required when set: informal spec, formal examples,
       acceptance oracle, hardening budget, and waiver path.
-- [ ] `/implement` recognizes formal-spec packets and starts with acceptance
+- [x] `/implement` recognizes formal-spec packets and starts with acceptance
       tests before unit tests or production code.
-- [ ] `/hardening` adds a "formal-spec ladder" reference that composes existing
+- [x] `/hardening` adds a "formal-spec ladder" reference that composes existing
       risk/property/mutation/acceptance modes without restating all of them in
       the main skill.
-- [ ] `/deliver` records formal-spec ladder evidence in its receipt when the
+- [x] `/deliver` records formal-spec ladder evidence in its receipt when the
       packet required it, including commands run, survivor disposition, and
       critic/verifier result.
-- [ ] `073`'s evidence checker recognizes the formal-spec evidence fields once
+- [x] `073`'s evidence checker recognizes the formal-spec evidence fields once
       that ticket lands.
-- [ ] A sample packet or fixture demonstrates a high-risk change that triggers
+- [x] A sample packet or fixture demonstrates a high-risk change that triggers
       the ladder and a low-risk change that does not.
-- [ ] `dagger call check --source=.` passes.
+- [x] `dagger call check --source=.` passes.
 
 ## Implementation Sequence
 
@@ -152,3 +152,63 @@ Require the ladder when two or more are true:
 
 - Depends on: `073`.
 - Composes with: `065`, `084`.
+
+## What Was Built
+
+- Added `/hardening`'s formal-spec ladder reference with trigger criteria,
+  ladder sequence, waiver policy, and survivor disposition rules.
+- Updated `/shape` so high-risk packets can declare `Formal Spec Required:
+  yes` with the required formal fields.
+- Updated `/implement` so formal-spec packets start with a failing acceptance
+  test from formal examples before unit tests or production code.
+- Updated `/deliver` and its receipt contract to record formal-spec ladder
+  commands, survivor disposition, critic/verifier result, and waiver state.
+- Extended `scripts/check-evidence-blocks.py` so real `## Formal Spec` blocks
+  require the formal-spec fields while fenced instructional templates are
+  ignored.
+- Added high-risk and low-risk sample packets under
+  `skills/shape/references/examples/`.
+
+## Verification
+
+- `python3 scripts/check-evidence-blocks.py skills` - passed.
+- `python3 scripts/check-frontmatter.py` - passed with existing warnings for
+  `karpathy-guidelines` and `model-research`.
+- `python3 scripts/check-agent-roster.py` - passed.
+- `python3 -m py_compile scripts/check-evidence-blocks.py ci/src/harness_kit_ci/main.py` - passed.
+- `bash scripts/check-docs-site.sh --self-test` - passed.
+- `bash scripts/check-docs-site.sh` - passed.
+- `git diff --check` - passed.
+- `dagger call check --source=.` - passed.
+
+## Acceptance Hashes
+
+- Formal-spec ladder reference:
+  `sha256:525372d0b0a67d897b89d8dd8a192d661b12e9c23fa6c8911be88781bf7a249d`
+  `skills/hardening/references/formal-spec-ladder.md`
+- High-risk sample packet:
+  `sha256:63fe34b20d7b7419a3e5ea2a092340b4d89af1bc63d233630b900a241b0b1488`
+  `skills/shape/references/examples/formal-spec-high-risk.md`
+- Low-risk sample packet:
+  `sha256:ca2393124e94bfb0d709e3b0ef5ba402a734a0df50de0a2353a257c01b3bdba3`
+  `skills/shape/references/examples/formal-spec-low-risk.md`
+
+## Delegation Evidence
+
+- claude receipt `5a2001b4-0691-4472-99b6-87e760f0afee` recommended an
+  optional formal-spec block, hardening reference, acceptance-first implement
+  route, additive receipt evidence, and optional evidence checker support;
+  accepted.
+- grok-build receipt `cb7dd3f8-6133-4888-a725-bd61dafeb5b6` recommended the
+  same minimal opt-in surface and warned against new slow Dagger paths or
+  global hardening defaults; accepted.
+- claude diff-critic receipt `d7d26afd-d3bf-4228-b9d1-bb0316a77079` and
+  grok-build diff-critic receipt `8c0b4c51-4826-4a0b-b4a7-9f9114ccb9d6`
+  recorded tool-boundary failures; not used as verdict evidence.
+- codex diff-critic receipt `ce61e63a-b721-444d-a74a-4ac1ad583229` found a
+  blocking `/shape` self-containment gap; accepted and fixed by moving the
+  trigger criteria into `/shape`.
+- pi diff-critic receipt `72383da9-e3c7-49a8-8928-7ea47cd10a0c` found no
+  blocking gaps after reviewing the staged diff; accepted.
+- codex fix-critic receipt `ff3d3e5e-81cd-48da-bca6-6afd31a70f2e` rechecked the
+  `/shape` trigger fix and found the blocker cleared; accepted.

@@ -35,7 +35,15 @@ The entire `.harness-kit/` tree is gitignored.
     "evidence_dir": ".evidence/<branch>/<date>/",
     "ci_dir": "<state-dir>/ci/",
     "qa_dir": ".evidence/<branch>/<date>/",
-    "demo_mirror": "https://github.com/org/repo/releases/tag/qa-evidence-..."
+    "demo_mirror": "https://github.com/org/repo/releases/tag/qa-evidence-...",
+    "formal_spec_ladder": {
+      "required": true,
+      "packet_ref": "backlog.d/085-formal-spec-hardening-pipeline.md",
+      "commands_run": ["pytest tests/acceptance/test_auth_contract.py"],
+      "survivor_disposition": "all targeted mutants killed, or equivalent survivors named",
+      "critic_verifier_result": "fresh critic found no blocking oracle gap",
+      "waiver": null
+    }
   },
   "remaining_work": ["code-review: 2 blocking findings in auth.py"],
   "recommended_next": "fix-and-resume | abandon | human-review",

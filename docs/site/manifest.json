@@ -19,10 +19,6 @@
     {
       "source": "backlog.d/077-critique-skill.md",
       "title": "/critique: ad-hoc lens critic against a target"
-    },
-    {
-      "source": "backlog.d/085-formal-spec-hardening-pipeline.md",
-      "title": "Formal spec-to-hardening pipeline"
     }
   ],
   "copy_source": "docs/copy/site.json",

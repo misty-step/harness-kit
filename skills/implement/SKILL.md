@@ -49,6 +49,11 @@ Required packet fields (hard gate — missing any = stop):
 - `oracle` (how we know it's done, ideally executable commands)
 - `implementation sequence` (ordered steps, or explicit "single chunk")
 
+If the packet contains `Formal Spec Required: yes`, also require a `Formal
+Spec` block with: informal spec, formal examples, acceptance oracle, hardening
+budget, and waiver path. Missing or vague formal-spec fields are packet
+incompleteness, not builder judgment.
+
 See `references/context-packet.md` for the full shape.
 
 **Output.**
@@ -91,6 +96,12 @@ Spawn roster-backed **builder** lanes with:
 > You MUST write a failing test before production code. RED → GREEN →
 > REFACTOR → COMMIT. Exceptions: config files, generated code, UI layout.
 > Document any skipped-TDD step inline in the commit message.
+
+For packets with `Formal Spec Required: yes`, the first red test must be an
+acceptance test derived from the formal examples and acceptance oracle. Unit
+tests come after the failing acceptance check exists; production code comes
+after both acceptance and unit intent are executable. Waive this only through
+the packet's named waiver path and record the waiver in the Completion Gate.
 
 See `references/tdd-loop.md` for the full cycle and skip rules.
 
