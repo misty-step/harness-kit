@@ -1,7 +1,7 @@
 # Retire the global static-agent install (bootstrap allowlist + file deletion)
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: M
 
 ## Goal
@@ -76,3 +76,19 @@ usage.
 ## Related
 - Completes `061` (doctrine + rubric shipped there). codex design lane
   `5d9d6443` has the exact bootstrap shell.
+
+## What Was Built
+
+- `bootstrap.sh` now discovers and installs only the a11y global-agent trio,
+  converts stale Harness Kit `agents/` parent symlinks into per-file installs,
+  and removes retired managed symlinks or hash-identical copied role files
+  while preserving user-owned files.
+- Retired source agent files were deleted; the source `agents/` catalog is
+  guarded by `scripts/check-agent-roster.py`.
+- `/code-review` bench references now describe reviewer-lens labels rather than
+  static source agent files.
+- Added `scripts/test-bootstrap-agent-allowlist.sh` and a Dagger lane to prove
+  fake-`HOME` bootstrap idempotence, a11y-only installs, parent-symlink
+  migration, and user-owned retired-file preservation.
+
+Closes-backlog: 061b

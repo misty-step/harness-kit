@@ -62,14 +62,14 @@ catalog.
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
    Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-2. **Select internal reviewers (static map).** Do NOT hand-pick. Run the
+2. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
    selection algorithm in `references/bench-map.yaml`:
    - `git diff --name-only $BASE...HEAD` → changed files
-   - Start from `default`; union `add` agents for every rule whose glob
+   - Start from `default`; union `add` lenses for every rule whose glob
      matches any changed file; de-dupe; cap at 5 (critic pinned)
    - Bench size always in [3, 5]; selection is deterministic per diff
    Read `references/bench-map.md` for the full algorithm and
-   `references/internal-bench.md` for each agent's lens. Then craft a
+   `references/internal-bench.md` for each selected lens. Then craft a
    tailored prompt per selected reviewer. Load
    `references/deep-review-lens.md` when the diff needs root-cause,
    provenance, or long-running autoreview discipline.

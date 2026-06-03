@@ -20,7 +20,7 @@ You don't investigate/review/implement yourself. You:
 | **builder** | Implement, test, fix, gather evidence |
 | **critic** | Evaluate output quality, grade against criteria |
 | **Explore** | Codebase research, file discovery, pattern mapping |
-| **philosophy bench** | Design review — spawn ousterhout, carmack, grug, beck in parallel |
+| **philosophy bench** | Design review — spawn ad-hoc critics using the ousterhout, carmack, grug, and beck lenses in parallel |
 
 ### External tools (non-agent)
 

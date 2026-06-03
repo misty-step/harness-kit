@@ -180,6 +180,9 @@ WORK_LEDGER_FIELDS = {
     "next_action",
     "status",
 }
+ALLOWED_SOURCE_AGENTS = {"a11y-auditor.md", "a11y-critic.md", "a11y-fixer.md"}
+
+
 def markdown_section(text: str, heading: str) -> str:
     start = text.find(heading)
     if start == -1:
@@ -609,6 +612,19 @@ def validate_work_ledger(path: Path) -> list[dict[str, object]]:
     return records
 
 
+def validate_source_agent_catalog() -> None:
+    actual = {path.name for path in Path("agents").glob("*.md")}
+    extra = sorted(actual - ALLOWED_SOURCE_AGENTS)
+    missing = sorted(ALLOWED_SOURCE_AGENTS - actual)
+    if extra or missing:
+        detail = []
+        if extra:
+            detail.append(f"retired static agent file(s): {extra}")
+        if missing:
+            detail.append(f"missing allowed a11y agent file(s): {missing}")
+        raise SystemExit("agents/: " + "; ".join(detail))
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
@@ -628,6 +644,7 @@ def main() -> int:
     validate_no_source_skill_bridges()
     validate_no_retired_provider_references()
     validate_open_model_roster_review_due()
+    validate_source_agent_catalog()
     receipts = read_receipts(fixture_path)
     work_records = validate_work_records(work_record_fixture_path)
     work_ledger_records = validate_work_ledger(work_ledger_fixture_path)
@@ -691,6 +708,7 @@ def main() -> int:
     print("source repo: no repo-local skill bridges")
     print("active roster/docs: no retired provider references")
     print(f"{OPEN_MODEL_ROSTER_PATH}: review due date valid")
+    print(f"agents/: {len(ALLOWED_SOURCE_AGENTS)} source agent file(s) valid")
     print(f"{summary_script}: report helper valid")
     return 0
 

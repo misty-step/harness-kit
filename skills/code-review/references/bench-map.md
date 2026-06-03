@@ -1,23 +1,23 @@
-# Bench Map — Static Reviewer Selection
+# Bench Map — Static Reviewer-Lens Selection
 
-The marshal picks reviewers via a declarative path-glob map in
+The marshal picks reviewer lenses via a declarative path-glob map in
 `bench-map.yaml`. Deterministic, greppable, eval-able. No LLM classifier.
 
 ## How It Works
 
 ```
-changed files  ──►  match globs  ──►  union `add` agents with `default`
+changed files  ──►  match globs  ──►  union `add` lenses with `default`
                                    ──►  de-dupe
                                    ──►  cap at 5 (critic pinned)
                                    ──►  bench
 ```
 
 1. **Get changed files:** `git diff --name-only <base>...HEAD`
-2. **Start from `default`:** always 3 agents, always includes `critic`.
+2. **Start from `default`:** always 3 lenses, always includes `critic`.
 3. **Match rules:** for each rule, if ANY changed file matches ANY glob in
-   `paths`, union the rule's `add` list into the bench.
-4. **De-duplicate** — agents appear at most once.
-5. **Cap at 5.** If over, drop agents contributed by the rule with the
+   `paths`, union the rule's `add` lens labels into the bench.
+4. **De-duplicate** — lens labels appear at most once.
+5. **Cap at 5.** If over, drop lenses contributed by the rule with the
    fewest file matches. `critic` is never dropped.
 6. **Bench size stays in [3, 5]** for every diff.
 
@@ -30,7 +30,7 @@ runs — it never errors on unclassified diffs.
 ## How To Add a Rule
 
 Edit `bench-map.yaml`. Each rule has a `name`, a `paths` list of globs, and
-an `add` list of agents.
+an `add` list of reviewer-lens labels.
 
 ```yaml
 - name: graphql
@@ -40,8 +40,8 @@ an `add` list of agents.
 
 Constraints:
 
-- Agents in `add` MUST exist under `agents/<name>.md`. Non-existent
-  agents make the map unloadable.
+- Labels in `add` MUST exist in `internal-bench.md` or be defined as an
+  explicit ad-hoc critic in the review synthesis.
 - Keep rules specific. Overly broad globs inflate the bench and force the cap
   to drop useful reviewers.
 - Prefer 1-2 `add` agents per rule. `default` already carries 3.
@@ -51,19 +51,19 @@ Constraints:
 There is no per-repo override file yet.
 
 Manual overrides for a single review are fair game: the marshal may swap a
-reviewer or add an ad-hoc agent if the diff has concerns the map doesn't
+reviewer lens or add an ad-hoc critic if the diff has concerns the map doesn't
 capture (e.g. a one-off perf-critical hot loop). Document the swap in the
 synthesis output so it stays auditable.
 
-## Agents Referenced
+## Reviewer Lenses Referenced
 
-Only agents that exist in `agents/` may appear:
+Built-in lens labels:
 
 - `critic`, `ousterhout`, `carmack`, `grug`, `beck`
 - `a11y-auditor` (web UI accessibility)
 
-If you want a new specialty (e.g. security, performance), add the agent
-first, then reference it here.
+If you want a new specialty (e.g. security, performance), define it as an
+ad-hoc critic in the review synthesis before referencing it in a rule.
 
 ## Determinism
 

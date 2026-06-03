@@ -52,14 +52,6 @@ Primitives:
 - agent:a11y-auditor | agents/a11y-auditor.md | docs/site/reference/agents/a11y-auditor.html
 - agent:a11y-critic | agents/a11y-critic.md | docs/site/reference/agents/a11y-critic.html
 - agent:a11y-fixer | agents/a11y-fixer.md | docs/site/reference/agents/a11y-fixer.html
-- agent:beck | agents/beck.md | docs/site/reference/agents/beck.html
-- agent:builder | agents/builder.md | docs/site/reference/agents/builder.html
-- agent:carmack | agents/carmack.md | docs/site/reference/agents/carmack.html
-- agent:cooper | agents/cooper.md | docs/site/reference/agents/cooper.html
-- agent:critic | agents/critic.md | docs/site/reference/agents/critic.html
-- agent:grug | agents/grug.md | docs/site/reference/agents/grug.html
-- agent:ousterhout | agents/ousterhout.md | docs/site/reference/agents/ousterhout.html
-- agent:planner | agents/planner.md | docs/site/reference/agents/planner.html
 
 CI gates:
 - check-agent-roster
@@ -80,6 +72,7 @@ CI gates:
 - lint-python
 - lint-shell
 - lint-yaml
+- test-bootstrap-agent-allowlist
 - test-bun
 - test-harness-kit-config-loader
 - test-trace-record

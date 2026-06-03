@@ -388,6 +388,22 @@ print('No hardcoded user paths found.')
         )
 
     @function
+    async def test_bootstrap_agent_allowlist(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Verify bootstrap installs only allowlisted global agents."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "scripts/test-bootstrap-agent-allowlist.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_deliver_composition(
         self,
         source: Annotated[
@@ -677,6 +693,11 @@ print('skills/: no claims primitives found.')
                 run_gate,
                 "check-harness-install-paths",
                 self.check_harness_install_paths(source),
+            )
+            tg.start_soon(
+                run_gate,
+                "test-bootstrap-agent-allowlist",
+                self.test_bootstrap_agent_allowlist(source),
             )
             tg.start_soon(run_gate, "check-deliver-composition", self.check_deliver_composition(source))
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))

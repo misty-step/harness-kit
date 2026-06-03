@@ -41,6 +41,9 @@ for skill_dir in "$REPO_ROOT"/skills/*/; do
   skill_md="$skill_dir/SKILL.md"
   [ -f "$skill_md" ] || continue
   name=$(basename "$skill_dir")
+  case "$name" in
+    .* ) continue ;;
+  esac
   emit_skill "$skill_md" "$name" "first-party"
 done
 
@@ -69,6 +72,6 @@ echo "" >> "$INDEX"
 # Collections (just copy from collections.yaml reference)
 echo "# Collections are defined in collections.yaml" >> "$INDEX"
 
-skill_count=$(find "$REPO_ROOT/skills" -maxdepth 1 -mindepth 1 -type d | wc -l | tr -d ' ')
+skill_count=$(find "$REPO_ROOT/skills" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | grep -v '^\.' | wc -l | tr -d ' ')
 echo ""
 echo "Generated index.yaml: $skill_count skills, $agent_count agents"

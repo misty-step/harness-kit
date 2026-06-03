@@ -11,9 +11,9 @@ rubric from `harnesses/shared/references/lenses.md` and dispatch an ad-hoc
 read-only critic embodying it (backlog 061, roles-not-files). Each returns
 findings as `finding · evidence file:line · impact`.
 
-## Agent Catalog
+## Lens Catalog
 
-| Agent | Lens | Best For |
+| Label | Lens | Best For |
 |-------|------|----------|
 | **critic** | Grading rubric: correctness, depth, simplicity, craft | Every review — the baseline evaluator |
 | **ousterhout** | Deep modules, information hiding, complexity management | API changes, module boundaries, abstractions |

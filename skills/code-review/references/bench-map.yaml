@@ -1,17 +1,17 @@
-# Static path-glob → reviewer map for /code-review
+# Static path-glob → reviewer-lens map for /code-review
 #
 # Selection algorithm (implemented by the marshal):
-#   1. Start with `default` (always 3 agents).
-#   2. For each rule whose `paths` glob matches ANY changed file, union its `add` agents.
-#   3. De-duplicate. Cap at 5 total; if over, drop agents contributed by the
+#   1. Start with `default` (always 3 lenses).
+#   2. For each rule whose `paths` glob matches ANY changed file, union its `add` lenses.
+#   3. De-duplicate. Cap at 5 total; if over, drop lenses contributed by the
 #      rule with the fewest file matches (critic is never dropped).
 #   4. Always include `critic`.
 #
 # Invariant: bench size is in [3, 5] for any diff. Selection is deterministic:
 # same diff → same bench.
 #
-# Only reference agents that exist under agents/. See bench-map.md
-# for how to add rules and override behavior.
+# Reviewer labels are ad-hoc critic lenses, not static agent files. See
+# bench-map.md for how to add rules and override behavior.
 
 default: [critic, ousterhout, grug]
 

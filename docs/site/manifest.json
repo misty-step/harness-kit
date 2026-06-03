@@ -9,10 +9,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/061b-retire-global-static-agent-install.md",
-      "title": "Retire the global static-agent install (bootstrap allowlist + file deletion)"
-    },
-    {
       "source": "backlog.d/065-repo-grounded-acceptance-contract.md",
       "title": "Repo-grounded acceptance contract for workflow skills"
     },
@@ -54,6 +50,7 @@
     "lint-python",
     "lint-shell",
     "lint-yaml",
+    "test-bootstrap-agent-allowlist",
     "test-bun",
     "test-harness-kit-config-loader",
     "test-trace-record",
@@ -467,86 +464,6 @@
       "page": "reference/agents/a11y-fixer.html",
       "role": "Specialist",
       "source": "agents/a11y-fixer.md"
-    },
-    {
-      "description": "TDD + simple design - \"Red. Green. Refactor",
-      "icon": "specialist",
-      "id": "agent:beck",
-      "kind": "agent",
-      "name": "beck",
-      "page": "reference/agents/beck.html",
-      "role": "Specialist",
-      "source": "agents/beck.md"
-    },
-    {
-      "description": "Implements specs via TDD. Follows the planner's context packet exactly. Heads-down execution.",
-      "icon": "specialist",
-      "id": "agent:builder",
-      "kind": "agent",
-      "name": "builder",
-      "page": "reference/agents/builder.html",
-      "role": "Specialist",
-      "source": "agents/builder.md"
-    },
-    {
-      "description": "Direct implementation + shippability - \"Focus is deciding what NOT to do",
-      "icon": "specialist",
-      "id": "agent:carmack",
-      "kind": "agent",
-      "name": "carmack",
-      "page": "reference/agents/carmack.html",
-      "role": "Specialist",
-      "source": "agents/carmack.md"
-    },
-    {
-      "description": "Classicist TDD + no internal mocks \u2014 \"A mock is a crutch. It lets you get a green test while the integration is broken.",
-      "icon": "specialist",
-      "id": "agent:cooper",
-      "kind": "agent",
-      "name": "cooper",
-      "page": "reference/agents/cooper.html",
-      "role": "Specialist",
-      "source": "agents/cooper.md"
-    },
-    {
-      "description": "Evaluates builder output against grading criteria. Skeptical by default. Fails or approves.",
-      "icon": "specialist",
-      "id": "agent:critic",
-      "kind": "agent",
-      "name": "critic",
-      "page": "reference/agents/critic.html",
-      "role": "Specialist",
-      "source": "agents/critic.md"
-    },
-    {
-      "description": "Complexity demon hunter - \"complexity very, very bad",
-      "icon": "specialist",
-      "id": "agent:grug",
-      "kind": "agent",
-      "name": "grug",
-      "page": "reference/agents/grug.html",
-      "role": "Specialist",
-      "source": "agents/grug.md"
-    },
-    {
-      "description": "Deep modules + information hiding - \"Deep modules manage complexity",
-      "icon": "specialist",
-      "id": "agent:ousterhout",
-      "kind": "agent",
-      "name": "ousterhout",
-      "page": "reference/agents/ousterhout.html",
-      "role": "Specialist",
-      "source": "agents/ousterhout.md"
-    },
-    {
-      "description": "Decomposes work into buildable specs. Writes context packets. Does NOT implement.",
-      "icon": "specialist",
-      "id": "agent:planner",
-      "kind": "agent",
-      "name": "planner",
-      "page": "reference/agents/planner.html",
-      "role": "Specialist",
-      "source": "agents/planner.md"
     }
   ],
   "workflows": [

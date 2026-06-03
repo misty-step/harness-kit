@@ -16,6 +16,8 @@ RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_TMP=""
 REMOTE_HARNESS_KIT=""
+ALLOWED_GLOBAL_AGENTS=(a11y-auditor a11y-fixer a11y-critic)
+RETIRED_GLOBAL_AGENTS=(beck builder carmack cooper critic grug ousterhout planner)
 
 cleanup_remote_tmp() {
   [ -z "$REMOTE_TMP" ] && return 0
@@ -89,6 +91,42 @@ contains() {
   return 1
 }
 
+is_global_agent_allowed() {
+  local agent="$1"
+  contains "$agent" "${ALLOWED_GLOBAL_AGENTS[@]}"
+}
+
+is_harness_kit_agents_target() {
+  local target="$1"
+  case "$target" in
+    */harness-kit/agents|*/harness-kit/agents/*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+retired_agent_sha256() {
+  case "$1" in
+    beck) printf '%s\n' "e62243327817aa919d1fc6e1f9b50bacf915a977b1cb62b194a7d9933047d883" ;;
+    builder) printf '%s\n' "44866cd33025a82492c0265b054e7d9dcb34791ccc402778acdaf154d869176c" ;;
+    carmack) printf '%s\n' "a3779a7e2eb3551d1f82d378d88d739ca2c5a2fbffd9ec3b4f235cf8658279cb" ;;
+    cooper) printf '%s\n' "01b056a4ac5c2702e249063da0d2bd38e6fdf2f02dd7c129d26b8f6b046ecc34" ;;
+    critic) printf '%s\n' "da4f51f631355b445586193edff56ac7435b960d48629bdcb754aed2c9777566" ;;
+    grug) printf '%s\n' "0e4166caa7b103db02e983d8fb9c784b5d617dabe0b8f6d6e3d62787093ddbd7" ;;
+    ousterhout) printf '%s\n' "39a5f7bb89296cf0fb6fc653b8d40c2c386b33a446659a0b8419f3cf784aa140" ;;
+    planner) printf '%s\n' "8c65b4132a0b31de176f22610d800bcbb19af60e2ceb73f124da2efc173e697e" ;;
+    *) return 1 ;;
+  esac
+}
+
+file_sha256() {
+  local path="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$path" | awk '{print $1}'
+  else
+    shasum -a 256 "$path" | awk '{print $1}'
+  fi
+}
+
 cleanup_symlinks_under_prefix() {
   local dir="$1"
   local prefix="$2"
@@ -111,6 +149,65 @@ cleanup_symlinks_under_prefix() {
         fi
         ;;
     esac
+  done
+}
+
+prepare_agents_dir() {
+  local dir="$1"
+  local source_agents_dir="$2"
+  local label="$3"
+
+  if [ -L "$dir" ]; then
+    local target
+    target="$(readlink "$dir" || true)"
+    if [ "$target" = "$source_agents_dir" ] || is_harness_kit_agents_target "$target"; then
+      rm -f "$dir"
+      ok "    removed stale $label parent symlink"
+    else
+      warn "    $label is a user-owned symlink; leaving agents unchanged"
+      return 1
+    fi
+  elif [ -e "$dir" ] && [ ! -d "$dir" ]; then
+    warn "    $label is not a directory; leaving agents unchanged"
+    return 1
+  fi
+
+  mkdir -p "$dir"
+}
+
+cleanup_retired_agents() {
+  local dir="$1"
+  local source_root="$2"
+  local agent dest src target
+
+  [ -d "$dir" ] || return 0
+
+  for agent in "${RETIRED_GLOBAL_AGENTS[@]}"; do
+    dest="$dir/$agent.md"
+    src="$source_root/agents/$agent.md"
+    [ -e "$dest" ] || [ -L "$dest" ] || continue
+
+    if [ -L "$dest" ]; then
+      target="$(readlink "$dest" || true)"
+      if is_harness_kit_agents_target "$target"; then
+        rm -f "$dest"
+        ok "    removed retired agent $agent"
+      else
+        warn "    preserving user-owned agent $agent"
+      fi
+    elif [ -f "$dest" ]; then
+      local expected actual
+      expected="$(retired_agent_sha256 "$agent" || true)"
+      actual="$(file_sha256 "$dest")"
+      if { [ -f "$src" ] && cmp -s "$src" "$dest"; } || { [ -n "$expected" ] && [ "$actual" = "$expected" ]; }; then
+        rm -f "$dest"
+        ok "    removed retired copied agent $agent"
+      else
+        warn "    preserving user-owned agent $agent"
+      fi
+    else
+      warn "    preserving user-owned agent $agent"
+    fi
   done
 }
 
@@ -368,7 +465,9 @@ discover_local() {
 
   for agent in "$HARNESS_KIT"/agents/*.md; do
     [ -f "$agent" ] || continue
-    GLOBAL_AGENTS+=("$(basename "$agent" .md)")
+    agent="$(basename "$agent" .md)"
+    is_global_agent_allowed "$agent" || continue
+    GLOBAL_AGENTS+=("$agent")
   done
 }
 
@@ -405,7 +504,9 @@ discover_remote() {
 
   for agent in "$REMOTE_HARNESS_KIT"/agents/*.md; do
     [ -f "$agent" ] || continue
-    GLOBAL_AGENTS+=("$(basename "$agent" .md)")
+    agent="$(basename "$agent" .md)"
+    is_global_agent_allowed "$agent" || continue
+    GLOBAL_AGENTS+=("$agent")
   done
 }
 
@@ -426,48 +527,6 @@ if [ ${#GLOBAL_AGENTS[@]} -eq 0 ]; then
   err "No agents found"
   exit 1
 fi
-
-link_parent_dir() {
-  local src="$1"
-  local dest="$2"
-  local label="$3"
-
-  if [ -L "$dest" ]; then
-    local current
-    current="$(readlink "$dest")"
-    if [ "$current" = "$src" ]; then
-      ok "    $label (already linked)"
-      return 0
-    fi
-    # Stale symlink to different location — replace
-    rm -f "$dest"
-  elif [ -d "$dest" ]; then
-    # Migrate from per-entry symlinks to parent symlink.
-    # Remove Harness Kit-managed symlinks; warn about non-symlink entries.
-    local has_non_symlink=0
-    local entry target
-    for entry in "$dest"/*; do
-      [ -e "$entry" ] || [ -L "$entry" ] || continue
-      if [ -L "$entry" ]; then
-        target="$(readlink "$entry" || true)"
-        case "$target" in
-          "$src"/*|"$HARNESS_KIT"/*) rm -f "$entry" ;;
-          *) has_non_symlink=1 ;;
-        esac
-      else
-        has_non_symlink=1
-      fi
-    done
-    if [ "$has_non_symlink" -eq 1 ]; then
-      warn "    $label: non-Harness Kit entries exist, keeping per-entry links"
-      return 1
-    fi
-    rmdir "$dest" 2>/dev/null || { warn "    $label: dir not empty after cleanup"; return 1; }
-  fi
-
-  ln -sfn "$src" "$dest"
-  ok "    $label → $src"
-}
 
 link_local() {
   local harness="$1"        # e.g. "claude"
@@ -497,11 +556,11 @@ link_local() {
   done
 
   info "  Linking agents..."
-  if ! link_parent_dir "$HARNESS_KIT/agents" "$agents_dir" "agents/"; then
-    # Fallback: per-agent symlinks
+  if prepare_agents_dir "$agents_dir" "$HARNESS_KIT/agents" "agents/"; then
     local agent src
     local agent_files=()
     for agent in "${GLOBAL_AGENTS[@]}"; do agent_files+=("$agent.md"); done
+    cleanup_retired_agents "$agents_dir" "$HARNESS_KIT"
     cleanup_symlinks_under_prefix "$agents_dir" "$HARNESS_KIT/agents" "${agent_files[@]}"
     for agent in "${GLOBAL_AGENTS[@]}"; do
       src="$HARNESS_KIT/agents/$agent.md"
@@ -580,6 +639,8 @@ install_remote() {
   done
 
   info "  Installing agents..."
+  prepare_agents_dir "$agents_dir" "$REMOTE_HARNESS_KIT/agents" "agents/" || return 0
+  cleanup_retired_agents "$agents_dir" "$REMOTE_HARNESS_KIT"
   for agent in "${GLOBAL_AGENTS[@]}"; do
     download_agent "$agents_dir" "$agent"
   done
@@ -651,7 +712,7 @@ if [ "$installed" -eq 0 ]; then
 fi
 
 # --- Git hooks: ensure core.hooksPath is set ---
-if [ -n "$HARNESS_KIT" ] && [ -d "$HARNESS_KIT/.githooks" ]; then
+if [ -n "$HARNESS_KIT" ] && [ -d "$HARNESS_KIT/.githooks" ] && command -v git >/dev/null 2>&1; then
   current_hooks_path="$(git -C "$HARNESS_KIT" config core.hooksPath 2>/dev/null || true)"
   if [ "$current_hooks_path" != ".githooks" ]; then
     git -C "$HARNESS_KIT" config core.hooksPath .githooks
