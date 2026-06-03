@@ -8,6 +8,8 @@
 #   verdict_write "feat-foo" '{"branch":"feat-foo","verdict":"ship",...}'
 #   verdict_read  "feat-foo"     # prints verdict JSON
 #   verdict_validate "feat-foo"  # returns 0 if verdict exists and SHA matches HEAD
+#   verdict_push origin          # pushes refs/verdicts/* to a remote
+#   verdict_fetch origin         # fetches refs/verdicts/* from a remote
 #   verdict_delete "feat-foo"    # removes verdict ref
 #   verdict_list                 # prints all verdict refs
 
@@ -108,4 +110,30 @@ verdict_delete() {
 # Prints: one ref per line (short name)
 verdict_list() {
   git for-each-ref "${VERDICTS_REF_PREFIX}/" --format='%(refname:short)'
+}
+
+# Push all local verdict refs to a git remote.
+# Args: [remote] (default: origin)
+# Returns: 0 on success. No local verdicts is a successful no-op.
+verdict_push() {
+  local remote="${1:-origin}"
+  if ! git for-each-ref --format='%(refname)' "${VERDICTS_REF_PREFIX}/" | grep -q .; then
+    return 0
+  fi
+  git push "$remote" "${VERDICTS_REF_PREFIX}/*:${VERDICTS_REF_PREFIX}/*"
+}
+
+# Fetch all verdict refs from a git remote.
+# Args: [remote] (default: origin)
+# Returns: 0 on success. No remote verdicts is a successful no-op.
+verdict_fetch() {
+  local remote="${1:-origin}"
+  local refs
+  if ! refs="$(git ls-remote --refs "$remote" "${VERDICTS_REF_PREFIX}/*")"; then
+    return 1
+  fi
+  if [ -z "$refs" ]; then
+    return 0
+  fi
+  git fetch "$remote" "${VERDICTS_REF_PREFIX}/*:${VERDICTS_REF_PREFIX}/*"
 }

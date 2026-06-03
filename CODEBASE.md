@@ -272,7 +272,6 @@ The active backlog clusters into five themes.
 
 ### Sync And Future Automation
 
-- `backlog.d/026-multi-machine-sync.md`: sync verdict refs across machines.
 - `backlog.d/031-harness-auto-tune-gepa.md`: parked until enough real
   `/flywheel` cycle data exists.
 

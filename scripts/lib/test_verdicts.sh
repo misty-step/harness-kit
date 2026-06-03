@@ -7,6 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PASS=0
 FAIL=0
 TESTS=()
+export GIT_CONFIG_GLOBAL=/dev/null
 
 # Setup: create a temp git repo
 setup() {
@@ -204,6 +205,62 @@ test_check_landable_rejects_unknown_verdict() {
   sha="$(git rev-parse HEAD)"
   verdict_write feat-foo '{"branch":"feat-foo","base":"master","verdict":"unknown","reviewers":["critic"],"scores":{},"sha":"'"$sha"'","date":"2026-04-06T15:00:00Z"}'
   assert_exit "verdict_check_landable rejects unknown verdict" 1 verdict_check_landable feat-foo
+}
+
+test_verdict_push_fetch_syncs_between_clones() {
+  local remote clone_a clone_b sha json result
+  remote="$TEST_DIR/remote.git"
+  clone_a="$TEST_DIR/clone-a"
+  clone_b="$TEST_DIR/clone-b"
+
+  git init --bare -q "$remote"
+  git clone -q "$remote" "$clone_a"
+  (
+    cd "$clone_a"
+    git config user.name "Test User"
+    git config user.email "test@example.com"
+    git commit --allow-empty -m "initial" -q
+    git push -q -u origin master
+    git checkout -b feat-sync -q
+    git commit --allow-empty -m "feat sync" -q
+    git push -q -u origin feat-sync
+  )
+  git clone -q "$remote" "$clone_b"
+  sha="$(git -C "$clone_a" rev-parse HEAD)"
+  json='{"branch":"feat-sync","base":"master","verdict":"ship","reviewers":["critic"],"scores":{},"sha":"'"$sha"'","date":"2026-04-06T15:00:00Z"}'
+
+  (
+    cd "$clone_a"
+    # shellcheck source=scripts/lib/verdicts.sh
+    source "$SCRIPT_DIR/verdicts.sh"
+    verdict_write feat-sync "$json"
+    verdict_push origin
+  )
+
+  (
+    cd "$clone_b"
+    # shellcheck source=scripts/lib/verdicts.sh
+    source "$SCRIPT_DIR/verdicts.sh"
+    verdict_fetch origin
+    result="$(verdict_read feat-sync)"
+    assert_eq "verdict_fetch makes clone-a verdict visible in clone-b" "$json" "$result"
+  )
+}
+
+test_verdict_push_no_verdicts_is_noop() {
+  git remote add origin "$TEST_DIR/noop.git"
+  git init --bare -q "$TEST_DIR/noop.git"
+  assert_exit "verdict_push with no verdicts is no-op" 0 verdict_push origin
+}
+
+test_verdict_fetch_no_remote_verdicts_is_noop() {
+  git remote add origin "$TEST_DIR/no-remote-verdicts.git"
+  git init --bare -q "$TEST_DIR/no-remote-verdicts.git"
+  assert_exit "verdict_fetch with no remote verdicts is no-op" 0 verdict_fetch origin
+}
+
+test_verdict_fetch_missing_remote_fails() {
+  assert_exit "verdict_fetch missing remote fails" 1 verdict_fetch missing-remote
 }
 
 # --- Runner ---
