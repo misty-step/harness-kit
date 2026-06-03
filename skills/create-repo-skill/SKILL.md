@@ -22,6 +22,7 @@ skill authoring lane, not a persona runtime or scheduling engine.
 | repo-specific QA skill | `references/qa.md` |
 | persona/value-proposition acceptance skill | `references/persona-acceptance.md` |
 | skill-writing rules | `references/authoring.md` |
+| readiness profile present | Load `.harness-kit/agent-readiness.yaml` for gate commands, mock policy, stack feedback strength, and waivers |
 
 ## Contract
 

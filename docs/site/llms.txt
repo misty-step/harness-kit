@@ -72,6 +72,7 @@ CI gates:
 - lint-python
 - lint-shell
 - lint-yaml
+- test-agent-readiness-profile
 - test-bootstrap-agent-allowlist
 - test-bun
 - test-harness-kit-config-loader

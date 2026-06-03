@@ -79,6 +79,9 @@ Assert at start; refuse with a clear reason on any miss.
   `/trace` after merge. If no transcript or trace artifact is available, the
   operator provides a `Trace-waiver: <reason>` line. Raw session logs do not
   satisfy this prerequisite.
+- If `.harness-kit/agent-readiness.yaml` exists, the branch evidence includes
+  readiness impact: improved, preserved, or regressed. Regressions must include
+  a contract-change reference and a valid future-expiring waiver.
 
 ## Work Ledger
 

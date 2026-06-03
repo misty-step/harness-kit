@@ -50,6 +50,14 @@ is merge-ready. On `--resume`, consume the latest record for the same
 backlog/branch/work id to report current phase, blockers, evidence refs,
 spawned agents, trace refs, and next action without parsing chat history.
 
+## Agent Readiness
+
+If `.harness-kit/agent-readiness.yaml` exists, read it before the clean loop
+and report `readiness_delta` in `receipt.json`: `improved`, `preserved`, or
+`regressed`. Regressions require a `contract_change_note` and a valid profile
+waiver with future expiry. If the profile changes, run
+`skills/agent-readiness/scripts/profile-crud.py validate` before merge-ready.
+
 ## Closeout Contract
 
 Every `/deliver` run ends with two operator-facing outputs, in this order:
@@ -107,6 +115,7 @@ hardening run / waiver.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Oracle / acceptance artifact hash: sha256 digest for any fixture, contract, golden file, transcript, screenshot, or equivalent acceptance source used by the oracle.
 - Contract-change acknowledgment: explicit reason when the branch changes acceptance criteria or weakens an assertion surface.
+- Agent readiness delta: improved, preserved, or regressed; regressions name the contract-change note and waiver.
 - Repo-fit check: live repo pattern, contract, or boundary this branch follows.
 - Hardening run / waiver: hardening mode run, blocking recommendation, or waiver reason.
 - Residual risk: unverified path, accepted survivor, or none with reason.

@@ -9,7 +9,7 @@ description: |
   "readiness report", "make this codebase agent-friendly",
   "agent-ready assessment", "readiness audit", "prepare for agents".
   Trigger: /agent-readiness, /readiness.
-argument-hint: "[--assess-only] [--fix] [--pillar <name>]"
+argument-hint: "[--assess-only] [--fix] [--pillar <name>] [profile create|read|update|delete|validate]"
 ---
 
 # /agent-readiness
@@ -32,7 +32,23 @@ The agent is not broken. The environment is. A codebase with fast feedback
 loops and clear instructions makes any agent dramatically more effective.
 A codebase with poor feedback loops defeats any agent you throw at it.
 
+## Profile Contract
+
+Assessment mode scores the repo. Profile mode manages the durable SDLC
+contract at `.harness-kit/agent-readiness.yaml`. Route `profile create`,
+`profile read`, `profile update`, `profile delete`, and `profile validate` to
+`scripts/profile-crud.py`; the schema lives in
+`references/profile-schema.yaml`. Missing profiles degrade to assessment-only
+behavior, but stale, expired, blank, or placeholder-only waivers are invalid
+once a profile exists.
+
 ## Workflow
+
+### Phase 0: Profile CRUD
+
+If the user asks to create, read, update, delete, or validate the readiness
+profile, run the deterministic profile script first and stop after reporting
+the result. Do not run a pillar assessment just to mutate the profile.
 
 ### Phase 1: Assess
 
@@ -140,6 +156,13 @@ the before/after delta.
 If `--fix` was used, re-run the full assessment to show the improved score.
 Present the before/after comparison.
 
+### Phase 6: Persist Contract Delta
+
+When fixes or approved waivers change the durable readiness contract, update
+the profile with `scripts/profile-crud.py` and re-run `profile validate`.
+Report whether the profile was improved, preserved, or regressed. Regressions
+require an explicit contract-change note and waiver expiry.
+
 ## Routing
 
 | Argument | Behavior |
@@ -148,6 +171,7 @@ Present the before/after comparison.
 | `--assess-only` | Assess and report only, no fixes |
 | `--fix` | Skip clarification, fix all top 5 recommendations |
 | `--pillar <name>` | Assess only the named pillar |
+| `profile <create|read|update|delete|validate>` | Manage `.harness-kit/agent-readiness.yaml` through `scripts/profile-crud.py` |
 
 ## Pillar Check Reference
 

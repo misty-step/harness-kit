@@ -54,7 +54,23 @@ The agent is not broken. The environment is. A codebase with fast feedback
 loops and clear instructions makes any agent dramatically more effective.
 A codebase with poor feedback loops defeats any agent you throw at it.
 
+## Profile Contract
+
+Assessment mode scores the repo. Profile mode manages the durable SDLC
+contract at `.harness-kit/agent-readiness.yaml`. Route `profile create`,
+`profile read`, `profile update`, `profile delete`, and `profile validate` to
+`scripts/profile-crud.py`; the schema lives in
+`references/profile-schema.yaml`. Missing profiles degrade to assessment-only
+behavior, but stale, expired, blank, or placeholder-only waivers are invalid
+once a profile exists.
+
 ## Workflow
+
+### Phase 0: Profile CRUD
+
+If the user asks to create, read, update, delete, or validate the readiness
+profile, run the deterministic profile script first and stop after reporting
+the result. Do not run a pillar assessment just to mutate the profile.
 
 ### Phase 1: Assess
 
@@ -67,16 +83,6 @@ Launch all pillar assessments simultaneously:
 | Subagent | Pillar | What it checks |
 |----------|--------|---------------|
 | 1 | Style &amp; Validation | Linters, formatters, type checkers, pre-commit hooks |
-| 2 | Build &amp; CI | Build commands, dependency pinning, CI config, feedback speed |
-| 3 | Testing | Coverage, speed, local execution, unit/integration/E2E layers |
-| 4 | Documentation | CLAUDE.md/AGENTS.md, README, setup guide, architecture docs, ADRs |
-| 5 | Dev Environment | Reproducibility, env templates, devcontainers, isolated workspaces |
-| 6 | Code Quality | Modularity, complexity, file organization, coupling, dead code |
-| 7 | Observability | Structured logging, error handling, metrics, tracing |
-| 8 | Security &amp; Governance | Branch protection, CODEOWNERS, secret scanning, dependency audit |
-
-Each subagent uses **Explore** agent type and reads `references/pillar-checks.md`
-for its pillar&#x27;s specific pass/fail criteria. Output format per subagent:
 ...</code></pre>
     </section>
     <section class="checklist">

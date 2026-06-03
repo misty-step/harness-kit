@@ -135,6 +135,15 @@ Include at least 6 rows for M+ shapes.
 
 Explain the scoring in prose; numbers alone are not evidence.
 
+## Agent Readiness
+- Profile source: `.harness-kit/agent-readiness.yaml` if present, otherwise `missing`.
+- Stack feedback strength: compiler/type/lint/test strictness for the chosen stack.
+- ADR decision: required / not required, with reason.
+- Infrastructure path: CLI/API/SDK-managed setup, or explicit readiness smell.
+- Gate: Dagger/local command the agent can run.
+- Evidence storage: repo-local path for receipts, traces, screenshots, reports, or fixtures.
+- Mock policy impact: preserved / improved / regressed.
+
 ## Delegation Evidence
 - Roster providers used: <provider/model/role>
 - Native subagents used: <role/purpose>

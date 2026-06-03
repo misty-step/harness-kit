@@ -1,7 +1,7 @@
 # Agent-readiness SDLC contract and repo profile CRUD
 
 Priority: P1
-Status: ready
+Status: done
 Estimate: M
 
 ## Goal
@@ -155,3 +155,20 @@ profile is plain data, reviewable in Git, and usable by every harness.
 
 - Depends on or should be sequenced after: `076`, `081`.
 - Composes with: `052`, `065`, `073`, `075`.
+
+## What Was Built
+
+- Added `skills/agent-readiness/references/profile-schema.yaml` as the
+  repo-local readiness profile contract for
+  `.harness-kit/agent-readiness.yaml`.
+- Added deterministic `skills/agent-readiness/scripts/profile-crud.py` with
+  create/read/update/delete/validate support, live repo defaults, and strict
+  waiver validation for missing, stale, expired, or placeholder waivers.
+- Added `skills/agent-readiness/scripts/test-profile-crud.sh` and a Dagger
+  lane that exercises profile creation, read/validate, waiver update/delete,
+  and invalid waiver rejection.
+- Patched `/agent-readiness`, `/shape`, `/deliver`, `/ship`, and
+  `/create-repo-skill` to consume the profile as SDLC contract evidence while
+  gracefully degrading when no profile exists.
+
+Closes-backlog: 084
