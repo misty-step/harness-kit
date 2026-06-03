@@ -1,10 +1,6 @@
 {
   "backlog": [
     {
-      "source": "backlog.d/023-review-score-feedback-loop.md",
-      "title": "Close the review score \u2192 skill evolution feedback loop"
-    },
-    {
       "source": "backlog.d/024-offline-evidence-storage.md",
       "title": "Offline evidence and artifact storage in Git"
     },
@@ -90,6 +86,7 @@
     "check-index-drift",
     "check-no-claims",
     "check-portable-paths",
+    "check-review-score-trends",
     "check-skill-evals",
     "check-vendored-copies",
     "lint-python",

@@ -15,6 +15,11 @@ Use local, already-available surfaces:
 
 If a surface is missing, say so and continue.
 
+When `.groom/review-scores.ndjson` and `scripts/review-score-trends.py` are
+both present, run the analyzer and use its Review Score Trend block as safe
+evidence. Trend claims require 5+ score entries; below that, record
+insufficient data instead of proposing skill edits from noise.
+
 ## Promotion Threshold
 
 Promote a pattern when either condition holds:

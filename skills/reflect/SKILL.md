@@ -104,6 +104,13 @@ reflect notes, review scores, delegation receipts, traces, session summaries,
 and durable memory notes. Chronicle-derived context may inform the pattern, but
 do not quote private personal detail.
 
+When `.groom/review-scores.ndjson` exists and
+`scripts/review-score-trends.py` is available, run the analyzer before proposing
+skill changes. Treat 5+ score entries as enough for a trend; below that, report
+the count and avoid a tuning claim. If the analyzer names a dimension regression
+or high false-positive rate, propose a concrete skill/reference edit using the
+codification hierarchy rather than a generic observation.
+
 Promote a pattern when it appears at least twice across sessions, or once when
 it prevented a shipped regression, runaway spend, data loss, or client-facing
 artifact error. Emit one highest-leverage proposal by default:

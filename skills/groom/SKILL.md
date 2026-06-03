@@ -85,7 +85,9 @@ Phase-gated. Each phase completes before the next begins.
 - Read `project.md` / `CLAUDE.md` / `AGENTS.md` for product lens.
 - Read `backlog.d/` — every active ticket, by ID.
 - Read `.groom/retro/` if present — effort calibration, blocker patterns.
-- Read `.groom/review-scores.ndjson` if present — review-quality trend.
+- Read `.groom/review-scores.ndjson` if present — review-quality trend. If
+  `scripts/review-score-trends.py` exists, run it and include its output when
+  the file has 5+ entries; below 5 entries, report the insufficient-data count.
 - Read `exemplars.md` if present — existing reference implementations.
 - **Cap check:** >30 open items → declare a reduction session. No new items until under cap.
 - Ask the user: "Anything on your mind? Bugs, friction, missing features?"

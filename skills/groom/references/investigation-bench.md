@@ -91,7 +91,13 @@ Every investigator returns this exact shape:
 > - **Churn hotspots**: which files change most often? (high churn = fragile or underdesigned)
 > - **Stalled work**: any reverted commits, abandoned branches, or backlog items stuck >30 days?
 > - **Effort concentration**: where is development time going? Does it align with product value?
-> - **Review quality trends**: if `.groom/review-scores.ndjson` exists, analyze score trends (improving/declining correctness, depth, simplicity, craft), verdict distribution, and correlation between low scores and subsequent bug fixes
+> - **Review quality trends**: if `.groom/review-scores.ndjson` exists, analyze
+>   score trends (improving/declining correctness, depth, simplicity, craft),
+>   verdict distribution, false-positive rate, and correlation between low
+>   scores and subsequent bug fixes. If `scripts/review-score-trends.py`
+>   exists, run it; when 5+ entries exist, include its Review Score Trend block
+>   and any named skill-tuning target. Below 5 entries, report the count and do
+>   not invent a trend.
 >
 > Return your findings in this exact format:
 > [insert structured output format]

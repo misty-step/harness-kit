@@ -184,17 +184,28 @@ the developer/operator behavior that changed instead.
 ## Review Scoring
 
 After the final verdict, append one JSON line to `.groom/review-scores.ndjson`
-in the target project root (create `.groom/` if needed):
+in the target project root (create `.groom/` if needed). This is mandatory:
+the review is incomplete until the row is appended.
 
 ```json
-{"date":"2026-04-06","pr":42,"correctness":8,"depth":7,"simplicity":9,"craft":8,"verdict":"ship","providers":["claude","thinktank","codex","gemini"]}
+{"date":"2026-04-06","branch":"feat/auth","sha":"abc123","pr":42,"correctness":8,"depth":7,"simplicity":9,"craft":8,"verdict":"ship","providers":["claude","thinktank","codex","gemini"],"findings_total":4,"findings_accepted":3,"findings_false_positive":1,"post_merge_bugs_found":0}
 ```
 
 - Scores (1-10) reflect cross-provider consensus, not any single reviewer.
+- `branch` is the reviewed branch; `sha` is `git rev-parse HEAD` at verdict time.
 - `pr` is the PR number, or `null` when reviewing a branch without a PR.
 - `verdict`: `"ship"`, `"conditional"`, or `"dont-ship"`.
 - `providers`: which review tiers contributed.
+- `findings_total`: total findings considered in synthesis.
+- `findings_accepted`: findings accepted as real or actionable.
+- `findings_false_positive`: findings rejected after steelman as non-issues.
+- `post_merge_bugs_found`: later calibration count when known; use `0` when no
+  post-merge bug is known during the review.
 - This file is committed to git (not gitignored). `/groom` reads it for quality trends.
+- Run `python3 scripts/review-score-trends.py .groom/review-scores.ndjson` when
+  the target repo has the helper. If the last 5-row window reports a regression
+  or high false-positive rate, include the named skill-tuning target in the
+  review synthesis and `/reflect` handoff.
 
 ## Verdict Ref (git-native review proof)
 

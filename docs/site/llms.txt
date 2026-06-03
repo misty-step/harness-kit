@@ -71,6 +71,7 @@ CI gates:
 - check-index-drift
 - check-no-claims
 - check-portable-paths
+- check-review-score-trends
 - check-skill-evals
 - check-vendored-copies
 - lint-python
