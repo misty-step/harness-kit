@@ -18,6 +18,7 @@
   "gates": [
     "check-agent-roster",
     "check-bench-map",
+    "check-conflict-markers",
     "check-deliver-composition",
     "check-docs-site",
     "check-evidence-blocks",

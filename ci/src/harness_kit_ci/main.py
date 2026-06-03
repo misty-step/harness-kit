@@ -323,6 +323,58 @@ print('No exclusion patterns found.')
         )
 
     @function
+    async def check_conflict_markers(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Reject unresolved Git conflict markers in committed text files."""
+        script = r"""
+import pathlib
+import sys
+
+MARKERS = {"<<<<<<<", "=======", ">>>>>>>"}
+SKIP_PARTS = {
+    ".dagger",
+    ".git",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    "skills/.external",
+}
+
+findings = []
+for path in pathlib.Path(".").rglob("*"):
+    if not path.is_file():
+        continue
+    path_str = str(path)
+    if any(part in path_str for part in SKIP_PARTS):
+        continue
+    try:
+        lines = path.read_text().splitlines()
+    except UnicodeDecodeError:
+        continue
+    for lineno, line in enumerate(lines, 1):
+        if line.strip() in MARKERS or line.startswith(("<<<<<<< ", ">>>>>>> ")):
+            findings.append(f"  {path}:{lineno}: {line.strip()}")
+
+if findings:
+    print("Found unresolved conflict marker(s):", file=sys.stderr)
+    print("\n".join(findings[:40]), file=sys.stderr)
+    sys.exit(1)
+
+print("No unresolved conflict markers found.")
+"""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "-c", script])
+            .stdout()
+        )
+
+    @function
     async def check_portable_paths(
         self,
         source: Annotated[
@@ -736,6 +788,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "test-trace-record", self.test_trace_record(source))
             tg.start_soon(run_gate, "test-python", self.test_python(source))
             tg.start_soon(run_gate, "check-exclusions", self.check_exclusions(source))
+            tg.start_soon(run_gate, "check-conflict-markers", self.check_conflict_markers(source))
             tg.start_soon(run_gate, "check-portable-paths", self.check_portable_paths(source))
             tg.start_soon(run_gate, "test-work-ledger", self.test_work_ledger(source))
             tg.start_soon(
