@@ -60,6 +60,14 @@ If the changed behavior has no named post-ship signal, log, receipt, benchmark,
 or evidence artifact, report it as instrumentation debt rather than hiding it
 inside generic residual risk.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/qa` calls
+`scripts/work-ledger.py append` with `phase_started` at QA start,
+`next_action_changed` when evidence is captured, `blocker_added` for failed or
+unverified critical paths, and `phase_completed` when QA passes or is waived.
+Each event links evidence refs and any trace refs already known.
+
 ## Execution Stance
 
 You are the executive orchestrator.

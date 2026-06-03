@@ -78,6 +78,15 @@ Assert at start; refuse with a clear reason on any miss.
   operator provides a `Trace-waiver: <reason>` line. Raw session logs do not
   satisfy this prerequisite.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/ship` consumes the latest
+completed `/deliver` record for the closing backlog/branch. It calls
+`scripts/work-ledger.py append` for `phase_started` at final-mile start,
+`next_action_changed` after merge while trace/reflect remains, `blocker_added`
+on a refuse condition, and `phase_completed` with `status=completed` after
+trailers, trace handoff, reflect, and follow-up mutations are done.
+
 ## Process
 
 ### 1. Extract backlog IDs

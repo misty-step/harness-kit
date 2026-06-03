@@ -53,6 +53,14 @@ You are a thin watcher.
   investigation, hand off to `/diagnose`, which uses `.harness-kit/agents.yaml`
   as its two-or-more roster-member floor.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/monitor` consumes the
+latest completed `/ship` record or deploy receipt ref for the work item. It
+calls `scripts/work-ledger.py append` with `phase_started` when watching
+begins, `blocker_added` for a tripped signal, and `phase_completed` when the
+grace window closes green.
+
 ## Delegation Floor
 
 Delegation floor applies: probe the roster first; dispatch two or more

@@ -9,10 +9,6 @@
       "title": "Bounded-payload discipline reference (shared skill note)"
     },
     {
-      "source": "backlog.d/058-work-ledger-mission-control.md",
-      "title": "Work ledger mission-control view"
-    },
-    {
       "source": "backlog.d/061b-retire-global-static-agent-install.md",
       "title": "Retire the global static-agent install (bootstrap allowlist + file deletion)"
     },
@@ -60,7 +56,8 @@
     "lint-yaml",
     "test-bun",
     "test-harness-kit-config-loader",
-    "test-trace-record"
+    "test-trace-record",
+    "test-work-ledger"
   ],
   "generated_by": "scripts/build-docs-site.py",
   "icons": [

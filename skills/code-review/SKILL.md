@@ -24,6 +24,15 @@ user-forbidden, or fewer-than-two-providers cases. See
 
 Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/code-review` calls
+`scripts/work-ledger.py append` with `phase_started` before dispatch,
+`next_action_changed` after reviewer lanes are recorded, `blocker_added` for
+blocking findings, and `phase_completed` when the verdict is clean. Provider
+receipt ids belong in evidence refs; roster lane labels belong in
+`spawned_agents`.
+
 ## Completion Evidence
 
 Completion evidence core applies: use `harnesses/shared/AGENTS.md`

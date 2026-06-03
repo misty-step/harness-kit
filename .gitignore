@@ -21,6 +21,7 @@ skills/.external/
 # .harness-kit/ remain commit-eligible.
 .harness-kit/traces/*.jsonl
 .harness-kit/traces/provider-lanes/
+.harness-kit/work/*.jsonl
 
 # Provider CLI runtime metadata.
 .antigravitycli/

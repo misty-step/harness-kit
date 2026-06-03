@@ -40,6 +40,16 @@ Completion evidence core applies: use `harnesses/shared/AGENTS.md`
 (Completion Evidence) as the universal evidence shape, then fill the local
 fields in the merge-ready block below.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/deliver` calls
+`scripts/work-ledger.py append` at transition points: `phase_started` for
+`shape`, `implement`, `review`, `ci`, `qa`, and `reflect`; `blocker_added`
+when a phase fails; `phase_completed` with `status=completed` when the branch
+is merge-ready. On `--resume`, consume the latest record for the same
+backlog/branch/work id to report current phase, blockers, evidence refs,
+spawned agents, trace refs, and next action without parsing chat history.
+
 ## Closeout Contract
 
 Every `/deliver` run ends with two operator-facing outputs, in this order:

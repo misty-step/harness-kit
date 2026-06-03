@@ -44,6 +44,14 @@ core; this phase keeps artifact-specific local fields.
 For internal changes, the demo may be a PR/release-note sentence, but it still
 names the developer/operator behavior that changed.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/demo` calls
+`scripts/work-ledger.py append` with `phase_started` before capture and
+`phase_completed` after the artifact or explicit "no artifact needed" evidence
+ref exists. Use `blocker_added` when capture fails and set `next_action` to the
+smallest recovery step.
+
 ## Execution Stance
 
 You are the executive orchestrator.

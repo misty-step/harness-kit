@@ -1,8 +1,20 @@
 # Work ledger mission-control view
 
 Priority: P2
-Status: pending
+Status: done
 Estimate: M
+
+## What Was Built
+
+- Added `scripts/work-ledger.py` with append, summary, and self-test commands
+  for local mission-control events.
+- Added `.harness-kit/work/ledger.jsonl` as the gitignored runtime store and
+  `.harness-kit/examples/work-ledger.jsonl` as the committed fixture.
+- Added ledger fixture validation and store checks to
+  `scripts/check-agent-roster.py`.
+- Added a Dagger `test-work-ledger` lane.
+- Updated `/deliver`, `/ship`, `/qa`, `/demo`, `/code-review`, `/monitor`, and
+  `/reflect` to name exact ledger event transitions they emit or consume.
 
 ## Goal
 

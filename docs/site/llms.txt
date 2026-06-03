@@ -83,3 +83,4 @@ CI gates:
 - test-bun
 - test-harness-kit-config-loader
 - test-trace-record
+- test-work-ledger

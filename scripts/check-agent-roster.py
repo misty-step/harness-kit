@@ -161,8 +161,25 @@ WORK_RECORD_FIELDS = {
     "waiver_reason",
     "metadata",
 }
-
-
+WORK_LEDGER_FIELDS = {
+    "schema_version",
+    "record_type",
+    "event_id",
+    "created_at",
+    "event_type",
+    "work_id",
+    "parent_work_id",
+    "backlog_ref",
+    "branch",
+    "owning_skill",
+    "phase",
+    "evidence_refs",
+    "blockers",
+    "spawned_agents",
+    "trace_refs",
+    "next_action",
+    "status",
+}
 def markdown_section(text: str, heading: str) -> str:
     start = text.find(heading)
     if start == -1:
@@ -553,10 +570,50 @@ def validate_work_records(path: Path) -> list[dict[str, object]]:
     return records
 
 
+def validate_work_ledger(path: Path) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise SystemExit(f"{path}:{lineno}: invalid JSON: {error}") from error
+        if not isinstance(record, dict):
+            raise SystemExit(f"{path}:{lineno}: work ledger event must be a JSON object")
+        missing = WORK_LEDGER_FIELDS - set(record)
+        extra = set(record) - WORK_LEDGER_FIELDS
+        if missing:
+            raise SystemExit(f"{path}:{lineno}: missing work-ledger fields: {sorted(missing)}")
+        if extra:
+            raise SystemExit(f"{path}:{lineno}: unknown work-ledger fields: {sorted(extra)}")
+        if record["schema_version"] != 1:
+            raise SystemExit(f"{path}:{lineno}: schema_version must be 1")
+        if record["record_type"] != "work-ledger-event":
+            raise SystemExit(f"{path}:{lineno}: record_type must be work-ledger-event")
+        if not str(record["event_id"]).startswith("work-"):
+            raise SystemExit(f"{path}:{lineno}: event_id must start with work-")
+        for list_field in ("evidence_refs", "blockers", "spawned_agents", "trace_refs"):
+            if not isinstance(record[list_field], list):
+                raise SystemExit(f"{path}:{lineno}: {list_field} must be a list")
+        if record["event_type"] not in {
+            "phase_started",
+            "phase_completed",
+            "blocker_added",
+            "next_action_changed",
+        }:
+            raise SystemExit(f"{path}:{lineno}: invalid work-ledger event_type")
+        if record["status"] not in {"active", "blocked", "completed", "failed", "superseded"}:
+            raise SystemExit(f"{path}:{lineno}: invalid work-ledger status")
+        records.append(record)
+    return records
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
     work_record_fixture_path = Path(".harness-kit/examples/work-record.jsonl")
+    work_ledger_fixture_path = Path(".harness-kit/examples/work-ledger.jsonl")
     gitignore_path = Path(".gitignore")
     summary_script = Path("scripts/summarize-delegations.py")
 
@@ -573,10 +630,13 @@ def main() -> int:
     validate_open_model_roster_review_due()
     receipts = read_receipts(fixture_path)
     work_records = validate_work_records(work_record_fixture_path)
+    work_ledger_records = validate_work_ledger(work_ledger_fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")
     if not work_records:
         raise SystemExit(f"{work_record_fixture_path}: must contain at least one work record fixture")
+    if not work_ledger_records:
+        raise SystemExit(f"{work_ledger_fixture_path}: must contain at least one ledger event")
     if not summary_script.exists():
         raise SystemExit(f"{summary_script}: missing roster report helper")
     completed = subprocess.run(
@@ -599,6 +659,10 @@ def main() -> int:
     for path in (trace_skill, trace_script):
         if ".harness-kit/traces/work-records.jsonl" not in path.read_text():
             raise SystemExit(f"{path}: must name the work-record JSONL store")
+    if ".harness-kit/work/*.jsonl" not in gitignore:
+        raise SystemExit(".gitignore must ignore runtime work-ledger JSONL")
+    if ".harness-kit/work/ledger.jsonl" not in Path("scripts/work-ledger.py").read_text():
+        raise SystemExit("scripts/work-ledger.py must name the work-ledger JSONL store")
 
     forbidden_dirs = [
         ".harness-kit/auth",
@@ -613,6 +677,7 @@ def main() -> int:
     print(f"{roster_path}: valid")
     print(f"{fixture_path}: {len(receipts)} receipt fixture(s) valid")
     print(f"{work_record_fixture_path}: {len(work_records)} work record fixture(s) valid")
+    print(f"{work_ledger_fixture_path}: {len(work_ledger_records)} ledger fixture(s) valid")
     print(f"skills/: {len(CORE_WORKFLOW_SKILLS)} delegation floor(s) valid")
     print(
         f"skills/: {len(COMPLETION_EVIDENCE_CORE_SKILLS)} "

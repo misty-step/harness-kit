@@ -33,6 +33,15 @@ Every finding becomes one of three things:
 - a concrete coaching note
 - an explicit justification for not codifying
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/reflect` consumes the
+latest events for the active backlog/branch plus trace refs and delegation
+receipts. It calls `scripts/work-ledger.py append` with `phase_started` at
+retro start, `next_action_changed` when follow-up backlog or harness proposals
+are emitted, and `phase_completed` when the reflection packet is complete.
+Follow-up proposals are evidence refs, not hidden chat-only state.
+
 ## Routing
 
 | Mode | Intent | Reference |

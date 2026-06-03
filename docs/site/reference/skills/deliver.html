@@ -64,20 +64,17 @@ Completion evidence core applies: use `harnesses/shared/AGENTS.md`
 (Completion Evidence) as the universal evidence shape, then fill the local
 fields in the merge-ready block below.
 
+## Work Ledger
+
+When `.harness-kit/work/ledger.jsonl` is available, `/deliver` calls
+`scripts/work-ledger.py append` at transition points: `phase_started` for
+`shape`, `implement`, `review`, `ci`, `qa`, and `reflect`; `blocker_added`
+when a phase fails; `phase_completed` with `status=completed` when the branch
+is merge-ready. On `--resume`, consume the latest record for the same
+backlog/branch/work id to report current phase, blockers, evidence refs,
+spawned agents, trace refs, and next action without parsing chat history.
+
 ## Closeout Contract
-
-Every `/deliver` run ends with two operator-facing outputs, in this order:
-1. A tight delivery brief.
-2. A full `/reflect` session.
-
-This does not replace the machine contract. `receipt.json` remains the source
-of truth for callers and automation. The brief and reflection are for the
-human operator.
-
-The delivery brief is short and punchy. It is not a file inventory, a raw
-changelog, or a generic &quot;green tests&quot; note. Default shape: 1-2 short
-paragraphs or 4-6 flat bullets.
-When a public PR or issue needs agent provenance, use `/agent-transcript` to
 ...</code></pre>
     </section>
     <section class="checklist">

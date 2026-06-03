@@ -372,6 +372,22 @@ print('No hardcoded user paths found.')
         )
 
     @function
+    async def test_work_ledger(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run the work-ledger helper self-test."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "scripts/test-work-ledger.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_deliver_composition(
         self,
         source: Annotated[
@@ -656,6 +672,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "test-trace-record", self.test_trace_record(source))
             tg.start_soon(run_gate, "check-exclusions", self.check_exclusions(source))
             tg.start_soon(run_gate, "check-portable-paths", self.check_portable_paths(source))
+            tg.start_soon(run_gate, "test-work-ledger", self.test_work_ledger(source))
             tg.start_soon(
                 run_gate,
                 "check-harness-install-paths",
