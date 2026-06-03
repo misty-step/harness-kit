@@ -17,12 +17,10 @@ class EvidenceBlockTests(unittest.TestCase):
     def test_valid_completion_gate_accepts_required_fields(self) -> None:
         text = textwrap.dedent(
             """
-            ```markdown
             ## Completion Gate
             - Evidence that proves it: focused test fails before the fix and passes after.
             - Exact command/path/route exercised: pytest tests/test_login.py -q.
             - Residual risk: OAuth provider outage path remains unverified.
-            ```
             """
         )
 

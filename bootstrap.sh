@@ -712,7 +712,10 @@ if [ "$installed" -eq 0 ]; then
 fi
 
 # --- Git hooks: ensure core.hooksPath is set ---
-if [ -n "$HARNESS_KIT" ] && [ -d "$HARNESS_KIT/.githooks" ] && command -v git >/dev/null 2>&1; then
+if [ -n "$HARNESS_KIT" ] \
+  && [ -d "$HARNESS_KIT/.githooks" ] \
+  && command -v git >/dev/null 2>&1 \
+  && git -C "$HARNESS_KIT" rev-parse --git-dir >/dev/null 2>&1; then
   current_hooks_path="$(git -C "$HARNESS_KIT" config core.hooksPath 2>/dev/null || true)"
   if [ "$current_hooks_path" != ".githooks" ]; then
     git -C "$HARNESS_KIT" config core.hooksPath .githooks
