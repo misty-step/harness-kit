@@ -20,22 +20,13 @@ disk; do not restate obvious filesystem facts.
   `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, `.pi/skills/`, or
   `.antigravitycli/skills/` bridges; those duplicate the global install here.
 
-## Roster Floor
+## Roster
 
-The provider roster is repo-local at `.harness-kit/agents.yaml` when present and
-system-wide at `~/.harness-kit/agents.yaml` otherwise. For substantive research,
-design, implementation, QA, diagnosis, review, backlog, reflection, or harness
-work:
-
-- probe the roster;
-- dispatch two or more available providers;
-- record sanitized receipts in `.harness-kit/traces/delegations.jsonl`;
-- synthesize as lead; provider output is evidence, not authority.
-
-Direct solo work is allowed only for mechanical commands, emergency unblocks,
-explicit user-forbidden delegation, or fewer than two available providers.
-Every final report includes a short roster report grounded in receipts, never
-raw transcripts.
+The delegation floor lives in `harnesses/shared/AGENTS.md` (Roster). Harness Kit
+resolves providers from `.harness-kit/agents.yaml` or
+`~/.harness-kit/agents.yaml`, records sanitized receipts in
+`.harness-kit/traces/delegations.jsonl`, and reports receipt-grounded roster
+evidence instead of raw transcripts.
 
 ## Backlog
 

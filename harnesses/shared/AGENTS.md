@@ -29,7 +29,9 @@ pass-throughs, speculative abstractions, hidden coupling, or semantic wrappers
 around general agents.
 
 ### TDD: red, green, refactor
-Write the failing test first. Make it pass. Then simplify.
+For behavior changes, write the failing test first. Make it pass. Then
+simplify. For prose, gates, and harness doctrine, identify the failing
+validation or acceptance oracle before changing the text.
 
 ### Delete before adding
 Small surface area. The best change removes code; new surface must earn itself.
@@ -71,7 +73,8 @@ exercised command/path, repo-fit check, and residual risk.
 ### Fresh context beats self-review
 Same-model self-critique is theater — a reviewer inheriting the author's
 context rationalizes the author's choices. Hand critics ONLY the artifact
-(diff + acceptance oracle), never your reasoning trail.
+(diff + acceptance oracle), never your reasoning trail. Same-context review is
+allowed only as a fallback note; it does not count as fresh-context critique.
 
 ### Dispatch: executor + critic by default
 Roles, not files. Most non-trivial work runs as ≥2 ad-hoc subagents — an
@@ -117,8 +120,8 @@ Concrete trigger → action. When a row matches, take the action.
 ### Subagent type
 | Trigger | Action |
 |---|---|
-| >3 exploratory tool calls, unknown scope | `Agent(subagent_type=Explore, prompt=<explicit question>)` |
-| Non-trivial architecture decision not yet shaped | `/shape`, or `Agent(subagent_type=Plan, prompt=<design question>)` |
+| >3 exploratory tool calls, unknown scope | Explore lane with an explicit question |
+| Non-trivial architecture decision not yet shaped | `/shape`, or a plan lane with a scoped design question |
 | Shaped ticket, acceptance criteria clear | `/implement` → `/code-review` + `/ci` |
 | Fuzzy failure, root cause unknown | `/diagnose`, or an Explore lane with an explicit hypothesis |
 
@@ -210,8 +213,8 @@ quality matters, it is probably wrong.
 
 ## Harness
 
-- Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
-  Runtime features are optimizations.
+- Cross-harness first: Claude, Codex, Pi, Antigravity. Filesystem + `SKILL.md`
+  is primary. Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
 - System bootstrap installs every first-party skill into each detected harness.
   `.agents/skills/` is the optional repo-local vendored root with per-harness
