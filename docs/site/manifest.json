@@ -7,6 +7,10 @@
     {
       "source": "backlog.d/049-bounded-payload-discipline-reference.md",
       "title": "Bounded-payload discipline reference (shared skill note)"
+    },
+    {
+      "source": "backlog.d/086-commit-qa-assistant.md",
+      "title": "Commit-triggered QA assistant evidence lane"
     }
   ],
   "copy_source": "docs/copy/site.json",
