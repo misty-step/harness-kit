@@ -1,0 +1,190 @@
+# Skill Quality Audit
+
+Skills audited: 29
+Routing docs: harnesses/shared/AGENTS.md
+
+## Summary
+
+| Failed dimensions | Skills |
+|---:|---:|
+| 4 | 0 |
+| 3 | 0 |
+| 2 | 16 |
+| 1 | 10 |
+| 0 | 3 |
+
+## Findings
+
+### agent-readiness - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### agent-transcript - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### browser - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### deliver - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### demo - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### deploy - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### deps - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### flywheel - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### hardening - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### harness-engineering - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### karpathy-guidelines - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### monitor - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### reflect - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### settle - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### ship - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### yeet - FAIL 2/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### a11y - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - SKILL.md testing section
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### create-repo-skill - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - evals/
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### design - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - evals/
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### diagnose - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### groom - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - scripts/test_*.sh
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### implement - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### model-research - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### qa - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - evals/
+- routing: FAIL - not referenced from harnesses/shared/AGENTS.md routing
+
+### research - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### shape - FAIL 1/4
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: FAIL - no tests/, evals/, test script, or Testing/Verification section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### ci - PASS
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - SKILL.md testing section
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### code-review - PASS
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - evals/
+- routing: PASS - harnesses/shared/AGENTS.md
+
+### refactor - PASS
+- frontmatter: PASS - name and description present
+- trigger: PASS - description has trigger language
+- tests: PASS - SKILL.md testing section
+- routing: PASS - harnesses/shared/AGENTS.md

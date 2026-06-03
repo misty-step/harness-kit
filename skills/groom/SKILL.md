@@ -6,9 +6,10 @@ description: |
   every time. Strategic-layer work fans out parallel interrogation,
   design-critique, technical-review, and research lanes.
   Use when: "groom", "what should we build", "rethink this", "biggest
-  opportunity", "backlog", "prioritize", "backlog session".
-  Trigger: /groom, /backlog, /rethink, /moonshot, /scaffold.
-argument-hint: "[--emphasis explore|rethink|moonshot|scaffold] [context]"
+  opportunity", "backlog", "prioritize", "backlog session",
+  "audit skills", "skill quality audit".
+  Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.
+argument-hint: "[audit|--emphasis explore|rethink|moonshot|scaffold] [context]"
 ---
 
 # /groom
@@ -49,6 +50,25 @@ Local lane guidance: Use lanes for backlog drift, premise challenge, technical
 hotspots, product opportunity, ideal-form design, security/privacy,
 agent-readiness, simplification/deletion, and external context; the lead keeps
 final prioritization.
+
+## Audit Mode
+
+`/groom audit` is a read-only skill quality coverage report, not a normal
+grooming run and not a hard gate. Run:
+
+```sh
+python3 skills/groom/scripts/audit-skills.py
+```
+
+The report walks `skills/*/SKILL.md` and scores four dimensions:
+
+- frontmatter: `name` and `description`
+- trigger: concrete invocation phrases, not generic "use this skill to" prose
+- test_or_eval: `tests/`, `evals/`, test scripts, or a verification section
+- routing: reference from `harnesses/shared/AGENTS.md`
+
+Order by severity and present the report as-is. Do not auto-fix skills,
+generate tests, or add a Dagger gate from audit findings.
 
 ## Groom Completeness Gate
 

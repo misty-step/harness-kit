@@ -1,7 +1,7 @@
 # `/groom audit` — skill quality coverage audit
 
 Priority: P2
-Status: pending
+Status: done
 Estimate: M
 
 ## Goal
@@ -19,15 +19,25 @@ Inspired by Gary Tan's "Skillify" 10-step checklist; scoped down to the minimum 
 
 ## Oracle
 
-- [ ] `/groom audit` prints a coverage report listing every skill with a pass/fail verdict on 4 dimensions:
+- [x] `/groom audit` prints a coverage report listing every skill with a pass/fail verdict on 4 dimensions:
   1. Has SKILL.md with required frontmatter (name, description, triggers)
   2. Description contains concrete trigger phrases (not just "Use this skill to...")
   3. Has at least one `tests/` directory, eval file, or explicit "Testing / verification" section in SKILL.md
   4. Is referenced from `harnesses/shared/AGENTS.md` routing (once 051 lands; until then, flag as soft warning)
-- [ ] Report is ordered by severity: skills failing 3+ dimensions first; skills failing 1 last.
-- [ ] Report is reproducible: running twice on unchanged source produces identical output.
-- [ ] Baseline run captured: audit output against current `master` is written to `.groom/audit-baseline-<date>.txt` so future runs can diff.
-- [ ] `dagger call check --source=.` green.
+- [x] Report is ordered by severity: skills failing 3+ dimensions first; skills failing 1 last.
+- [x] Report is reproducible: running twice on unchanged source produces identical output.
+- [x] Baseline run captured: audit output against current source is written to
+      `.groom/audit-baseline-2026-06-02.txt` so future runs can diff.
+- [x] `dagger call check --source=.` green.
+
+## What Was Built
+
+- Added `/groom audit` trigger and mode guidance to `skills/groom/SKILL.md`.
+- Added `skills/groom/scripts/audit-skills.py`, a read-only report over all
+  first-party skills.
+- Added `skills/groom/scripts/test_audit_skills.sh` for ordering,
+  reproducibility, and `--output` behavior.
+- Captured `.groom/audit-baseline-2026-06-02.txt`.
 
 ## Notes
 
