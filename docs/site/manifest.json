@@ -39,6 +39,22 @@
     {
       "source": "backlog.d/093-jj-first-agent-vcs.md",
       "title": "jj-first agent VCS and portable execution contract"
+    },
+    {
+      "source": "backlog.d/094-agent-legible-source-of-truth-readiness.md",
+      "title": "Agent-legible source-of-truth readiness pillar"
+    },
+    {
+      "source": "backlog.d/095-shape-premise-source-artifact.md",
+      "title": "Premise source artifact for `/shape`"
+    },
+    {
+      "source": "backlog.d/096-reflect-teach-back-checkpoints.md",
+      "title": "Reflect teach-back checkpoints"
+    },
+    {
+      "source": "backlog.d/097-voice-transcript-intake-metadata.md",
+      "title": "Voice and raw-transcript intake metadata"
     }
   ],
   "copy_source": "docs/copy/site.json",
