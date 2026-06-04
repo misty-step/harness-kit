@@ -3,10 +3,6 @@
     {
       "source": "backlog.d/031-harness-auto-tune-gepa.md",
       "title": "GEPA-style harness auto-tune from cycle events"
-    },
-    {
-      "source": "backlog.d/096-reflect-teach-back-checkpoints.md",
-      "title": "Reflect teach-back checkpoints"
     }
   ],
   "copy_source": "docs/copy/site.json",
@@ -395,7 +391,7 @@
       "source": "skills/refactor/SKILL.md"
     },
     {
-      "description": "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Turns evidence into hooks, rules, skills, backlog mutations, or explicit non-actions. Use when: \"done\", \"wrap up\", \"what did we learn\", \"retro\", \"calibrate\", \"prompt better\", \"teach me from this session\", \"reflect on cycle\", post-/flywheel critique. Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.",
+      "description": "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Turns evidence into hooks, rules, skills, backlog mutations, or explicit non-actions. Use when: \"done\", \"wrap up\", \"what did we learn\", \"retro\", \"calibrate\", \"prompt better\", \"teach me from this session\", \"reflect on cycle\", post-/flywheel critique. Trigger: /reflect, /retro, /calibrate, /reflect checkpoint <topic>, /reflect cycle <cycle-ulid>.",
       "icon": "learn",
       "id": "skill:reflect",
       "kind": "skill",

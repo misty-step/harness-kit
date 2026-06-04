@@ -159,6 +159,7 @@ Explain the scoring in prose; numbers alone are not evidence.
 - Build/check boundary: <what fails where>
 - ADR decision: required / not required, with reason and escalation trigger.
 - Design X vs Y: <main rejected alternatives and why>
+- Comprehension-required: <topic, only when the packet intentionally opts into `/reflect checkpoint`; omit otherwise>
 
 ## Agent Readiness
 - Profile source: `.harness-kit/agent-readiness.yaml` if present, otherwise `missing`.

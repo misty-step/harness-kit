@@ -104,7 +104,8 @@ exact command/path/route, repo-fit check, and residual risk. See
 `harnesses/shared/AGENTS.md` (Completion Evidence).
 
 Local fields include oracle hash, contract-change acknowledgment, hardening
-run / waiver, and formal-spec ladder evidence when the packet required it.
+run / waiver, formal-spec ladder evidence, and `/reflect checkpoint` gate
+evidence when the packet includes `Comprehension-required: <topic>`.
 
 ```markdown
 ## Completion Gate
@@ -119,6 +120,7 @@ run / waiver, and formal-spec ladder evidence when the packet required it.
 - Repo-fit check: live repo pattern, contract, or boundary this branch follows.
 - Hardening run / waiver: hardening mode run, blocking recommendation, or waiver reason.
 - Formal-spec ladder evidence: when `Formal Spec Required: yes`, commands run, survivor disposition, critic/verifier result, or named waiver path.
+- Reflect checkpoint evidence: when `Comprehension-required: <topic>` is present, `/reflect checkpoint` artifact path and validator gate command; otherwise `not required`.
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
 

@@ -6,8 +6,9 @@ description: |
   backlog mutations, or explicit non-actions. Use when: "done", "wrap up",
   "what did we learn", "retro", "calibrate", "prompt better",
   "teach me from this session", "reflect on cycle", post-/flywheel critique.
-  Trigger: /reflect, /retro, /calibrate, /reflect cycle <cycle-ulid>.
-argument-hint: "[distill|calibrate|coach|prompt-debt|tune-repo|append|cycle] [context]"
+  Trigger: /reflect, /retro, /calibrate, /reflect checkpoint <topic>,
+  /reflect cycle <cycle-ulid>.
+argument-hint: "[distill|calibrate|coach|checkpoint|prompt-debt|tune-repo|append|cycle] [context]"
 ---
 
 # /reflect
@@ -49,6 +50,7 @@ Follow-up proposals are evidence refs, not hidden chat-only state.
 | **distill** (default) | End-of-session retrospective -> codified artifacts + operator coaching | `references/distill.md` |
 | **calibrate** | Mid-session harness postmortem — fix the harness before the code | `references/calibrate.md` |
 | **coach** | Deep dive on prompt quality, technical specificity, and concept building | `references/coach.md` |
+| **checkpoint** | Opt-in teach-back checkpoint with restatement, verdict, gaps, and gate artifact | `references/checkpoint.md` |
 | **prompt-debt** | Promote repeated corrections and repeated workflow patterns into one codification proposal | `references/prompt-debt.md` |
 | **tune-repo** | Refresh context artifacts, detect drift, update repo guidance | `references/tune-repo.md` |
 | **append** | Append issue-scoped retro notes for `/groom` to consume later | `references/retro-format.md` |
@@ -58,6 +60,8 @@ If the first argument matches a mode name, route to that reference.
 If no mode is provided, run `distill`.
 
 Interpret natural-language requests as:
+- "checkpoint this", "teach-back", "make sure I understand", or packet marker
+  `Comprehension-required: <topic>` -> `checkpoint`
 - "how could I have asked better", "teach me from this", "help me prompt better"
   -> `coach`
 - "same correction again", "why do I keep repeating this", "codify this
