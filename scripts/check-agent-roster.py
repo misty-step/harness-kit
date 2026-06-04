@@ -192,7 +192,14 @@ SKILL_INVOCATION_FIELDS = {
     "cwd",
     "project",
 }
-OPTIONAL_SKILL_INVOCATION_FIELDS = {"model_id", "outcome", "duration_ms", "usage"}
+OPTIONAL_SKILL_INVOCATION_FIELDS = {
+    "model_id",
+    "outcome",
+    "duration_ms",
+    "usage",
+    "backlog_ref",
+    "work_id",
+}
 ALLOWED_SOURCE_AGENTS = {"a11y-auditor.md", "a11y-critic.md", "a11y-fixer.md"}
 
 
@@ -711,6 +718,7 @@ def main() -> int:
     skill_invocation_fixture_path = Path(".harness-kit/examples/skill-invocations.jsonl")
     gitignore_path = Path(".gitignore")
     summary_script = Path("scripts/summarize-delegations.py")
+    analytics_script = Path("scripts/analyze-skill-invocations.py")
 
     validate_roster(load_roster(roster_path))
     validate_delegation_floor()
@@ -739,6 +747,8 @@ def main() -> int:
         raise SystemExit(f"{skill_invocation_fixture_path}: must contain at least one skill invocation")
     if not summary_script.exists():
         raise SystemExit(f"{summary_script}: missing roster report helper")
+    if not analytics_script.exists():
+        raise SystemExit(f"{analytics_script}: missing skill analytics helper")
     completed = subprocess.run(
         ["python3", str(summary_script), "--format", "text", str(fixture_path)],
         check=False,
@@ -750,6 +760,17 @@ def main() -> int:
         detail = (completed.stderr or completed.stdout).strip().splitlines()
         suffix = f": {detail[-1]}" if detail else ""
         raise SystemExit(f"{summary_script}: roster report helper failed{suffix}")
+    completed = subprocess.run(
+        ["python3", str(analytics_script), "--self-test"],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if completed.returncode != 0 or "analyze-skill-invocations self-test ok" not in completed.stdout:
+        detail = (completed.stderr or completed.stdout).strip().splitlines()
+        suffix = f": {detail[-1]}" if detail else ""
+        raise SystemExit(f"{analytics_script}: skill analytics helper failed{suffix}")
 
     gitignore = gitignore_path.read_text()
     if ".harness-kit/traces/*.jsonl" not in gitignore:

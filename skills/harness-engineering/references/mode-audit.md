@@ -9,7 +9,10 @@ when the question is lifecycle strategy rather than catalog mechanics.
 
 ## Data Source
 
-Read `~/.claude/skill-invocations.jsonl`. Each line is a JSON object:
+Run `python3 scripts/analyze-skill-invocations.py --format markdown`. By
+default it reads `~/.claude/skill-invocations.jsonl`,
+`.harness-kit/work/ledger.jsonl`, and `.harness-kit/traces/delegations.jsonl`.
+Each skill invocation line is a JSON object:
 `{"ts": "ISO8601", "skill": "name", "args": "...", "session_id": "...", "cwd": "...", "project": "..."}`.
 
 If the file doesn't exist or is empty, report: "No invocation data found.

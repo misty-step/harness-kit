@@ -13,10 +13,6 @@
       "title": "Commit-triggered QA assistant evidence lane"
     },
     {
-      "source": "backlog.d/088-meta-observability-spine.md",
-      "title": "Meta-observability spine for skill analytics"
-    },
-    {
       "source": "backlog.d/090-cross-harness-invocation-telemetry.md",
       "title": "Cross-harness skill invocation telemetry"
     },
