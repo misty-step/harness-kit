@@ -184,13 +184,31 @@ WORK_LEDGER_FIELDS = {
 }
 OPTIONAL_WORK_LEDGER_FIELDS = {"usage"}
 SKILL_INVOCATION_FIELDS = {
+    "schema_version",
+    "event_type",
     "ts",
     "harness",
+    "source_protocol",
     "skill",
     "args",
     "session_id",
     "cwd",
     "project",
+}
+SKILL_INVOCATION_SOURCE_PROTOCOLS = {
+    "post_tool_use",
+    "codex_hook",
+    "pi_hook",
+    "antigravity_hook",
+    "external_import",
+}
+BANNED_SKILL_INVOCATION_FIELDS = {
+    "prompt",
+    "raw_prompt",
+    "tool_output",
+    "raw_tool_output",
+    "raw_message",
+    "transcript",
 }
 OPTIONAL_SKILL_INVOCATION_FIELDS = {
     "model_id",
@@ -646,11 +664,20 @@ def validate_skill_invocations(path: Path) -> list[dict[str, object]]:
         if not isinstance(record, dict):
             raise SystemExit(f"{path}:{lineno}: skill invocation must be a JSON object")
         missing = SKILL_INVOCATION_FIELDS - set(record)
-        extra = set(record) - SKILL_INVOCATION_FIELDS - OPTIONAL_SKILL_INVOCATION_FIELDS
+        banned = BANNED_SKILL_INVOCATION_FIELDS & set(record)
+        extra = set(record) - SKILL_INVOCATION_FIELDS - OPTIONAL_SKILL_INVOCATION_FIELDS - BANNED_SKILL_INVOCATION_FIELDS
         if missing:
             raise SystemExit(f"{path}:{lineno}: missing skill-invocation fields: {sorted(missing)}")
+        if banned:
+            raise SystemExit(f"{path}:{lineno}: banned raw-content fields: {sorted(banned)}")
         if extra:
             raise SystemExit(f"{path}:{lineno}: unknown skill-invocation fields: {sorted(extra)}")
+        if record["schema_version"] != 2:
+            raise SystemExit(f"{path}:{lineno}: skill invocation schema_version must be 2")
+        if record["event_type"] != "skill_invocation":
+            raise SystemExit(f"{path}:{lineno}: invalid skill invocation event_type")
+        if record["source_protocol"] not in SKILL_INVOCATION_SOURCE_PROTOCOLS:
+            raise SystemExit(f"{path}:{lineno}: invalid skill invocation source_protocol")
         if "usage" in record:
             validate_usage(record["usage"])
         records.append(record)

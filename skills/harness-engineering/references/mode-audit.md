@@ -11,9 +11,14 @@ when the question is lifecycle strategy rather than catalog mechanics.
 
 Run `python3 scripts/analyze-skill-invocations.py --format markdown`. By
 default it reads `~/.claude/skill-invocations.jsonl`,
-`.harness-kit/work/ledger.jsonl`, and `.harness-kit/traces/delegations.jsonl`.
+`.harness-kit/work/ledger.jsonl`, and `.harness-kit/traces/delegations.jsonl`,
+then reports coverage for Claude, Codex, Pi, and Antigravity. Only Claude has
+a verified skill invocation hook today; unsupported harnesses must remain
+explicit warnings until a real event surface and smoke path exists.
 Each skill invocation line is a JSON object:
-`{"ts": "ISO8601", "skill": "name", "args": "...", "session_id": "...", "cwd": "...", "project": "..."}`.
+`{"schema_version": 2, "event_type": "skill_invocation", "ts": "ISO8601", "harness": "claude", "source_protocol": "post_tool_use", "skill": "name", "args": "...", "session_id": "...", "cwd": "...", "project": "..."}`.
+The analyzer tolerates legacy rows without `schema_version` or
+`source_protocol`, but fixture validation requires the v2 shape.
 
 If the file doesn't exist or is empty, report: "No invocation data found.
 Skill invocations are tracked automatically via PostToolUse hook. Once you

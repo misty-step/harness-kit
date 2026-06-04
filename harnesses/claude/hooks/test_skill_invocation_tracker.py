@@ -56,6 +56,9 @@ class TestSkillInvocationTracker(unittest.TestCase):
         self.assertEqual(len(lines), 1)
 
         entry = json.loads(lines[0])
+        self.assertEqual(entry["schema_version"], 2)
+        self.assertEqual(entry["event_type"], "skill_invocation")
+        self.assertEqual(entry["source_protocol"], "post_tool_use")
         self.assertEqual(entry["skill"], "commit")
         self.assertEqual(entry["args"], "-m fix")
         self.assertEqual(entry["session_id"], "abc")

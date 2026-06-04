@@ -19,6 +19,29 @@ from agent_roster import ReceiptValidationError, validate_usage  # noqa: E402
 DEFAULT_SKILL_LOG = Path.home() / ".claude" / "skill-invocations.jsonl"
 DEFAULT_WORK_LEDGER = Path(".harness-kit/work/ledger.jsonl")
 DEFAULT_DELEGATIONS = Path(".harness-kit/traces/delegations.jsonl")
+DEFAULT_HARNESSES = ("claude", "codex", "pi", "antigravity-cli")
+HARNESS_SUPPORT = {
+    "claude": {
+        "status": "supported",
+        "source_protocols": ("post_tool_use",),
+        "reason": "Claude PostToolUse Skill hook is installed by bootstrap.",
+    },
+    "codex": {
+        "status": "unsupported",
+        "source_protocols": (),
+        "reason": "No verified Codex skill/tool hook API is configured in this repo.",
+    },
+    "pi": {
+        "status": "unsupported",
+        "source_protocols": (),
+        "reason": "Pi is a roster dispatch lane; no skill event hook is configured.",
+    },
+    "antigravity-cli": {
+        "status": "unsupported",
+        "source_protocols": (),
+        "reason": "Antigravity hook shape exists as a concept, but no stable JSON stdin contract is wired here.",
+    },
+}
 
 
 def parse_ts(value: object) -> datetime | None:
@@ -40,6 +63,11 @@ def parse_since(value: str) -> datetime | None:
     amount = int(amount_text)
     delta = timedelta(days=amount) if unit == "d" else timedelta(hours=amount)
     return datetime.now(UTC) - delta
+
+
+def parse_harnesses(value: str) -> list[str]:
+    harnesses = [item.strip() for item in value.split(",") if item.strip()]
+    return harnesses or list(DEFAULT_HARNESSES)
 
 
 def read_jsonl(path: Path, label: str) -> tuple[list[dict[str, Any]], dict[str, Any], list[str]]:
@@ -70,6 +98,11 @@ def repo_id(row: dict[str, Any]) -> str:
         return project
     cwd = str(row.get("cwd") or "").strip()
     return Path(cwd).name if cwd else "unknown"
+
+
+def source_protocol(row: dict[str, Any]) -> str:
+    protocol = str(row.get("source_protocol") or "").strip()
+    return protocol or "legacy_unknown"
 
 
 def passes_filters(row: dict[str, Any], args: argparse.Namespace, since: datetime | None) -> bool:
@@ -117,6 +150,51 @@ def usage_summary(rows: list[dict[str, Any]]) -> dict[str, object]:
     }
 
 
+def harness_coverage(
+    rows: list[dict[str, Any]], expected_harnesses: list[str]
+) -> tuple[list[dict[str, Any]], list[str]]:
+    by_harness: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        harness = str(row.get("harness") or "unknown").strip() or "unknown"
+        by_harness[harness].append(row)
+
+    names = sorted(set(expected_harnesses) | set(by_harness))
+    coverage: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    for harness in names:
+        support = HARNESS_SUPPORT.get(
+            harness,
+            {
+                "status": "unknown",
+                "source_protocols": (),
+                "reason": "No support entry is defined for this harness.",
+            },
+        )
+        harness_rows = by_harness.get(harness, [])
+        protocols = sorted({source_protocol(row) for row in harness_rows})
+        status = str(support["status"])
+        if status != "supported" and not harness_rows:
+            warnings.append(f"{harness} skill invocation adapter unsupported/unavailable: {support['reason']}")
+        elif status != "supported" and harness_rows:
+            warnings.append(
+                f"{harness} has {len(harness_rows)} skill invocation row(s) but no verified adapter: "
+                f"protocols={','.join(protocols)}"
+            )
+        elif any(protocol == "legacy_unknown" for protocol in protocols):
+            warnings.append(f"{harness} has legacy skill invocation row(s) without source_protocol")
+        coverage.append(
+            {
+                "harness": harness,
+                "status": status,
+                "rows": len(harness_rows),
+                "source_protocols": protocols,
+                "supported_protocols": list(support["source_protocols"]),
+                "reason": support["reason"],
+            }
+        )
+    return coverage, warnings
+
+
 def classify(count: int) -> str:
     if count > 10:
         return "hot"
@@ -129,6 +207,7 @@ def classify(count: int) -> str:
 
 def analyze(args: argparse.Namespace) -> dict[str, Any]:
     since = parse_since(args.since)
+    expected_harnesses = parse_harnesses(args.harnesses)
     skill_rows, skill_coverage, warnings = read_jsonl(args.skill_log, "skill invocation")
     work_rows, work_coverage, work_warnings = read_jsonl(args.work_ledger, "work ledger")
     delegation_rows, delegation_coverage, delegation_warnings = read_jsonl(
@@ -194,6 +273,8 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         warnings.append(f"{unmatched_skill_rows} skill invocation row(s) lack backlog_ref/work_id")
     if delegation_rows and not work_rows:
         warnings.append("delegation rows are present but work ledger rows are absent")
+    harness_rows, harness_warnings = harness_coverage(skill_rows, expected_harnesses)
+    warnings.extend(harness_warnings)
 
     delegation_usage = usage_summary(delegation_rows)
     return {
@@ -208,6 +289,7 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
             "skill_log": skill_coverage,
             "work_ledger": work_coverage,
             "delegations": delegation_coverage,
+            "harnesses": harness_rows,
         },
         "warnings": warnings,
     }
@@ -251,7 +333,23 @@ def render_markdown(report: dict[str, Any]) -> str:
 
     lines.extend(["", "## Source Coverage", "", "| Store | Present | Rows | Path |", "|---|---|---:|---|"])
     for name, coverage in report["coverage"].items():
+        if name == "harnesses":
+            continue
         lines.append(f"| {name} | {coverage['present']} | {coverage['rows']} | {coverage['path']} |")
+
+    lines.extend(
+        [
+            "",
+            "## Harness Coverage",
+            "",
+            "| Harness | Status | Rows | Source Protocols | Supported Protocols |",
+            "|---|---|---:|---|---|",
+        ]
+    )
+    for row in report["coverage"]["harnesses"]:
+        protocols = ", ".join(row["source_protocols"]) or "none"
+        supported = ", ".join(row["supported_protocols"]) or "none"
+        lines.append(f"| {row['harness']} | {row['status']} | {row['rows']} | {protocols} | {supported} |")
 
     usage = report["delegation_usage"]
     lines.extend(
@@ -286,7 +384,16 @@ def render_text(report: dict[str, Any]) -> str:
     lines.extend(f"- {row['from']} -> {row['to']}: {row['count']}" for row in report["transitions"])
     lines.append("coverage:")
     for name, coverage in report["coverage"].items():
+        if name == "harnesses":
+            continue
         lines.append(f"- {name}: present={coverage['present']} rows={coverage['rows']} path={coverage['path']}")
+    lines.append("harness coverage:")
+    for row in report["coverage"]["harnesses"]:
+        protocols = ",".join(row["source_protocols"]) or "none"
+        lines.append(
+            f"- {row['harness']}: status={row['status']} rows={row['rows']} "
+            f"source_protocols={protocols}"
+        )
     lines.append("warnings:")
     lines.extend(f"- {warning}" for warning in report["warnings"] or ["none"])
     return "\n".join(lines)
@@ -303,8 +410,11 @@ def self_test() -> int:
                 [
                     json.dumps(
                         {
+                            "schema_version": 2,
+                            "event_type": "skill_invocation",
                             "ts": "2026-06-04T00:00:00Z",
                             "harness": "claude",
+                            "source_protocol": "post_tool_use",
                             "skill": "shape",
                             "args": "088",
                             "session_id": "s1",
@@ -323,8 +433,11 @@ def self_test() -> int:
                     ),
                     json.dumps(
                         {
+                            "schema_version": 2,
+                            "event_type": "skill_invocation",
                             "ts": "2026-06-04T00:01:00Z",
                             "harness": "claude",
+                            "source_protocol": "post_tool_use",
                             "skill": "implement",
                             "args": "088",
                             "session_id": "s1",
@@ -335,8 +448,11 @@ def self_test() -> int:
                     ),
                     json.dumps(
                         {
+                            "schema_version": 2,
+                            "event_type": "skill_invocation",
                             "ts": "2026-06-04T00:02:00Z",
                             "harness": "codex",
+                            "source_protocol": "external_import",
                             "skill": "shape",
                             "args": "090",
                             "session_id": "s2",
@@ -387,11 +503,14 @@ def self_test() -> int:
             repo="",
             project="",
             skill="",
+            harnesses="claude,codex,pi,antigravity-cli",
         )
         report = analyze(args)
         assert report["skills"][0]["skill"] == "shape"
         assert {"from": "shape", "to": "implement", "count": 1} in report["transitions"]
         assert report["delegation_usage"]["total_tokens"] is None
+        assert any(row["harness"] == "codex" and row["status"] == "unsupported" for row in report["coverage"]["harnesses"])
+        assert any("pi skill invocation adapter unsupported" in warning for warning in report["warnings"])
         assert "unknown" in render_markdown(report)
         missing_args = argparse.Namespace(
             skill_log=root / "missing-skill.jsonl",
@@ -401,6 +520,7 @@ def self_test() -> int:
             repo="",
             project="",
             skill="",
+            harnesses="claude,codex,pi,antigravity-cli",
         )
         missing_report = analyze(missing_args)
         assert missing_report["coverage"]["skill_log"]["present"] is False
@@ -418,6 +538,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repo", default="")
     parser.add_argument("--project", default="")
     parser.add_argument("--skill", default="")
+    parser.add_argument(
+        "--harnesses",
+        default=",".join(DEFAULT_HARNESSES),
+        help="Comma-separated harnesses to show in coverage; defaults to Harness Kit primary harnesses.",
+    )
     parser.add_argument("--format", choices=("json", "text", "markdown"), default="markdown")
     parser.add_argument("--self-test", action="store_true")
     return parser

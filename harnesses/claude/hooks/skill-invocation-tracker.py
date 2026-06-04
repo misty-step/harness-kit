@@ -36,8 +36,11 @@ def main():
 
     cwd = data.get("cwd", "")
     entry = {
+        "schema_version": 2,
+        "event_type": "skill_invocation",
         "ts": datetime.now(timezone.utc).isoformat(),
         "harness": data.get("harness", "claude"),
+        "source_protocol": "post_tool_use",
         "skill": skill,
         "args": tool_input.get("args", ""),
         "session_id": data.get("session_id", ""),

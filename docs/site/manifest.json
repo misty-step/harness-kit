@@ -5,10 +5,6 @@
       "title": "GEPA-style harness auto-tune from cycle events"
     },
     {
-      "source": "backlog.d/090-cross-harness-invocation-telemetry.md",
-      "title": "Cross-harness skill invocation telemetry"
-    },
-    {
       "source": "backlog.d/091-transcript-mining-effectiveness-loop.md",
       "title": "Opt-in transcript mining and effectiveness loop"
     },
