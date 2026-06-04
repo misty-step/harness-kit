@@ -210,6 +210,26 @@
     "Support": "catalog",
     "Verify": "verify"
   },
+  "images": [
+    {
+      "alt": "Diagram of the Harness Kit ship workflow moving from shaped ticket through delivery, review, gates, QA, clean-tree closeout, ship, and reflection with evidence captured at each step.",
+      "max_bytes": 256000,
+      "page": "workflows/ship-a-repo-change-with-review-and-gates.html",
+      "regeneration_ref": "Prompt: draw a clean workflow map for Harness Kit showing shaped ticket, /deliver, review lanes, CI gates, QA evidence, clean-tree closeout, /ship, and /reflect. Current OpenAI image-generation docs verified on 2026-06-03: https://platform.openai.com/docs/guides/image-generation/",
+      "review_note": "Workflow figure reviewed for ticket 092: text remains authoritative; the image is a visual map only.",
+      "source": "docs/copy/images/ship-workflow-evidence-loop.svg",
+      "source_policy": "Committed static SVG source; CI copies bytes and never calls an image-generation API.",
+      "text_equivalent_anchor": "ship-workflow-text-equivalent",
+      "text_equivalent_heading": "Text equivalent: ship workflow evidence loop",
+      "text_equivalent_items": [
+        "Start from a shaped ticket with a concrete oracle and implementation surface.",
+        "Use /deliver to build on a feature branch while implementation, review, CI, refactor, and QA each own separate evidence.",
+        "Collect roster receipts, green gate output, QA evidence, and clean-tree status before calling the branch merge-ready.",
+        "Use /ship only after merge-readiness: land the work, archive the backlog item with trailers, sync generated docs, and run reflection.",
+        "If any phase cannot produce live evidence, route back to the failing phase instead of treating the branch as shipped."
+      ]
+    }
+  ],
   "workflows": [
     {
       "decision": "Pick the workflow with repeated demand, visible friction, and a clear success oracle.",

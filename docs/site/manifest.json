@@ -33,10 +33,6 @@
       "title": "Opt-in transcript mining and effectiveness loop"
     },
     {
-      "source": "backlog.d/092-html-first-docs-and-image-primitives.md",
-      "title": "Add one trustworthy workflow figure to the docs companion"
-    },
-    {
       "source": "backlog.d/094-agent-legible-source-of-truth-readiness.md",
       "title": "Agent-legible source-of-truth readiness pillar"
     },
@@ -97,6 +93,29 @@
     "ship",
     "specialist",
     "verify"
+  ],
+  "images": [
+    {
+      "alt": "Diagram of the Harness Kit ship workflow moving from shaped ticket through delivery, review, gates, QA, clean-tree closeout, ship, and reflection with evidence captured at each step.",
+      "bytes": 4160,
+      "max_bytes": 256000,
+      "output": "assets/images/ship-workflow-evidence-loop.svg",
+      "page": "workflows/ship-a-repo-change-with-review-and-gates.html",
+      "regeneration_ref": "Prompt: draw a clean workflow map for Harness Kit showing shaped ticket, /deliver, review lanes, CI gates, QA evidence, clean-tree closeout, /ship, and /reflect. Current OpenAI image-generation docs verified on 2026-06-03: https://platform.openai.com/docs/guides/image-generation/",
+      "review_note": "Workflow figure reviewed for ticket 092: text remains authoritative; the image is a visual map only.",
+      "sha256": "1a8e0f2491092250a5311666eeb5f9e366ec89f462232691e9f7cf1534adb4eb",
+      "source": "docs/copy/images/ship-workflow-evidence-loop.svg",
+      "source_policy": "Committed static SVG source; CI copies bytes and never calls an image-generation API.",
+      "text_equivalent_anchor": "ship-workflow-text-equivalent",
+      "text_equivalent_heading": "Text equivalent: ship workflow evidence loop",
+      "text_equivalent_items": [
+        "Start from a shaped ticket with a concrete oracle and implementation surface.",
+        "Use /deliver to build on a feature branch while implementation, review, CI, refactor, and QA each own separate evidence.",
+        "Collect roster receipts, green gate output, QA evidence, and clean-tree status before calling the branch merge-ready.",
+        "Use /ship only after merge-readiness: land the work, archive the backlog item with trailers, sync generated docs, and run reflection.",
+        "If any phase cannot produce live evidence, route back to the failing phase instead of treating the branch as shipped."
+      ]
+    }
   ],
   "onboarding": {
     "quickstart": {

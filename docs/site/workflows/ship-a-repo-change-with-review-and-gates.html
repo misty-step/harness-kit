@@ -32,6 +32,21 @@
       <article><span>Evidence</span><p>Green gate output, review receipts, QA evidence, clean tree, and a delivery brief.</p></article>
       <article><span>Failure handling</span><p>If any phase cannot produce live evidence, the branch is not merge-ready.</p></article>
     </section>
+    
+    <section class="workflow-figure-section" aria-labelledby="ship-workflow-text-equivalent">
+      <figure class="workflow-figure">
+        <img src="../assets/images/ship-workflow-evidence-loop.svg" alt="Diagram of the Harness Kit ship workflow moving from shaped ticket through delivery, review, gates, QA, clean-tree closeout, ship, and reflection with evidence captured at each step.">
+        <figcaption>Workflow figure reviewed for ticket 092: text remains authoritative; the image is a visual map only.</figcaption>
+      </figure>
+      <div class="text-equivalent" id="ship-workflow-text-equivalent">
+        <h2>Text equivalent: ship workflow evidence loop</h2>
+        <ul>
+          <li>Start from a shaped ticket with a concrete oracle and implementation surface.</li><li>Use /deliver to build on a feature branch while implementation, review, CI, refactor, and QA each own separate evidence.</li><li>Collect roster receipts, green gate output, QA evidence, and clean-tree status before calling the branch merge-ready.</li><li>Use /ship only after merge-readiness: land the work, archive the backlog item with trailers, sync generated docs, and run reflection.</li><li>If any phase cannot produce live evidence, route back to the failing phase instead of treating the branch as shipped.</li>
+        </ul>
+        <p class="source">Image source: <a href="https://github.com/misty-step/harness-kit/blob/master/docs/copy/images/ship-workflow-evidence-loop.svg">docs/copy/images/ship-workflow-evidence-loop.svg</a>. Committed static SVG source; CI copies bytes and never calls an image-generation API. Regeneration: Prompt: draw a clean workflow map for Harness Kit showing shaped ticket, /deliver, review lanes, CI gates, QA evidence, clean-tree closeout, /ship, and /reflect. Current OpenAI image-generation docs verified on 2026-06-03: https://platform.openai.com/docs/guides/image-generation/</p>
+      </div>
+    </section>
+
     <section class="checklist">
       <h2>What to verify</h2>
       <ul>

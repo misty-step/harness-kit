@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Harness Kit ship workflow evidence loop</title>
+  <desc id="desc">A visual workflow map from shaped ticket to delivery, review, gates, QA, clean closeout, ship, and reflect, with evidence captured throughout.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#246bfe"/>
+    </marker>
+    <style>
+      .bg { fill: #fbfcff; }
+      .lane { fill: #eef5ff; stroke: #cbd8f6; stroke-width: 2; }
+      .card { fill: #ffffff; stroke: #d9dee8; stroke-width: 2; }
+      .accent { fill: #246bfe; }
+      .green { fill: #00a889; }
+      .ink { fill: #111827; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .title { font-size: 36px; font-weight: 800; }
+      .label { font-size: 24px; font-weight: 800; }
+      .body { font-size: 18px; font-weight: 500; fill: #5b6575; }
+      .tiny { font-size: 15px; font-weight: 700; fill: #5b6575; }
+      .line { fill: none; stroke: #246bfe; stroke-width: 4; marker-end: url(#arrow); }
+      .soft { fill: none; stroke: #00a889; stroke-width: 3; stroke-dasharray: 8 8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1200" height="720"/>
+  <text class="ink title" x="70" y="78">Ship a repo change with review and gates</text>
+  <text class="ink body" x="70" y="113">Each phase must leave evidence before the workflow advances.</text>
+
+  <rect class="lane" x="54" y="150" width="1092" height="360" rx="18"/>
+  <rect class="card" x="86" y="205" width="150" height="190" rx="14"/>
+  <circle class="accent" cx="161" cy="250" r="25"/>
+  <text class="ink label" x="118" y="314">Shaped</text>
+  <text class="ink label" x="121" y="345">ticket</text>
+  <text class="ink tiny" x="116" y="373">oracle + scope</text>
+
+  <rect class="card" x="286" y="205" width="150" height="190" rx="14"/>
+  <circle class="accent" cx="361" cy="250" r="25"/>
+  <text class="ink label" x="322" y="318">/deliver</text>
+  <text class="ink tiny" x="320" y="350">feature branch</text>
+  <text class="ink tiny" x="319" y="373">TDD build</text>
+
+  <rect class="card" x="486" y="205" width="150" height="190" rx="14"/>
+  <circle class="green" cx="561" cy="250" r="25"/>
+  <text class="ink label" x="520" y="318">Review</text>
+  <text class="ink tiny" x="515" y="350">roster receipts</text>
+  <text class="ink tiny" x="512" y="373">critic verdicts</text>
+
+  <rect class="card" x="686" y="205" width="150" height="190" rx="14"/>
+  <circle class="green" cx="761" cy="250" r="25"/>
+  <text class="ink label" x="726" y="318">Gates</text>
+  <text class="ink tiny" x="720" y="350">Dagger lanes</text>
+  <text class="ink tiny" x="726" y="373">QA proof</text>
+
+  <rect class="card" x="886" y="205" width="150" height="190" rx="14"/>
+  <circle class="accent" cx="961" cy="250" r="25"/>
+  <text class="ink label" x="921" y="318">Closeout</text>
+  <text class="ink tiny" x="919" y="350">clean tree</text>
+  <text class="ink tiny" x="912" y="373">delivery brief</text>
+
+  <path class="line" d="M236 300 H276"/>
+  <path class="line" d="M436 300 H476"/>
+  <path class="line" d="M636 300 H676"/>
+  <path class="line" d="M836 300 H876"/>
+
+  <rect class="card" x="246" y="535" width="210" height="105" rx="14"/>
+  <text class="ink label" x="291" y="585">/ship</text>
+  <text class="ink tiny" x="287" y="614">land + archive</text>
+
+  <rect class="card" x="744" y="535" width="210" height="105" rx="14"/>
+  <text class="ink label" x="791" y="585">/reflect</text>
+  <text class="ink tiny" x="781" y="614">codify lessons</text>
+
+  <path class="line" d="M961 395 C961 470 810 500 456 575"/>
+  <path class="soft" d="M456 588 H734"/>
+  <path class="soft" d="M849 535 C980 470 1068 410 1068 315"/>
+
+  <text class="ink body" x="70" y="470">If evidence fails, return to the failing phase. Do not skip ahead.</text>
+  <text class="ink tiny" x="70" y="665">Text authority lives in the generated page and llms.txt; this figure is a visual aid.</text>
+</svg>

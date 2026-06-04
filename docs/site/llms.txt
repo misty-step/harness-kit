@@ -55,6 +55,9 @@ Primitives:
 - agent:a11y-critic | agents/a11y-critic.md | docs/site/reference/agents/a11y-critic.html
 - agent:a11y-fixer | agents/a11y-fixer.md | docs/site/reference/agents/a11y-fixer.html
 
+Docs figures:
+- workflows/ship-a-repo-change-with-review-and-gates.html | docs/copy/images/ship-workflow-evidence-loop.svg -> docs/site/assets/images/ship-workflow-evidence-loop.svg | text: #ship-workflow-text-equivalent | Diagram of the Harness Kit ship workflow moving from shaped ticket through delivery, review, gates, QA, clean-tree closeout, ship, and reflection with evidence captured at each step.
+
 CI gates:
 - check-agent-roster
 - check-bench-map
