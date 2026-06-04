@@ -257,6 +257,16 @@
       "source": "skills/critique/SKILL.md"
     },
     {
+      "description": "Lightweight evidence-backed retro and catch-up reports for a current repo, branch, PR, backlog slice, or recent agent session. Use when the user asks for a debrief, catch me up, what changed, why it matters, product implications, end-user implications, developer experience implications, current app state, backlog state, workspace state, alternatives considered, or context rebuild after losing the thread. Trigger: /debrief.",
+      "icon": "catalog",
+      "id": "skill:debrief",
+      "kind": "skill",
+      "name": "debrief",
+      "page": "reference/skills/debrief.html",
+      "role": "Support",
+      "source": "skills/debrief/SKILL.md"
+    },
+    {
       "description": "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator brief + /reflect. Use for \"deliver this\", \"make it merge-ready\", shaped-ticket builds, and `--polish-only <branch|PR>` for existing branch/PR cleanup. Trigger: /deliver.",
       "icon": "operate",
       "id": "skill:deliver",

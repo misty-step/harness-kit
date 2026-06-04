@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debrief"
+  short_description: "Evidence-backed session catch-up"
+  default_prompt: "Use $debrief to catch me up on what changed and why it matters."

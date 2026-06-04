@@ -27,6 +27,7 @@ Primitives:
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html
 - skill:create-repo-skill | skills/create-repo-skill/SKILL.md | docs/site/reference/skills/create-repo-skill.html
 - skill:critique | skills/critique/SKILL.md | docs/site/reference/skills/critique.html
+- skill:debrief | skills/debrief/SKILL.md | docs/site/reference/skills/debrief.html
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:demo | skills/demo/SKILL.md | docs/site/reference/skills/demo.html
 - skill:deploy | skills/deploy/SKILL.md | docs/site/reference/skills/deploy.html

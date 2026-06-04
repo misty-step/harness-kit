@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-04T15:06:05Z
+# Generated: 2026-06-04T15:12:22Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -35,6 +35,10 @@ skills:
     description: "Run one targeted, read-only architecture or quality critique through a named lens from the shared rubric. Use when: \"critique this module\", \"run an Ousterhout pass\", \"lens critique\", \"architecture cri"
     source: first-party
     tags: [a,an,architecture,cri,critique,lens,module,named,one,or]
+  - name: debrief
+    description: "Lightweight evidence-backed retro and catch-up reports for a current repo, branch, PR, backlog slice, or recent agent session. Use when the user asks for a debrief, catch me up, what changed, why it m"
+    source: first-party
+    tags: [a,agent,asks,backlog,branch,catch,catch-up,changed,current,debrief]
   - name: deliver
     description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator "
     source: first-party
