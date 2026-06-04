@@ -35,7 +35,14 @@ fields below for review verdicts.
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
    Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-2. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
+2. **Load review pattern catalogs.** If the target repo has a local
+   `references/review-patterns.md` or equivalent repo-local pattern catalog,
+   load it before dispatching reviewers. When a local entry links to shared
+   Harness Kit references such as
+   `references/bounded-payload-discipline.md`, include that reference in the
+   reviewer prompt and require findings to cite the local entry ID.
+
+3. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
    selection algorithm in `references/bench-map.yaml`:
    - `git diff --name-only $BASE...HEAD` → changed files
    - Start from `default`; for every rule whose glob matches any changed file,
@@ -47,7 +54,7 @@ fields below for review verdicts.
    `references/deep-review-lens.md` when the diff needs root-cause,
    provenance, or long-running autoreview discipline.
 
-3. **Dispatch all three tiers in parallel:**
+4. **Dispatch all three tiers in parallel:**
 
    | Tier | What | How |
    |------|------|-----|
@@ -60,11 +67,11 @@ fields below for review verdicts.
    `run_completed` event in `trace/events.jsonl`, before you consume the run.
    Mid-run output directories are not final artifacts.
 
-4. **Synthesize.** Collect all outputs. Deduplicate findings across tiers.
+5. **Synthesize.** Collect all outputs. Deduplicate findings across tiers.
    Rank by severity: blocking (correctness, security) > important (architecture,
    testing) > advisory (style, naming).
 
-5. **Verdict.** If no blocking findings → **Ship**. If blocking findings exist →
+6. **Verdict.** If no blocking findings → **Ship**. If blocking findings exist →
    fix loop (below).
 
 ## Fix Loop

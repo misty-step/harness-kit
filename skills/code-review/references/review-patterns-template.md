@@ -47,6 +47,9 @@ operators decide which findings are pattern-worthy.
 
 **Why it matters.** <2-3 sentences on consequence and review signal.>
 
+**Reference.** <optional shared Harness Kit reference when the local pattern is
+an instance of a cross-repo discipline>
+
 **Enforcement.** <lint rule / hook / CI lane / test / review checklist only>
 ~~~
 
@@ -128,3 +131,11 @@ or merely ignores it.
 
 **Enforcement.** Review checklist only unless the repo has a targeted test
 style lint.
+
+## Shared Reference Example
+
+Local catalogs may link to shared Harness Kit references instead of
+copy-pasting cross-repo explanations. For example, a repo-local entry such as
+`P-07 - Preload-then-take on bounded read models` can keep the violating local
+example and point its "why it matters" expansion to
+`skills/code-review/references/bounded-payload-discipline.md`.

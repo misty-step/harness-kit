@@ -60,19 +60,19 @@ fields below for review verdicts.
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
    Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-2. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
+2. **Load review pattern catalogs.** If the target repo has a local
+   `references/review-patterns.md` or equivalent repo-local pattern catalog,
+   load it before dispatching reviewers. When a local entry links to shared
+   Harness Kit references such as
+   `references/bounded-payload-discipline.md`, include that reference in the
+   reviewer prompt and require findings to cite the local entry ID.
+
+3. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
    selection algorithm in `references/bench-map.yaml`:
    - `git diff --name-only $BASE...HEAD` → changed files
    - Start from `default`; for every rule whose glob matches any changed file,
      apply `replace`, union `add`, de-dupe, then cap at 5 (critic pinned)
    - Bench size always in [3, 5]; selection is deterministic per diff
-   Read `references/bench-map.md` for the full algorithm and
-   `references/internal-bench.md` for each reviewer lens. Then craft a
-   tailored prompt per selected reviewer. Load
-   `references/deep-review-lens.md` when the diff needs root-cause,
-   provenance, or long-running autoreview discipline.
-
-3. **Dispatch all three tiers in parallel:**
 ...</code></pre>
     </section>
     <section class="checklist">

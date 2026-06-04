@@ -710,6 +710,33 @@ def validate_agents_placement_doctrine() -> None:
         raise SystemExit("; ".join(issues))
 
 
+def validate_code_review_pattern_references() -> None:
+    skill = Path("skills/code-review/SKILL.md").read_text()
+    template = Path("skills/code-review/references/review-patterns-template.md").read_text()
+    bounded = Path("skills/code-review/references/bounded-payload-discipline.md")
+    if not bounded.exists():
+        raise SystemExit(f"{bounded}: missing bounded-payload reference")
+    bounded_text = bounded.read_text()
+    required = [
+        "Any API response that advertises a cap",
+        "Shape A: Bounded Fetch",
+        "Shape B: Count Plus Bounded Fetch",
+        "Ecto's",
+        "Prisma",
+        "Assertion Pattern",
+    ]
+    for phrase in required:
+        if phrase not in bounded_text:
+            raise SystemExit(f"{bounded}: missing required phrase {phrase!r}")
+    if "review-patterns.md" not in skill or "bounded-payload-discipline.md" not in skill:
+        raise SystemExit("skills/code-review/SKILL.md: missing review pattern context loading")
+    if "bounded-payload-discipline.md" not in template or "**Reference.**" not in template:
+        raise SystemExit(
+            "skills/code-review/references/review-patterns-template.md: "
+            "missing shared reference wiring"
+        )
+
+
 def main() -> int:
     roster_path = Path(".harness-kit/agents.yaml")
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
@@ -733,6 +760,7 @@ def main() -> int:
     validate_open_model_roster_review_due()
     validate_source_agent_catalog()
     validate_agents_placement_doctrine()
+    validate_code_review_pattern_references()
     receipts = read_receipts(fixture_path)
     work_records = validate_work_records(work_record_fixture_path)
     work_ledger_records = validate_work_ledger(work_ledger_fixture_path)
