@@ -9,6 +9,12 @@ premise source, references a missing local file, carries a stale digest, or
 treats raw/private transcript storage as the default path instead of a redacted
 excerpt or waiver.
 
+Voice-derived and raw-transcript premise sources carry extra metadata so later
+shape, reflect, and transcript-mining work can see provenance and uncertainty.
+The checker rejects missing metadata fields, silent unknown model/confidence,
+source-hash drift, and raw audio paths. See
+`../references/voice-transcript-metadata.md`.
+
 Run:
 
 ```bash

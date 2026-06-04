@@ -191,6 +191,12 @@ evidence proves the implementation satisfies the oracle. For private
 transcripts or chats, use `/agent-transcript` to render a scoped redacted
 excerpt before referencing it.
 
+For voice-derived or raw-transcript premise artifacts, add the metadata block
+from `references/voice-transcript-metadata.md`. The block must name
+`source_kind`, duplicate the `source_hash`, preserve explicit unknowns for
+model/confidence/duration, name redaction status/tool, and record residual
+risk. Do not retain raw audio paths in repo premise artifacts.
+
 If no inspectable premise artifact can be safely named, use an explicit waiver
 instead:
 
