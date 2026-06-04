@@ -17,10 +17,6 @@
       "title": "Meta-observability spine for skill analytics"
     },
     {
-      "source": "backlog.d/089-token-cost-observability-schema.md",
-      "title": "Token and cost observability schema"
-    },
-    {
       "source": "backlog.d/090-cross-harness-invocation-telemetry.md",
       "title": "Cross-harness skill invocation telemetry"
     },

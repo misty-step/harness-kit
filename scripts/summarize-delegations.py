@@ -19,6 +19,10 @@ def _format_counts(counts: dict[str, int]) -> str:
     return ", ".join(f"{key}={value}" for key, value in sorted(counts.items()))
 
 
+def _format_unknown(value: object) -> str:
+    return "unknown" if value is None else str(value)
+
+
 def print_text_report(summary: dict[str, object]) -> None:
     backlog_ref = summary.get("backlog_ref") or "all receipts"
     print("Roster delegation report")
@@ -33,6 +37,23 @@ def print_text_report(summary: dict[str, object]) -> None:
             print(
                 f"  - {provider}: attempts[{_format_counts(attempts)}]; "
                 f"status[{_format_counts(statuses)}]"
+            )
+    else:
+        print("  - none")
+    usage = summary.get("usage_by_provider", {})
+    print("usage_by_provider:")
+    if isinstance(usage, dict) and usage:
+        for provider, provider_usage in sorted(usage.items()):
+            if not isinstance(provider_usage, dict):
+                continue
+            print(
+                f"  - {provider}: known={provider_usage.get('known_count', 0)}; "
+                f"unknown={provider_usage.get('unknown_count', 0)}; "
+                f"input_tokens={_format_unknown(provider_usage.get('input_tokens'))}; "
+                f"output_tokens={_format_unknown(provider_usage.get('output_tokens'))}; "
+                f"total_tokens={_format_unknown(provider_usage.get('total_tokens'))}; "
+                f"cost_usd={_format_unknown(provider_usage.get('cost_usd'))}; "
+                f"cost_sources[{_format_counts(provider_usage.get('cost_sources', {}))}]"
             )
     else:
         print("  - none")

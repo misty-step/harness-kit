@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "lib"))
 
-from agent_roster import SECRET_RE, load_roster, read_receipts, validate_roster  # noqa: E402
+from agent_roster import SECRET_RE, load_roster, read_receipts, validate_roster, validate_usage  # noqa: E402
 
 CORE_WORKFLOW_SKILLS = [
     "ci",
@@ -182,6 +182,17 @@ WORK_LEDGER_FIELDS = {
     "next_action",
     "status",
 }
+OPTIONAL_WORK_LEDGER_FIELDS = {"usage"}
+SKILL_INVOCATION_FIELDS = {
+    "ts",
+    "harness",
+    "skill",
+    "args",
+    "session_id",
+    "cwd",
+    "project",
+}
+OPTIONAL_SKILL_INVOCATION_FIELDS = {"model_id", "outcome", "duration_ms", "usage"}
 ALLOWED_SOURCE_AGENTS = {"a11y-auditor.md", "a11y-critic.md", "a11y-fixer.md"}
 
 
@@ -587,7 +598,7 @@ def validate_work_ledger(path: Path) -> list[dict[str, object]]:
         if not isinstance(record, dict):
             raise SystemExit(f"{path}:{lineno}: work ledger event must be a JSON object")
         missing = WORK_LEDGER_FIELDS - set(record)
-        extra = set(record) - WORK_LEDGER_FIELDS
+        extra = set(record) - WORK_LEDGER_FIELDS - OPTIONAL_WORK_LEDGER_FIELDS
         if missing:
             raise SystemExit(f"{path}:{lineno}: missing work-ledger fields: {sorted(missing)}")
         if extra:
@@ -610,6 +621,31 @@ def validate_work_ledger(path: Path) -> list[dict[str, object]]:
             raise SystemExit(f"{path}:{lineno}: invalid work-ledger event_type")
         if record["status"] not in {"active", "blocked", "completed", "failed", "superseded"}:
             raise SystemExit(f"{path}:{lineno}: invalid work-ledger status")
+        if "usage" in record:
+            validate_usage(record["usage"])
+        records.append(record)
+    return records
+
+
+def validate_skill_invocations(path: Path) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise SystemExit(f"{path}:{lineno}: invalid JSON: {error}") from error
+        if not isinstance(record, dict):
+            raise SystemExit(f"{path}:{lineno}: skill invocation must be a JSON object")
+        missing = SKILL_INVOCATION_FIELDS - set(record)
+        extra = set(record) - SKILL_INVOCATION_FIELDS - OPTIONAL_SKILL_INVOCATION_FIELDS
+        if missing:
+            raise SystemExit(f"{path}:{lineno}: missing skill-invocation fields: {sorted(missing)}")
+        if extra:
+            raise SystemExit(f"{path}:{lineno}: unknown skill-invocation fields: {sorted(extra)}")
+        if "usage" in record:
+            validate_usage(record["usage"])
         records.append(record)
     return records
 
@@ -672,6 +708,7 @@ def main() -> int:
     fixture_path = Path(".harness-kit/examples/delegation-receipt.jsonl")
     work_record_fixture_path = Path(".harness-kit/examples/work-record.jsonl")
     work_ledger_fixture_path = Path(".harness-kit/examples/work-ledger.jsonl")
+    skill_invocation_fixture_path = Path(".harness-kit/examples/skill-invocations.jsonl")
     gitignore_path = Path(".gitignore")
     summary_script = Path("scripts/summarize-delegations.py")
 
@@ -691,12 +728,15 @@ def main() -> int:
     receipts = read_receipts(fixture_path)
     work_records = validate_work_records(work_record_fixture_path)
     work_ledger_records = validate_work_ledger(work_ledger_fixture_path)
+    skill_invocation_records = validate_skill_invocations(skill_invocation_fixture_path)
     if not receipts:
         raise SystemExit(f"{fixture_path}: must contain at least one receipt fixture")
     if not work_records:
         raise SystemExit(f"{work_record_fixture_path}: must contain at least one work record fixture")
     if not work_ledger_records:
         raise SystemExit(f"{work_ledger_fixture_path}: must contain at least one ledger event")
+    if not skill_invocation_records:
+        raise SystemExit(f"{skill_invocation_fixture_path}: must contain at least one skill invocation")
     if not summary_script.exists():
         raise SystemExit(f"{summary_script}: missing roster report helper")
     completed = subprocess.run(

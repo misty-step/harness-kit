@@ -61,7 +61,36 @@ class TestSkillInvocationTracker(unittest.TestCase):
         self.assertEqual(entry["session_id"], "abc")
         self.assertEqual(entry["cwd"], "/tmp/myproject")
         self.assertEqual(entry["project"], "myproject")
+        self.assertEqual(entry["harness"], "claude")
         self.assertIn("ts", entry)
+
+    def test_optional_usage_fields_pass_through_when_available(self):
+        """Optional model, outcome, duration, and usage fields are preserved."""
+        payload = json.dumps({
+            "tool_name": "Skill",
+            "tool_input": {"skill": "qa", "args": ""},
+            "session_id": "abc",
+            "cwd": "/tmp/myproject",
+            "model_id": "claude-opus-4-7",
+            "outcome": "succeeded",
+            "duration_ms": 1200,
+            "usage": {
+                "input_tokens": 10,
+                "output_tokens": 5,
+                "total_tokens": 15,
+                "cost_usd": 0.001,
+                "cost_source": "provider_reported",
+            },
+        })
+        result = self._run_hook(payload)
+
+        self.assertEqual(result.returncode, 0)
+        with open(self.log_path) as f:
+            entry = json.loads(f.readline())
+        self.assertEqual(entry["model_id"], "claude-opus-4-7")
+        self.assertEqual(entry["outcome"], "succeeded")
+        self.assertEqual(entry["duration_ms"], 1200)
+        self.assertEqual(entry["usage"]["total_tokens"], 15)
 
     def test_non_skill_tool_ignored(self):
         """Non-Skill tool_name exits 0 with no output and no log entry."""

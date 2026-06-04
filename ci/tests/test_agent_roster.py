@@ -90,7 +90,7 @@ class RosterValidationTests(unittest.TestCase):
                 provider: {
                     "tier": "primary" if provider in {"codex", "claude", "pi"} else "conditional",
                     "kind": "cli",
-                    "probe": "echo TOKEN=abc123",
+                    "probe": "echo ACCESS_TOKEN=abc123",
                     "dispatch": "manual",
                     "output": "text",
                     "permissions": "default",
@@ -105,6 +105,29 @@ class RosterValidationTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "secret-like"):
             validate_roster(roster)
+
+    def test_receipt_input_ref_allows_token_observability_paths(self) -> None:
+        receipt = {
+            "schema_version": 1,
+            "delegation_id": "00000000-0000-4000-8000-000000000089",
+            "created_at": "2026-06-04T00:00:00Z",
+            "repo_root": "harness-kit",
+            "worktree_id": "test",
+            "lead_harness": "codex",
+            "lead_provider": "gpt-5",
+            "backlog_ref": "089",
+            "objective": "token cost schema",
+            "input_ref": "backlog.d/089-token-cost-observability-schema.md",
+            "provider_target": "codex",
+            "provider_status": "available",
+            "attempt_status": "succeeded",
+            "evidence_refs": ["evidence-089"],
+            "summary": "ok",
+            "lead_verdict": "accepted",
+            "redactions_applied": [],
+        }
+
+        validate_receipt(receipt)
 
     def test_rejects_malformed_model_variants(self) -> None:
         roster = load_roster(REPO_ROOT / ".harness-kit/agents.yaml")

@@ -82,12 +82,20 @@ REQUIRED_RECEIPT_FIELDS = {
     "lead_verdict",
     "redactions_applied",
 }
+OPTIONAL_RECEIPT_FIELDS = {
+    "model_id",
+    "duration_ms",
+    "usage",
+    "transcript_bytes",
+}
 
 SECRET_RE = re.compile(
-    r"(?i)(api[_-]?key|token|secret|password|bearer|xai_api_key|exa_api_key|anthropic_api_key)"
+    r"(?i)(api[_-]?key|access[_-]?token|refresh[_-]?token|auth[_-]?token|"
+    r"secret|password|bearer|xai_api_key|exa_api_key|anthropic_api_key)"
 )
 SHELL_META_RE = re.compile(r"[;&|`$<>]")
 INLINE_EVIDENCE_RE = re.compile(r"\s")
+VALID_COST_SOURCES = {"provider_reported", "estimated", "manual", "unknown"}
 
 
 class ReceiptValidationError(ValueError):
@@ -314,6 +322,7 @@ def dispatch_provider_lane(
         env["PATH"] = path_env
 
     timed_out = False
+    started_at = time.monotonic()
     with transcript.open("w") as output:
         process = subprocess.Popen(
             command,
@@ -332,6 +341,8 @@ def dispatch_provider_lane(
                 returncode = process.wait(timeout=1)
             except subprocess.TimeoutExpired:
                 returncode = -signal.SIGKILL
+    duration_ms = max(0, int((time.monotonic() - started_at) * 1000))
+    transcript_bytes = _file_size(transcript)
 
     if timed_out:
         provider_status = "error"
@@ -364,6 +375,9 @@ def dispatch_provider_lane(
         lead_harness=lead_harness,
         lead_provider=lead_provider,
         summary=summary,
+        model_id=_receipt_model_id(provider, model_override),
+        duration_ms=duration_ms,
+        transcript_bytes=transcript_bytes,
     )
     append_receipt(receipt_output, receipt)
     return receipt
@@ -393,6 +407,25 @@ def _dispatch_command(
         else:
             command.extend(["--model", model.removeprefix("openrouter/")])
     return command + [prompt]
+
+
+def _receipt_model_id(provider: dict[str, Any], model_override: str | None) -> str | None:
+    if model_override:
+        return _resolve_model_override(provider, model_override)
+    command = shlex.split(provider["dispatch"])
+    if "--model" in command:
+        model_index = command.index("--model")
+        if model_index < len(command) - 1:
+            return command[model_index + 1]
+    model = provider.get("model")
+    return str(model) if isinstance(model, str) and model.strip() else None
+
+
+def _file_size(path: Path) -> int | None:
+    try:
+        return path.stat().st_size
+    except OSError:
+        return None
 
 
 def _transcript_path(transcript_dir: Path, provider_target: str) -> Path:
@@ -437,6 +470,10 @@ def build_attempt_receipt(
     lead_harness: str = "unknown",
     lead_provider: str = "unknown",
     summary: str = "",
+    model_id: str | None = None,
+    duration_ms: int | None = None,
+    usage: dict[str, Any] | None = None,
+    transcript_bytes: int | None = None,
 ) -> dict[str, Any]:
     receipt = {
         "schema_version": 1,
@@ -457,6 +494,14 @@ def build_attempt_receipt(
         "lead_verdict": lead_verdict,
         "redactions_applied": [],
     }
+    if model_id is not None:
+        receipt["model_id"] = model_id
+    if duration_ms is not None:
+        receipt["duration_ms"] = duration_ms
+    if usage is not None:
+        receipt["usage"] = usage
+    if transcript_bytes is not None:
+        receipt["transcript_bytes"] = transcript_bytes
     validate_receipt(receipt)
     return receipt
 
@@ -465,7 +510,7 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
     missing = REQUIRED_RECEIPT_FIELDS - set(receipt)
     if missing:
         raise ReceiptValidationError(f"receipt missing fields: {', '.join(sorted(missing))}")
-    extra = set(receipt) - REQUIRED_RECEIPT_FIELDS
+    extra = set(receipt) - REQUIRED_RECEIPT_FIELDS - OPTIONAL_RECEIPT_FIELDS
     if extra:
         raise ReceiptValidationError(f"receipt has unknown fields: {', '.join(sorted(extra))}")
     if receipt["schema_version"] != 1:
@@ -484,6 +529,11 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
         raise ReceiptValidationError("receipt attempt_status is invalid.")
     if receipt["lead_verdict"] not in VALID_LEAD_VERDICTS:
         raise ReceiptValidationError("receipt lead_verdict is invalid.")
+    _validate_optional_text(receipt, "model_id")
+    _validate_optional_nonnegative_int(receipt, "duration_ms")
+    _validate_optional_nonnegative_int(receipt, "transcript_bytes")
+    if "usage" in receipt:
+        validate_usage(receipt["usage"])
     if not isinstance(receipt["evidence_refs"], list):
         raise ReceiptValidationError("receipt evidence_refs must be a list.")
     for ref in receipt["evidence_refs"]:
@@ -497,6 +547,63 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
         value = receipt.get(field, "")
         if isinstance(value, str) and SECRET_RE.search(value):
             raise ReceiptValidationError(f"receipt {field} contains secret-like text.")
+
+
+def _validate_optional_text(receipt: dict[str, Any], field: str) -> None:
+    if field not in receipt:
+        return
+    value = receipt[field]
+    if value is None:
+        return
+    if not isinstance(value, str) or not value.strip():
+        raise ReceiptValidationError(f"receipt {field} must be a non-empty string or null.")
+    if SECRET_RE.search(value):
+        raise ReceiptValidationError(f"receipt {field} contains secret-like text.")
+
+
+def _validate_optional_nonnegative_int(receipt: dict[str, Any], field: str) -> None:
+    if field not in receipt:
+        return
+    value = receipt[field]
+    if value is None:
+        return
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+        raise ReceiptValidationError(f"receipt {field} must be a non-negative integer or null.")
+
+
+def validate_usage(usage: object) -> None:
+    if usage is None:
+        return
+    if not isinstance(usage, dict):
+        raise ReceiptValidationError("usage must be an object or null.")
+    valid_fields = {
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "cost_usd",
+        "cost_source",
+    }
+    extra = set(usage) - valid_fields
+    if extra:
+        raise ReceiptValidationError(f"usage has unknown fields: {', '.join(sorted(extra))}")
+    for token_field in ("input_tokens", "output_tokens", "total_tokens"):
+        value = usage.get(token_field)
+        if value is not None and (
+            not isinstance(value, int) or isinstance(value, bool) or value < 0
+        ):
+            raise ReceiptValidationError(
+                f"usage {token_field} must be a non-negative integer or null."
+            )
+    cost_usd = usage.get("cost_usd")
+    if cost_usd is not None and (
+        not isinstance(cost_usd, int | float) or isinstance(cost_usd, bool) or cost_usd < 0
+    ):
+        raise ReceiptValidationError("usage cost_usd must be a non-negative number or null.")
+    cost_source = usage.get("cost_source")
+    if cost_source is not None and cost_source not in VALID_COST_SOURCES:
+        raise ReceiptValidationError("usage cost_source is invalid.")
+    if cost_usd is not None and cost_source is None:
+        raise ReceiptValidationError("usage cost_source is required when cost_usd is known.")
 
 
 def append_receipt(path: Path, receipt: dict[str, Any]) -> None:
@@ -528,11 +635,14 @@ def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
         receipts = [receipt for receipt in receipts if receipt["backlog_ref"] == backlog_ref]
     provider_counts: dict[str, Counter[str]] = defaultdict(Counter)
     provider_statuses: dict[str, Counter[str]] = defaultdict(Counter)
+    usage_by_provider: dict[str, dict[str, Any]] = defaultdict(_empty_usage_summary)
     verdicts: Counter[str] = Counter()
     worktrees: Counter[str] = Counter()
     for receipt in receipts:
-        provider_counts[receipt["provider_target"]][receipt["attempt_status"]] += 1
-        provider_statuses[receipt["provider_target"]][receipt["provider_status"]] += 1
+        provider = receipt["provider_target"]
+        provider_counts[provider][receipt["attempt_status"]] += 1
+        provider_statuses[provider][receipt["provider_status"]] += 1
+        _add_usage(usage_by_provider[provider], receipt.get("usage"))
         verdicts[receipt["lead_verdict"]] += 1
         worktrees[receipt["worktree_id"]] += 1
     return {
@@ -542,8 +652,70 @@ def summarize_receipts(path: Path, backlog_ref: str = "") -> dict[str, Any]:
         "provider_statuses": {
             provider: dict(counts) for provider, counts in provider_statuses.items()
         },
+        "usage_by_provider": {
+            provider: _finalize_usage_summary(summary)
+            for provider, summary in sorted(usage_by_provider.items())
+        },
         "lead_verdicts": dict(verdicts),
         "worktrees": dict(worktrees),
+    }
+
+
+def _empty_usage_summary() -> dict[str, Any]:
+    return {
+        "known_count": 0,
+        "unknown_count": 0,
+        "input_tokens": 0,
+        "input_tokens_known_count": 0,
+        "output_tokens": 0,
+        "output_tokens_known_count": 0,
+        "total_tokens": 0,
+        "total_tokens_known_count": 0,
+        "cost_usd": 0.0,
+        "cost_usd_known_count": 0,
+        "cost_sources": Counter(),
+    }
+
+
+def _add_usage(summary: dict[str, Any], usage: object) -> None:
+    if not isinstance(usage, dict) or not any(
+        usage.get(field) is not None
+        for field in ("input_tokens", "output_tokens", "total_tokens", "cost_usd")
+    ):
+        summary["unknown_count"] += 1
+        return
+    summary["known_count"] += 1
+    for field in ("input_tokens", "output_tokens", "total_tokens"):
+        value = usage.get(field)
+        if value is not None:
+            summary[field] += int(value)
+            summary[f"{field}_known_count"] += 1
+    cost_usd = usage.get("cost_usd")
+    if cost_usd is not None:
+        summary["cost_usd"] += float(cost_usd)
+        summary["cost_usd_known_count"] += 1
+    cost_source = usage.get("cost_source")
+    if isinstance(cost_source, str) and cost_source:
+        summary["cost_sources"][cost_source] += 1
+
+
+def _finalize_usage_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "known_count": summary["known_count"],
+        "unknown_count": summary["unknown_count"],
+        "input_tokens": (
+            summary["input_tokens"] if summary["input_tokens_known_count"] else None
+        ),
+        "output_tokens": (
+            summary["output_tokens"] if summary["output_tokens_known_count"] else None
+        ),
+        "total_tokens": (
+            summary["total_tokens"] if summary["total_tokens_known_count"] else None
+        ),
+        "cost_usd": (
+            round(summary["cost_usd"], 6) if summary["cost_usd_known_count"] else None
+        ),
+        "cost_sources": dict(sorted(summary["cost_sources"].items())),
     }
 
 

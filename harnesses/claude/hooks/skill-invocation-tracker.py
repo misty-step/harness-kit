@@ -37,12 +37,16 @@ def main():
     cwd = data.get("cwd", "")
     entry = {
         "ts": datetime.now(timezone.utc).isoformat(),
+        "harness": data.get("harness", "claude"),
         "skill": skill,
         "args": tool_input.get("args", ""),
         "session_id": data.get("session_id", ""),
         "cwd": cwd,
         "project": os.path.basename(cwd) if cwd else "",
     }
+    for optional_field in ("model_id", "outcome", "duration_ms", "usage"):
+        if optional_field in data:
+            entry[optional_field] = data[optional_field]
 
     try:
         LOG_PATH.parent.mkdir(parents=True, exist_ok=True)

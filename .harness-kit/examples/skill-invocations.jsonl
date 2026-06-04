@@ -1,0 +1,1 @@
+{"args":"--surface dashboard","cwd":"/tmp/harness-kit","duration_ms":1200,"harness":"claude","model_id":"claude-opus-4-7","outcome":"succeeded","project":"harness-kit","session_id":"session-089","skill":"design","ts":"2026-06-04T00:00:00+00:00","usage":{"cost_source":"provider_reported","cost_usd":0.001,"input_tokens":10,"output_tokens":5,"total_tokens":15}}

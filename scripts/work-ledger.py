@@ -12,6 +12,10 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "lib"))
+
+from agent_roster import ReceiptValidationError, validate_usage  # noqa: E402
+
 DEFAULT_STORE = Path(".harness-kit/work/ledger.jsonl")
 RECORD_TYPE = "work-ledger-event"
 ACTIVE_STATUSES = {"active", "blocked"}
@@ -47,7 +51,7 @@ def file_lock(handle):
 
 
 def build_event(args: argparse.Namespace) -> dict[str, object]:
-    return {
+    event: dict[str, object] = {
         "schema_version": 1,
         "record_type": RECORD_TYPE,
         "event_id": event_id(),
@@ -66,6 +70,9 @@ def build_event(args: argparse.Namespace) -> dict[str, object]:
         "next_action": args.next_action,
         "status": args.status,
     }
+    if args.usage is not None:
+        event["usage"] = args.usage
+    return event
 
 
 def append_event(store: Path, event: dict[str, object]) -> None:
@@ -140,6 +147,7 @@ def summary_text(events: list[dict[str, object]]) -> str:
 
 
 def append_command(args: argparse.Namespace) -> int:
+    args.usage = _parse_usage_json(args.usage_json)
     event = build_event(args)
     append_event(args.store, event)
     print(json.dumps({"event_id": event["event_id"], "store": str(args.store)}, sort_keys=True))
@@ -174,6 +182,13 @@ def self_test() -> int:
             trace_ref=[".harness-kit/traces/work-records.jsonl#trace-abc"],
             next_action="address critic output",
             status="active",
+            usage={
+                "input_tokens": 100,
+                "output_tokens": 25,
+                "total_tokens": 125,
+                "cost_usd": 0.01,
+                "cost_source": "manual",
+            },
         )
         append_event(store, build_event(args))
         text = summary_text(read_events(store))
@@ -189,10 +204,25 @@ def self_test() -> int:
         args.trace_ref = []
         args.evidence_ref = []
         args.next_action = "none"
+        args.usage = None
         append_event(store, build_event(args))
         assert summary_text(read_events(store)) == "No active work ledger entries."
     print("work-ledger self-test ok")
     return 0
+
+
+def _parse_usage_json(value: str | None) -> dict[str, object] | None:
+    if not value:
+        return None
+    try:
+        usage = json.loads(value)
+    except json.JSONDecodeError as error:
+        raise SystemExit(f"work-ledger: invalid --usage-json: {error}") from error
+    try:
+        validate_usage(usage)
+    except ReceiptValidationError as error:
+        raise SystemExit(f"work-ledger: invalid --usage-json: {error}") from error
+    return usage
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -215,6 +245,7 @@ def build_parser() -> argparse.ArgumentParser:
     append.add_argument("--trace-ref", action="append", default=[])
     append.add_argument("--next-action", required=True)
     append.add_argument("--status", choices=sorted(VALID_STATUSES), default="active")
+    append.add_argument("--usage-json", default=None)
     append.set_defaults(func=append_command)
 
     summary = subparsers.add_parser("summary", help="print active work summary")
