@@ -74,6 +74,16 @@ class ReferenceQualityTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr.decode())
 
+    def test_shape_premise_source_checker_self_test(self) -> None:
+        checker = REPO_ROOT / "skills/shape/evals/check-premise-source.sh"
+        result = subprocess.run(
+            ["bash", str(checker)],
+            capture_output=True,
+            cwd=REPO_ROOT,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+
     def test_qa_per_commit_grader_modes_cover_fixtures(self) -> None:
         grader = REPO_ROOT / "skills/qa/evals/graders/check-per-commit-lane.py"
         browser_case = self.read(

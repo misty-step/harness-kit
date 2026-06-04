@@ -17,10 +17,6 @@
       "title": "Agent-legible source-of-truth readiness pillar"
     },
     {
-      "source": "backlog.d/095-shape-premise-source-artifact.md",
-      "title": "Premise source artifact for `/shape`"
-    },
-    {
       "source": "backlog.d/096-reflect-teach-back-checkpoints.md",
       "title": "Reflect teach-back checkpoints"
     },

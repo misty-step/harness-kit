@@ -180,6 +180,25 @@ No context packet ships without this synthesis artifact for non-trivial/M+
 shapes. The recommendation must cite lane evidence, not only the lead's own
 preference.
 
+## Premise Source
+Premise Source: sha256:<digest> <path-or-url>
+
+The premise source is the raw or closest-available artifact that explains why
+this shape exists: issue, PR, pasted text, screenshot, sanitized transcript
+excerpt, or operator-supplied file. It is not acceptance evidence. Premise
+source proves what problem was accepted, narrowed, or rejected; acceptance
+evidence proves the implementation satisfies the oracle. For private
+transcripts or chats, use `/agent-transcript` to render a scoped redacted
+excerpt before referencing it.
+
+If no inspectable premise artifact can be safely named, use an explicit waiver
+instead:
+
+```markdown
+Premise Source Waiver: <reason the raw/source artifact is unavailable or unsafe>
+Residual risk: <what future implementers cannot verify because of the waiver>
+```
+
 ## Exemplar Techniques
 - <technique from exemplars.md> — <specific file to study during build>
 
