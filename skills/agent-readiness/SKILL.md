@@ -68,6 +68,7 @@ Launch all pillar assessments simultaneously:
 | 6 | Code Quality | Modularity, complexity, file organization, coupling, dead code |
 | 7 | Observability | Structured logging, error handling, metrics, tracing |
 | 8 | Security & Governance | Branch protection, CODEOWNERS, secret scanning, dependency audit |
+| 9 | Agent-Legible Source Of Truth | External state inventory, agent access path, verification command, waiver expiry |
 
 Each subagent uses **Explore** agent type and reads `references/pillar-checks.md`
 for its pillar's specific pass/fail criteria. Output format per subagent:
@@ -195,6 +196,10 @@ each pillar — useful when explaining recommendations to the user.
 - **CLAUDE.md/AGENTS.md is the highest-leverage documentation fix.** It's the
   file agents actually read. A perfect README that agents ignore is worth less
   than a scrappy CLAUDE.md they always load.
+- **Hidden source-of-truth is readiness debt.** CMS-only, admin-UI-only, or
+  unknown state must be exposed through code, local files, MCP, CLI, API, or
+  skill, or carry a future-expiring waiver. Route external-system remediation
+  through `meta/INTEGRATION_GUIDE.md` before choosing a mechanism.
 - **Don't conflate coverage percentage with test quality.** 80% coverage with
   shallow tests is worse than 50% coverage with behavior-focused tests.
   Check for assertion density, not just line coverage.

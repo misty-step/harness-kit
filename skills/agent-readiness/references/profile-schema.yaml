@@ -10,6 +10,7 @@ required_fields:
   - module_boundaries
   - mock_policy
   - observability
+  - state_surfaces
   - readiness_state
   - waivers
 profile:
@@ -33,6 +34,14 @@ mock_policy: string
 observability:
   access: unknown | none | logs | metrics | traces | full
   signals: list[string]
+state_surfaces:
+  - name: string
+    system_of_record: string
+    agent_access: code | local-file | mcp | cli | api | skill | admin-ui-only | cms-only | unknown
+    source_path: string
+    verification_command: string
+    waiver: string
+    waiver_expires: YYYY-MM-DD
 readiness_state: unknown | improved | preserved | regressed
 waivers:
   - id: string
@@ -55,3 +64,11 @@ validation:
     - n/a
     - none
     - placeholder
+  state_surfaces:
+    name: required non-placeholder string
+    system_of_record: required non-placeholder string
+    agent_access: required enum
+    source_path: required for code/local-file/mcp/cli/api/skill access
+    verification_command: required for code/local-file/mcp/cli/api/skill access
+    verification_command_shape: shell-parseable command, not prose or URL
+    hidden_access: admin-ui-only, cms-only, or unknown requires waiver and future waiver_expires

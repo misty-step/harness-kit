@@ -230,3 +230,50 @@ with evidence.
 ### L5 — Autonomous
 - **Auto-patching**: Dependabot or Renovate auto-merges passing security patches
 - **Runtime protection**: WAF, rate limiting, or equivalent for production services
+
+---
+
+## 9. Agent-Legible Source Of Truth
+
+State surfaces are product, content, deployment, security, workflow, or
+operational facts that determine what the repo does but may live outside the
+repository. A repo is agent-ready only when agents can inspect and verify those
+surfaces through code, local files, MCP, CLI, API, skill, or an explicit
+waiver with an expiry.
+
+When remediation crosses an external system boundary, route through
+`meta/INTEGRATION_GUIDE.md` before choosing MCP, CLI, API, or skill.
+
+### L1 — Foundational
+- **State surfaces inventoried**: `.harness-kit/agent-readiness.yaml`
+  contains `state_surfaces[]`, even if empty
+- **System of record named**: Each state surface names its `system_of_record`
+- **Agent access classified**: Each state surface labels `agent_access` as
+  code, local-file, mcp, cli, api, skill, admin-ui-only, cms-only, or unknown
+
+### L2 — Documented
+- **Inspectable path provided**: Non-hidden state surfaces include
+  `source_path`
+- **Verification command provided**: Non-hidden state surfaces include a local
+  command, MCP resource, API check, or skill path that proves current state
+- **Hidden state labeled as debt**: `admin-ui-only`, `cms-only`, and `unknown`
+  access are readiness debt unless they carry a non-expired waiver
+
+### L3 — Standardized
+- **Waivers expire**: Hidden-state waivers include `waiver` and
+  `waiver_expires`
+- **Integration remediation routed**: Hidden external systems point remediation
+  to `meta/INTEGRATION_GUIDE.md`, not ad hoc UI instructions
+- **Profile validation enforced**: `profile-crud.py validate` rejects stale or
+  unwaived hidden state
+
+### L4 — Optimized
+- **Automated source exports**: External systems have repeatable export or
+  query commands agents can run locally
+- **Drift detection**: CI or scheduled checks detect when external truth
+  diverges from repo-visible state
+
+### L5 — Autonomous
+- **Agent-accessible remediation**: Agents can propose or execute bounded
+  fixes through the approved MCP/CLI/API/skill boundary
+- **Fleet visibility**: Source-legibility debt is aggregated across repos

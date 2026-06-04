@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import shlex
 import sys
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -23,6 +24,7 @@ REQUIRED_TOP_LEVEL = {
     "module_boundaries",
     "mock_policy",
     "observability",
+    "state_surfaces",
     "readiness_state",
     "waivers",
 }
@@ -30,6 +32,9 @@ READINESS_STATES = {"unknown", "improved", "preserved", "regressed"}
 FEEDBACK_STRENGTH = {"unknown", "weak", "moderate", "strong", "strict"}
 INFRA_MANAGEABILITY = {"unknown", "human_only", "cli_api_sdk", "mixed"}
 OBSERVABILITY_ACCESS = {"unknown", "none", "logs", "metrics", "traces", "full"}
+AGENT_ACCESS = {"code", "local-file", "mcp", "cli", "api", "skill", "admin-ui-only", "cms-only", "unknown"}
+HIDDEN_AGENT_ACCESS = {"admin-ui-only", "cms-only", "unknown"}
+PROSE_COMMAND_PREFIXES = {"ask", "read", "see", "visit", "open", "check"}
 
 
 class ProfileError(ValueError):
@@ -122,6 +127,7 @@ def default_profile(repo_root: Path) -> dict[str, Any]:
         "module_boundaries": [],
         "mock_policy": "Mock only external boundaries; internal mocks are readiness regressions.",
         "observability": {"access": "unknown", "signals": []},
+        "state_surfaces": [],
         "readiness_state": "unknown",
         "waivers": [],
     }
@@ -177,6 +183,55 @@ def validate_waiver(waiver: Any, today: date) -> None:
         raise ProfileError(f"waiver {waiver.get('id', '<unknown>')}: expires_on must be in the future")
 
 
+def validate_state_surface(surface: Any, today: date) -> None:
+    if not isinstance(surface, dict):
+        raise ProfileError("state_surfaces entry must be a mapping")
+    for field in ("name", "system_of_record"):
+        if is_placeholder(surface.get(field)):
+            raise ProfileError(f"state_surfaces {field} must be a non-placeholder string")
+    access = surface.get("agent_access")
+    if access not in AGENT_ACCESS:
+        raise ProfileError("state_surfaces agent_access is invalid")
+
+    if access in HIDDEN_AGENT_ACCESS:
+        if is_placeholder(surface.get("waiver")):
+            raise ProfileError(
+                f"state surface {surface.get('name', '<unknown>')}: "
+                f"{access} requires a non-placeholder waiver"
+            )
+        expires_on = parse_expiry(surface.get("waiver_expires"))
+        if expires_on <= today:
+            raise ProfileError(
+                f"state surface {surface.get('name', '<unknown>')}: waiver_expires must be in the future"
+            )
+        return
+
+    if is_placeholder(surface.get("source_path")):
+        raise ProfileError(
+            f"state surface {surface.get('name', '<unknown>')}: source_path must be set"
+        )
+    if is_placeholder(surface.get("verification_command")):
+        raise ProfileError(
+            f"state surface {surface.get('name', '<unknown>')}: verification_command must be set"
+        )
+    command = surface.get("verification_command")
+    try:
+        command_parts = shlex.split(command)
+    except ValueError as exc:
+        raise ProfileError(
+            f"state surface {surface.get('name', '<unknown>')}: verification_command is not shell-parseable"
+        ) from exc
+    if (
+        not command_parts
+        or "\n" in command
+        or command_parts[0].lower() in PROSE_COMMAND_PREFIXES
+        or command_parts[0].startswith(("http://", "https://"))
+    ):
+        raise ProfileError(
+            f"state surface {surface.get('name', '<unknown>')}: verification_command must be command-shaped"
+        )
+
+
 def validate_profile(data: dict[str, Any], *, today: date | None = None) -> None:
     missing = REQUIRED_TOP_LEVEL - set(data)
     extra = set(data) - REQUIRED_TOP_LEVEL
@@ -221,16 +276,25 @@ def validate_profile(data: dict[str, Any], *, today: date | None = None) -> None
         raise ProfileError("observability.access is invalid")
     require_list(observability, "signals")
 
+    effective_today = today or datetime.now(UTC).date()
+    for surface in require_list(data, "state_surfaces"):
+        validate_state_surface(surface, effective_today)
+
     if data.get("readiness_state") not in READINESS_STATES:
         raise ProfileError("readiness_state is invalid")
 
     for waiver in require_list(data, "waivers"):
-        validate_waiver(waiver, today or datetime.now(UTC).date())
+        validate_waiver(waiver, effective_today)
 
 
 def profile_summary(data: dict[str, Any]) -> str:
     profile = data["profile"]
     gates = data["gates"]
+    hidden_surfaces = [
+        surface
+        for surface in data.get("state_surfaces", [])
+        if surface.get("agent_access") in HIDDEN_AGENT_ACCESS
+    ]
     return "\n".join(
         [
             "Agent readiness profile",
@@ -239,6 +303,11 @@ def profile_summary(data: dict[str, Any]) -> str:
             f"- stack_feedback_strength: {profile['stack_feedback_strength']}",
             f"- readiness_state: {data['readiness_state']}",
             f"- local_gates: {', '.join(gates['local']) if gates['local'] else 'none'}",
+            (
+                f"- state_surfaces: {len(data.get('state_surfaces', []))} "
+                f"(hidden_debt: {len(hidden_surfaces)}; "
+                "remediation: meta/INTEGRATION_GUIDE.md)"
+            ),
             f"- waivers: {len(data['waivers'])}",
         ]
     )
