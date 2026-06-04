@@ -20,6 +20,12 @@ both present, run the analyzer and use its Review Score Trend block as safe
 evidence. Trend claims require 5+ score entries; below that, record
 insufficient data instead of proposing skill edits from noise.
 
+When transcript evidence is needed, prefer
+`python3 scripts/mine-transcript-effectiveness.py --transcript <path>` over
+ad-hoc transcript grep. Use its category counts, redaction summary, joins, and
+missing-source labels as safe evidence; do not paste raw turns into prompt-debt
+reports.
+
 ## Promotion Threshold
 
 Promote a pattern when either condition holds:
