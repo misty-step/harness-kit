@@ -627,6 +627,22 @@ print('skills/: no claims primitives found.')
         )
 
     @function
+    async def test_design_evals(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run deterministic design eval grader self-tests."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "skills/design/evals/graders/self-test.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_agent_roster(
         self,
         source: Annotated[
@@ -825,6 +841,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "check-deliver-composition", self.check_deliver_composition(source))
             tg.start_soon(run_gate, "check-no-claims", self.check_no_claims(source))
             tg.start_soon(run_gate, "check-skill-evals", self.check_skill_evals(source))
+            tg.start_soon(run_gate, "test-design-evals", self.test_design_evals(source))
             tg.start_soon(run_gate, "check-agent-roster", self.check_agent_roster(source))
             tg.start_soon(
                 run_gate,

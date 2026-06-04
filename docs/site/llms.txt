@@ -83,6 +83,7 @@ CI gates:
 - test-agent-readiness-profile
 - test-bootstrap-agent-allowlist
 - test-bun
+- test-design-evals
 - test-harness-kit-config-loader
 - test-python
 - test-trace-record

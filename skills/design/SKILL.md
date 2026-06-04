@@ -42,12 +42,14 @@ final critique of visible UI changes.
 | `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. |
 | `/design polish` | Apply the smallest coherent improvement set, then verify render. |
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
-| `/design scaffold` | Read `references/scaffold.md` and generate project-local design guidance for recurring UI work. |
+| `/design scaffold` | Read `references/scaffold.md` and generate project-local design guidance, `DESIGN.md`, and `design-contract.md` only when recurring UI work earns them. |
 
 Use `/a11y` for WCAG compliance, `/qa` for behavior verification, `/demo` for
 evidence packaging, and `/shape` when the product direction itself is unsettled.
 For recurring UI work, use the references:
 
+- `references/scaffold.md` for repo-owned `DESIGN.md` and
+  `design-contract.md` provenance scaffolds.
 - `references/design-system.md` for token and component-system judgment.
 - `references/taste-layer.md` for aesthetic direction and anti-generic critique.
 - `references/anti-slop.md` for the checkable list of AI design tells, the
