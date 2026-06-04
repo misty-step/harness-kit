@@ -134,6 +134,7 @@ pick one.
 | Intent | Action |
 |---|---|
 | `"scaffold"` first arg, or "scaffold qa" / "generate qa skill" | Prefer `/create-repo-skill qa`; `references/scaffold.md` is the legacy template |
+| Commit-triggered, PR-triggered, or outer-loop-triggered user-like scenario evidence | Run Step 0, then use `references/per-commit-lane.md` with the shape-specific driver |
 | Project-local QA skill exists (`.agent/skills/qa/` or `.claude/skills/qa/` bridged to shared root) | Defer — it already encodes this repo's shape and paths |
 | No project-local skill; need to verify something right now | Run the quick protocol below, routed by Step 0's shape |
 
@@ -264,6 +265,8 @@ rewrite.
 ## References
 
 - `references/scaffold.md` — project-local QA skill generator.
+- `references/per-commit-lane.md` — commit/PR/outer-loop scenario evidence
+  contract; consulted after Step 0 resolves the app shape.
 - `references/browser-tools.md` — long-form browser-automation guide;
   consulted only when Step 0 resolves to "browser web app".
 - `references/evidence-capture.md` — cross-tool evidence conventions

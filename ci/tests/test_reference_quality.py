@@ -64,6 +64,88 @@ class ReferenceQualityTests(unittest.TestCase):
         self.assertEqual(ok.returncode, 0, ok.stderr.decode())
         self.assertNotEqual(bad.returncode, 0)
 
+    def test_qa_per_commit_grader_self_test(self) -> None:
+        grader = REPO_ROOT / "skills/qa/evals/graders/check-per-commit-lane.py"
+        result = subprocess.run(
+            ["python3", str(grader), "self-test"],
+            capture_output=True,
+            cwd=REPO_ROOT,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+
+    def test_qa_per_commit_grader_modes_cover_fixtures(self) -> None:
+        grader = REPO_ROOT / "skills/qa/evals/graders/check-per-commit-lane.py"
+        browser_case = self.read(
+            "skills/qa/evals/cases/commit-browser-missing-selector.md"
+        )
+        cli_case = self.read("skills/qa/evals/cases/commit-cli-non-browser.md")
+
+        self.assertIn("Upgrade plan button is visible", browser_case)
+        self.assertIn("Status is `fail` or `inconclusive`, not `pass`", browser_case)
+        self.assertIn("CLI/library-shaped change", cli_case)
+        self.assertIn("Does not force Playwright", cli_case)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            browser_ok = tmp_path / "browser-ok.txt"
+            browser_ok.write_text(
+                "Status: fail\n"
+                "Tool: browser\n"
+                "Route: http://127.0.0.1:3000/billing\n"
+                "Evidence: .evidence/feat-billing/2026-06-04/browser.png\n"
+                "Transcript: .evidence/feat-billing/2026-06-04/route-selection.md\n"
+                "Report: .evidence/feat-billing/2026-06-04/qa-report.md\n"
+                "Assertion: Upgrade plan button missing.\n"
+            )
+            browser_bad = tmp_path / "browser-bad.txt"
+            browser_bad.write_text(
+                "Status: pass\n"
+                "Tool: browser\n"
+                "Route: http://127.0.0.1:3000/billing\n"
+                "Evidence: .evidence/feat-billing/2026-06-04/browser.png\n"
+                "Transcript: .evidence/feat-billing/2026-06-04/route-selection.md\n"
+                "Report: .evidence/feat-billing/2026-06-04/qa-report.md\n"
+                "Assertion: Upgrade plan button missing.\n"
+            )
+            cli_ok = tmp_path / "cli-ok.txt"
+            cli_ok.write_text(
+                "App shape: CLI\n"
+                "Commands: acme --help; acme render input.yaml; missing-file check\n"
+                "Evidence: .evidence/feat-cli/2026-06-04/terminal-transcript.txt\n"
+            )
+            cli_bad = tmp_path / "cli-bad.txt"
+            cli_bad.write_text(
+                "App shape: CLI\n"
+                "Use browser-use and capture a screenshot.\n"
+            )
+
+            browser_ok_result = subprocess.run(
+                ["python3", str(grader), "browser-missing-selector", str(browser_ok)],
+                capture_output=True,
+                cwd=REPO_ROOT,
+            )
+            browser_bad_result = subprocess.run(
+                ["python3", str(grader), "browser-missing-selector", str(browser_bad)],
+                capture_output=True,
+                cwd=REPO_ROOT,
+            )
+            cli_ok_result = subprocess.run(
+                ["python3", str(grader), "non-browser", str(cli_ok)],
+                capture_output=True,
+                cwd=REPO_ROOT,
+            )
+            cli_bad_result = subprocess.run(
+                ["python3", str(grader), "non-browser", str(cli_bad)],
+                capture_output=True,
+                cwd=REPO_ROOT,
+            )
+
+        self.assertEqual(browser_ok_result.returncode, 0, browser_ok_result.stderr.decode())
+        self.assertNotEqual(browser_bad_result.returncode, 0)
+        self.assertEqual(cli_ok_result.returncode, 0, cli_ok_result.stderr.decode())
+        self.assertNotEqual(cli_bad_result.returncode, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
