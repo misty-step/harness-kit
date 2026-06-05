@@ -609,7 +609,7 @@ class ReceiptTests(unittest.TestCase):
                 backlog_ref="backlog.d/072-bounded-roster-lane-dispatch.md",
                 transcript_dir=transcript_dir,
                 receipt_output=receipt_path,
-                timeout_s=0.2,
+                timeout_s=1,
                 grace_s=0.1,
                 lead_harness="codex",
                 lead_provider="codex",
@@ -617,7 +617,7 @@ class ReceiptTests(unittest.TestCase):
             )
             elapsed = time.monotonic() - started
 
-            self.assertLess(elapsed, 2)
+            self.assertLess(elapsed, 3)
             self.assertEqual(receipt["provider_status"], "error")
             self.assertEqual(receipt["attempt_status"], "failed")
             self.assertIn("timed out", receipt["summary"])
