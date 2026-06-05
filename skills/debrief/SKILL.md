@@ -128,3 +128,10 @@ instead of inventing a design debate.
 
 Keep recommendations opinionated but bounded. The output should leave the user
 able to decide whether to ship, continue, pause, or reshape.
+
+## Verification
+
+Semantic waiver: `/debrief` is report-only synthesis over live repo evidence,
+not a deterministic transform. Validate trigger/catalog shape with
+`python3 scripts/check-frontmatter.py`; acceptance comes from cited files,
+commands, commits, receipts, or artifacts in each debrief.

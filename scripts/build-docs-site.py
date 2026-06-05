@@ -84,6 +84,7 @@ GATE_DESCRIPTIONS = {
     "check-index-drift": "Regenerates index.yaml and fails if the committed catalog is stale.",
     "check-no-claims": "Prevents removed claim-coordination primitives from returning under skills/.",
     "check-portable-paths": "Rejects hardcoded user home paths outside explicitly allowed harness files.",
+    "check-runtime-primitives": "Validates runtime hooks, settings, and skill invocation protocols.",
     "check-shape-renderer": "Validates /shape's static HTML context-packet renderer and browser-inspection marker.",
     "check-skill-evals": "Validates skill eval suites have README, cases, and graders.",
     "check-vendored-copies": "Ensures vendored repo-local harness copies match canonical sources.",

@@ -237,3 +237,10 @@ Reason: orchestrator/.env.prod contains plausible secret
   (matches /sk-[A-Za-z0-9]{32}/ at line 12).
 Action: remove or gitignore the file before re-running.
 ```
+
+## Verification
+
+Semantic waiver: `/yeet` is a git-state classifier whose proof is the produced
+commit stack, push result, and clean worktree. Each run must cite
+`git status --short --untracked-files=all`, created commits, ignored/deleted
+debris, and pushed branch/ref.

@@ -248,3 +248,9 @@ add concrete local demo defaults that earn the checked-in copy.
 - **Under-investing on routine changes is fine.** Over-investing on
   polish where none was asked for is waste. Match fidelity to the
   change, the audience, and the budget — not to your aesthetic.
+
+## Verification
+
+Run `python3 scripts/check-evidence-blocks.py skills` to prove `/demo` keeps a
+local Completion Gate. Semantic demo quality is verified by the produced
+artifact path, screenshot, GIF, video, release note, or waiver in the run.

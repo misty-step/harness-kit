@@ -246,3 +246,10 @@ For non-trivial production issues, create `INCIDENT-{timestamp}.md`:
 - **Confusing symptom for root cause:** "The test fails" is a symptom. "The auth token expires before the refresh interval" is a root cause.
 - **Skipping reproduction:** If you can't reproduce it, you can't verify the fix. Gather more data first.
 - **Config is almost always the answer:** Env vars, endpoints, credentials. Check config before reading code.
+
+## Verification
+
+Semantic waiver: diagnosis quality is tied to the concrete failure and cannot
+be proven by a single static fixture. Each run must cite reproduction evidence,
+the hypothesis test, the fix path, and the exact command or runtime surface
+that proves the symptom is gone.

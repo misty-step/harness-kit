@@ -1,7 +1,7 @@
 # Bootstrap and runtime primitive projection gates
 
 Priority: high
-Status: shaped
+Status: done
 Estimate: M
 
 ## Problem
@@ -37,13 +37,13 @@ reported honestly across supported harnesses.
 
 ## Acceptance Oracle
 
-- [ ] A new or extended bootstrap test fails if a projected harness is missing
+- [x] A new or extended bootstrap test fails if a projected harness is missing
       shared doctrine/config that bootstrap claims to install.
-- [ ] A hook/settings gate fails on stale hook targets.
-- [ ] Skill invocation fixtures reject aspirational live-hook records for
+- [x] A hook/settings gate fails on stale hook targets.
+- [x] Skill invocation fixtures reject aspirational live-hook records for
       unsupported harness/protocol pairs.
-- [ ] Provider smoke receipts distinguish process exit from output compliance.
-- [ ] `dagger call check --source=.` includes the new or extended gates.
+- [x] Provider smoke receipts distinguish process exit from output compliance.
+- [x] `dagger call check --source=.` includes the new or extended gates.
 
 ## Non-Goals
 

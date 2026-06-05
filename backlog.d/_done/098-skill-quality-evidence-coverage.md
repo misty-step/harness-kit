@@ -1,7 +1,7 @@
 # Skill quality evidence coverage pass
 
 Priority: high
-Status: ready
+Status: done
 Estimate: M
 
 ## Problem
@@ -47,14 +47,14 @@ The remaining single failure is `tests` for the 22 non-passing skills.
 
 ## Acceptance Oracle
 
-- [ ] `python3 skills/groom/scripts/audit-skills.py` reports materially fewer
+- [x] `python3 skills/groom/scripts/audit-skills.py` reports materially fewer
       `tests: FAIL` rows, with no empty placeholder eval/test directories.
-- [ ] Each remediated skill's evidence is either executable, points to an
+- [x] Each remediated skill's evidence is either executable, points to an
       existing gate, or carries an explicit semantic waiver.
-- [ ] `python3 scripts/check-frontmatter.py`
-- [ ] `python3 scripts/check-agent-roster.py`
-- [ ] `bash skills/groom/scripts/test_audit_skills.sh`
-- [ ] `dagger call check --source=.`
+- [x] `python3 scripts/check-frontmatter.py`
+- [x] `python3 scripts/check-agent-roster.py`
+- [x] `bash skills/groom/scripts/test_audit_skills.sh`
+- [x] `dagger call check --source=.`
 
 ## Non-Goals
 

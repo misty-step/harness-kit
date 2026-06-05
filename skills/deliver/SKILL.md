@@ -330,3 +330,10 @@ Full protocol: `references/durability.md`.
 
 - Consumer: `/flywheel` — outer loop passes `--state-dir` under its cycle tree and reads `receipt.json`
 - Phases: `/shape`, `/implement`, `/code-review`, `/ci`, `/refactor`, `/qa`
+
+## Verification
+
+Run `python3 scripts/check-agent-roster.py`,
+`python3 scripts/check-evidence-blocks.py skills`, and Dagger gate
+`check-deliver-composition` to prove the composer contract, roster floor, and
+completion evidence template stay intact.

@@ -47,3 +47,9 @@ Use the frontmatter schema in `references/frontmatter-schema.md`.
   `scripts/check-frontmatter.py`, `./bootstrap.sh`, `dagger call check --source=.`
 - Repo-fit check: self-contained first-party skill under `skills/skillify/`.
 - Residual risk: Claude JSONL variants outside the MVP remain future work.
+
+## Verification
+
+Run `python3 scripts/check-frontmatter.py` after CRUD output and `bash
+bootstrap.sh` before shipment; the generated skill must also pass
+`skills/skillify/scripts/skill-crud.py validate <name>`.

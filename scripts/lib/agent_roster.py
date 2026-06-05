@@ -87,6 +87,7 @@ OPTIONAL_RECEIPT_FIELDS = {
     "duration_ms",
     "usage",
     "transcript_bytes",
+    "output_check",
 }
 
 SECRET_RE = re.compile(
@@ -474,6 +475,7 @@ def build_attempt_receipt(
     duration_ms: int | None = None,
     usage: dict[str, Any] | None = None,
     transcript_bytes: int | None = None,
+    output_check: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     receipt = {
         "schema_version": 1,
@@ -502,6 +504,8 @@ def build_attempt_receipt(
         receipt["usage"] = usage
     if transcript_bytes is not None:
         receipt["transcript_bytes"] = transcript_bytes
+    if output_check is not None:
+        receipt["output_check"] = output_check
     validate_receipt(receipt)
     return receipt
 
@@ -534,6 +538,8 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
     _validate_optional_nonnegative_int(receipt, "transcript_bytes")
     if "usage" in receipt:
         validate_usage(receipt["usage"])
+    if "output_check" in receipt:
+        validate_output_check(receipt["output_check"])
     if not isinstance(receipt["evidence_refs"], list):
         raise ReceiptValidationError("receipt evidence_refs must be a list.")
     for ref in receipt["evidence_refs"]:
@@ -547,6 +553,44 @@ def validate_receipt(receipt: dict[str, Any]) -> None:
         value = receipt.get(field, "")
         if isinstance(value, str) and SECRET_RE.search(value):
             raise ReceiptValidationError(f"receipt {field} contains secret-like text.")
+
+
+def validate_output_check(value: object) -> None:
+    if not isinstance(value, dict):
+        raise ReceiptValidationError("receipt output_check must be an object.")
+    valid_fields = {"expected", "matched", "observed_ref"}
+    extra = set(value) - valid_fields
+    if extra:
+        raise ReceiptValidationError(
+            f"receipt output_check has unknown fields: {', '.join(sorted(extra))}"
+        )
+
+    expected = value.get("expected")
+    if not isinstance(expected, str) or not expected.strip():
+        raise ReceiptValidationError("receipt output_check expected must be a non-empty string.")
+    if SECRET_RE.search(expected):
+        raise ReceiptValidationError("receipt output_check expected contains secret-like text.")
+
+    matched = value.get("matched")
+    if not isinstance(matched, bool):
+        raise ReceiptValidationError("receipt output_check matched must be a boolean.")
+    if matched is False:
+        raise ReceiptValidationError("receipt output_check did not match expected output.")
+
+    observed_ref = value.get("observed_ref")
+    if observed_ref is not None:
+        if not isinstance(observed_ref, str) or not observed_ref.strip():
+            raise ReceiptValidationError(
+                "receipt output_check observed_ref must be a non-empty string or null."
+            )
+        if INLINE_EVIDENCE_RE.search(observed_ref):
+            raise ReceiptValidationError(
+                "receipt output_check observed_ref must be a path or id only."
+            )
+        if SECRET_RE.search(observed_ref):
+            raise ReceiptValidationError(
+                "receipt output_check observed_ref contains secret-like text."
+            )
 
 
 def _validate_optional_text(receipt: dict[str, Any], field: str) -> None:

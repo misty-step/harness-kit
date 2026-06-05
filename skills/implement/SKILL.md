@@ -214,3 +214,10 @@ tests red. Those are the job.
   silently expand the diff.
 - **Trusting self-reported success.** Builders say "all tests pass."
   Verify by running the oracle yourself. Agents lie (accidentally).
+
+## Verification
+
+Run `python3 scripts/check-evidence-blocks.py skills` to prove `/implement`
+keeps the shared Completion Evidence contract. Semantic proof is per packet:
+the named red-to-green test, oracle command, or artifact must pass in the
+target repo.

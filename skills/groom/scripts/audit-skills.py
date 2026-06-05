@@ -103,13 +103,22 @@ def frontmatter(text: str) -> dict[str, str]:
 
 def has_testing_evidence(skill_dir: Path, body: str) -> Check:
     evidence: list[str] = []
-    for dirname in ("tests", "test", "evals"):
+    for dirname in ("tests", "test", "__tests__", "evals"):
         path = skill_dir / dirname
         if path.is_dir() and any(child.is_file() for child in path.rglob("*")):
             evidence.append(f"{dirname}/")
     scripts_dir = skill_dir / "scripts"
     if scripts_dir.is_dir():
-        for pattern in ("test_*.sh", "*_test.sh", "test_*.py", "*_test.py"):
+        for pattern in (
+            "test_*.sh",
+            "test-*.sh",
+            "*_test.sh",
+            "*-test.sh",
+            "test_*.py",
+            "test-*.py",
+            "*_test.py",
+            "*-test.py",
+        ):
             if any(scripts_dir.rglob(pattern)):
                 evidence.append(f"scripts/{pattern}")
                 break
@@ -118,7 +127,10 @@ def has_testing_evidence(skill_dir: Path, body: str) -> Check:
 
     if evidence:
         return Check(True, ", ".join(sorted(set(evidence))))
-    return Check(False, "no tests/, evals/, test script, or Testing/Verification section")
+    return Check(
+        False,
+        "no tests/, __tests__/, evals/, test script, or Testing/Verification section",
+    )
 
 
 def normalize_claim(value: str) -> str:

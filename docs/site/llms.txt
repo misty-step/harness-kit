@@ -75,6 +75,7 @@ CI gates:
 - check-offline-evidence-storage
 - check-portable-paths
 - check-review-score-trends
+- check-runtime-primitives
 - check-shape-renderer
 - check-skill-evals
 - check-vendored-copies

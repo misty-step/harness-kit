@@ -132,7 +132,7 @@ test_report_orders_by_severity() {
   assert_contains "report names trigger failure" "$report" "description is generic"
   assert_contains "report rejects empty trigger label" "$report" "description lacks explicit Trigger alias"
   assert_contains "report rejects empty use label" "$report" "description lacks concrete use-case phrase"
-  assert_contains "report names testing failure" "$report" "no tests/, evals/"
+  assert_contains "report names testing failure" "$report" "no tests/, __tests__/, evals/"
   assert_contains "report uses generated catalog" "$report" "Catalog source: index.yaml"
   assert_contains "report rejects uncataloged skill" "$report" "not present in generated skill catalog"
   teardown_repo

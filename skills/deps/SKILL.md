@@ -202,3 +202,9 @@ For **security** mode: include only the Security and Reachability sections.
 - **Monorepos with shared dependencies.** Upgrading a shared dep in one
   workspace can break another. Analyze each workspace's usage independently,
   then upgrade at the root only when all workspaces are compatible.
+
+## Verification
+
+Semantic waiver: dependency safety is repo- and package-manager-specific.
+Each run must prove the selected upgrade group with the target repo's test
+suite and `dagger call check --source=.` when `dagger.json` exists.

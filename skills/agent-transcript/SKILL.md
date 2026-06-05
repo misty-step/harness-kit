@@ -84,3 +84,8 @@ body-file flow after human approval.
   transcript text.
 - A clean helper exit proves only the rendered file passed the redaction scan,
   not that the excerpt is relevant or appropriate.
+
+## Verification
+
+Run `python3 skills/agent-transcript/scripts/agent_transcript.py --self-test`
+to prove rendering omits secret-like transcript content.

@@ -168,3 +168,10 @@ When routing a task, state:
 3. The stack — one line per tool layer.
 4. The gotcha most likely to bite.
 5. Cost estimate if any runtime-LLM tool is in the stack.
+
+## Verification
+
+Semantic waiver: this router selects external browser tooling per target app
+and cannot be proven by a repo-local static fixture today. Validate source
+shape with `python3 scripts/check-frontmatter.py`; workflow correctness is
+proven by the consuming `/qa` or app-specific browser test artifact.

@@ -302,3 +302,10 @@ HARNESS_KIT_HEALTHCHECK_URL=https://app.example.com/health /monitor
 - **Never page humans.** Write the alert event. The outer loop routes
   escalation (Slack, PagerDuty, `/diagnose`). Paging from inside this
   skill duplicates channels and creates noise.
+
+## Verification
+
+Semantic waiver: monitor correctness depends on live signals and grace-window
+policy. Each run proves itself with the loaded config or healthcheck fallback,
+sampled signal events, trip/pass verdict, and handoff artifact to `/diagnose`
+or the caller.

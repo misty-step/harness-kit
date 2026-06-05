@@ -45,3 +45,9 @@ update muscle memory now.
 **plus `/reflect`**. The old `/settle` stopped at merge-ready and left
 reflection to `/ship`. Same merge-readiness gates, deliberately heavier
 closeout. Full protocol: `skills/deliver/references/polish-only.md`.
+
+## Verification
+
+Semantic waiver: `/settle` is a deprecated redirect, so its behavior is proven
+by `/deliver --polish-only` gates rather than a separate eval. Validate this
+stub with `python3 scripts/check-frontmatter.py`.

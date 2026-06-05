@@ -112,3 +112,10 @@ valid.
 - Helper scripts that are not wired into a gate become optional folklore.
 - Regexes over agent prose are usually the wrong boundary.
 - If a rule matters, enforce it outside prose.
+
+## Verification
+
+Run `python3 skills/harness-engineering/scripts/validate-evals.py`,
+`python3 scripts/check-agent-roster.py`, and
+`python3 scripts/check-runtime-primitives.py` after changing harness
+primitives, gates, evals, roster, bootstrap, or runtime projections.

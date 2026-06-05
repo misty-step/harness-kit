@@ -454,3 +454,9 @@ Residual:   none
 
 On refuse, emit the reason and the action the operator must take to
 re-enable shipping.
+
+## Verification
+
+Run `python3 scripts/check-agent-roster.py` and
+`python3 scripts/check-evidence-blocks.py skills`; semantic proof is the
+actual merge/backlog/archive/reflect receipt for the shipped branch.

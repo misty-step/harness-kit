@@ -164,3 +164,10 @@ For each recommendation, state:
 - Ignoring model family versions (recommending M2.5 when M2.7 exists)
 - Treating all "flash/lite/mini" models as equivalent
 - Recommending based on pricing alone without tool-calling quality check
+
+## Verification
+
+Semantic waiver: "latest model" facts are time-sensitive and require live
+provider/docs checks. Each run must cite current availability, release date or
+version evidence, pricing/benchmark source, and the exact platform where the
+model will be used.

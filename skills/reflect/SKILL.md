@@ -244,3 +244,9 @@ when to escalate to a harness branch, evidence standards).
   show the stronger version and why it improves the search space.
 - **Teaching concepts without anchoring them to the session**: Vocabulary only
   sticks when tied to a concrete decision, bug, or design tradeoff.
+
+## Verification
+
+Run `python3 skills/reflect/scripts/checkpoint.py --self-test` to prove the
+checkpoint validator rejects missing restatements, invalid verdicts, and raw
+private content.

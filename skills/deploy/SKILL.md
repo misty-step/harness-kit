@@ -198,3 +198,10 @@ containing `bootstrap.sh` AND `skills/` AND no `.harness-kit/deploy.yaml`.
 - `/deliver --polish-only` — merge gate that must pass before `/deploy` runs
 - `references/targets.md` — platform-specific recipes
 - `references/repo-config.md` — config schema and detection rules
+
+## Verification
+
+Semantic waiver: deploy correctness depends on the target platform and live
+receipt. When `.harness-kit/deploy.yaml` exists, validate it with
+`scripts/load-harness-kit-config.py deploy --repo <repo>`; final proof is the
+deploy receipt sha/version/URL plus platform log tail.

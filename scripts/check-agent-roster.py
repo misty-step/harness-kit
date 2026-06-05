@@ -197,10 +197,10 @@ SKILL_INVOCATION_FIELDS = {
 }
 SKILL_INVOCATION_SOURCE_PROTOCOLS = {
     "post_tool_use",
-    "codex_hook",
-    "pi_hook",
-    "antigravity_hook",
     "external_import",
+}
+SKILL_INVOCATION_LIVE_PROTOCOLS = {
+    "claude": {"post_tool_use"},
 }
 BANNED_SKILL_INVOCATION_FIELDS = {
     "prompt",
@@ -678,6 +678,14 @@ def validate_skill_invocations(path: Path) -> list[dict[str, object]]:
             raise SystemExit(f"{path}:{lineno}: invalid skill invocation event_type")
         if record["source_protocol"] not in SKILL_INVOCATION_SOURCE_PROTOCOLS:
             raise SystemExit(f"{path}:{lineno}: invalid skill invocation source_protocol")
+        harness = str(record["harness"])
+        protocol = str(record["source_protocol"])
+        live_protocols = SKILL_INVOCATION_LIVE_PROTOCOLS.get(harness, set())
+        if protocol != "external_import" and protocol not in live_protocols:
+            raise SystemExit(
+                f"{path}:{lineno}: unsupported live skill invocation protocol "
+                f"for {harness}: {protocol}"
+            )
         if "usage" in record:
             validate_usage(record["usage"])
         records.append(record)

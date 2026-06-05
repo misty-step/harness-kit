@@ -155,3 +155,10 @@ a community compilation of Andrej Karpathy's observations on
 LLM coding pitfalls. Rewritten here with harness-neutral wording
 and examples drawn from Harness Kit's own repo shape; the four
 principles and their framing are Karpathy's.
+
+## Verification
+
+Semantic waiver: this is a reference guardrail, not an executable workflow.
+Validate catalog/trigger shape with `python3 scripts/check-frontmatter.py`;
+behavioral proof appears when a consuming skill cites the guardrail and the
+resulting diff stays scoped and verifiable.

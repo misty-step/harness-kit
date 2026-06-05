@@ -44,6 +44,7 @@ Targeted validation commands:
 - lint-shell: find . -name '*.sh' -not -path './ci/*' | xargs shellcheck --severity=error
 - lint-python: find . -name '*.py' -not -path './ci/*' | xargs -I{{}} python3 -m py_compile {{}}
 - check-frontmatter: python3 scripts/check-frontmatter.py
+- check-runtime-primitives: python3 scripts/check-runtime-primitives.py
 - test-skill-audit: bash skills/groom/scripts/test_audit_skills.sh
 
 When the target gate passes, bind the updated container to $repaired.
@@ -481,10 +482,26 @@ print('No hardcoded user paths found.')
             Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
         ],
     ) -> str:
-        """Verify bootstrap installs only allowlisted global agents."""
+        """Verify bootstrap projects supported harness runtime surfaces."""
         return await (
             _lint_container(source)
             .with_exec(["bash", "scripts/test-bootstrap-agent-allowlist.sh"])
+            .stdout()
+        )
+
+    @function
+    async def check_runtime_primitives(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Validate runtime hooks, settings, and skill invocation protocols."""
+        return await (
+            _lint_container(source)
+            .with_exec(["python3", "scripts/check-runtime-primitives.py"])
             .stdout()
         )
 
@@ -850,6 +867,11 @@ print('skills/: no claims primitives found.')
                 run_gate,
                 "test-bootstrap-agent-allowlist",
                 self.test_bootstrap_agent_allowlist(source),
+            )
+            tg.start_soon(
+                run_gate,
+                "check-runtime-primitives",
+                self.check_runtime_primitives(source),
             )
             tg.start_soon(
                 run_gate,

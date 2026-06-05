@@ -72,3 +72,10 @@ Local lane guidance: Leaf skills own dispatch; /flywheel verifies phase receipts
 - No direct `/reflect` invocation — that's `/ship`'s job.
 - No USD tracking — the orchestrator runs under subscription. USD is a
   concern of systems that pay per token (e.g. ThinkTank itself).
+
+## Verification
+
+Semantic waiver: `/flywheel` composes other phase receipts rather than owning a
+standalone deterministic transform. Verify a cycle by the `/deliver`, `/ship`,
+`/deploy`, `/monitor`, and `/reflect` receipts it links, plus clean-tree
+closeout.

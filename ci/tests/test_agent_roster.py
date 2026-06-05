@@ -250,6 +250,57 @@ class RosterValidationTests(unittest.TestCase):
 
         self.assertEqual(checker.delegation_contract_gaps(complete_section), [])
 
+    def test_skill_invocations_reject_unsupported_live_protocol_pair(self) -> None:
+        checker = _load_check_agent_roster_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "skill-invocations.jsonl"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 2,
+                        "event_type": "skill_invocation",
+                        "ts": "2026-06-04T00:00:00Z",
+                        "harness": "codex",
+                        "source_protocol": "post_tool_use",
+                        "skill": "shape",
+                        "args": "088",
+                        "session_id": "session-088-a",
+                        "cwd": "/tmp/harness-kit",
+                        "project": "harness-kit",
+                    }
+                )
+                + "\n"
+            )
+
+            with self.assertRaisesRegex(SystemExit, "unsupported live skill invocation protocol"):
+                checker.validate_skill_invocations(path)
+
+    def test_skill_invocations_accept_external_import_for_unsupported_live_harness(self) -> None:
+        checker = _load_check_agent_roster_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "skill-invocations.jsonl"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 2,
+                        "event_type": "skill_invocation",
+                        "ts": "2026-06-04T00:00:00Z",
+                        "harness": "codex",
+                        "source_protocol": "external_import",
+                        "skill": "shape",
+                        "args": "088",
+                        "session_id": "session-088-a",
+                        "cwd": "/tmp/harness-kit",
+                        "project": "harness-kit",
+                    }
+                )
+                + "\n"
+            )
+
+            records = checker.validate_skill_invocations(path)
+
+        self.assertEqual(len(records), 1)
+
 
 class ReceiptTests(unittest.TestCase):
     def test_builds_valid_unavailable_probe_receipts_for_empty_path(self) -> None:
@@ -357,6 +408,44 @@ class ReceiptTests(unittest.TestCase):
         )
 
         validate_receipt(receipt)
+
+    def test_output_check_records_provider_smoke_compliance(self) -> None:
+        receipt = build_attempt_receipt(
+            provider_target="codex",
+            provider_status="available",
+            attempt_status="succeeded",
+            objective="provider smoke",
+            input_ref=".harness-kit/agents.yaml",
+            evidence_refs=[".evidence/codex-smoke.txt"],
+            lead_verdict="accepted",
+            worktree_id="codex-lane",
+            output_check={
+                "expected": "AGENT_OK",
+                "matched": True,
+                "observed_ref": ".evidence/codex-smoke.txt",
+            },
+        )
+
+        self.assertEqual(receipt["output_check"]["expected"], "AGENT_OK")
+        validate_receipt(receipt)
+
+    def test_output_check_rejects_provider_smoke_mismatch(self) -> None:
+        with self.assertRaisesRegex(ReceiptValidationError, "did not match"):
+            build_attempt_receipt(
+                provider_target="codex",
+                provider_status="available",
+                attempt_status="succeeded",
+                objective="provider smoke",
+                input_ref=".harness-kit/agents.yaml",
+                evidence_refs=[".evidence/codex-smoke.txt"],
+                lead_verdict="accepted",
+                worktree_id="codex-lane",
+                output_check={
+                    "expected": "AGENT_OK",
+                    "matched": False,
+                    "observed_ref": ".evidence/codex-smoke.txt",
+                },
+            )
 
     def test_rejects_inline_transcript_evidence(self) -> None:
         with self.assertRaises(ReceiptValidationError):

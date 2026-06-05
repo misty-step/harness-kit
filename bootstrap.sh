@@ -251,14 +251,21 @@ link_dir_entries_if_present() {
   local src
   for src in "$src_dir"/*; do
     [ -e "$src" ] || continue
+    case "$(basename "$src")" in
+      __pycache__|*.pyc) continue ;;
+    esac
     expected+=("$(basename "$src")")
   done
 
   cleanup_symlinks_under_prefix "$dest_dir" "$src_dir" "${expected[@]}"
+  rm -rf "$dest_dir/__pycache__"
 
   mkdir -p "$dest_dir"
   for src in "$src_dir"/*; do
     [ -e "$src" ] || continue
+    case "$(basename "$src")" in
+      __pycache__|*.pyc) continue ;;
+    esac
     ln -sfn "$src" "$dest_dir/$(basename "$src")"
   done
 
