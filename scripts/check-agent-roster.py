@@ -105,6 +105,14 @@ DOMAIN_COMPLETION_GATE_SKILLS = [
     "qa",
 ]
 
+DESIGN_CONTRACT_PATHS = [
+    Path("skills/design/SKILL.md"),
+    Path("skills/design/references/scaffold.md"),
+    Path("skills/design/references/design-system.md"),
+    Path("skills/design/references/external-design-references.md"),
+    Path("skills/design/evals/graders/check.sh"),
+]
+
 CLEAN_CLOSEOUT_POINTER_PATHS = [
     Path("AGENTS.md"),
     Path("skills/deliver/SKILL.md"),
@@ -459,6 +467,56 @@ def validate_groom_completeness_contract() -> None:
         )
 
 
+def validate_design_contract() -> None:
+    requirements = {
+        Path("skills/design/SKILL.md"): [
+            "DESIGN.md",
+            "design-contract.md",
+            "VARIANCE / MOTION / DENSITY",
+            "not present with waiver",
+            "Distinctive decision",
+        ],
+        Path("skills/design/references/scaffold.md"): [
+            "DESIGN.md",
+            "design-contract.md",
+            "observed",
+            "provided",
+            "inferred",
+            "do-not-copy",
+            "one-off/internal/no-durable-fact",
+        ],
+        Path("skills/design/references/design-system.md"): [
+            "DESIGN.md",
+            "active contract",
+            "recurring or product-facing visual work",
+        ],
+        Path("skills/design/references/external-design-references.md"): [
+            "Anthropic",
+            "Jakub Krehel",
+            "Leon",
+            "Rams",
+            "Hallmark",
+            "DESIGN.md",
+            "do-not-copy",
+        ],
+        Path("skills/design/evals/graders/check.sh"): [
+            "design-contract-maintenance",
+            "DESIGN.md",
+            "do-not-copy",
+            "no-durable-fact",
+        ],
+    }
+    for path, phrases in requirements.items():
+        if not path.exists():
+            raise SystemExit(f"{path}: missing design contract file")
+        text = path.read_text()
+        missing = [phrase for phrase in phrases if phrase not in text]
+        if missing:
+            raise SystemExit(
+                f"{path}: missing design contract phrase(s): " + ", ".join(missing)
+            )
+
+
 def validate_clean_closeout_pointers() -> None:
     shared_path = Path("harnesses/shared/AGENTS.md")
     shared_section = markdown_section(shared_path.read_text(), "## Closeout")
@@ -788,6 +846,7 @@ def main() -> int:
     validate_shared_roster_doctrine()
     validate_completion_evidence()
     validate_groom_completeness_contract()
+    validate_design_contract()
     validate_clean_closeout_pointers()
     validate_adversarial_done_review()
     validate_no_source_skill_bridges()
@@ -868,6 +927,7 @@ def main() -> int:
         "completion evidence pointer(s) valid"
     )
     print(f"skills/: {len(DOMAIN_COMPLETION_GATE_SKILLS)} local completion gate(s) valid")
+    print(f"skills/design: {len(DESIGN_CONTRACT_PATHS)} design contract surface(s) valid")
     print("skills/groom/SKILL.md: completeness contract valid")
     print(f"closeout: {len(CLEAN_CLOSEOUT_POINTER_PATHS)} shared pointer(s) valid")
     print(f"skills/: {len(ADVERSARIAL_REVIEW_SKILLS)} adversarial review stance(s) valid")

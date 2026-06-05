@@ -3,6 +3,9 @@
 Capability under test: `/design` critiques a rendered artifact against intent,
 uses concrete design-system and taste evidence, and avoids turning one-off
 polish into a framework or token-system project.
+It also maintains `DESIGN.md` / `design-contract.md` as repo-owned visual
+contracts when recurring or product-facing visual work changes durable design
+facts.
 
 Expected failure mode: generic advice such as "improve spacing and colors",
 code-only judgment when a render is available, or proposing a new UI framework

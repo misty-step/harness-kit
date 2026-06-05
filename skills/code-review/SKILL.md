@@ -34,7 +34,8 @@ fields below for review verdicts.
 ## Marshal Protocol
 
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
-   Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
+   Classify: what changed? (API, UI, visual artifact, docs/report surface,
+   tests, infra, security, perf, data model, etc.)
 
 2. **Optionally run the structured autoreview helper.** When the human asks for
    `autoreview`, Codex review, Claude review, or second-model review, or when a
@@ -94,14 +95,16 @@ escalate to human if still blocked.
 
 ## Live Verification
 
-**Trigger:** the diff touches user-facing patterns — `.tsx`, `.jsx`, `pages/`,
-`app/`, `routes/`, `api/`, `endpoints/`, or component directories.
+**Trigger:** the diff touches user-facing or visual patterns — `.tsx`, `.jsx`,
+`pages/`, `app/`, `routes/`, `api/`, `endpoints/`, component directories,
+docs/report layouts, diagrams, screenshots, generated site assets, decks, or
+presentation-like artifacts.
 
 **Rule:** at least one reviewer must exercise the affected routes/components.
 **Ship** verdict is blocked until live verification passes.
 
 **Skip:** pure refactors, config-only, test-only, backend-only with no
-user-facing surface.
+user-facing or visual surface.
 
 ## Executable Path Verification
 

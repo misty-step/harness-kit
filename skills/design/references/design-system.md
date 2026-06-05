@@ -1,7 +1,8 @@
 # Design System Judgment
 
-Use this reference when UI work touches recurring surfaces, shared components,
-theme files, or visual rules that should remain coherent across the product.
+Use this reference when visual work touches recurring surfaces, shared
+components, docs/report layouts, theme files, or visual rules that should remain
+coherent across the product.
 
 ## Universal Craft vs Repo-Specific Facts
 
@@ -15,6 +16,11 @@ Keep these layers separate:
   typography choices, component grammar, content voice, golden examples, and
   audience-specific density. These must come from live repo evidence, user
   input, or a labeled inference.
+
+`DESIGN.md` is the repo-owned file for those facts. If it exists, it is not
+background reading; it is an active contract for visual work. If it is missing
+and the repo has recurring or product-facing visual work, create it through
+`/design scaffold` rather than letting each agent rediscover the visual system.
 
 A design-system document can organize product facts; it cannot replace rendered
 artifact critique. Final judgment still needs a screenshot, URL, rendered
@@ -73,9 +79,11 @@ single bounded polish pass. Improve the rendered surface directly.
 
 Start soft:
 
-1. Route UI diffs through `/design` and `/a11y`.
+1. Route visual diffs through `/design`; add `/a11y` where accessibility applies.
 2. Capture rendered evidence with `/qa`, `/browser`, or `/demo`.
-3. Harden repeated findings into repo-local lint, tests, or scaffolded design
+3. Read, create, or update `DESIGN.md` when durable repo-owned design facts are
+   present.
+4. Harden repeated findings into repo-local lint, tests, or scaffolded design
    guidance.
 
 Escalate to CI only for deterministic checks: token bypass, missing states,

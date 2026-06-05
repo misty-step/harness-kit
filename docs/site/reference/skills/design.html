@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>design</h1>
-      <p class="lede">Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: &quot;make this look better&quot;, &quot;improve the design&quot;, &quot;polish the UI&quot;, &quot;critique this screen&quot;, &quot;design pass&quot;, &quot;art direction&quot;, &quot;scaffold design&quot;. Trigger: /design.</p>
+      <p class="lede">Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: &quot;make this look better&quot;, &quot;improve the design&quot;, &quot;polish the UI&quot;, &quot;critique this screen&quot;, &quot;design pass&quot;, &quot;art direction&quot;, &quot;scaffold design&quot;, docs layout, report polish, generated diagrams/images, screenshots, decks, dashboards, charts, or any product-facing visual artifact. Trigger: /design.</p>
       <p><code class="trigger large">/design</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/design/SKILL.md">skills/design/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: &quot;make this look better&quot;, &quot;improve the design&quot;, &quot;polish the UI&quot;, &quot;critique this screen&quot;, &quot;design pass&quot;, &quot;art direction&quot;, &quot;scaffold design&quot;. Trigger: /design.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: &quot;make this look better&quot;, &quot;improve the design&quot;, &quot;polish the UI&quot;, &quot;critique this screen&quot;, &quot;design pass&quot;, &quot;art direction&quot;, &quot;scaffold design&quot;, docs layout, report polish, generated diagrams/images, screenshots, decks, dashboards, charts, or any product-facing visual artifact. Trigger: /design.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>Workflow role</h3><p>Support primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -43,7 +43,9 @@ is evidence, not generic advice:
    file that produces the surface.
 2. Name the intent in one sentence: audience, job, and desired feel.
 3. Inspect the rendered result when possible.
-4. Return ranked, specific design moves or implement a bounded polish pass.
+4. State the design read: surface kind, audience, desired feel, constraints.
+5. Set VARIANCE / MOTION / DENSITY for the surface before building.
+6. Return ranked, specific design moves or implement a bounded polish pass.
 
 Refuse to make a final design judgment from code alone when a rendered surface
 can be inspected. If rendering is impossible, mark the design unverified.
@@ -66,13 +68,10 @@ final critique of visible UI changes.
 | `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. |
 | `/design polish` | Apply the smallest coherent improvement set, then verify render. |
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
-| `/design scaffold` | Read `references/scaffold.md` and generate project-local design guidance, `DESIGN.md`, and `design-contract.md` only when recurring UI work earns them. |
+| `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
 
 Use `/a11y` for WCAG compliance, `/qa` for behavior verification, `/demo` for
 evidence packaging, and `/shape` when the product direction itself is unsettled.
-For recurring UI work, use the references:
-
-- `references/scaffold.md` for repo-owned `DESIGN.md` and
 ...</code></pre>
     </section>
     <section class="checklist">

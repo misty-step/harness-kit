@@ -5,8 +5,8 @@ usage() {
   cat >&2 <<'EOF'
 usage: scripts/detect-ui-surfaces.sh [--staged|--unstaged|--base <ref>|--paths <path>...]
 
-Prints JSON describing whether any provided or changed path is likely a UI
-surface. The result is a routing signal, not a quality verdict.
+Prints JSON describing whether any provided or changed path is likely a UI or
+visual surface. The result is a routing signal, not a quality verdict.
 EOF
 }
 
@@ -62,11 +62,14 @@ json_escape() {
   printf '%s' "$value"
 }
 
-path_matches_ui_surface() {
+path_matches_visual_surface() {
   local path="$1"
 
   case "$path" in
-    *.tsx|*.jsx|*.vue|*.svelte|*.css|*.scss|*.sass|*.less|*.html|*.mdx)
+    *.tsx|*.jsx|*.vue|*.svelte|*.css|*.scss|*.sass|*.less|*.html|*.mdx|*.svg)
+      return 0
+      ;;
+    *.png|*.jpg|*.jpeg|*.webp|*.gif|*.ppt|*.pptx|*.key|*.pdf)
       return 0
       ;;
     tailwind.config.*|components.json|tokens.*|theme.*|*/tokens.*|*/theme.*)
@@ -76,6 +79,9 @@ path_matches_ui_surface() {
 
   case "$path" in
     app/*|pages/*|components/*|src/components/*|stories/*|*.stories.*|*.story.*)
+      return 0
+      ;;
+    docs/site/*|docs/copy/images/*|docs/copy/site.json|reports/*|presentations/*|slides/*)
       return 0
       ;;
   esac
@@ -113,12 +119,18 @@ fi
 declare -a matches=()
 while IFS= read -r path; do
   [[ -z "$path" ]] && continue
-  if path_matches_ui_surface "$path"; then
+  if path_matches_visual_surface "$path"; then
     matches+=("$path")
   fi
 done <"$paths_file"
 
 printf '{"ui_surface":'
+if [[ "${#matches[@]}" -gt 0 ]]; then
+  printf 'true'
+else
+  printf 'false'
+fi
+printf ',"visual_surface":'
 if [[ "${#matches[@]}" -gt 0 ]]; then
   printf 'true'
 else

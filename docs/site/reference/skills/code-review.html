@@ -58,7 +58,8 @@ fields below for review verdicts.
 ## Marshal Protocol
 
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
-   Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
+   Classify: what changed? (API, UI, visual artifact, docs/report surface,
+   tests, infra, security, perf, data model, etc.)
 
 2. **Optionally run the structured autoreview helper.** When the human asks for
    `autoreview`, Codex review, Claude review, or second-model review, or when a
@@ -72,7 +73,6 @@ fields below for review verdicts.
    load it before dispatching reviewers. When a local entry links to shared
    Harness Kit references such as
    `references/bounded-payload-discipline.md`, include that reference in the
-   reviewer prompt and require findings to cite the local entry ID.
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -170,7 +170,7 @@ back to `/shape` instead of treating implementation choices as delivery work.
 │  /code-review     → critic + bench             │
 │  /ci              → dagger audit + run         │
 │  /refactor        → diff-aware simplify        │
-│  /design + /a11y  → only when UI surfaces exist│
+│  /design + /a11y  → visual surfaces; a11y when applicable│
 │  /qa              → running-surface evidence   │
 │  capture evidence → see references/evidence.md │
 └──────────────────────────────────────────────┘
@@ -190,7 +190,7 @@ back to `/shape` instead of treating implementation choices as delivery work.
 | ci | `/ci` | dagger audit + green pipeline | `/ci` itself decides — do not pre-filter |
 | hardening | `/hardening` | property, mutation, acceptance, CRAP/SCRAP, DRY, or formal-spec ladder evidence | no phase issued a blocking hardening requirement, no packet declared `Formal Spec Required: yes`, or an explicit waiver is recorded |
 | refactor | `/refactor` | diff-aware simplification | trivial diffs (<20 LOC, single file) |
-| design | `/design` + `/a11y` | visual intent, taste, and accessibility evidence | no UI paths by detector or equivalent diff inspection |
+| design | `/design` + `/a11y` | visual intent, taste, DESIGN.md contract, and accessibility evidence | no visual paths by detector or equivalent diff/artifact inspection; `/a11y` only when accessibility applies |
 | qa | `/qa` | browser-driven exploratory test, evidence | no user-facing surface (pure library/refactor) |
 
 Each skill has its own contract and receipt. `/deliver` reads those

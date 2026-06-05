@@ -8,7 +8,7 @@ elif [[ $# -eq 2 ]]; then
   mode=$1
   out=$2
 else
-  echo "usage: $0 [rendered-critique|scaffold-contract|token-only-critique] <candidate-output>" >&2
+  echo "usage: $0 [rendered-critique|scaffold-contract|design-contract-maintenance|token-only-critique] <candidate-output>" >&2
   exit 2
 fi
 
@@ -50,6 +50,25 @@ case "$mode" in
     fi
 
     echo "PASS: design scaffold records repo-owned design facts with provenance"
+    ;;
+  design-contract-maintenance)
+    grep -qi "DESIGN.md" "$out"
+    grep -Eqi "read|created|updated|maintained" "$out"
+    grep -qi "design-contract.md" "$out"
+    grep -Eqi "observed|provided|inferred" "$out"
+    grep -Eqi "do-not-copy|do not copy" "$out"
+
+    if grep -Eqi "one-off|internal|no durable" "$out"; then
+      grep -Eqi "waiver|not applicable|no-durable-fact" "$out"
+    fi
+
+    if grep -Eqi "DESIGN.md.*not (needed|required|applicable)|skip(ped)? DESIGN.md" "$out" \
+      && ! grep -Eqi "one-off|internal|no durable|waiver|not applicable|no-durable-fact" "$out"; then
+      echo "candidate skips DESIGN.md without a one-off/internal/no-durable-fact waiver" >&2
+      exit 1
+    fi
+
+    echo "PASS: design output maintains or waives DESIGN.md contract with provenance"
     ;;
   token-only-critique)
     if ! grep -Eqi "screenshot|rendered|artifact|URL|route|unverified|cannot make a final design judgment|rendering is impossible" "$out"; then

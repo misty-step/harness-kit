@@ -1,11 +1,12 @@
 # Design Scaffold Template
 
-Template for `/design scaffold`. Generate a project-local design skill only
-when the repo has recurring UI work.
+Template for `/design scaffold`. Generate and maintain repo-local design
+contracts for recurring or product-facing visual work.
 
 Do not scaffold for a one-off surface unless the user explicitly asks. As a
-default threshold, require at least three UI-relevant files or one recurring
-surface with clear future maintenance risk.
+default threshold, require at least three visual-surface files, one recurring
+surface with clear future maintenance risk, or a product-facing surface whose
+visual language will be changed by future agents.
 
 When recurring UI work earns a repo-owned design contract, generate source
 documents the repo can inspect and edit:
@@ -13,6 +14,13 @@ documents the repo can inspect and edit:
 - `DESIGN.md` - the stable product design contract.
 - `design-contract.md` - the evidence table that explains where each design
   fact came from and how it should be used.
+
+If `DESIGN.md` already exists, read it before visual work. Update it in the same
+change when durable design facts change: tokens, typography, spacing/radii,
+motion, component grammar, layout density, content voice, accessibility rules,
+golden examples, or anti-patterns. If the change is visual but intentionally
+does not update `DESIGN.md`, record a one-off/internal/no-durable-fact waiver in
+the completion gate.
 
 Do not copy external design-system catalog prose. Link to reference material
 and extract only facts that are observed in the repo, provided by the user, or
@@ -49,9 +57,9 @@ Launch independent investigators when the repo is non-trivial.
 
 ## Repo Design Contract
 
-Emit `DESIGN.md` only when the threshold above is met. Use this nine-section
-shape so future agents can find product-specific design facts without confusing
-them for universal taste advice:
+Emit or update `DESIGN.md` when the threshold above is met. Use this
+nine-section shape so future agents can find product-specific design facts
+without confusing them for universal taste advice:
 
 1. Product Intent
 2. Audience and Context
@@ -63,10 +71,14 @@ them for universal taste advice:
 8. Accessibility and Responsiveness
 9. Evidence and Governance
 
-Each section names repo-owned facts, not generic advice. If a fact is inferred
-from weak evidence, label it as inferred and lower confidence. If the repo does
-not yet have enough evidence for a section, write the gap instead of inventing
-the answer.
+Each section names repo-owned facts, not generic advice. Treat the public
+DESIGN.md convention as the format: Markdown at the project root, optionally
+with token frontmatter, carrying colors, typography, spacing, components,
+icons/media, motion, rationale, constraints, and do/don't rules that agents can
+apply before generating visible output. If a fact is inferred from weak
+evidence, label it as inferred and lower confidence. If the repo does not yet
+have enough evidence for a section, write the gap instead of inventing the
+answer.
 
 ## Evidence Contract
 
@@ -174,8 +186,10 @@ Before declaring the scaffold complete:
 
 - [ ] Surfaces are real paths/routes, not placeholders.
 - [ ] Design-system facts are discovered from the repo, not invented.
-- [ ] `DESIGN.md` uses the nine-section contract only when recurring UI work
-      earns it.
+- [ ] `DESIGN.md` uses the nine-section contract when recurring or
+      product-facing visual work earns it.
+- [ ] Existing `DESIGN.md` was read and either updated for durable visual
+      changes or explicitly waived as one-off/internal/no-durable-fact.
 - [ ] `design-contract.md` records source, fact, provenance, confidence, and
       `keep` / `change` / `do-not-copy` use for every load-bearing design fact.
 - [ ] Reference-brand material is marked `do-not-copy` unless ownership or

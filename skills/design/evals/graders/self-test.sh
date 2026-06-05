@@ -64,6 +64,18 @@ The token document has colors, spacing, and component names. The design is
 complete and ready to ship.
 EOF
 
+cat >"$tmpdir/maintenance-pass.md" <<'EOF'
+DESIGN.md status: read and updated because the visual change altered durable
+layout density and component grammar. design-contract.md records the new fact:
+dashboard rows use compact density, provenance observed, confidence high, use
+keep. The external Hallmark reference remains do-not-copy.
+EOF
+
+cat >"$tmpdir/maintenance-fail.md" <<'EOF'
+Skipped DESIGN.md because this is just visual polish. The external reference
+sets the new visual language.
+EOF
+
 bash "$grader" scaffold-contract "$tmpdir/scaffold-pass.md"
 if bash "$grader" scaffold-contract "$tmpdir/scaffold-fail.md" >/tmp/design-eval-fail.log 2>&1; then
   echo "expected scaffold output without provenance/do-not-copy to fail" >&2
@@ -73,6 +85,12 @@ fi
 bash "$grader" token-only-critique "$tmpdir/token-pass.md"
 if bash "$grader" token-only-critique "$tmpdir/token-fail.md" >/tmp/design-eval-fail.log 2>&1; then
   echo "expected token-only success claim to fail" >&2
+  exit 1
+fi
+
+bash "$grader" design-contract-maintenance "$tmpdir/maintenance-pass.md"
+if bash "$grader" design-contract-maintenance "$tmpdir/maintenance-fail.md" >/tmp/design-eval-fail.log 2>&1; then
+  echo "expected DESIGN.md skip without waiver/provenance to fail" >&2
   exit 1
 fi
 
