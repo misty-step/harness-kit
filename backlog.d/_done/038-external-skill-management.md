@@ -14,7 +14,7 @@ No manual copies. No drift. Symlink-mode users see externals identically
 to first-party skills; remote-mode users get them downloaded alongside
 first-party.
 
-"Good" = `./scripts/sync-external.sh` is the ONLY path a new external
+"Good" = `harness-kit-checks sync-external` is the ONLY path a new external
 lands in the tree, and `git status` after running it is reproducible
 from the registry alone.
 
@@ -82,7 +82,7 @@ never touch the raw checkouts.
 `.sync-meta.json` per source. Rationale: committing live checkouts
 bloats history and fights git; committing nothing breaks offline clones
 and CI. Symlinks + meta is the thin middle. Fresh clones must run
-`./scripts/sync-external.sh` once before symlinks resolve — documented
+`harness-kit-checks sync-external` once before symlinks resolve — documented
 in README and enforced by CI (`--check` mode).
 
 ## Registry Schema Upgrade
@@ -97,7 +97,7 @@ sources:
     include: [react-best-practices, composition-patterns]  # allowlist
     exclude: [vercel-deploy-claimable]                     # blocklist
     alias_prefix: ""               # prepended on collision (e.g. "vercel-")
-    embeddings: true               # whether generate-embeddings.py includes
+    embeddings: true               # whether harness-kit-checks generate-embeddings includes
 ```
 
 `pin` is written by sync and committed. `ref` is operator intent. Floating =
@@ -105,10 +105,10 @@ sources:
 
 ## Sync Mechanism
 
-`scripts/sync-external.sh` — plain bash + git. No `gh`, no curl-tarball,
+`crates/harness-kit-checks/src/external_sync.rs` — Rust + git. No `gh`, no curl-tarball,
 no pip deps. `git clone --filter=blob:none --sparse --no-checkout` gives
 shallow + partial-tree in one primitive; we already parse YAML minimally
-in `generate-embeddings.py` (reuse).
+in `harness-kit-checks generate-embeddings` (reuse).
 
 Per source:
 1. `git clone --filter=blob:none --sparse --no-checkout` into
@@ -122,7 +122,7 @@ Per source:
 
 ## Update Cadence
 
-Manual only. `./scripts/sync-external.sh` is the one entrypoint. No CI
+Manual only. `harness-kit-checks sync-external` is the one entrypoint. No CI
 cron, no pre-pull hook. Rationale: floating-ref automation silently
 drifts the harness; a manual command keeps updates as explicit commits
 (operator reviews the `pin:` diff). Weekly `/groom`-time habit suffices;
@@ -146,7 +146,7 @@ Resolved at alias-farm build time, in registry-declaration order:
 - `generate-index.sh` walks BOTH `skills/*/` and `skills/.external/<alias>/`,
   dereferencing symlinks. Single `skills:` section; per-entry `source:
   external|first-party` field.
-- `generate-embeddings.py` switches from GitHub-API fetch to local
+- `harness-kit-checks generate-embeddings` switches from GitHub-API fetch to local
   alias-farm read (faster, offline-capable, removes rate-limit path).
   `embeddings: true|false` per source controls inclusion.
 
@@ -160,7 +160,7 @@ user's machine.
 - REMOTE bootstrap (`curl | bash`): externals ride along for free
   because the alias farm is committed; downloaded via the same GitHub
   contents API.
-- Fresh clone: README documents `./scripts/sync-external.sh` as a
+- Fresh clone: README documents `harness-kit-checks sync-external` as a
   one-time setup before `./bootstrap.sh`.
 
 ## Removal / GC
@@ -182,7 +182,7 @@ Structural prevention beats prose:
 - [ ] `scripts/check-vendored-copies.sh` extended: any
       `skills/.external/<alias>/` entry not backed by a symlink into a
       checked-out source = drift, fail
-- [ ] CI gate: `./scripts/sync-external.sh --check` exits non-zero if
+- [ ] CI gate: `harness-kit-checks sync-external --check` exits non-zero if
       running sync would produce a diff (catches registry edits without
       resync — exactly the failure mode that triggered this ticket)
 - [ ] `generate-index.sh` skips `skills/.external/<org>/<repo>/`
@@ -193,13 +193,13 @@ Structural prevention beats prose:
 
 1. **Schema + script skeleton.** Extend `registry.yaml` with
    `ref`/`pin`/`include`/`exclude`/`alias_prefix`/`embeddings`.
-   Write `scripts/sync-external.sh` handling one source end-to-end.
+   Write `harness-kit-checks sync-external` handling one source end-to-end.
    Dogfood on the parked `agent-browser` (replace the hand-made
    directory with a proper sourced symlink — confirm source first).
 2. **Multi-source + collision.** Loop over all registry sources. Alias
    conflict detection.
 3. **Index + embeddings wiring.** Update `generate-index.sh` to walk
-   alias farm. Update `generate-embeddings.py` to read local alias farm
+   alias farm. Update `harness-kit-checks generate-embeddings` to read local alias farm
    instead of remote API.
 4. **Bootstrap pickup.** Teach `bootstrap.sh` LOCAL and REMOTE discovery
    to include `skills/.external/*/` alongside `skills/*`. First-party
@@ -215,7 +215,7 @@ the proof-of-utility.
 
 ## Oracle
 
-- [ ] `rm -rf skills/.external/*/` then `./scripts/sync-external.sh`
+- [ ] `rm -rf skills/.external/*/` then `harness-kit-checks sync-external`
       restores a bit-identical tree (modulo `.sync-meta.json`
       timestamps); `git diff` is empty
 - [ ] A registry entry with `ref: main` and no `pin:` → after sync,
@@ -226,10 +226,10 @@ the proof-of-utility.
       on the second → sync exits non-zero with both paths named
 - [ ] First-party `skills/foo/` + external `skills/.external/foo/` →
       `bootstrap.sh` links only the first-party; warning printed
-- [ ] `./scripts/sync-external.sh --check` on a clean tree → exit 0;
+- [ ] `harness-kit-checks sync-external --check` on a clean tree → exit 0;
       after manual registry edit without sync → exit non-zero
 - [ ] `generate-index.sh` lists externals with `source: external`
-- [ ] `generate-embeddings.py --offline` reads from the alias farm
+- [ ] `harness-kit-checks generate-embeddings --offline` reads from the alias farm
       without GitHub API calls
 - [ ] Worktree-B running sync concurrently with worktree-A does not
       corrupt either — checkouts are worktree-local via
@@ -244,7 +244,7 @@ the proof-of-utility.
 - Transitive sources (an external source declaring its own
   `registry.yaml`)
 - Private GitHub auth flows beyond the `GITHUB_TOKEN` env var
-  `generate-embeddings.py` already honors
+  `harness-kit-checks generate-embeddings` already honors
 - Per-skill config overlays (patch files on top of upstream)
 - Any daemon, watcher, or cron — sync is manual-only in MVP
 - Wholesale ingestion of mega-collections (`alirezarezvani`,
@@ -254,8 +254,8 @@ the proof-of-utility.
 
 - Depends on: nothing (works against current `registry.yaml` +
   `bootstrap.sh`)
-- Touches: `registry.yaml`, `bootstrap.sh`, `scripts/generate-index.sh`,
-  `scripts/generate-embeddings.py`, `scripts/check-vendored-copies.sh`,
+- Touches: `registry.yaml`, `bootstrap.sh`, `harness-kit-checks generate-index`,
+  `harness-kit-checks generate-embeddings`, `harness-kit-checks check-vendored-copies`,
   `.gitignore`, `.githooks/`
 - Forcing function: index-drift CI failure on
   `feat/iterate-mvp-phase1` caused by manually-copied

@@ -15,8 +15,7 @@ branch already contains the durable evidence.
 For most PRs, commit the evidence directory and link it:
 
 ```bash
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence dir)"
 git add "$EVIDENCE_DIR"
 git commit -m "test(qa): add evidence"
 
@@ -40,8 +39,7 @@ HARNESS_EVIDENCE_GITHUB=1
 # 1. Capture evidence (screenshots, GIFs, videos)
 PR_NUMBER=123
 REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence dir)"
 
 # 2. Convert video to GIF for inline rendering (GitHub doesn't embed webm)
 ffmpeg -y -i "$EVIDENCE_DIR/walkthrough.webm" \

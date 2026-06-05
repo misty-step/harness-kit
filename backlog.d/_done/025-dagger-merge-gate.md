@@ -72,7 +72,7 @@ Delivered on `deliver/025-dagger-merge-gate`.
   `5e7bdc23fde9553e102e458264b8f516dba2b0fa83557bed49877c22f6a2c3e8`
 - `bash .githooks/test_pre_merge_commit.sh`
 - `shellcheck --severity=error .githooks/pre-merge-commit .githooks/test_pre_merge_commit.sh`
-- `python3 -m py_compile ci/src/harness_kit_ci/main.py scripts/build-docs-site.py`
+- `python3 -m py_compile ci/src/harness_kit_ci/main.py`
 - `dagger call check-git-hooks --source=.`
 - `python3 scripts/check-frontmatter.py`
 - `python3 scripts/check-agent-roster.py`

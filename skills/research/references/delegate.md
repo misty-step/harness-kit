@@ -42,6 +42,20 @@ path inside the packet constraints.
 
 **Bad:** "Step 1: Read file X. Step 2: Check line Y. Step 3: ..."
 
+## Dependency-Aware Orchestration
+
+For large work (10+ subtasks, multiple phases), use DAG-based scheduling:
+
+```text
+Phase 1 (no deps):    Tasks 01, 02, 03 -> spawn in parallel
+Phase 2 (deps on P1): Tasks 04, 05     -> blocked until P1 complete
+Phase 3 (deps on P2): Tasks 06, 07, 08 -> blocked until P2 complete
+```
+
+Use task tracking to manage phases: decompose into atomic tasks with
+dependencies, spawn all unblocked tasks simultaneously, mark completed,
+check newly-unblocked, spawn next phase.
+
 ## Curation
 
 For each sub-agent finding:

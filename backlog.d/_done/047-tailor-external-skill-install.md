@@ -13,7 +13,7 @@ install, not just the current two:
 |---|---|---|---|
 | Universal | `$HARNESS_KIT/skills/<name>/` | Copy verbatim | Harness Kit |
 | **Workflow** | `$HARNESS_KIT/skills/<name>/` | **Rewrite** with repo specifics | Consuming repo (per run) |
-| **External (NEW)** | `$HARNESS_KIT/skills/.external/<alias>/` (populated by `sync-external.sh`) | **Symlink** to shared global cache | Upstream (unchanged) |
+| **External (NEW)** | `$HARNESS_KIT/skills/.external/<alias>/` (populated by `harness-kit-checks sync-external`) | **Symlink** to shared global cache | Upstream (unchanged) |
 
 The rewrite rule **must not apply to externals.** An external skill in a
 consuming repo is a pointer to upstream, not a fork. `/tailor` re-runs
@@ -25,8 +25,8 @@ Today, externals declared in `registry.yaml` (anthropic/skills,
 vercel-labs/*, jakubkrehel, emilkowalski, forrestchang/karpathy,
 JuliusBrussee/caveman, garrytan/gstack, openai/skills) are:
 
-1. Synced into `$HARNESS_KIT/skills/.external/<alias>/` via `sync-external.sh`.
-2. Indexed by `scripts/generate-embeddings.py` for semantic search.
+1. Synced into `$HARNESS_KIT/skills/.external/<alias>/` via `harness-kit-checks sync-external`.
+2. Indexed by `harness-kit-checks generate-embeddings` for semantic search.
 
 Some are **not installed onto any harness's skill-discovery path.**
 `bootstrap.sh:271` only globally symlinks `GLOBAL_SKILLS=(tailor seed)`
@@ -132,7 +132,7 @@ Extend the existing reconcile step:
 
 ### 5. Refresh / "automatic updates"
 
-- User runs `sync-external.sh` in harness-kit → updates
+- User runs `harness-kit-checks sync-external` in harness-kit → updates
   `$HARNESS_KIT/skills/.external/<alias>/` in place.
 - Consuming repos with absolute symlinks automatically see the update —
   next skill-discovery scan reads the new content.
@@ -164,7 +164,7 @@ symlink repair. Optional; core install logic handles this via reconcile.
       external, with `category: external` and `target: …`.
 - [ ] Per-harness bridges (`.claude/skills/<alias>`, etc.) resolve
       transitively to the external content.
-- [ ] Running `sync-external.sh` in harness-kit updates the content
+- [ ] Running `harness-kit-checks sync-external` in harness-kit updates the content
       visible via `cat .agents/skills/<alias>/SKILL.md` in a consuming
       repo (single source of truth).
 - [ ] `/tailor` re-run with no pick changes is a no-op for externals
@@ -188,7 +188,7 @@ symlink repair. Optional; core install logic handles this via reconcile.
 - **Globally symlinking every external into `~/.claude/skills/`.** That
   would reverse the `f91f1c4` minimal-globals pivot; per-repo is the
   right layer.
-- **Automatic scheduled `sync-external.sh` runs.** Out of scope; user
+- **Automatic scheduled `harness-kit-checks sync-external` runs.** Out of scope; user
   runs it manually or via a cron-ish skill (`/schedule`) later.
 
 ## Why this isn't /focus rebuilt
@@ -206,11 +206,11 @@ skills and no install killswitch. This shape is narrower:
   added to the skill body (~50-80 lines), reusing existing patterns.
 - The critic's adjudication extends to checking that external-marked
   entries are symlinks, not copies.
-- No changes needed to `registry.yaml`, `sync-external.sh`, or
+- No changes needed to `registry.yaml`, `harness-kit-checks sync-external`, or
   `bootstrap.sh`. The existing external pipeline is load-bearing and
   correct; this shape only adds the consumer side.
 
 ## Dependencies
 
 - None blocking. Builds on current `/tailor`, `registry.yaml`,
-  `sync-external.sh`, and `.harness-kit` marker convention.
+  `harness-kit-checks sync-external`, and `.harness-kit` marker convention.

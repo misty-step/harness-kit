@@ -217,7 +217,7 @@ tests red. Those are the job.
 
 ## Verification
 
-Run `python3 scripts/check-evidence-blocks.py skills` to prove `/implement`
-keeps the shared Completion Evidence contract. Semantic proof is per packet:
+Run `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills`
+to prove `/implement` keeps the shared Completion Evidence contract. Semantic proof is per packet:
 the named red-to-green test, oracle command, or artifact must pass in the
 target repo.

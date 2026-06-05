@@ -25,7 +25,7 @@ surgical addition to /reflect's conversation archaeology phase.
 
 ### 1. Hook Script
 
-**Path:** `harnesses/claude/hooks/skill-invocation-tracker.py`
+**Path:** `harness-kit-checks claude-hook skill-invocation-tracker`
 (symlinked to `~/.claude/hooks/` by bootstrap.sh via `link_dir_entries_if_present`)
 
 ```python
@@ -108,7 +108,7 @@ Add a new entry to the `hooks` object under a new `PostToolUse` key:
          "hooks": [
            {
              "type": "command",
-             "command": "python3 ~/.claude/hooks/time-context.py",
+             "command": "harness-kit-checks claude-hook time-context",
              "timeout": 5
            }
          ]
@@ -121,7 +121,7 @@ Add a new entry to the `hooks` object under a new `PostToolUse` key:
 +        "hooks": [
 +          {
 +            "type": "command",
-+            "command": "python3 ~/.claude/hooks/skill-invocation-tracker.py",
++            "command": "harness-kit-checks claude-hook skill-invocation-tracker",
 +            "timeout": 5
 +          }
 +        ]
@@ -171,16 +171,16 @@ than heuristic.
 
 | File | Action |
 |------|--------|
-| `harnesses/claude/hooks/skill-invocation-tracker.py` | Create (new file) |
+| `harness-kit-checks claude-hook skill-invocation-tracker` | Create hook entrypoint |
 | `harnesses/claude/settings.json` | Edit (add PostToolUse entry) |
 | `skills/reflect/SKILL.md` | Edit (add bullet to Agent A) |
 
 ## Acceptance Criteria
 
-- [ ] `python3 harnesses/claude/hooks/skill-invocation-tracker.py <<< '{"tool_name":"Skill","tool_input":{"skill":"commit","args":"-m fix"},"session_id":"abc","cwd":"/tmp/myproject"}'` exits 0 with no stdout and appends one line to `~/.claude/skill-invocations.jsonl`
+- [ ] `harness-kit-checks claude-hook skill-invocation-tracker <<< '{"tool_name":"Skill","tool_input":{"skill":"commit","args":"-m fix"},"session_id":"abc","cwd":"/tmp/myproject"}'` exits 0 with no stdout and appends one line to `~/.claude/skill-invocations.jsonl`
 - [ ] The appended line is valid JSON with keys: `ts`, `skill`, `args`, `session_id`, `cwd`, `project`
-- [ ] `python3 harnesses/claude/hooks/skill-invocation-tracker.py <<< '{"tool_name":"Bash","tool_input":{"command":"ls"}}'` exits 0 with no stdout and does NOT append to the log
-- [ ] `echo '' | python3 harnesses/claude/hooks/skill-invocation-tracker.py` exits 0 (graceful on bad input)
+- [ ] `harness-kit-checks claude-hook skill-invocation-tracker <<< '{"tool_name":"Bash","tool_input":{"command":"ls"}}'` exits 0 with no stdout and does NOT append to the log
+- [ ] `echo '' | harness-kit-checks claude-hook skill-invocation-tracker` exits 0 (graceful on bad input)
 - [ ] `settings.json` is valid JSON after the edit
 - [ ] `bootstrap.sh` symlinks the new hook into `~/.claude/hooks/`
 - [ ] `/reflect` in distill mode reads the JSONL log and reports skill usage for the session

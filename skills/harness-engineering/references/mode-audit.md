@@ -9,7 +9,7 @@ when the question is lifecycle strategy rather than catalog mechanics.
 
 ## Data Source
 
-Run `python3 scripts/analyze-skill-invocations.py --format markdown`. By
+Run `cargo run --locked -p harness-kit-checks -- skill-invocation-analytics --format markdown`. By
 default it reads `~/.claude/skill-invocations.jsonl`,
 `.harness-kit/work/ledger.jsonl`, and `.harness-kit/traces/delegations.jsonl`,
 then reports coverage for Claude, Codex, Pi, and Antigravity. Only Claude has
@@ -60,7 +60,7 @@ Flag skills that:
 ### 3b. Delegation Contract Coverage
 
 For substantial workflow skills, run or mirror
-`python3 scripts/check-agent-roster.py` and report any missing or weak
+`cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` and report any missing or weak
 `## Delegation Floor` sections. Flag:
 
 - no two-provider roster floor when a roster exists;

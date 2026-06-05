@@ -1,48 +1,11 @@
 #!/usr/bin/env bash
-# Pre-push hook: runs Dagger CI gates before allowing push.
-# Lives in .githooks/ (core.hooksPath). Skips gracefully when Dagger absent.
-
 set -euo pipefail
-
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-
-# Skip if no dagger.json in repo
-[ -f "$repo_root/dagger.json" ] || exit 0
-
-# Skip if dagger CLI not installed
-if ! command -v dagger &>/dev/null; then
-  echo "pre-push: dagger not installed, skipping CI gates" >&2
-  exit 0
+if command -v harness-kit-checks >/dev/null 2>&1; then
+  exec harness-kit-checks git-hook pre-push "$@"
 fi
-
-# Skip if Docker not running
-if ! docker info &>/dev/null 2>&1; then
-  echo "pre-push: Docker not running, skipping CI gates" >&2
-  exit 0
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook pre-push "$@"
 fi
-
-# --- /deliver in-flight warning (non-blocking) ---
-# If a live /deliver state.json exists whose status is not merge_ready, the
-# user likely forgot to finish the run before pushing. Yellow-warn, do not
-# block; pushing mid-flight is their call.
-deliver_root="$repo_root/.harness-kit/deliver"
-if [ -d "$deliver_root" ]; then
-  yellow=$'\033[33m'
-  reset=$'\033[0m'
-  while IFS= read -r state_file; do
-    [ -f "$state_file" ] || continue
-    status="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('status',''))" "$state_file" 2>/dev/null || true)"
-    if [ -n "$status" ] && [ "$status" != "merge_ready" ]; then
-      ulid="$(basename "$(dirname "$state_file")")"
-      echo "${yellow}pre-push: in-flight /deliver run detected (ulid=$ulid, status=$status)${reset}" >&2
-      echo "${yellow}  → /deliver --resume $ulid    # finish the run${reset}" >&2
-      echo "${yellow}  → /deliver --abandon $ulid   # clear state, keep branch${reset}" >&2
-    fi
-  done < <(find "$deliver_root" -mindepth 2 -maxdepth 2 -name state.json 2>/dev/null)
-fi
-
-echo "pre-push: running dagger call check..." >&2
-if ! (cd "$repo_root" && dagger call check); then
-  echo "pre-push: CI gates failed. Fix issues before pushing." >&2
-  exit 1
-fi
+echo "pre-push: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2
+exit 1

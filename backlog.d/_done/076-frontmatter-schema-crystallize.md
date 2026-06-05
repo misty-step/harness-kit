@@ -39,7 +39,7 @@ A trigger collision occurs when two skills claim identical trigger phrases (e.g.
 
 ## Verification
 
-- `python3 scripts/check-frontmatter.py`
-- `python3 -m unittest ci.tests.test_frontmatter`
-- `python3 -m unittest discover -s ci/tests -p 'test_*.py'`
+- `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`
+- `cargo test --workspace --locked frontmatter`
+- `cargo test --workspace --locked`
 - `dagger call check --source=.`

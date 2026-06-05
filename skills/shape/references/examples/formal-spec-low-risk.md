@@ -6,7 +6,7 @@ Correct the misspelled setup command label in the docs copy.
 
 ## Oracle (Definition of Done)
 
-- [ ] `bash scripts/check-docs-site.sh --self-test` exits 0.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-docs-site --self-test` exits 0.
 
 ## Risk Notes
 

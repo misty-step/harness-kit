@@ -22,8 +22,7 @@ a clear best-fit.
 Simplest integration. Six voices, one endpoint.
 
 ```bash
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir_create)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 curl -s https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -48,8 +47,7 @@ curl -s https://api.openai.com/v1/audio/speech \
 Best quality. Voice cloning from 1 minute of audio. Music generation.
 
 ```bash
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir_create)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 curl -s https://api.elevenlabs.io/v1/text-to-speech/{voice_id} \
   -H "xi-api-key: $ELEVENLABS_API_KEY" \
   -H "Content-Type: application/json" \
@@ -80,8 +78,7 @@ ElevenLabs offers music generation — useful for background tracks:
 Ultra-low latency. Best for real-time or interactive narration.
 
 ```bash
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir_create)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 curl -s https://api.cartesia.ai/tts/bytes \
   -H "X-API-Key: $CARTESIA_API_KEY" \
   -H "Cartesia-Version: 2024-06-10" \
@@ -107,8 +104,7 @@ curl -s https://api.cartesia.ai/tts/bytes \
 
 ```bash
 # 1. Generate narration
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir_create)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 curl -s https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \

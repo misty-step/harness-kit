@@ -145,5 +145,5 @@ able to decide whether to ship, continue, pause, or reshape.
 
 Semantic waiver: `/debrief` is report-only synthesis over live repo evidence,
 not a deterministic transform. Validate trigger/catalog shape with
-`python3 scripts/check-frontmatter.py`; acceptance comes from cited files,
+`cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`; acceptance comes from cited files,
 commands, commits, receipts, or artifacts in each debrief.

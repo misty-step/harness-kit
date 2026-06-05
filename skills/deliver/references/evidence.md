@@ -7,12 +7,11 @@ itself, only records pointers in the receipt.
 ## Canonical Surface
 
 Use `.evidence/<branch>/<date>/` for QA, demo, and review artifacts that
-should survive a fresh clone. Branch names are slugged by `scripts/lib/evidence.sh`
-when available.
+should survive a fresh clone. Branch names are slugged by the Harness Kit
+evidence helper.
 
 ```bash
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_dir_create)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 ```
 
 Binary evidence under `.evidence/` is scoped to Git LFS by `.gitattributes`.

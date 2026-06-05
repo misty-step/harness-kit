@@ -82,7 +82,7 @@ These are not fixes. They are debt with compound interest.
 
 ### Reading Protocol
 
-**Run `skills/deliver/scripts/fetch-pr-reviews.sh <PR>` first.** This script
+**Run `cargo run --locked -p harness-kit-checks -- fetch-pr-reviews <PR>` first.** This command
 deterministically fetches ALL review bodies, inline comments, and PR
 conversation in full. Read the complete output before classifying anything.
 
@@ -196,8 +196,8 @@ Verify: at least one approving review, all checks passing, no unresolved threads
 
 **Git-native mode:**
 ```bash
-source scripts/lib/verdicts.sh && verdict_validate <branch>
-source scripts/lib/evidence.sh && evidence_dir
+cargo run --locked -p harness-kit-checks -- verdict validate <branch>
+cargo run --locked -p harness-kit-checks -- evidence dir
 dagger call check
 ```
 Verify: verdict ref exists with SHA matching HEAD, Dagger CI green, and any

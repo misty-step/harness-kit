@@ -59,7 +59,7 @@ the grader that proves the skill helped.
 Run the structural validator before calling an eval suite ready:
 
 ```bash
-python3 skills/harness-engineering/scripts/validate-evals.py
+cargo run --locked -p harness-kit-checks -- check-skill-evals --repo .
 ```
 
 The validator checks every existing `skills/<name>/evals/` tree has:

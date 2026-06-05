@@ -12,9 +12,9 @@ Use non-interactive exec with the configured model and reasoning effort:
 codex exec --dangerously-bypass-approvals-and-sandbox --model gpt-5.5 --config model_reasoning_effort="medium" "Role: critic. Objective: review the changed files. Output: blockers only."
 ```
 
-The roster command launches the provider only. `scripts/dispatch-agent.py`
-appends the prompt, bounds runtime, captures transcript evidence, and records
-the receipt.
+The roster command launches the provider only. `harness-kit-checks
+dispatch-agent` appends the prompt, bounds runtime, captures transcript
+evidence, and records the receipt.
 
 ## Dynamic Delegation Notes
 

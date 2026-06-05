@@ -220,8 +220,7 @@ After scoring, record the verdict as a git ref so `/deliver --polish-only` and
 pre-merge hooks can enforce review requirements without GitHub PRs.
 
 ```bash
-source scripts/lib/verdicts.sh
-verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|conditional|dont-ship>","reviewers":[...],"scores":{...},"sha":"<HEAD-sha>","date":"<ISO-8601>"}'
+cargo run --locked -p harness-kit-checks -- verdict write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|conditional|dont-ship>","reviewers":[...],"scores":{...},"sha":"<HEAD-sha>","date":"<ISO-8601>"}'
 ```
 
 - Write on every review, not just "ship" — "dont-ship" verdicts block pre-merge callers (`/deliver --polish-only` and the pre-merge hook).
@@ -233,7 +232,7 @@ verdict_write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|
 - The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
 
 Run the snippet from the target project root. Skip this step if
-`scripts/lib/verdicts.sh` does not exist there (Harness Kit-only feature, not
+`harness-kit-checks verdict` is not available there (Harness Kit-only feature, not
 expected in downstream repos).
 
 ## Gotchas

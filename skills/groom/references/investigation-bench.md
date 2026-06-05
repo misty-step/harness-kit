@@ -94,7 +94,7 @@ Every investigator returns this exact shape:
 > - **Review quality trends**: if `.groom/review-scores.ndjson` exists, analyze
 >   score trends (improving/declining correctness, depth, simplicity, craft),
 >   verdict distribution, false-positive rate, and correlation between low
->   scores and subsequent bug fixes. If `scripts/review-score-trends.py`
+>   scores and subsequent bug fixes. If `cargo run --locked -p harness-kit-checks -- review-score-trends`
 >   exists, run it; when 5+ entries exist, include its Review Score Trend block
 >   and any named skill-tuning target. Below 5 entries, report the count and do
 >   not invent a trend.

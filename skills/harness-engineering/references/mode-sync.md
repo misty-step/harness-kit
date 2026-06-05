@@ -7,16 +7,16 @@ first-party source.
 
 `registry.yaml` declares external sources, pins, paths, include/exclude filters,
 and alias prefixes. Do not hand-edit `skills/.external/`; it is gitignored
-machine state owned by `scripts/sync-external.sh`.
+machine state owned by `harness-kit-checks sync-external`.
 
 ## Lifecycle
 
-1. `scripts/sync-external.sh` fetches pinned sources and installs selected
+1. `harness-kit-checks sync-external` fetches pinned sources and installs selected
    skills under `skills/.external/<alias>/`.
 2. `bootstrap.sh` projects first-party `skills/*` and synced
    `skills/.external/*` into each detected harness as ordinary skill names.
-3. `scripts/lint-external-skills.sh --strict` checks imported skills are
-   self-contained enough to expose.
+3. `harness-kit-checks lint-external-skills --strict` checks imported skills
+   are self-contained enough to expose.
 
 Partial sync with `--only <repo>` is scoped: it may add/update aliases for that
 source, but it must not prune unrelated external skills. Full sync owns orphan

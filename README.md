@@ -1,6 +1,6 @@
 # Harness Kit
 
-33 catalog skills, 3 source agents, and harness infrastructure for AI-assisted
+29 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi, Antigravity).
 
 Harness Kit is an operator-facing harness primitive library, not a buyer-facing
@@ -12,9 +12,8 @@ clients, departments, procurement, security reviewers, or executives.
 
 ```bash
 # Bootstrap (one-time per machine)
-# Installs first-party skills, any synced external skills, and the provider
-# roster system-wide; symlinks if a local checkout exists, downloads first-party
-# skills from GitHub otherwise
+# Installs first-party skills, synced external skills, and the provider roster
+# system-wide; symlinks if a local checkout exists, downloads Rust source otherwise
 curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
 
@@ -22,6 +21,9 @@ If you're running bootstrap from a temporary git worktree, it now prefers a
 stable checkout like `~/Development/harness-kit` automatically. To intentionally
 point your harnesses at a specific checkout, set
 `HARNESS_KIT_DIR=/path/to/harness-kit`.
+
+Fresh-machine bootstrap requires a Rust toolchain unless `harness-kit-checks`
+is already installed on `PATH`.
 
 ## Core Workflow Skills
 
@@ -65,8 +67,8 @@ loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
 Harness Kit's public static docs companion is generated from live repo sources:
 
 ```bash
-scripts/build-docs-site.sh
-scripts/check-docs-site.sh --self-test
+cargo run --locked -p harness-kit-checks -- build-docs-site
+cargo run --locked -p harness-kit-checks -- check-docs-site --self-test
 ```
 
 Open [`docs/site/index.html`](docs/site/index.html) for the rendered site.
@@ -88,7 +90,7 @@ harness-kit/
 ├── harnesses/     # Per-harness configs (claude/, codex/, pi/, antigravity-cli/, antigravity-ide/)
 │   └── shared/    # Common engineering principles
 ├── registry.yaml  # Pinned external skill sources for sync/search
-└── bootstrap.sh   # Discovers skills/agents/roster, symlinks to system harness dirs
+└── bootstrap.sh   # Curl-compatible launcher for the Rust bootstrap command
 ```
 
 ## Adding a Skill
@@ -96,14 +98,17 @@ harness-kit/
 1. Create `skills/{name}/SKILL.md` with frontmatter
 2. Keep it < 500 lines. Encode judgment, not procedures.
 3. Run `/harness-engineering lint` to validate quality gates
-4. Run `bootstrap.sh` — it discovers skills from the filesystem automatically
+4. Run `cargo run --locked -p harness-kit-checks -- bootstrap` or
+   `./bootstrap.sh` — bootstrap discovers skills from the filesystem
+   automatically
 
 ## Principles
 
 - **Thin skills, strong agents** — resist ceremony
 - **Gotchas > instructions** — enumerate what goes wrong
 - **Strip non-load-bearing scaffold** — stress-test after model upgrades
-- **Symlink, not copy** — bootstrap.sh links to local checkout when available
+- **Symlink, not copy** — the Rust bootstrap links to local checkout when
+  available
 - **Progressive disclosure** — description → SKILL.md → references
 
 ## License

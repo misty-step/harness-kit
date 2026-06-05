@@ -55,7 +55,7 @@ or be split if it grows.
   evidence fields, and reject blank/TBD/unknown/placeholder-only field values.
 - Added `check-evidence-blocks` to the Dagger pipeline and covered parser,
   missing-field, placeholder, `Acceptance Evidence`, fenced-template, and h3
-  report-template behavior in `ci/tests/test_evidence_blocks.py`.
+  report-template behavior in Rust `evidence_blocks` tests.
 - Updated committed Completion Gate templates across workflow skills to carry
   non-empty evidence descriptors using the shared field names recognized by
   the checker.
@@ -78,10 +78,10 @@ or be split if it grows.
 
 ## Verification
 
-- `python3 -m unittest ci.tests.test_evidence_blocks`
-- `python3 scripts/check-evidence-blocks.py skills`
-- `python3 -m py_compile scripts/check-evidence-blocks.py ci/tests/test_evidence_blocks.py ci/src/harness_kit_ci/main.py`
-- `python3 -m unittest discover ci/tests`
-- `bash scripts/build-docs-site.sh`
-- `bash scripts/check-docs-site.sh`
+- `cargo test --workspace --locked evidence_blocks`
+- `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills`
+- `python3 -m py_compile ci/src/harness_kit_ci/main.py`
+- `cargo test --workspace --locked`
+- `cargo run --locked -p harness-kit-checks -- build-docs-site`
+- `cargo run --locked -p harness-kit-checks -- check-docs-site --repo .`
 - `dagger call check --source=.` -> `16 passed, 0 failed`

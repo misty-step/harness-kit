@@ -16,6 +16,10 @@ disk; do not restate obvious filesystem facts.
 - `index.yaml` is generated. Never edit it by hand.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
+- Durable tooling is Rust in `crates/harness-kit-checks`. The only allowed
+  non-Rust implementation surfaces are tiny platform boundaries: `bootstrap.sh`
+  as the curl-compatible Rust launcher, and `ci/src/harness_kit_ci/main.py` as
+  the Dagger Python module entrypoint.
 - Harness Kit source skills live only in `skills/`. Do not commit source-repo
   `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, `.pi/skills/`, or
   `.antigravitycli/skills/` bridges; those duplicate the global install here.
@@ -54,8 +58,11 @@ generated skill catalog for skill discovery; do not mirror the catalog here.
 ## Hot Paths
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
-- `scripts/check-agent-roster.py` — roster, doctrine, and source-harness gate.
-- `bootstrap.sh` — system-wide install; first-party and synced external skills are global.
+- `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` —
+  roster, doctrine, and source-harness gate.
+- `cargo run --locked -p harness-kit-checks -- bootstrap` — system-wide
+  install implementation; first-party and synced external skills are global.
+- `bootstrap.sh` — curl-compatible launcher for the Rust bootstrap command.
 
 ## Red Lines
 

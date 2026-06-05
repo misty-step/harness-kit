@@ -12,8 +12,8 @@ that can emit equivalent tool/skill events.
 
 ## Why Now
 
-The existing tracker is passive and well-shaped but lives only in
-`harnesses/claude/hooks/skill-invocation-tracker.py` and writes
+The existing tracker is passive and well-shaped but lives only behind the
+Claude `harness-kit-checks claude-hook skill-invocation-tracker` adapter and writes
 `~/.claude/skill-invocations.jsonl`. That means any report over skill usage is
 structurally biased toward Claude sessions. Harness Kit's doctrine is
 cross-harness first; analytics must follow the same rule.
@@ -40,13 +40,13 @@ label source coverage and missing harnesses before expanding collection.
 
 ## Repo Anchors
 
-- `harnesses/claude/hooks/skill-invocation-tracker.py` - implementation model.
-- `harnesses/claude/hooks/test_skill_invocation_tracker.py` - test model.
+- `harness-kit-checks claude-hook skill-invocation-tracker` - implementation model.
+- `crates/harness-kit-checks/src/claude_hooks.rs` - test model.
 - `harnesses/codex/`, `harnesses/pi/`, `harnesses/antigravity-cli/` - harness
   projection surfaces to inspect before adding adapters.
 - `bootstrap.sh` - source of projected harness configuration.
 - `AGENTS.md` - source-repo red line against committed bridge skill copies.
-- `scripts/check-agent-roster.py` - likely place for adapter fixture validation.
+- `crates/harness-kit-checks` - likely place for adapter fixture validation.
 
 ## Prior Art
 
@@ -109,7 +109,7 @@ Implementation sequence:
 - Stack feedback strength: Python hook unit tests plus bootstrap/check smoke.
 - ADR decision: not required unless introducing a new hook protocol.
 - Infrastructure path: hook scripts under `harnesses/<provider>/`.
-- Gate: hook unit tests, `python3 scripts/check-agent-roster.py`, and
+- Gate: hook unit tests, `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, and
   `dagger call check --source=.`
 - Evidence storage: `.harness-kit/examples/skill-invocations.jsonl` and
   harness-specific test fixtures.
@@ -143,7 +143,7 @@ Implementation sequence:
 - [ ] Telemetry failures never block skill/tool execution.
 - [ ] No raw prompt/tool output is persisted by adapters.
 - [ ] Source repo still has no committed generated harness skill bridges.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Observability Plan

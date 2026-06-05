@@ -57,7 +57,7 @@ You are a thin watcher.
 
 When `.harness-kit/work/ledger.jsonl` is available, `/monitor` consumes the
 latest completed `/ship` record or deploy receipt ref for the work item. It
-calls `scripts/work-ledger.py append` with `phase_started` when watching
+calls `cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` when watching
 begins, `blocker_added` for a tripped signal, and `phase_completed` when the
 grace window closes green.
 
@@ -86,7 +86,7 @@ live in `references/observability-coverage.md`.
 | poll interval | config `poll_interval` | 30 seconds |
 
 When config is present, validate it with
-`scripts/load-harness-kit-config.py monitor --repo <repo>`. The executable
+`harness-kit-checks load-config monitor --repo <repo>`. The executable
 schema lives at `meta/config-schemas/monitor.schema.yaml`; invalid signal or
 observability keys are tooling failures, not monitor alerts.
 
@@ -99,7 +99,8 @@ or `monitor.alert` — never both, never zero.
 
 Events extend the `/flywheel` envelope so the outer loop can consume them
 directly. Append to the active cycle's `cycle.jsonl` when running under
-`/flywheel`; otherwise write to `.harness-kit/monitor/<ulid>.jsonl`.
+`/flywheel` with `harness-kit-checks event emit`; otherwise write to
+`.harness-kit/monitor/<ulid>.jsonl`.
 
 ```json
 {

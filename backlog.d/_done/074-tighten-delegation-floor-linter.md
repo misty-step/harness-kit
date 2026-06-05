@@ -6,7 +6,7 @@ Estimate: S
 
 ## Goal
 
-Make `scripts/check-agent-roster.py` reject weak or performative delegation
+Make `harness-kit-checks check-agent-roster` reject weak or performative delegation
 floor sections that merely contain the right keywords without actually
 committing the workflow to roster-backed delegation.
 
@@ -15,12 +15,12 @@ committing the workflow to roster-backed delegation.
 - [x] Add a fixture or test case with a deliberately weak `## Delegation Floor`
       section that mentions words like `lane`, `receipt`, `context`, and
       `lead` but does not state the full contract.
-- [x] `python3 -m unittest ci.tests.test_agent_roster` proves the weak fixture
+- [x] `cargo test --workspace --locked agent_roster` proves the weak fixture
       is rejected.
 - [x] The accepted fixture still proves a complete floor with roster default,
       direct-work exceptions, lane responsibilities, context boundary,
       evidence/receipt contract, and lead verification.
-- [x] `python3 scripts/check-agent-roster.py` and
+- [x] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` and
       `dagger call check --source=.` pass.
 
 ## Notes
@@ -43,6 +43,6 @@ later failure proves that complexity is needed.
 
 ## Verification
 
-- `python3 -m unittest ci.tests.test_agent_roster`
-- `python3 scripts/check-agent-roster.py`
+- `cargo test --workspace --locked agent_roster`
+- `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`
 - `dagger call check --source=.`

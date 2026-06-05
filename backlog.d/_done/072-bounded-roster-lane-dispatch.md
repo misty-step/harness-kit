@@ -8,9 +8,9 @@ Shipped: 2026-06-01
 ## Resolution
 
 Shipped on `master` before this archive pass. Harness Kit now has
-`scripts/dispatch-agent.py` as the CLI boundary and
-`dispatch_provider_lane()` in `scripts/lib/agent_roster.py` as the reusable
-helper. Dispatch loads configured roster commands, refuses unavailable/manual
+`harness-kit-checks dispatch-agent` as the CLI boundary and Rust dispatch
+helpers as the reusable core. Dispatch loads configured roster commands,
+refuses unavailable/manual
 providers before command execution, appends the prompt as a separate argv
 element, writes transcript evidence under `.harness-kit/traces/provider-lanes`,
 uses `start_new_session=True`, and kills the process group after timeout with
@@ -18,15 +18,15 @@ SIGTERM then SIGKILL.
 
 Verification on `deliver/072-bounded-roster-lane-dispatch`:
 
-- `python3 -m unittest ci.tests.test_agent_roster` — 23 tests OK, including the
+- `cargo test --workspace --locked agent_roster` — tests OK, including the
   unavailable-provider refusal and SIGTERM-ignoring process-group timeout case.
-- `python3 scripts/dispatch-agent.py --help` — CLI exposes provider, objective,
+- `cargo run --locked -p harness-kit-checks -- dispatch-agent --help` — CLI exposes provider, objective,
   input, prompt-file, timeout, grace, transcript-dir, receipt, and roster args.
-- `git show HEAD:scripts/lib/agent_roster.py` confirmed
+- `git show HEAD:crates/harness-kit-checks/src/agent_roster.rs` confirmed
   `dispatch_provider_lane`, `start_new_session=True`, SIGTERM, and SIGKILL.
 
 Closeout gate for this archive commit:
-`python3 scripts/check-agent-roster.py` and `dagger call check --source=.`
+`cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` and `dagger call check --source=.`
 both passed.
 
 ## Goal
@@ -42,7 +42,7 @@ of raw transcripts.
 
 ## Design
 
-1. Add a reusable dispatch helper in `scripts/lib/agent_roster.py`.
+1. Add a reusable dispatch helper in `crates/harness-kit-checks/src/agent_roster.rs`.
    - Load the provider command from `.harness-kit/agents.yaml`.
    - Refuse manual or unavailable providers.
    - Run with `start_new_session=True` so timeout cleanup can kill the whole
@@ -51,7 +51,7 @@ of raw transcripts.
    - On timeout: send `SIGTERM`, wait a short grace period, then `SIGKILL`.
    - Return and record a receipt with attempt status, provider status, summary,
      and transcript path as evidence.
-2. Add `scripts/dispatch-agent.py` as the CLI entrypoint.
+2. Add `harness-kit-checks dispatch-agent` as the CLI entrypoint.
    - It accepts `--provider-target`, `--objective`, `--input-ref`,
      `--prompt-file`, `--timeout-s`, `--grace-s`, `--transcript-dir`, and the
      usual roster/receipt args.
@@ -64,19 +64,19 @@ of raw transcripts.
 ## Cross-Harness
 
 The mechanism is filesystem and CLI based. Claude Code, Codex, Pi, and other
-harnesses can call the same `scripts/dispatch-agent.py` from any repo using
+harnesses can call the same `harness-kit-checks dispatch-agent` from any repo using
 Harness Kit. It records the same `.harness-kit/traces/delegations.jsonl` receipts
 that `probe-agent-roster.py` and `record-delegation.py` already use.
 
 ## Oracle
 
-- [x] `python3 -m unittest ci.tests.test_agent_roster` includes a fake provider
+- [x] `cargo test --workspace --locked agent_roster` includes a fake provider
       that ignores `SIGTERM`; the dispatch helper times out, kills the process
       group, writes a transcript, and records a failed receipt.
 - [x] The same test suite covers unavailable providers refusing dispatch before
       a provider command is run.
-- [x] `python3 scripts/dispatch-agent.py --help` succeeds.
-- [x] `python3 scripts/check-agent-roster.py` passes.
+- [x] `cargo run --locked -p harness-kit-checks -- dispatch-agent --help` succeeds.
+- [x] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [x] `dagger call check --source=.` passes.
 
 ## Non-Goals

@@ -1,65 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Auto-regenerate committed derived artifacts from staged source changes.
-# index.yaml and docs/site stay in sync automatically. Embeddings are local cache only.
+repo_root="$(git rev-parse --show-toplevel)"
 
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-
-# --- /deliver state protection: block manual commits of agent-written files ---
-# state.json and receipt.json under .harness-kit/deliver/<ulid>/ are rewritten by
-# /deliver itself and gitignored by default. If they appear in a commit, the
-# user has either force-added them or bypassed the ignore. Almost always a
-# mistake; surface loudly.
-deliver_state_hits="$(
-  git diff --cached --name-only --diff-filter=ACM |
-    grep -E '^\.harness-kit/deliver/.+/(state|receipt)\.json$' || true
-)"
-if [ -n "$deliver_state_hits" ]; then
-  echo "[pre-commit] ERROR: refusing to commit agent-written /deliver state files:" >&2
-  printf '  %s\n' "$deliver_state_hits" >&2
-  echo "" >&2
-  echo "These files are rewritten by /deliver and must never be human-edited." >&2
-  echo "If /deliver is stuck, use:" >&2
-  echo "  /deliver --resume <ulid>    # continue the in-flight run" >&2
-  echo "  /deliver --abandon <ulid>   # clear state, keep branch" >&2
-  exit 1
+if command -v harness-kit-checks >/dev/null 2>&1; then
+  exec harness-kit-checks git-hook pre-commit
 fi
 
-staged_paths() {
-  git diff --cached --name-only
-}
-
-skill_changed() {
-  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md)$'
-}
-
-docs_input_changed() {
-  staged_paths | grep -Eq '^(skills/.*/SKILL\.md|agents/.*\.md|AGENTS\.md|harnesses/shared/AGENTS\.md|docs/copy/|docs/positioning\.md|backlog\.d/.*\.md|bootstrap\.sh|ci/src/harness_kit_ci/main\.py|scripts/build-docs-site\.py|scripts/check-docs-site\.py)$'
-}
-
-changed=0
-
-if skill_changed; then
-  changed=1
-  echo "[pre-commit] Skill content changed — regenerating index.yaml"
-  bash "$REPO_ROOT/scripts/generate-index.sh" > /dev/null
-  git add "$REPO_ROOT/index.yaml"
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook pre-commit
 fi
 
-if docs_input_changed; then
-  changed=1
-  echo "[pre-commit] Docs source changed — regenerating docs/site"
-  bash "$REPO_ROOT/scripts/build-docs-site.sh" > /dev/null
-  git add "$REPO_ROOT/docs/site"
-
-  echo "[pre-commit] Verifying generated docs/site"
-  bash "$REPO_ROOT/scripts/check-docs-site.sh" --self-test
-fi
-
-[ "$changed" -eq 1 ] || exit 0
-
-echo "[pre-commit] Verifying shared-root install wording"
-bash "$REPO_ROOT/scripts/check-harness-agnostic-installs.sh"
-
-exit 0
+echo "pre-commit: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2
+exit 1

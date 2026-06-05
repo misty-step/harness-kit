@@ -39,7 +39,7 @@ A phase is **dirty** when:
    structurally — e.g. missing tool — is exit 10, not dirty).
 3. Run `/refactor` — skip for trivial diffs (<20 LOC, single file).
 4. Check whether the diff touches UI surfaces. Prefer
-   `scripts/detect-ui-surfaces.sh --base <repo-default-base>` when available
+   `cargo run --locked -p harness-kit-checks -- detect-ui-surfaces --base <repo-default-base>` when available
    (Harness Kit's base is `master`); otherwise use the same path patterns
    manually (`*.tsx`, `*.jsx`, `*.vue`, `*.svelte`, stylesheets, `app/**`,
    `pages/**`, `components/**`, stories, tokens, and theme config). If UI
@@ -59,7 +59,7 @@ A phase is **dirty** when:
    against the cap). This is the named successor to `/settle`'s adversarial
    self-review; it is distinct from a `/critique` lens dispatch. Skip only for
    trivial diffs (<20 LOC, single file).
-7. **Verdict-ref freshness** (only if `scripts/lib/verdicts.sh` exists):
+7. **Verdict-ref freshness** (only if `harness-kit-checks verdict` is available):
    confirm `refs/verdicts/<branch>` reads `ship`/`conditional` and its SHA
    matches HEAD. A stale SHA means changes landed after review → return to
    step 1.

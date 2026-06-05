@@ -40,7 +40,8 @@ own existing-branch merge-readiness.
   `skills/deliver/references/clean-loop.md`.
 - The fresh-eyes gate is the clean loop's **hindsight sanity pass**.
 - PR-mode comment triage → `skills/deliver/references/pr-fix.md`; the
-  full-comment fetcher → `skills/deliver/scripts/fetch-pr-reviews.sh`.
+  full-comment fetcher →
+  `cargo run --locked -p harness-kit-checks -- fetch-pr-reviews`.
 - Deep hindsight/confidence reference → `skills/deliver/references/pr-polish.md`.
 - Complexity reduction stays with `/refactor`
   (`skills/refactor/references/simplify.md`).
@@ -56,4 +57,4 @@ closeout. Full protocol: `skills/deliver/references/polish-only.md`.
 
 Semantic waiver: `/settle` is a deprecated redirect, so its behavior is proven
 by `/deliver --polish-only` gates rather than a separate eval. Validate this
-stub with `python3 scripts/check-frontmatter.py`.
+stub with `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`.

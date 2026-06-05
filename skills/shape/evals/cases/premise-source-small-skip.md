@@ -12,8 +12,8 @@ Estimate: S
 
 ## Acceptance Evidence
 - Acceptance source: checker fixture.
-- Evidence that proves it: `bash skills/shape/evals/check-premise-source.sh` accepts this explicit small-shape packet without premise source.
-- Exact command/path/route exercised: `bash skills/shape/evals/check-premise-source.sh`.
+- Evidence that proves it: `cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test` accepts this explicit small-shape packet without premise source.
+- Exact command/path/route exercised: `cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test`.
 - Oracle / acceptance artifact hash: none; this fixture proves size-scoped behavior.
 - Contract-change acknowledgment: this fixture intentionally preserves the non-goal of avoiding premise-source ceremony for small work.
 - Residual risk: qualitative shape size still requires operator judgment outside fixtures.

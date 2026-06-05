@@ -13,9 +13,9 @@ roster:
 pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls "Role: investigator. Objective: inspect this oracle. Output: risks and proof."
 ```
 
-The command stays a thin launch surface. `scripts/dispatch-agent.py` appends the
-commission, applies the timeout, stores transcript evidence, and records the
-receipt.
+The command stays a thin launch surface. `harness-kit-checks dispatch-agent`
+appends the commission, applies the timeout, stores transcript evidence, and
+records the receipt.
 
 ## Model Variants
 
@@ -32,7 +32,7 @@ open-model failure mode:
 Invoke variants through the same roster provider:
 
 ```sh
-python3 scripts/dispatch-agent.py --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
+cargo run --locked -p harness-kit-checks -- dispatch-agent --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
 ```
 
 For direct one-off use, keep the same Pi shape and swap only `--model`.

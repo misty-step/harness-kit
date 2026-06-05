@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-# Re-run bootstrap after rebase (covers git pull --rebase)
-[ "$1" = "rebase" ] || exit 0
-./bootstrap.sh
+set -euo pipefail
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+if command -v harness-kit-checks >/dev/null 2>&1; then
+  exec harness-kit-checks git-hook post-rewrite "$@"
+fi
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook post-rewrite "$@"
+fi
+echo "post-rewrite: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2
+exit 1

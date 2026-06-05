@@ -6,8 +6,8 @@ Residual risk: Future implementers cannot inspect the full conversation; they mu
 
 ## Acceptance Evidence
 - Acceptance source: checker fixture.
-- Evidence that proves it: `bash skills/shape/evals/check-premise-source.sh` accepts this packet only because the waiver includes residual risk.
-- Exact command/path/route exercised: `bash skills/shape/evals/check-premise-source.sh`.
+- Evidence that proves it: `cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test` accepts this packet only because the waiver includes residual risk.
+- Exact command/path/route exercised: `cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test`.
 - Oracle / acceptance artifact hash: none; this fixture proves waiver structure.
 - Contract-change acknowledgment: this fixture intentionally models the premise-source waiver path.
 - Residual risk: checker proves waiver shape, not whether the waiver is wise.

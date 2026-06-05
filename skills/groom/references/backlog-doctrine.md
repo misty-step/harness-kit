@@ -53,7 +53,7 @@ An active backlog item is closed when it leaves `backlog.d/`, not when someone
 intends to close it later.
 
 - `/ship` closes shipped work by moving it to `backlog.d/_done/` via
-  `backlog_archive` (see `scripts/lib/backlog.sh`) and carries a
+  `harness-kit-checks backlog archive` and carries a
   `Closes-backlog:` or `Ships-backlog:` trailer into the squash commit.
 - `/groom`'s always-on tidy sweep scans master for those trailers and
   archives any surviving ticket files.

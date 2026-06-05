@@ -24,7 +24,7 @@ When `dagger call check` fails, auto-spawn a builder sub-agent to diagnose and f
 
 ## Oracle
 - [x] `dagger call -o . heal` after a lint failure writes a repaired repo directory to disk
-- [x] `scripts/heal-commit.sh` fixes the lint issue, creates a branch, and commits the repair
+- [x] `harness-kit-checks heal-commit` fixes the lint issue, creates a branch, and commits the repair
 - [x] Re-running `dagger call check` after heal succeeds
 - [x] After 2 failed heal attempts, escalation message is clear
 
@@ -39,13 +39,14 @@ When `dagger call check` fails, auto-spawn a builder sub-agent to diagnose and f
   failure, creates a writable repair container, prompts Dagger LLM with the actual
   failing gate output, verifies the targeted gate plus full `check()`, and returns
   the repaired repo directory for host-side export.
-- `ci/src/harness_kit_ci/heal_support.py` — Pure helpers for parsing failed gates,
-  enforcing the one-gate-at-a-time contract, generating repair metadata, and
-  computing the delta between pre/post-heal worktree snapshots.
-- `ci/tests/test_heal_support.py` and `ci/tests/test_self_healing.py` — Unit tests
-  covering summary parsing, gate selection, repair metadata, and snapshot-delta
-  staging logic for the host wrapper.
-- `scripts/heal-commit.sh` — Host-side wrapper that:
+- `crates/harness-kit-checks/src/heal_support.rs` — Pure helpers for parsing
+  failed gates, enforcing the one-gate-at-a-time contract, generating repair
+  metadata, and computing the delta between pre/post-heal worktree snapshots.
+- `crates/harness-kit-checks/src/heal_support.rs` tests — Unit tests covering
+  summary parsing, gate selection, repair metadata, and snapshot-delta staging
+  logic for the host wrapper.
+- `crates/harness-kit-checks/src/heal_commit.rs` — Host-side Rust command exposed as
+  `harness-kit-checks heal-commit`. It:
   1. ensures a repo-local `.env` exists for Dagger module loading,
   2. inspects `dagger call check` to find the failing gate,
   3. runs `dagger call --allow-llm all -o . heal`,
@@ -61,5 +62,5 @@ When `dagger call check` fails, auto-spawn a builder sub-agent to diagnose and f
   Python runtime. The repair function therefore returns a `Directory`, and the host
   wrapper applies it with `dagger call -o . heal`.
 - Local module loading still requires a repo-local `.env` file in this repo due the
-  existing Dagger user-defaults lookup bug. `scripts/heal-commit.sh` creates it
+  existing Dagger user-defaults lookup bug. `harness-kit-checks heal-commit` creates it
   automatically (`touch .env`) before running Dagger commands.

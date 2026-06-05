@@ -38,7 +38,7 @@ not the source of truth.
 Do this in the loop's review step, before synthesizing a verdict:
 
 1. **Read every comment in full.** Run
-   `skills/deliver/scripts/fetch-pr-reviews.sh <PR>` — it deterministically
+   `cargo run --locked -p harness-kit-checks -- fetch-pr-reviews <PR>` — it deterministically
    fetches all review bodies, inline comments, and conversation. Never preview
    with truncated `gh api`/jq/`head`. Automated reviewers (Gemini, Codex,
    CodeRabbit) get the same rigor — their suggestion blocks hide in truncated
@@ -60,7 +60,7 @@ polish-only inherits them automatically:
 
 - **Hindsight sanity pass** — `clean-loop.md` step 6 (the renamed adversarial
   self-review; distinct from a `/critique` lens dispatch).
-- **Verdict-ref freshness** — `clean-loop.md` step 7 (when `verdicts.sh`
+- **Verdict-ref freshness** — `clean-loop.md` step 7 (when `harness-kit-checks verdict`
   exists).
 - **Design/a11y routing** on UI diffs — `clean-loop.md` step 4.
 - **Deep hindsight reference** — `references/pr-polish.md` (architectural smell

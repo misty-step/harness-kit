@@ -49,7 +49,7 @@ artifact refs only.
 Use the self-contained redactor for local previews:
 
 ```bash
-python3 skills/agent-transcript/scripts/agent_transcript.py render \
+cargo run --locked -p harness-kit-checks -- agent-transcript render \
   --input /path/to/session.log \
   --title "Agent Transcript" \
   --output /tmp/agent-transcript.md
@@ -58,7 +58,7 @@ python3 skills/agent-transcript/scripts/agent_transcript.py render \
 Smoke test:
 
 ```bash
-python3 skills/agent-transcript/scripts/agent_transcript.py --self-test
+cargo run --locked -p harness-kit-checks -- agent-transcript --self-test
 ```
 
 The helper reads plain text or JSONL-ish logs from stdin or `--input`. It writes
@@ -101,5 +101,5 @@ body-file flow after human approval.
 
 ## Verification
 
-Run `python3 skills/agent-transcript/scripts/agent_transcript.py --self-test`
+Run `cargo run --locked -p harness-kit-checks -- agent-transcript --self-test`
 to prove rendering omits secret-like transcript content.

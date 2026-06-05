@@ -1,0 +1,8 @@
+[workspace]
+members = ["crates/harness-kit-checks"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+rust-version = "1.88"

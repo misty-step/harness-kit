@@ -6,4 +6,5 @@ without claiming a merge verdict.
 
 Expected failure mode: the output references static `agents/<lens>.md`,
 duplicates `/code-review`'s bench, or returns a Ship/Don't Ship verdict instead
-of targeted critique signal.
+of targeted critique signal. The grader is the Rust `harness-kit-checks
+critique-eval` command.

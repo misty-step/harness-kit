@@ -54,7 +54,7 @@ in Harness Kit.
 - Completed the `/research` delegation conflict-resolution bullet and tagged
   known text/code fences in the touched copied references.
 - Updated `/deliver` receipt examples to use `code-review` phase naming.
-- Added `ci/tests/test_reference_quality.py` to lock the fixed reference
+- Added Rust `eval_graders` tests to lock the fixed reference
   defects.
 
 ## Delegation Evidence
@@ -66,7 +66,7 @@ in Harness Kit.
 
 ## Verification
 
-- `python3 -m unittest ci.tests.test_reference_quality`
+- `cargo test --workspace --locked eval_graders`
 - `shellcheck --severity=error skills/reflect/scripts/gather_evidence.sh skills/qa/evals/graders/check.sh`
-- `python3 -m unittest discover -s ci/tests -p 'test_*.py'`
+- `cargo test --workspace --locked`
 - `dagger call check --source=.`

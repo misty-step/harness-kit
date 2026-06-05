@@ -68,9 +68,9 @@ review scores > model judgment > memory
 - `skills/reflect/references/distill.md` and
   `skills/reflect/references/prompt-debt.md` - reflection and prompt-debt
   destinations.
-- `scripts/review-score-trends.py` and `.groom/review-scores.ndjson` -
+- `crates/harness-kit-checks/src/review_score_trends.rs` and `.groom/review-scores.ndjson` -
   effectiveness trend precedent.
-- `skills/trace/scripts/trace_record.py` - secret-like refusal pattern.
+- `crates/harness-kit-checks/src/trace_record.rs` - secret-like refusal pattern.
 
 ## Prior Art
 
@@ -131,7 +131,7 @@ Add a script or skill reference, likely under `/research introspect` or
   tests.
 - ADR decision: not required.
 - Infrastructure path: local script invoked explicitly.
-- Gate: script self-test, redaction fixture, `python3 scripts/check-agent-roster.py`,
+- Gate: script self-test, redaction fixture, `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`,
   then `dagger call check --source=.`
 - Evidence storage: redacted report under `.evidence/` or explicit operator
   output path; raw transcript remains external.
@@ -171,7 +171,7 @@ Add a script or skill reference, likely under `/research introspect` or
       refs match, and labels missing joins.
 - [ ] `/reflect` or `/research introspect` references the durable command
       instead of recommending one-off `/tmp` scripts.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Observability Plan

@@ -223,8 +223,8 @@ On failure:
 
 ```markdown
 ## /ci Report — RED
-Gate: test-python
-Failure: tests/widget/test_reducer.py::test_merge_conflict line 42
+Gate: test-rust
+Failure: crates/widget/src/reducer.rs::test_merge_conflict line 42
   AssertionError: expected {'a': 1}, got {'a': 1, 'b': 2}
 Classification: logic failure (behavior change in reducer)
 Action: escalated — human decision needed on reducer contract.

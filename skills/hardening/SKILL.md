@@ -201,6 +201,6 @@ No "hardened" claim without the exact command and rerun evidence.
 
 ## Verification
 
-Run `python3 scripts/check-evidence-blocks.py skills` to prove `/hardening`
+Run `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills` to prove `/hardening`
 keeps its local Completion Gate. Semantic proof is the run's counterexample,
 survivor, killed mutant, risk metric, or explicit equivalent-mutant waiver.

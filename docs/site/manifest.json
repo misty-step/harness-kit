@@ -30,13 +30,12 @@
     "test-bun",
     "test-design-evals",
     "test-harness-kit-config-loader",
-    "test-python",
-    "test-skill-audit",
+    "test-rust",
     "test-sync-external-partial",
     "test-trace-record",
     "test-work-ledger"
   ],
-  "generated_by": "scripts/build-docs-site.py",
+  "generated_by": "harness-kit-checks build-docs-site",
   "icons": [
     "build",
     "catalog",
@@ -139,7 +138,37 @@
   },
   "primitives": [
     {
-      "description": "Accessibility audit, remediation, and verification. WCAG 2.2 AA compliance. Three-agent protocol: audit (find issues) \u2192 remediate (fix them) \u2192 critique (verify fixes). Use when: \"accessibility audit\", \"a11y\", \"WCAG\", \"screen reader\", \"keyboard navigation\", \"contrast check\", \"aria fix\", \"accessibility sprint\", \"audit accessibility\", \"fix accessibility\", \"a11y issues\", \"a11y check\". Trigger: /a11y",
+      "description": "Finds accessibility issues. Does NOT fix them. Read-only investigation.",
+      "icon": "specialist",
+      "id": "agent:a11y-auditor",
+      "kind": "agent",
+      "name": "a11y-auditor",
+      "page": "reference/agents/a11y-auditor.html",
+      "role": "Specialist",
+      "source": "agents/a11y-auditor.md"
+    },
+    {
+      "description": "Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics.",
+      "icon": "specialist",
+      "id": "agent:a11y-critic",
+      "kind": "agent",
+      "name": "a11y-critic",
+      "page": "reference/agents/a11y-critic.html",
+      "role": "Specialist",
+      "source": "agents/a11y-critic.md"
+    },
+    {
+      "description": "Fixes accessibility issues from audit findings. Minimal surgical changes. Native HTML over ARIA.",
+      "icon": "specialist",
+      "id": "agent:a11y-fixer",
+      "kind": "agent",
+      "name": "a11y-fixer",
+      "page": "reference/agents/a11y-fixer.html",
+      "role": "Specialist",
+      "source": "agents/a11y-fixer.md"
+    },
+    {
+      "description": "Accessibility audit, remediation, and verification. WCAG 2.2 AA compliance. Three-agent protocol: audit (find issues) → remediate (fix them) → critique (verify fixes). Use when: \"accessibility audit\", \"a11y\", \"WCAG\", \"screen reader\", \"keyboard navigation\", \"contrast check\", \"aria fix\", \"accessibility sprint\", \"audit accessibility\", \"fix accessibility\", \"a11y issues\", \"a11y check\". Trigger: /a11y",
       "icon": "catalog",
       "id": "skill:a11y",
       "kind": "skill",
@@ -299,7 +328,7 @@
       "source": "skills/flywheel/SKILL.md"
     },
     {
-      "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode \u2014 it happens every time. Strategic-layer work fans out parallel interrogation, design-critique, technical-review, and research lanes. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\", \"audit skills\", \"skill quality audit\". Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.",
+      "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel interrogation, design-critique, technical-review, and research lanes. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\", \"audit skills\", \"skill quality audit\". Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.",
       "icon": "plan",
       "id": "skill:groom",
       "kind": "skill",
@@ -329,7 +358,7 @@
       "source": "skills/harness-engineering/SKILL.md"
     },
     {
-      "description": "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red \u2192 Green \u2192 Refactor. Does not shape, review, QA, or ship \u2014 single concern: spec to green tests. Use when: \"implement this spec\", \"build this\", \"TDD this\", \"code this up\", \"write the code for this ticket\", after /shape has produced a context packet. Trigger: /implement, /build (alias).",
+      "description": "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red → Green → Refactor. Does not shape, review, QA, or ship — single concern: spec to green tests. Use when: \"implement this spec\", \"build this\", \"TDD this\", \"code this up\", \"write the code for this ticket\", after /shape has produced a context packet. Trigger: /implement, /build (alias).",
       "icon": "build",
       "id": "skill:implement",
       "kind": "skill",
@@ -409,7 +438,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> \u2014 the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory \"polish this\", \"address PR reviews\", \"get this merge-ready\" \u2014 then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.",
+      "description": "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> — the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into deliver). Slated for deletion next release. Use when: muscle-memory \"polish this\", \"address PR reviews\", \"get this merge-ready\" — then run /deliver --polish-only. Trigger: /settle, /pr-fix, /pr-polish.",
       "icon": "catalog",
       "id": "skill:settle",
       "kind": "skill",
@@ -467,36 +496,6 @@
       "page": "reference/skills/yeet.html",
       "role": "Ship",
       "source": "skills/yeet/SKILL.md"
-    },
-    {
-      "description": "Finds accessibility issues. Does NOT fix them. Read-only investigation.",
-      "icon": "specialist",
-      "id": "agent:a11y-auditor",
-      "kind": "agent",
-      "name": "a11y-auditor",
-      "page": "reference/agents/a11y-auditor.html",
-      "role": "Specialist",
-      "source": "agents/a11y-auditor.md"
-    },
-    {
-      "description": "Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics.",
-      "icon": "specialist",
-      "id": "agent:a11y-critic",
-      "kind": "agent",
-      "name": "a11y-critic",
-      "page": "reference/agents/a11y-critic.html",
-      "role": "Specialist",
-      "source": "agents/a11y-critic.md"
-    },
-    {
-      "description": "Fixes accessibility issues from audit findings. Minimal surgical changes. Native HTML over ARIA.",
-      "icon": "specialist",
-      "id": "agent:a11y-fixer",
-      "kind": "agent",
-      "name": "a11y-fixer",
-      "page": "reference/agents/a11y-fixer.html",
-      "role": "Specialist",
-      "source": "agents/a11y-fixer.md"
     }
   ],
   "workflows": [

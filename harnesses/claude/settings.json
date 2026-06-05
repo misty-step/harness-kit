@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/permission-auto-approve.py",
+            "command": "harness-kit-checks claude-hook permission-auto-approve",
             "timeout": 5
           }
         ]
@@ -61,12 +61,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/destructive-command-guard.py",
+            "command": "harness-kit-checks claude-hook destructive-command-guard",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/github-cli-guard.py",
+            "command": "harness-kit-checks claude-hook github-cli-guard",
             "timeout": 5
           }
         ]
@@ -78,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/time-context.py",
+            "command": "harness-kit-checks claude-hook time-context",
             "timeout": 5
           }
         ]
@@ -90,7 +90,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/skill-invocation-tracker.py",
+            "command": "harness-kit-checks claude-hook skill-invocation-tracker",
             "timeout": 5
           }
         ]

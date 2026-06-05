@@ -171,6 +171,7 @@ principles and their framing are Karpathy's.
 ## Verification
 
 Semantic waiver: this is a reference guardrail, not an executable workflow.
-Validate catalog/trigger shape with `python3 scripts/check-frontmatter.py`;
+Validate catalog/trigger shape with
+`cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`;
 behavioral proof appears when a consuming skill cites the guardrail and the
 resulting diff stays scoped and verifiable.

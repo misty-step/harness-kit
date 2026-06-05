@@ -14,7 +14,7 @@ across repos, how they chain together, and which work items they touched.
 Harness Kit already has useful but separate observability primitives:
 
 - Claude skill invocation rows in `~/.claude/skill-invocations.jsonl` via
-  `harnesses/claude/hooks/skill-invocation-tracker.py`.
+  `harness-kit-checks claude-hook skill-invocation-tracker`.
 - Delegation receipts in `.harness-kit/traces/delegations.jsonl` via
   `scripts/record-delegation.py` and `scripts/summarize-delegations.py`.
 - Work lifecycle events in `.harness-kit/work/ledger.jsonl` via
@@ -57,7 +57,7 @@ tests > schemas/fixtures > code > reports > docs > external prior art > lore
 
 ## Repo Anchors
 
-- `harnesses/claude/hooks/skill-invocation-tracker.py` - current passive skill
+- `harness-kit-checks claude-hook skill-invocation-tracker` - current passive skill
   invocation event source.
 - `skills/harness-engineering/references/mode-audit.md` - currently describes
   Hot/Warm/Cold/Dead usage reports but has no script behind it.

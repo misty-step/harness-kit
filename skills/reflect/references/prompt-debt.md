@@ -15,13 +15,13 @@ Use local, already-available surfaces:
 
 If a surface is missing, say so and continue.
 
-When `.groom/review-scores.ndjson` and `scripts/review-score-trends.py` are
+When `.groom/review-scores.ndjson` and `cargo run --locked -p harness-kit-checks -- review-score-trends` are
 both present, run the analyzer and use its Review Score Trend block as safe
 evidence. Trend claims require 5+ score entries; below that, record
 insufficient data instead of proposing skill edits from noise.
 
 When transcript evidence is needed, prefer
-`python3 scripts/mine-transcript-effectiveness.py --transcript <path>` over
+`cargo run --quiet --locked -p harness-kit-checks -- mine-transcript-effectiveness --transcript <path>` over
 ad-hoc transcript grep. Use its category counts, redaction summary, joins, and
 missing-source labels as safe evidence; do not paste raw turns into prompt-debt
 reports.

@@ -47,7 +47,7 @@ not raw provider transcripts.
 ## Helper
 
 ```bash
-python3 skills/trace/scripts/trace_record.py append \
+cargo run --locked -p harness-kit-checks -- trace-record append \
   --backlog 056 \
   --branch "$(git branch --show-current)" \
   --commit "$(git rev-parse --short HEAD)" \
@@ -60,7 +60,7 @@ python3 skills/trace/scripts/trace_record.py append \
 If transcript evidence is unavailable:
 
 ```bash
-python3 skills/trace/scripts/trace_record.py append \
+cargo run --locked -p harness-kit-checks -- trace-record append \
   --backlog 056 \
   --branch "$(git branch --show-current)" \
   --commit "$(git rev-parse --short HEAD)" \
@@ -70,7 +70,7 @@ python3 skills/trace/scripts/trace_record.py append \
 Smoke test:
 
 ```bash
-bash skills/trace/scripts/test_trace_record.sh
+cargo run --locked -p harness-kit-checks -- trace-record --self-test
 ```
 
 ## Ship Handoff

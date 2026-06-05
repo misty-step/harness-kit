@@ -38,7 +38,7 @@ Every finding becomes one of three things:
 
 When `.harness-kit/work/ledger.jsonl` is available, `/reflect` consumes the
 latest events for the active backlog/branch plus trace refs and delegation
-receipts. It calls `scripts/work-ledger.py append` with `phase_started` at
+receipts. It calls `cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` at
 retro start, `next_action_changed` when follow-up backlog or harness proposals
 are emitted, and `phase_completed` when the reflection packet is complete.
 Follow-up proposals are evidence refs, not hidden chat-only state.
@@ -117,8 +117,8 @@ reflect notes, review scores, delegation receipts, traces, session summaries,
 and durable memory notes. Chronicle-derived context may inform the pattern, but
 do not quote private personal detail.
 
-When `.groom/review-scores.ndjson` exists and
-`scripts/review-score-trends.py` is available, run the analyzer before proposing
+When `.groom/review-scores.ndjson` exists, run
+`cargo run --locked -p harness-kit-checks -- review-score-trends` before proposing
 skill changes. Treat 5+ score entries as enough for a trend; below that, report
 the count and avoid a tuning claim. If the analyzer names a dimension regression
 or high false-positive rate, propose a concrete skill/reference edit using the
@@ -247,6 +247,6 @@ when to escalate to a harness branch, evidence standards).
 
 ## Verification
 
-Run `python3 skills/reflect/scripts/checkpoint.py --self-test` to prove the
+Run `cargo run --locked -p harness-kit-checks -- reflect-checkpoint --self-test` to prove the
 checkpoint validator rejects missing restatements, invalid verdicts, and raw
 private content.

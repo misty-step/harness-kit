@@ -18,5 +18,5 @@ source-hash drift, and raw audio paths. See
 Run:
 
 ```bash
-bash skills/shape/evals/check-premise-source.sh
+cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test
 ```

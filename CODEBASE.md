@@ -34,7 +34,7 @@ Harness Kit has five primary source surfaces.
 
 Generated or runtime surfaces are deliberately secondary:
 
-- `index.yaml` is generated from skills and agents by `scripts/generate-index.sh`.
+- `index.yaml` is generated from skills and agents by `harness-kit-checks generate-index`.
   Do not edit it by hand.
 - `.agents/skills/` links to `skills/` in this repo. It is hidden only by Unix
   naming convention; audits must use hidden-aware searches such as
@@ -53,8 +53,9 @@ A skill is a small markdown module with frontmatter. The frontmatter
 description is the trigger surface; the body encodes judgment, invariants, and
 gotchas; references hold details that should load only when needed.
 
-The codebase assumes skills stay thin. `scripts/check-frontmatter.py` enforces
-required frontmatter and a 500-line cap for first-party `SKILL.md` files. The
+The codebase assumes skills stay thin.
+`cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`
+enforces required frontmatter and a 500-line cap for first-party `SKILL.md` files. The
 design pressure is intentional: if a skill has many modes, the root
 `SKILL.md` becomes a router and detailed mode bodies move under
 `references/mode-*.md`.
@@ -78,19 +79,20 @@ Harness Kit's primary portability layer is the filesystem: the same `SKILL.md`
 and agent markdown files can be discovered by multiple harnesses. Runtime
 features are wrappers around that layer, not the architecture.
 
-`bootstrap.sh` installs discovered skills system-wide:
+`harness-kit-checks bootstrap` installs the full first-party catalog and any
+synced external skills system-wide; `bootstrap.sh` is only the curl-compatible
+launcher:
 
 - global skills: every `skills/*/SKILL.md`
 - synced external skills: every `skills/.external/*/SKILL.md` present after
-  `scripts/sync-external.sh`
-- global agents: every `agents/*.md`
-- global roster: `~/.harness-kit/agents.yaml` plus roster helper scripts under
-  `~/.harness-kit/scripts/`
+  `harness-kit-checks sync-external`
+- global agents: the allowlisted global agents under `agents/*.md`
+- global roster: `~/.harness-kit/agents.yaml`
 
 Local bootstrap prefers symlinks to a stable checkout so skill edits propagate
-immediately. Remote bootstrap downloads a GitHub archive and copies full skill
-directories, including references, scripts, and evals. Claude settings are
-copied, not symlinked, because Claude mutates `settings.json` at runtime.
+immediately. Remote bootstrap downloads a GitHub archive and runs the Rust
+bootstrap from that checkout. Claude settings are copied, not symlinked,
+because Claude mutates `settings.json` at runtime.
 Roster helpers prefer a repo-local `.harness-kit/agents.yaml` when present, then
 fall back to the system `~/.harness-kit/agents.yaml` installed by bootstrap.
 
@@ -99,10 +101,10 @@ fall back to the system `~/.harness-kit/agents.yaml` installed by bootstrap.
 `registry.yaml` declares external skill sources. It is not the runtime catalog.
 It feeds:
 
-- `scripts/sync-external.sh`, which syncs selected upstream skills into
+- `harness-kit-checks sync-external`, which syncs selected upstream skills into
   `skills/.external/<alias>/`
-- `bootstrap.sh`, which projects synced external skills into each detected
-  harness alongside first-party skills
+- `harness-kit-checks bootstrap`, which projects synced external skills into
+  each detected harness alongside first-party skills
 - embedding/index tooling that can search first-party and external skill
   material
 
@@ -118,7 +120,8 @@ The load-bearing check is:
 dagger call check --source=.
 ```
 
-The Dagger module in `ci/src/harness_kit_ci/main.py` runs 15 gates in parallel:
+The Dagger module in `ci/src/harness_kit_ci/main.py` is the remaining Python
+platform boundary and runs the gate orchestration in parallel:
 YAML, shell, Python, frontmatter, index drift, vendored copies, Bun tests for
 `skills/research`, exclusion-pattern scans, portable paths, harness-agnostic
 install wording, `/deliver` composition, dropped claim primitives, and skill
@@ -232,7 +235,8 @@ For Harness Kit development:
    `/ci` for gate failures, `/diagnose` for unknown failures.
 3. Never hand-edit `index.yaml`.
 4. Run `dagger call check --source=.` before merge or ship.
-5. If a skill or agent changes, rerun `./bootstrap.sh` or rely on the repo hook
+5. If a skill or agent changes, rerun
+   `cargo run --locked -p harness-kit-checks -- bootstrap` or rely on the repo hook
    to propagate changes after commit.
 
 ## Remaining Work

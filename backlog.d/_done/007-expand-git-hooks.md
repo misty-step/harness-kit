@@ -15,7 +15,7 @@ Add git hooks that enforce quality at commit/push time, replacing Claude-specifi
 - Stage the regenerated file so it's included in the commit
 
 ### git-hooks/pre-push (enhancement)
-- Add branch protection: block pushes to main/master (replaces `block-master-push.py` Claude hook)
+- Add branch protection: block pushes to main/master (replaces the Claude `harness-kit-checks claude-hook block-master-push` fallback)
 - Keep existing Dagger gate check
 
 ## Non-Goals

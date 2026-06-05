@@ -50,7 +50,7 @@ committed, checked, text-backed figure in the generated HTML docs.
   `docs/site/assets/images/`, and render a `<figure>` with a nearby
   text-equivalent block.
 - Files/systems touched: `docs/copy/site.json`, `docs/copy/images/`,
-  `scripts/build-docs-site.py`, `scripts/check-docs-site.py`, and generated
+  `harness-kit-checks build-docs-site`, `harness-kit-checks check-docs-site`, and generated
   `docs/site/**`.
 - Data/control flow: source JSON plus source image -> builder validation and
   byte copy -> generated workflow HTML, `manifest.json`, and `llms.txt` ->
@@ -102,7 +102,7 @@ copy source > current official API docs > memory
 
 - `docs/copy/site.json` - docs copy source and selected home for the first
   image declaration.
-- `scripts/build-docs-site.py` - deterministic builder; validates, copies, and
+- `crates/harness-kit-checks/src/docs_site.rs` - deterministic builder; validates, copies, and
   renders the figure.
 - `scripts/check-docs-site.py` - docs oracle; owns negative tests and stale-site
   comparison.
@@ -151,7 +151,7 @@ and one source asset.
 - [ ] `docs/copy/site.json` declares the single image with page target, purpose,
       source asset path, alt text, text-equivalent anchor, source policy, review
       note, max size, and regeneration reference.
-- [ ] `scripts/build-docs-site.py` copies the committed source asset byte for
+- [ ] `harness-kit-checks build-docs-site` copies the committed source asset byte for
       byte and renders the figure plus text-equivalent block.
 - [ ] `scripts/check-docs-site.py --self-test` fails for missing source files,
       undeclared `<img>` tags, unused declarations, empty alt text, missing

@@ -11,7 +11,7 @@ Expected failure mode: generic advice such as "improve spacing and colors",
 code-only judgment when a render is available, or proposing a new UI framework
 instead of bounded design moves.
 
-The grader is intentionally a small keyword floor, not a semantic judge. It
-checks for objective output markers and forbidden over-scope language so the
+The Rust grader is intentionally a small keyword floor, not a semantic judge.
+It checks for objective output markers and forbidden over-scope language so the
 eval remains runnable across harnesses; human or model grading can be layered
 on top for taste quality.

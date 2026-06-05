@@ -4,15 +4,14 @@ Use this reference when a diff touches likely UI or visual surfaces.
 
 ## Detector
 
-Use `scripts/detect-ui-surfaces.sh` as an optional standardized routing signal.
-The script name is retained for compatibility, but the signal covers visual
-artifacts too:
+Use `cargo run --locked -p harness-kit-checks -- detect-ui-surfaces` as an
+optional standardized routing signal:
 
 ```bash
-scripts/detect-ui-surfaces.sh --staged
-scripts/detect-ui-surfaces.sh --unstaged
-scripts/detect-ui-surfaces.sh --base <repo-default-base>
-scripts/detect-ui-surfaces.sh --paths app/page.tsx components/Button.tsx
+cargo run --locked -p harness-kit-checks -- detect-ui-surfaces --staged
+cargo run --locked -p harness-kit-checks -- detect-ui-surfaces --unstaged
+cargo run --locked -p harness-kit-checks -- detect-ui-surfaces --base <repo-default-base>
+cargo run --locked -p harness-kit-checks -- detect-ui-surfaces --paths app/page.tsx components/Button.tsx
 ```
 
 It prints JSON:

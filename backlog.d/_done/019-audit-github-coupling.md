@@ -61,7 +61,7 @@ no `gh` CLI, no `.github/` assumptions. Fully vendor-agnostic.
 |------|-------|---------------|--------------|
 | **GitHub-specific URL parsing** | `bootstrap.sh:42-43`, `scripts/setup-git-bug.sh:42-43` | removable | Parse any git remote, not just github.com |
 | **GitHub API for remote sync** | `bootstrap.sh:286,293` (`curl api.github.com`) | required (remote mode) | Shallow clone fallback instead of API listing |
-| **GitHub CLI guard hook** | `harnesses/claude/hooks/github-cli-guard.py` | fallback | Remove when `gh` usage is eliminated |
+| **GitHub CLI guard hook** | `harness-kit-checks claude-hook github-cli-guard` | fallback | Remove when `gh` usage is eliminated |
 
 **Documentation-only references (no action needed):**
 - `settle/references/pr-fix.md` — `gh run view/rerun` examples
@@ -110,7 +110,7 @@ All GitHub coupling is already tracked by existing backlog items:
    bootstrap touch.
 4. **Bootstrap remote sync** — Replace `curl api.github.com` with shallow
    clone for skill discovery. Can be done as part of any bootstrap touch.
-5. **github-cli-guard.py** — Remove once `gh` CLI usage is eliminated from
+5. **`harness-kit-checks claude-hook github-cli-guard`** — Remove once `gh` CLI usage is eliminated from
    skill workflows (after 021 + 024 complete).
 
 ### Key Insight

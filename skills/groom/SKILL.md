@@ -57,7 +57,7 @@ final prioritization.
 grooming run and not a hard gate. Run:
 
 ```sh
-python3 skills/groom/scripts/audit-skills.py
+cargo run --locked -p harness-kit-checks -- audit-skills --repo .
 ```
 
 The report walks `skills/*/SKILL.md` and scores four dimensions:
@@ -106,7 +106,7 @@ Phase-gated. Each phase completes before the next begins.
 - Read `backlog.d/` — every active ticket, by ID.
 - Read `.groom/retro/` if present — effort calibration, blocker patterns.
 - Read `.groom/review-scores.ndjson` if present — review-quality trend. If
-  `scripts/review-score-trends.py` exists, run it and include its output when
+  `cargo run --locked -p harness-kit-checks -- review-score-trends` is available, run it and include its output when
   the file has 5+ entries; below 5 entries, report the insufficient-data count.
 - Read `exemplars.md` if present — existing reference implementations.
 - **Cap check:** >30 open items → declare a reduction session. No new items until under cap.
@@ -171,12 +171,7 @@ User decides per theme: write / edit / delete / skip. Silence is not consent.
 
 ## Tidy Mechanics
 
-The always-on tidy step. These steps are MANDATORY every run. Source the
-helper lib once at the start:
-
-```sh
-source "$(git rev-parse --show-toplevel)/scripts/lib/backlog.sh"
-```
+The always-on tidy step. These steps are MANDATORY every run.
 
 ### 1. Sweep main for closure trailers
 
@@ -187,7 +182,7 @@ the last archive. The merge base depends on the repo's default branch
 ```sh
 default="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')"
 default="${default:-main}"
-backlog_ids_from_range "origin/${default}..${default}"
+cargo run --locked -p harness-kit-checks -- backlog ids-from-range "origin/${default}..${default}"
 ```
 
 ### 2. Archive every closed ticket still in `backlog.d/`
@@ -195,10 +190,10 @@ backlog_ids_from_range "origin/${default}..${default}"
 For each ID returned above:
 
 ```sh
-backlog_archive "$id"
+cargo run --locked -p harness-kit-checks -- backlog archive "$id"
 ```
 
-`backlog_archive` is idempotent — re-archiving an already-archived ID
+`harness-kit-checks backlog archive` is idempotent — re-archiving an already-archived ID
 exits 0 silently. Stage the moves and commit:
 
 ```
@@ -209,7 +204,8 @@ chore(backlog): archive shipped tickets swept by /groom
 
 Some tickets get marked `Status: done` / `Status: shipped` in frontmatter
 without a trailer (legacy or hand-edited). Scan `backlog.d/*.md` and move
-any such ticket to `_done/` via `backlog_archive` using its numeric ID.
+any such ticket to `_done/` via `harness-kit-checks backlog archive` using
+its numeric ID.
 
 ### 4. Flag stale `in-progress`
 
@@ -355,7 +351,7 @@ Lens."
 ## Trailer Conventions
 
 Closure flows through git trailers, not prose markers. Canonical keys
-(recognized by `scripts/lib/backlog.sh`):
+(recognized by `harness-kit-checks backlog trailer-keys`):
 
 - `Closes-backlog: <id>` — closes the ticket (archival intent).
 - `Ships-backlog: <id>` — synonym for Closes-backlog.

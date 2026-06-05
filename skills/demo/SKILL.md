@@ -47,7 +47,7 @@ names the developer/operator behavior that changed.
 ## Work Ledger
 
 When `.harness-kit/work/ledger.jsonl` is available, `/demo` calls
-`scripts/work-ledger.py append` with `phase_started` before capture and
+`cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` before capture and
 `phase_completed` after the artifact or explicit "no artifact needed" evidence
 ref exists. Use `blocker_added` when capture fails and set `next_action` to the
 smallest recovery step.
@@ -251,6 +251,6 @@ add concrete local demo defaults that earn the checked-in copy.
 
 ## Verification
 
-Run `python3 scripts/check-evidence-blocks.py skills` to prove `/demo` keeps a
+Run `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills` to prove `/demo` keeps a
 local Completion Gate. Semantic demo quality is verified by the produced
 artifact path, screenshot, GIF, video, release note, or waiver in the run.

@@ -115,7 +115,8 @@ valid.
 
 ## Verification
 
-Run `python3 skills/harness-engineering/scripts/validate-evals.py`,
-`python3 scripts/check-agent-roster.py`, and
-`python3 scripts/check-runtime-primitives.py` after changing harness
-primitives, gates, evals, roster, bootstrap, or runtime projections.
+Run `cargo run --locked -p harness-kit-checks -- check-skill-evals --repo .`,
+`cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, and
+`cargo run --locked -p harness-kit-checks -- check-runtime-primitives --repo .`
+after changing harness primitives, gates, evals, roster, bootstrap, or runtime
+projections.

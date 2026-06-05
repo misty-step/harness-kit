@@ -21,7 +21,7 @@ commit when it succeeds.
 Do this before disabling the network:
 
 ```sh
-scripts/offline-validation-preflight.sh
+cargo run --locked -p harness-kit-checks -- offline-validation-preflight
 DAGGER_NO_NAG=1 dagger call check --source=.
 docker image ls 'registry.dagger.io/engine'
 ```
@@ -58,8 +58,7 @@ git commit -m "test: offline validation probe"
 ### 2. Create Local Evidence
 
 ```sh
-source scripts/lib/evidence.sh
-EVIDENCE_DIR="$(evidence_mkdir)"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create)"
 printf 'offline validation evidence\n' > "$EVIDENCE_DIR/qa-report.md"
 ```
 
@@ -92,7 +91,6 @@ EOF
 Write the verdict ref:
 
 ```sh
-source scripts/lib/verdicts.sh
 branch="$(git rev-parse --abbrev-ref HEAD)"
 git add "$EVIDENCE_DIR"
 git commit -m "test: record offline evidence"
@@ -111,12 +109,12 @@ print(json.dumps({
 }))
 PY
 )"
-verdict_write "$branch" "$json"
-verdict_validate "$branch"
-verdict_read "$branch" > "$EVIDENCE_DIR/verdict.json"
+cargo run --locked -p harness-kit-checks -- verdict write "$branch" "$json"
+cargo run --locked -p harness-kit-checks -- verdict validate "$branch"
+cargo run --locked -p harness-kit-checks -- verdict read "$branch" > "$EVIDENCE_DIR/verdict.json"
 ```
 
-Do not commit after `verdict_write` unless you immediately re-write the verdict
+Do not commit after `verdict write` unless you immediately re-write the verdict
 for the new `HEAD`. The ref is the authority; `verdict.json` is a browsable
 copy for the local evidence directory.
 

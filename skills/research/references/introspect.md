@@ -48,7 +48,7 @@ For opt-in effectiveness mining, use the repo command instead of a one-off
 `/tmp` script:
 
 ```bash
-python3 scripts/mine-transcript-effectiveness.py \
+cargo run --quiet --locked -p harness-kit-checks -- mine-transcript-effectiveness \
   --transcript /path/to/session.jsonl \
   --skill-log .harness-kit/examples/skill-invocations.jsonl \
   --format markdown
@@ -64,7 +64,7 @@ turn text.
 ## Durable Command Expansion Checklist
 
 When the durable command needs broader coverage, extend
-`scripts/mine-transcript-effectiveness.py` and its tests to extract:
+`harness-kit-checks mine-transcript-effectiveness` and its tests to extract:
 
 ### Quantitative
 - **Sessions per project** (top 20)

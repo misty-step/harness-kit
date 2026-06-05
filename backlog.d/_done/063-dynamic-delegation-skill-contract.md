@@ -69,22 +69,22 @@ domain-specific reviewer lenses.
 
 ## What Was Built
 
-- Strengthened `scripts/check-agent-roster.py` so the harness gate now validates
+- Strengthened `harness-kit-checks check-agent-roster` so the harness gate now validates
   delegation-floor contract fields across all 19 core workflow skills:
   provider floor, direct-work exceptions, lane responsibilities, context
   boundary, output/evidence contract, and lead verification.
 - Added runtime-specific dynamic delegation references for Claude Code, Codex,
   Antigravity CLI, and Pi under `harnesses/*/README.md`.
 - Updated `/harness lint` and `/harness audit` references to flag missing or
-  weak delegation-floor coverage through `python3 scripts/check-agent-roster.py`.
+  weak delegation-floor coverage through `harness-kit-checks check-agent-roster`.
 - Tightened workflow skill delegation floors so substantial workflows name
   lane context, evidence/receipt expectations, and lead-owned verification.
-- Added regression coverage in `ci/tests/test_agent_roster.py` for runtime
+- Added regression coverage in Rust `agent_roster` tests for runtime
   delegation references.
 
 ## Verification
 
-- `python3 scripts/check-agent-roster.py`
-- `python3 -m unittest ci.tests.test_agent_roster`
-- `scripts/build-docs-site.sh && scripts/check-docs-site.sh --self-test`
+- `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`
+- `cargo test --workspace --locked agent_roster`
+- `cargo run --locked -p harness-kit-checks -- build-docs-site && cargo run --locked -p harness-kit-checks -- check-docs-site --repo .`
 - `dagger call check --source=.`

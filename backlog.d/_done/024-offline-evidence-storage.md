@@ -143,9 +143,9 @@ Delivered on `deliver/024-offline-evidence-storage`.
   `ee4b8b2f90e595f39925fcda53b8f10abeb62fbe1ccb850d41995e3fed69136f`
 - `bash scripts/lib/test_evidence.sh`
 - `python3 scripts/check-offline-evidence-storage.py`
-- `python3 -m py_compile scripts/check-offline-evidence-storage.py ci/src/harness_kit_ci/main.py ci/tests/test_reference_quality.py`
+- `python3 -m py_compile scripts/check-offline-evidence-storage.py ci/src/harness_kit_ci/main.py`
 - `shellcheck --severity=error scripts/lib/evidence.sh scripts/lib/test_evidence.sh`
-- `python3 -m unittest ci.tests.test_reference_quality`
+- `cargo test --workspace --locked eval_graders`
 - `python3 scripts/check-frontmatter.py`
 - `python3 scripts/check-agent-roster.py`
 - `python3 scripts/check-evidence-blocks.py skills`

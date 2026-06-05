@@ -80,7 +80,7 @@ tests > executable oracles > Dagger gates > scripts > skills > external prior ar
   plumbing.
 - `scripts/lib/backlog.sh` - backlog trailer parsing and `git mv` archival.
 - `scripts/lib/evidence.sh` - branch-derived evidence paths.
-- `scripts/heal-commit.sh` - Dagger repair plus Git staging/commit choreography.
+- `crates/harness-kit-checks/src/heal_commit.rs` - Rust Dagger repair plus Git staging/commit choreography.
 - `skills/yeet/SKILL.md`, `skills/ship/SKILL.md`,
   `skills/deliver/references/worktree.md`, `skills/code-review/SKILL.md`,
   `skills/refactor/SKILL.md` - user-facing Git workflow surfaces that need

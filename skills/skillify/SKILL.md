@@ -34,15 +34,19 @@ roster floor.
 
 ## Workflow
 
-1. Parse the transcript with `scripts/parse-transcript.py`.
-2. Classify novelty and repeatability with `scripts/classify-conversation.py`.
+1. Parse the transcript with
+   `cargo run --locked -p harness-kit-checks -- skillify-parse-transcript`.
+2. Classify novelty and repeatability with
+   `cargo run --locked -p harness-kit-checks -- skillify-classify`.
    It dispatches two or more roster providers through the existing
-   `scripts/dispatch-agent.py` boundary and records delegation receipts.
-3. Create or update the candidate skill with `scripts/skill-crud.py`.
+   `harness-kit-checks dispatch-agent` boundary and records delegation
+   receipts.
+3. Create or update the candidate skill with
+   `cargo run --locked -p harness-kit-checks -- skillify-skill-crud`.
 4. Validate frontmatter, portability, and generated skill shape before
    bootstrap.
-5. Run `./bootstrap.sh` so the first-party skill catalog propagates to active
-   harnesses.
+5. Run `cargo run --locked -p harness-kit-checks -- bootstrap` so the
+   first-party skill catalog propagates to active harnesses.
 
 ## Portability Contract
 
@@ -56,13 +60,19 @@ Use the frontmatter schema in `references/frontmatter-schema.md`.
 - Exact operator behavior changed: reusable transcript-to-skill primitive exists.
 - Evidence that proves it: parser output, CRUD validation, classification
   receipt ids, bootstrap result, and Dagger gate.
-- Exact command/path/route exercised: `skills/skillify/scripts/*.py`,
-  `scripts/check-frontmatter.py`, `./bootstrap.sh`, `dagger call check --source=.`
+- Exact command/path/route exercised: skillify Rust CLI commands, bootstrap, and Dagger:
+  `cargo run --locked -p harness-kit-checks -- skillify-parse-transcript`,
+  `cargo run --locked -p harness-kit-checks -- skillify-classify`,
+  `cargo run --locked -p harness-kit-checks -- skillify-skill-crud`,
+  `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`,
+  `cargo run --locked -p harness-kit-checks -- bootstrap`,
+  `dagger call check --source=.`
 - Repo-fit check: self-contained first-party skill under `skills/skillify/`.
 - Residual risk: Claude JSONL variants outside the MVP remain future work.
 
 ## Verification
 
-Run `python3 scripts/check-frontmatter.py` after CRUD output and `bash
-bootstrap.sh` before shipment; the generated skill must also pass
-`skills/skillify/scripts/skill-crud.py validate <name>`.
+Run `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`
+after CRUD output and `bash bootstrap.sh` before shipment; the generated skill
+must also pass
+`cargo run --locked -p harness-kit-checks -- skillify-skill-crud validate --name <name>`.

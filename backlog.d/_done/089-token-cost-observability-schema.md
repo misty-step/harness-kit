@@ -19,7 +19,7 @@ effective enough to justify their cost. Today:
   token counts, cost, or structured model details from the actual run.
 - `scripts/work-ledger.py` records `owning_skill` and phase status but not
   model/cost fields.
-- `harnesses/claude/hooks/skill-invocation-tracker.py` records skill name and
+- `harness-kit-checks claude-hook skill-invocation-tracker` records skill name and
   args but not harness, model, outcome, or usage.
 - `meta/config-schemas/flywheel.schema.yaml` already has `budget_tokens`, but
   there is no measured token feed to compare against.
@@ -59,7 +59,7 @@ roster default > unknown
 - `scripts/record-delegation.py` - manual receipt entrypoint.
 - `scripts/summarize-delegations.py` - operator-facing aggregation report.
 - `scripts/work-ledger.py` - phase lifecycle event store.
-- `harnesses/claude/hooks/skill-invocation-tracker.py` - skill event source.
+- `harness-kit-checks claude-hook skill-invocation-tracker` - skill event source.
 - `.harness-kit/examples/delegation-receipt.jsonl` and
   `.harness-kit/examples/work-ledger.jsonl` - schema fixtures.
 - `scripts/check-agent-roster.py` - current fixture/schema gate.

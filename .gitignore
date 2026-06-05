@@ -31,3 +31,6 @@ skills/.external/
 
 # Temporary cache files
 cache/
+
+# Rust build artifacts
+target/

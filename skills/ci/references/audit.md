@@ -76,7 +76,7 @@ not a quick fix. File backlog and defer.
 - `dagger.json` present and `dagger functions` enumerates a `check`
   entrypoint that composes all gates.
 - Pipeline code is tested (yes, the CI itself has tests). See the
-  Harness Kit repo's `ci/tests/` for the pattern.
+  Harness Kit repo's Rust gate modules for the pattern.
 - Each gate is a named function so it can be invoked in isolation
   for debugging: `dagger call lint-python`, `dagger call test-bun`, etc.
 

@@ -51,8 +51,8 @@ tests > schema/profile validation > code/scripts > integration guide > docs > lo
   pillars.
 - `skills/agent-readiness/references/profile-schema.yaml` - durable profile
   schema.
-- `skills/agent-readiness/scripts/profile-crud.py` - deterministic profile CRUD
-  and validation path.
+- `crates/harness-kit-checks/src/agent_readiness_profile.rs` - deterministic
+  profile CRUD and validation path.
 - `meta/INTEGRATION_GUIDE.md` - MCP/skill/CLI decision boundary for external
   systems.
 - `backlog.d/084-agent-readiness-sdlc-contract.md` - prior profile-contract
@@ -100,13 +100,13 @@ repeatable repo audit without choosing an integration mechanism too early.
 
 - Profile source: `.harness-kit/agent-readiness.yaml` if present, otherwise
   `missing`.
-- Stack feedback strength: strong; existing Python profile CRUD and shell tests
+- Stack feedback strength: strong; existing Rust profile CRUD tests
   can carry fixture validation.
 - ADR decision: not required; this is an extension of the existing readiness
   contract.
 - Infrastructure path: local profile schema and CLI validation.
-- Gate: `bash skills/agent-readiness/scripts/test-profile-crud.sh`,
-  `python3 scripts/check-agent-roster.py`, then `dagger call check --source=.`
+- Gate: `cargo test --workspace --locked agent_readiness_profile`,
+  `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, then `dagger call check --source=.`
 - Evidence storage: fixture profiles under `skills/agent-readiness/evals/` or
   the existing script test fixture path.
 - Mock policy impact: preserved; tests use local profile fixtures only.
@@ -141,14 +141,14 @@ repeatable repo audit without choosing an integration mechanism too early.
       `state_surfaces[]` entries with at least: `name`, `system_of_record`,
       `agent_access`, `source_path`, `verification_command`, `waiver`,
       `waiver_expires`.
-- [ ] `profile-crud.py validate` fails a fixture where `agent_access` is
+- [ ] `harness-kit-checks agent-readiness-profile validate` fails a fixture where `agent_access` is
       `admin-ui-only`, `cms-only`, or `unknown` without a non-expired waiver.
-- [ ] `profile-crud.py validate` passes a fixture where external state has an
+- [ ] `harness-kit-checks agent-readiness-profile validate` passes a fixture where external state has an
       MCP, CLI, API, or skill path plus an executable verification command.
 - [ ] The readiness report labels hidden state as readiness debt and points to
       `meta/INTEGRATION_GUIDE.md` for remediation.
-- [ ] `bash skills/agent-readiness/scripts/test-profile-crud.sh` passes.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo test --workspace --locked agent_readiness_profile` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Acceptance Evidence
@@ -156,7 +156,7 @@ repeatable repo audit without choosing an integration mechanism too early.
 - Acceptance source: profile schema fixture and profile validation command.
 - Evidence that proves it: failing and passing profile CRUD fixture tests.
 - Exact command/path/route exercised:
-  `bash skills/agent-readiness/scripts/test-profile-crud.sh`.
+  `cargo test --workspace --locked agent_readiness_profile`.
 - Contract-change acknowledgment: this intentionally expands the readiness
   profile contract to include source-legibility state.
 - Residual risk: a repo can still omit hidden systems from the profile; later
@@ -174,7 +174,8 @@ repeatable repo audit without choosing an integration mechanism too early.
 
 1. Add source-legibility fields to the profile schema with clear waiver expiry.
 2. Add positive and negative profile fixtures.
-3. Extend `profile-crud.py validate` and its shell self-test.
+3. Extend `harness-kit-checks agent-readiness-profile validate` and its Rust
+   tests.
 4. Add the readiness pillar text and remediation routing to the integration
    guide.
 5. Run the profile test, roster check, and full Dagger gate.

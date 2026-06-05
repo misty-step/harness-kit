@@ -114,7 +114,7 @@ Source: https://openrouter.ai/z-ai/glm-5.1
 Use the committed Pi provider id and override only the model:
 
 ```sh
-python3 scripts/dispatch-agent.py --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
+cargo run --locked -p harness-kit-checks -- dispatch-agent --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
 ```
 
 `--model-override` accepts a key from `.harness-kit/agents.yaml` `model_variants`

@@ -49,7 +49,7 @@ A codebase with poor feedback loops defeats any agent you throw at it.
 Assessment mode scores the repo. Profile mode manages the durable SDLC
 contract at `.harness-kit/agent-readiness.yaml`. Route `profile create`,
 `profile read`, `profile update`, `profile delete`, and `profile validate` to
-`scripts/profile-crud.py`; the schema lives in
+`cargo run --locked -p harness-kit-checks -- agent-readiness-profile`; the schema lives in
 `references/profile-schema.yaml`. Missing profiles degrade to assessment-only
 behavior, but stale, expired, blank, or placeholder-only waivers are invalid
 once a profile exists.
@@ -172,7 +172,8 @@ Present the before/after comparison.
 ### Phase 6: Persist Contract Delta
 
 When fixes or approved waivers change the durable readiness contract, update
-the profile with `scripts/profile-crud.py` and re-run `profile validate`.
+the profile with `harness-kit-checks agent-readiness-profile` and re-run
+`profile validate`.
 Report whether the profile was improved, preserved, or regressed. Regressions
 require an explicit contract-change note and waiver expiry.
 
@@ -184,7 +185,7 @@ require an explicit contract-change note and waiver expiry.
 | `--assess-only` | Assess and report only, no fixes |
 | `--fix` | Skip clarification, fix all top 5 recommendations |
 | `--pillar <name>` | Assess only the named pillar |
-| `profile <create|read|update|delete|validate>` | Manage `.harness-kit/agent-readiness.yaml` through `scripts/profile-crud.py` |
+| `profile <create|read|update|delete|validate>` | Manage `.harness-kit/agent-readiness.yaml` through `harness-kit-checks agent-readiness-profile` |
 
 ## Pillar Check Reference
 

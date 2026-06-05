@@ -15,13 +15,13 @@ Add new Dagger gates to `ci/src/harness_kit_ci/main.py` that replace Claude hook
 ## New Gates
 
 ### check-no-hardcoded-paths
-Replaces `portable-code-guard.py`. Scans shell scripts and config files for `/Users/<username>/` or `/home/<username>/` patterns. Excludes build artifacts.
+Replaces the Python `portable-code-guard` hook. Scans shell scripts and config files for `/Users/<username>/` or `/home/<username>/` patterns. Excludes build artifacts. A Rust Claude fallback remains available as `harness-kit-checks claude-hook portable-code-guard`.
 
 ### check-no-exclusion-shortcuts
-Replaces `exclusion-guard.py`. Scans for `@ts-ignore`, `eslint-disable`, `.skip`, `.xit`, `istanbul ignore`, `coverage exclude` patterns. Reports count and locations.
+Replaces the Python `exclusion-guard` hook. Scans for `@ts-ignore`, `eslint-disable`, `.skip`, `.xit`, `istanbul ignore`, `coverage exclude` patterns. Reports count and locations. A Rust Claude fallback remains available as `harness-kit-checks claude-hook exclusion-guard`.
 
 ### check-no-echo-pipe-env
-Replaces `env-var-newline-guard.py`. Scans for `echo ... | ... env add/set` patterns that corrupt secrets with trailing newlines.
+Replaces the Python `env-var-newline-guard` hook. Scans for `echo ... | ... env add/set` patterns that corrupt secrets with trailing newlines. A Rust Claude fallback remains available as `harness-kit-checks claude-hook env-var-newline-guard`.
 
 ### check-complexity-budget (optional, repos opt in)
 Reads `.harness-kit.yaml` complexity thresholds. Measures LOC per file, nesting depth. Warns on overages.

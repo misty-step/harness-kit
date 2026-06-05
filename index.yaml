@@ -1,6 +1,6 @@
 # Harness Kit Index
-# Generated: 2026-06-05T21:20:32Z
-# Do not edit manually. Run: ./scripts/generate-index.sh
+# Generated: 2026-06-05T21:33:32Z
+# Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
   - name: a11y

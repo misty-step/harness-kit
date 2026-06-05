@@ -23,23 +23,23 @@ Claude hooks are Claude-Code-specific, fire per tool use (expensive at agent vel
 |------|---------|--------|-------|
 | Hook | Current | Target | Status |
 |------|---------|--------|--------|
-| block-master-push.py | PreToolUse/Bash | **drop** | ✅ removed (not needed) |
-| check-todo-quality.py | PreToolUse/Edit | **skill instruction** | ✅ Torvalds Test in AGENTS.md |
-| codex-post-feedback.py | PostToolUse/Edit | **drop** | ✅ removed from settings.json |
-| codex-session-init.py | SessionStart | **drop** | ✅ removed from settings.json |
-| destructive-command-guard.py | PreToolUse/Bash | **keep** | ✅ Claude Code permission model |
-| disk-space-guard.py | PreToolUse/Bash | **drop** | ✅ runtime-only, Dagger handles containers |
-| env-var-newline-guard.py | PreToolUse/Bash | **drop** | ✅ interactive guard, not static-analysable |
-| exa-research-reminder.py | PreToolUse/WebSearch | **skill instruction** | ✅ Exa-first guidance in /research |
-| exclusion-guard.py | PreToolUse/Edit | **Dagger gate** | ✅ check_exclusions in main.py |
-| fix-what-you-touch.py | PreToolUse/Bash | **skill instruction** | ✅ expanded in AGENTS.md |
-| github-cli-guard.py | PreToolUse/Bash | **keep** | ✅ GH API deprecation workaround |
-| permission-auto-approve.py | PreToolUse/any | **keep** | ✅ Claude Code permission model |
-| portable-code-guard.py | PreToolUse/Edit+Bash | **Dagger gate** | ✅ check_portable_paths in main.py |
-| session-health-check.py | SessionStart | **drop** | ✅ removed from settings.json |
-| shaping-ripple.sh | PostToolUse/Edit | **skill instruction** | ✅ ripple-check in /shape |
-| stop-quality-gate.py | (unwired) | **Dagger gate** | ✅ covered by dagger call check |
-| time-context.py | SessionStart | **keep** | ✅ harness-specific context injection |
+| `harness-kit-checks claude-hook block-master-push` | PreToolUse/Bash | **unwired Rust fallback** | ✅ Python hook removed |
+| `harness-kit-checks claude-hook check-todo-quality` | PreToolUse/Edit | **skill instruction + Rust fallback** | ✅ Torvalds Test in AGENTS.md; Python hook removed |
+| `harness-kit-checks claude-hook codex-post-feedback` | PostToolUse/Edit | **unwired Rust fallback** | ✅ removed from settings.json; Python hook removed |
+| `harness-kit-checks claude-hook codex-session-init` | SessionStart | **unwired Rust fallback** | ✅ removed from settings.json; Python hook removed |
+| `harness-kit-checks claude-hook destructive-command-guard` | PreToolUse/Bash | **keep** | ✅ Claude Code permission model |
+| `harness-kit-checks claude-hook disk-space-guard` | PreToolUse/Bash | **unwired Rust fallback** | ✅ Python hook removed |
+| `harness-kit-checks claude-hook env-var-newline-guard` | PreToolUse/Bash | **unwired Rust fallback** | ✅ Python hook removed |
+| `harness-kit-checks claude-hook exa-research-reminder` | PreToolUse/WebSearch | **skill instruction + Rust fallback** | ✅ Exa-first guidance in /research; Python hook removed |
+| `harness-kit-checks claude-hook exclusion-guard` | PreToolUse/Edit | **Dagger gate + Rust fallback** | ✅ check_exclusions in Rust; Python hook removed |
+| `harness-kit-checks claude-hook fix-what-you-touch` | PreToolUse/Bash | **skill instruction + Rust fallback** | ✅ expanded in AGENTS.md; Python hook removed |
+| `harness-kit-checks claude-hook github-cli-guard` | PreToolUse/Bash | **keep** | ✅ GH API deprecation workaround |
+| `harness-kit-checks claude-hook permission-auto-approve` | PreToolUse/any | **keep** | ✅ Claude Code permission model |
+| `harness-kit-checks claude-hook portable-code-guard` | PreToolUse/Edit+Bash | **Dagger gate + Rust fallback** | ✅ check_portable_paths in Rust; Python hook removed |
+| `harness-kit-checks claude-hook session-health-check` | SessionStart | **unwired Rust fallback** | ✅ removed from settings.json; Python hook removed |
+| `harness-kit-checks claude-hook shaping-ripple` | PostToolUse/Edit | **skill instruction + Rust fallback** | ✅ ripple-check in /shape; shell hook removed |
+| `harness-kit-checks claude-hook stop-quality-gate` | (unwired) | **Dagger gate + Rust fallback** | ✅ covered by dagger call check; Python hook removed |
+| `harness-kit-checks claude-hook time-context` | SessionStart | **keep** | ✅ harness-specific context injection |
 
 ## Oracle
 - [x] All "Dagger gate" hooks have equivalent checks in `ci/src/harness_kit_ci/main.py`
@@ -53,6 +53,5 @@ Claude hooks are Claude-Code-specific, fire per tool use (expensive at agent vel
 All 17 hooks triaged and migrated:
 - **2 Dagger gates** added: `check_exclusions` (TS/lint/test exclusions), `check_portable_paths` (hardcoded home paths)
 - **4 skill instructions** migrated: Torvalds Test (AGENTS.md), fix-what-you-touch (AGENTS.md), Exa-first (/research), ripple-check (/shape)
-- **6 hooks dropped**: codex-post-feedback, codex-session-init, session-health-check, block-master-push, disk-space-guard, env-var-newline-guard
-- **4 hooks kept**: destructive-command-guard, github-cli-guard, permission-auto-approve, time-context (Claude Code-specific, no harness-agnostic equivalent)
-- **1 already covered**: stop-quality-gate (by `dagger call check`)
+- **0 hooks dropped without a Rust fallback**
+- **17 Rust hooks kept or available**: block-master-push, check-todo-quality, codex-post-feedback, codex-session-init, destructive-command-guard, disk-space-guard, env-var-newline-guard, exa-research-reminder, exclusion-guard, fix-what-you-touch, github-cli-guard, permission-auto-approve, portable-code-guard, session-health-check, shaping-ripple, stop-quality-gate, time-context

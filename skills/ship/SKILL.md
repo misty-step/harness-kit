@@ -87,7 +87,7 @@ Assert at start; refuse with a clear reason on any miss.
 
 When `.harness-kit/work/ledger.jsonl` is available, `/ship` consumes the latest
 completed `/deliver` record for the closing backlog/branch. It calls
-`scripts/work-ledger.py append` for `phase_started` at final-mile start,
+`cargo run --locked -p harness-kit-checks -- work-ledger append` for `phase_started` at final-mile start,
 `next_action_changed` after merge while trace/reflect remains, `blocker_added`
 on a refuse condition, and `phase_completed` with `status=completed` after
 trailers, trace handoff, reflect, and follow-up mutations are done.
@@ -110,7 +110,7 @@ every `Refs-backlog:` value (reference-only). Merge with the primary ID.
 - **Reference set:** Refs-backlog values. Noted in the final report, never
   archived.
 
-Prefer `backlog_ids_from_range master..HEAD` from `scripts/lib/backlog.sh`
+Prefer `cargo run --locked -p harness-kit-checks -- backlog ids-from-range master..HEAD`
 when available.
 
 ### 2. Archive backlog files on the shipping branch
@@ -118,8 +118,7 @@ when available.
 For each ID in the closing set:
 
 ```sh
-source scripts/lib/backlog.sh
-backlog_archive "<id>"
+cargo run --locked -p harness-kit-checks -- backlog archive "<id>"
 ```
 
 This performs `git mv backlog.d/<id>-*.md backlog.d/_done/`. Stage the
@@ -163,15 +162,12 @@ for id in $CLOSING_IDS; do
         --if-exists addIfDifferent \
         --trailer "Closes-backlog: $id")"
 done
-if [ -f scripts/lib/evidence.sh ]; then
-  source scripts/lib/evidence.sh
-  evidence="$(evidence_trailer "$(evidence_dir)" 2>/dev/null || true)"
-  if [ -n "$evidence" ]; then
-    msg="$(printf '%s' "$msg" \
-      | git interpret-trailers \
-          --if-exists addIfDifferent \
-          --trailer "$evidence")"
-  fi
+evidence="$(cargo run --quiet --locked -p harness-kit-checks -- evidence trailer 2>/dev/null || true)"
+if [ -n "$evidence" ]; then
+  msg="$(printf '%s' "$msg" \
+    | git interpret-trailers \
+        --if-exists addIfDifferent \
+        --trailer "$evidence")"
 fi
 git commit -m "$msg"
 ```
@@ -232,7 +228,7 @@ After the merge SHA is known, write or link the final work record. Preferred
 local form:
 
 ```sh
-python3 skills/trace/scripts/trace_record.py append \
+cargo run --locked -p harness-kit-checks -- trace-record append \
   --backlog "<primary-id>" \
   --branch "<pre-merge-branch>" \
   --commit "<branch-head-before-merge>" \
@@ -321,7 +317,7 @@ Emit a single block covering:
   work, why each was dispatched, parallel/split/competing-worktree pattern,
   provider_status and attempt_status totals, lead_verdict totals, accepted
   synthesis, rejected or failed lanes, and any waiver/exception. Prefer
-  `scripts/summarize-delegations.py --format text` scoped to the closing
+	  `cargo run --locked -p harness-kit-checks -- summarize-delegations --format text` scoped to the closing
   backlog ref when receipts exist.
 - Residual risk or follow-ups, if any.
 
@@ -332,7 +328,7 @@ Stop and surface to the user instead of shipping:
 - Branch name doesn't match `^(type)/(\d+)-` — no primary ID extractable.
 - Working tree dirty.
 - On `master` / `main` directly.
-- Verdict ref reads `dont-ship` (`verdict_check_landable` returns 2).
+- Verdict ref reads `dont-ship` (`harness-kit-checks verdict check-landable` returns 2).
 - No same-HEAD landability evidence exists: no green PR checks, no
   landable verdict, and no operator-provided/current-session local gate
   receipt.
@@ -358,7 +354,7 @@ Stop and surface to the user instead of shipping:
 ## Trailer Conventions
 
 Every ticket closure flows through git trailers. Keys recognized by
-`scripts/lib/backlog.sh`:
+`harness-kit-checks backlog trailer-keys`:
 
 - `Closes-backlog: <id>` — closes the ticket (archival intent).
 - `Ships-backlog: <id>` — synonym for Closes-backlog, closes the ticket.
@@ -411,7 +407,8 @@ the merge. Behavior is otherwise identical: squash-only, trailer-preserving.
 - **All trailers live in ONE contiguous block at the end of the message.**
   A blank line between `Closes-backlog: NNN` lines and `Co-Authored-By:`
   splits the block; `git interpret-trailers --parse` only recognizes
-  the last block, so downstream `backlog_ids_from_commit` returns empty.
+  the last block, so downstream `harness-kit-checks backlog ids-from-commit`
+  returns empty.
   Use `git interpret-trailers --if-exists addIfDifferent --trailer "..."`
   to inject programmatically — it handles block boundaries correctly.
 - **Archive before merge, not after.** Archiving on master after the
@@ -457,6 +454,7 @@ re-enable shipping.
 
 ## Verification
 
-Run `python3 scripts/check-agent-roster.py` and
-`python3 scripts/check-evidence-blocks.py skills`; semantic proof is the
+Run `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`
+and `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills`;
+semantic proof is the
 actual merge/backlog/archive/reflect receipt for the shipped branch.

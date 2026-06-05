@@ -187,5 +187,5 @@ When routing a task, state:
 
 Semantic waiver: this router selects external browser tooling per target app
 and cannot be proven by a repo-local static fixture today. Validate source
-shape with `python3 scripts/check-frontmatter.py`; workflow correctness is
+shape with `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`; workflow correctness is
 proven by the consuming `/qa` or app-specific browser test artifact.

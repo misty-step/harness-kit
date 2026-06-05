@@ -1,6 +1,6 @@
 # Autoreview Helper
 
-`scripts/autoreview` is the structured single-bundle review helper vendored
+`harness-kit-checks autoreview` is the structured single-bundle review helper vendored
 from OpenClaw `agent-skills` and adapted for Harness Kit base-branch discovery.
 It is a review engine path inside `/code-review`, not a second review owner.
 
@@ -23,31 +23,31 @@ the reviewed bundle.
 Dirty local patch:
 
 ```bash
-skills/code-review/scripts/autoreview --mode local
+harness-kit-checks autoreview --mode local
 ```
 
 Branch or PR work:
 
 ```bash
-skills/code-review/scripts/autoreview --mode branch --base origin/master
+harness-kit-checks autoreview --mode branch --base origin/master
 ```
 
 Committed change:
 
 ```bash
-skills/code-review/scripts/autoreview --mode commit --commit HEAD
+harness-kit-checks autoreview --mode commit --commit HEAD
 ```
 
 Structured result:
 
 ```bash
-skills/code-review/scripts/autoreview --mode branch --base origin/master --json-output .evidence/review/autoreview.json
+harness-kit-checks autoreview --mode branch --base origin/master --json-output .evidence/review/autoreview.json
 ```
 
 Optional focused tests may run in parallel with the review:
 
 ```bash
-skills/code-review/scripts/autoreview --mode local --parallel-tests "cargo test"
+harness-kit-checks autoreview --mode local --parallel-tests "cargo test"
 ```
 
 If review-triggered fixes change code, rerun the focused proof and rerun the

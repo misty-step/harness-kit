@@ -294,7 +294,7 @@ generated-image documentation, public docs, workflow-diagram, or reader-facing
 handoff requirements, render a static HTML handoff after the context packet:
 
 ```sh
-python3 skills/shape/scripts/render_context_packet_doc.py <packet-or-backlog.md> \
+cargo run --locked -p harness-kit-checks -- shape-render <packet-or-backlog.md> \
   --output .evidence/shape-<id>/context-packet.html
 ```
 

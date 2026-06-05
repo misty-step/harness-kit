@@ -100,7 +100,7 @@ auditable.
   packet fixtures.
 - ADR decision: not required.
 - Infrastructure path: local skill prose plus fixture checker.
-- Gate: shape fixture self-test, `python3 scripts/check-agent-roster.py`, then
+- Gate: shape fixture self-test, `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, then
   `dagger call check --source=.`
 - Evidence storage: shape fixture packets under `skills/shape/evals/` or
   equivalent.
@@ -133,7 +133,7 @@ auditable.
       passes the checker.
 - [ ] `skills/shape/SKILL.md` distinguishes premise source from acceptance
       evidence.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Acceptance Evidence
@@ -142,7 +142,7 @@ auditable.
 - Evidence that proves it: checker rejects missing/mismatched premise source
   and accepts valid hash/path.
 - Exact command/path/route exercised: implementation should add a deterministic
-  self-test command, such as `bash skills/shape/evals/check-premise-source.sh`.
+  self-test command, such as `cargo run --quiet --locked -p harness-kit-checks -- premise-source self-test`.
 - Oracle / acceptance artifact hash for this shaping input:
   `sha256:ff278d4ed3965ca36f2eb50dbac6712afee2ea6b3060a5a119cd39825198139c`
   `/Users/phaedrus/.codex/attachments/57bc8d3e-9224-4126-b3ec-298e9fe1cb15/pasted-text.txt`.

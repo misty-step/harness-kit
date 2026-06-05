@@ -66,7 +66,7 @@ Rules:
 Use the validator:
 
 ```bash
-python3 skills/reflect/scripts/checkpoint.py validate \
+cargo run --quiet --locked -p harness-kit-checks -- reflect-checkpoint validate \
   .harness-kit/reflect/checkpoints/<topic>.json \
   --gate <topic> \
   --packet <packet-or-backlog.md>
@@ -80,7 +80,7 @@ operator restatement, and empty gaps.
 Run the self-test before relying on this mode:
 
 ```bash
-python3 skills/reflect/scripts/checkpoint.py --self-test
+cargo run --quiet --locked -p harness-kit-checks -- reflect-checkpoint --self-test
 ```
 
 ## Privacy Boundary

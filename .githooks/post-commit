@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-# Re-link skills/agents after commit when skill content changes.
-# Covers the "create new skill, commit, it should appear" case.
-# Bootstrap is fast (<1s) and idempotent.
-
-bootstrap_relevant_changed() {
-  git diff --name-only HEAD~1 HEAD 2>/dev/null |
-    grep -q '^\(skills/\|agents/\|harnesses/\|\.githooks/\|bootstrap\.sh$\)'
-}
-
-bootstrap_relevant_changed || exit 0
-
-echo "[post-commit] Harness Kit harness content changed — re-linking"
-./bootstrap.sh
+set -euo pipefail
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+if command -v harness-kit-checks >/dev/null 2>&1; then
+  exec harness-kit-checks git-hook post-commit "$@"
+fi
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook post-commit "$@"
+fi
+echo "post-commit: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2
+exit 1

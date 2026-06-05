@@ -181,7 +181,7 @@ checklist and links to the source files that make the claim true.
 Likely files:
 
 - `scripts/build-docs-site.sh`
-- `scripts/build-docs-site.py`
+- `harness-kit-checks build-docs-site`
 - `scripts/check-docs-site.sh`
 - `docs/site/**` generated static output
 - `ci/src/harness_kit_ci/main.py` for `check-docs-site`

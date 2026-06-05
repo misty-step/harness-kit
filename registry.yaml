@@ -2,8 +2,8 @@
 #
 # Skills and agents are discovered from the filesystem (skills/*/SKILL.md,
 # agents/*.md). This file lists third-party sources that feed:
-#   1. scripts/sync-external.sh  → installs into skills/.external/<alias>/
-#   2. scripts/generate-embeddings.py  → builds the semantic search index
+#   1. harness-kit-checks sync-external → installs into skills/.external/<alias>/
+#   2. harness-kit-checks generate-embeddings → builds the semantic search index
 #
 # Schema (per source):
 #   repo:          <org>/<repo>          required. GitHub path.
@@ -25,7 +25,7 @@
 #                                        (main/HEAD/branch). Default: refuse.
 #   embeddings:    true | false          default true. Include in embeddings index.
 #   active:        true | false          default true. false = declared but skipped
-#                                        by sync-external.sh. Use for "defer" sources.
+#                                        by sync-external. Use for "defer" sources.
 #
 # ALIAS_PREFIX DOCTRINE
 # Every non-default source MUST declare alias_prefix. External libraries have
@@ -75,7 +75,7 @@ sources:
     include: [agent-browser]
 
   # Same repo, second entry — `dogfood` skill lives under `skill-data/`, not
-  # `skills/`. sync-external.sh only scans one path per entry, so we split.
+  # `skills/`. sync-external only scans one path per entry, so we split.
   - repo: vercel-labs/agent-browser
     ref: main
     pin: 4cc6ca40b76a590bb06d1ec5abc16d27bb7d43c0

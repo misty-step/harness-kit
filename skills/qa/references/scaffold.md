@@ -172,9 +172,9 @@ argument-hint: "[url|route|PR-number]"
 [Evidence strategy from design phase]
 
 Evidence goes to \`.evidence/<branch>/<date>/\` through
-\`scripts/lib/evidence.sh\` when present. If the repo has no helper yet, create
-that directory convention in the project-local QA skill and keep captures
-git-native.
+\`harness-kit-checks evidence create\` when present. If the repo has no helper
+yet, create that directory convention in the project-local QA skill and keep
+captures git-native.
 
 ## Output
 

@@ -9,7 +9,7 @@ Estimate: S
 Decide fate of `.agents/skills/curate/SKILL.md` + `.claude/skills/curate/SKILL.md`.
 Both predate the `.harness-kit` marker convention (`installed-by: tailor`) and
 are not in the canonical `skills/` catalog. They reference `scripts/
-generate-embeddings.py`, which still exists.
+`harness-kit-checks generate-embeddings`, which replaced the old Python generator.
 
 ## Outcome
 

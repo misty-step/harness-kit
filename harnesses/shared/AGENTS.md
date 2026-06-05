@@ -28,6 +28,12 @@ larger. Match existing patterns before inventing abstractions. No shallow
 pass-throughs, speculative abstractions, hidden coupling, or semantic wrappers
 around general agents.
 
+### Rust by default
+Durable software is Rust unless a specific platform boundary makes another
+language unavoidable. Treat every non-Rust implementation as an exception:
+name the constraint before coding, keep the non-Rust surface tiny, and do not
+add mixed-language seams without a concrete payoff.
+
 ### TDD: red, green, refactor
 For behavior changes, write the failing test first. Make it pass. Then
 simplify. For prose, gates, and harness doctrine, identify the failing

@@ -43,7 +43,7 @@ fields in the merge-ready block below.
 ## Work Ledger
 
 When `.harness-kit/work/ledger.jsonl` is available, `/deliver` calls
-`scripts/work-ledger.py append` at transition points: `phase_started` for
+`cargo run --locked -p harness-kit-checks -- work-ledger append` at transition points: `phase_started` for
 `shape`, `implement`, `review`, `ci`, `qa`, and `reflect`; `blocker_added`
 when a phase fails; `phase_completed` with `status=completed` when the branch
 is merge-ready. On `--resume`, consume the latest record for the same
@@ -56,7 +56,8 @@ If `.harness-kit/agent-readiness.yaml` exists, read it before the clean loop
 and report `readiness_delta` in `receipt.json`: `improved`, `preserved`, or
 `regressed`. Regressions require a `contract_change_note` and a valid profile
 waiver with future expiry. If the profile changes, run
-`skills/agent-readiness/scripts/profile-crud.py validate` before merge-ready.
+`cargo run --locked -p harness-kit-checks -- agent-readiness-profile validate`
+before merge-ready.
 
 ## Closeout Contract
 
@@ -81,7 +82,7 @@ The delivery brief must answer:
   parallel or as competing worktree attempts, what each did well or poorly,
   what was accepted into the final synthesis, what failed or was rejected,
   and any waiver/exception. Ground this in
-  `scripts/summarize-delegations.py --format text` plus receipt ids or
+  `cargo run --locked -p harness-kit-checks -- summarize-delegations --format text` plus receipt ids or
   evidence paths, not raw transcripts.
 - What exact end-user behavior changed; for internal-only work, what
   developer/operator behavior changed.
@@ -210,7 +211,7 @@ no fresh ticket, no `/shape`, no `/implement`.
   It never re-implements a phase — the hard invariant still holds.
 - **PR mode.** When the target is a PR number (or `gh pr view` succeeds), the
   clean loop ingests full PR review bodies via
-  `scripts/fetch-pr-reviews.sh` and remote check state via `gh pr checks`
+  `cargo run --locked -p harness-kit-checks -- fetch-pr-reviews` and remote check state via `gh pr checks`
   before `/code-review`, and dispositions every comment (fix / defer to
   `backlog.d/` / reject-after-steelman, one at a time). Full protocol:
   `references/polish-only.md` + `references/pr-fix.md`.
@@ -338,7 +339,7 @@ Full protocol: `references/durability.md`.
 
 ## Verification
 
-Run `python3 scripts/check-agent-roster.py`,
-`python3 scripts/check-evidence-blocks.py skills`, and Dagger gate
-`check-deliver-composition` to prove the composer contract, roster floor, and
-completion evidence template stay intact.
+Run `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`,
+`cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills`, and
+Dagger gate `check-deliver-composition` to prove the composer contract, roster
+floor, and completion evidence template stay intact.

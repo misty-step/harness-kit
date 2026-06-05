@@ -70,7 +70,7 @@ inside generic residual risk.
 ## Work Ledger
 
 When `.harness-kit/work/ledger.jsonl` is available, `/qa` calls
-`scripts/work-ledger.py append` with `phase_started` at QA start,
+`cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` at QA start,
 `next_action_changed` when evidence is captured, `blocker_added` for failed or
 unverified critical paths, and `phase_completed` when QA passes or is waived.
 Each event links evidence refs and any trace refs already known.
@@ -145,8 +145,7 @@ Shaped by Step 0. Pick the matching sub-protocol.
 Set evidence root before capture:
 
 ```bash
-source scripts/lib/evidence.sh 2>/dev/null || true
-EVIDENCE_DIR="$(evidence_dir_create 2>/dev/null || printf '.evidence/manual/%s/\n' "$(date -u +%Y-%m-%d)")"
+EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create 2>/dev/null || printf '.evidence/manual/%s/\n' "$(date -u +%Y-%m-%d)")"
 mkdir -p "$EVIDENCE_DIR"
 ```
 

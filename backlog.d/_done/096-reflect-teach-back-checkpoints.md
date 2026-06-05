@@ -101,7 +101,7 @@ it matters without turning every run into pedagogy.
   checker.
 - ADR decision: not required.
 - Infrastructure path: local JSON/Markdown artifact and checker command.
-- Gate: checkpoint self-test, `python3 scripts/check-agent-roster.py`, then
+- Gate: checkpoint self-test, `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, then
   `dagger call check --source=.`
 - Evidence storage: `.harness-kit/reflect/checkpoints/` or fixture examples
   under `skills/reflect/evals/`.
@@ -134,7 +134,7 @@ it matters without turning every run into pedagogy.
 - [ ] The artifact records `topic`, `source_refs`, `question`, short
       `operator_restatement`, `lead_verdict`, `gaps`, `next_action`, and
       timestamp.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Acceptance Evidence
@@ -143,8 +143,7 @@ it matters without turning every run into pedagogy.
 - Evidence that proves it: validator accepts a passing checkpoint and rejects
   missing/partial/failing checkpoint cases under gate mode.
 - Exact command/path/route exercised: implementation should add a deterministic
-  self-test command, such as `python3 skills/reflect/scripts/checkpoint.py
-  --self-test`.
+  self-test command, such as `cargo run --quiet --locked -p harness-kit-checks -- reflect-checkpoint --self-test`.
 - Oracle / acceptance artifact hash:
   `sha256:c52adc36e5ab7b5941addb62051b5b5cd3633f75bcafcd1c0d5ef819ca046bd5`
   `/Users/phaedrus/Desktop/HJwSCWMa4AAWI5Q.jpg`.

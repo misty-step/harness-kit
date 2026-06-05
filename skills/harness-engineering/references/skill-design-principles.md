@@ -35,8 +35,10 @@ contract.
 4. Move detail into references/scripts/assets/templates when it is repeatable.
 5. Tighten description triggers and aliases before changing body prose.
 6. Convert any repeated gotcha into a script, hook, eval, or gate when feasible.
-7. Run the narrow validator plus `python3 scripts/check-frontmatter.py` and
-   `python3 scripts/check-agent-roster.py`; use Dagger before shipment.
+7. Run the narrow validator plus
+   `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .` and
+   `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`;
+   use Dagger before shipment.
 
 ## Catalog-Wide Application
 

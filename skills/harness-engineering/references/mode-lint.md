@@ -7,7 +7,7 @@ Validate a skill against quality gates.
 | Gate | Check | Fix |
 |------|-------|-----|
 | **Description triggers** | Does description include trigger phrases? | Add "Use when:" with concrete phrases |
-| **Trigger alias** | Does description include `Trigger:` aliases? | Add explicit slash commands or natural-language aliases; `scripts/check-frontmatter.py` enforces this. |
+| **Trigger alias** | Does description include `Trigger:` aliases? | Add explicit slash commands or natural-language aliases; `harness-kit-checks check-frontmatter` enforces this. |
 | **Clean category** | Does the skill own one clear category: reference, verification, analysis, process automation, scaffold, review, CI/CD, runbook, or ops? | Split or compose instead of letting one skill straddle unrelated workflows. |
 | **Size** | SKILL.md < 500 lines? | Extract to references/ |
 | **Gotchas** | Does it enumerate failure modes? | Add a gotchas section |
@@ -19,7 +19,7 @@ Validate a skill against quality gates.
 | **Mode bloat** | >4 modes with inline content, or any single mode >60 lines inline? | Extract mode content to references/mode-*.md; use router pattern (see /diagnose, /settle) |
 | **Reference integrity** | Do all referenced local files in routing tables, gotchas, and examples exist? | Create the missing file, fix the path, or delete the stale reference |
 | **Self-containment** | Do scripts source only paths under `skills/<name>/`? Do they resolve `SCRIPT_DIR` via `readlink -f` and `STATE_ROOT` from the invoking project? | Move shared libs into the skill tree; rewrite source paths to use `$SCRIPT_DIR/lib/…`; decouple state root from script dir. |
-| **Delegation floor** | For substantial workflow skills, does `## Delegation Floor` include roster floor, direct-work exceptions, lane responsibilities, context boundary, output/evidence contract, and lead verification? | Add the missing contract terms, or state why the skill is not a substantive workflow skill. Validate with `python3 scripts/check-agent-roster.py`. |
+| **Delegation floor** | For substantial workflow skills, does `## Delegation Floor` include roster floor, direct-work exceptions, lane responsibilities, context boundary, output/evidence contract, and lead verification? | Add the missing contract terms, or state why the skill is not a substantive workflow skill. Validate with `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`. |
 
 ## Delegation floor lint
 
@@ -27,7 +27,7 @@ Run the committed roster audit before approving harness or workflow-skill
 changes:
 
 ```bash
-python3 scripts/check-agent-roster.py
+cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .
 ```
 
 The check flags substantial workflow skills that lack a delegation floor, have

@@ -13,8 +13,8 @@ claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --m
 ```
 
 The roster entry should stay thin: launch Claude, provide the scoped prompt,
-and let `scripts/dispatch-agent.py` capture transcript evidence and write a
-sanitized receipt. Do not encode workflow semantics in the command.
+and let `harness-kit-checks dispatch-agent` capture transcript evidence and
+write a sanitized receipt. Do not encode workflow semantics in the command.
 
 ## Dynamic Delegation Notes
 

@@ -8,7 +8,7 @@ one authoritative, the other heuristic.
 If present, this file is the single source of truth. `/deploy` will
 not probe further.
 
-Validate with `scripts/load-harness-kit-config.py deploy --repo <repo>`.
+Validate with `harness-kit-checks load-config deploy --repo <repo>`.
 The executable schema is mirrored in
 `meta/config-schemas/deploy.schema.yaml`; malformed config fails before
 target detection or deploy commands run. `--optional` returns `{}` when the

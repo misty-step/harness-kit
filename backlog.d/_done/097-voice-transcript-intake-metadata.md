@@ -67,7 +67,7 @@ redacted artifact > metadata fields > source hash > agent summary > lore
 - Stack feedback strength: medium; fixture markdown/JSON validation is enough.
 - ADR decision: not required.
 - Infrastructure path: schema/reference first, optional script later.
-- Gate: metadata fixture self-test, `python3 scripts/check-agent-roster.py`,
+- Gate: metadata fixture self-test, `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`,
   then `dagger call check --source=.`
 - Evidence storage: fixture artifacts under `skills/agent-transcript/evals/` or
   `skills/shape/evals/`.
@@ -101,7 +101,7 @@ redacted artifact > metadata fields > source hash > agent summary > lore
       explicitly set to `unknown`.
 - [ ] 095's premise source guidance references this metadata shape as the path
       for voice-derived premise artifacts.
-- [ ] `python3 scripts/check-agent-roster.py` passes.
+- [ ] `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` passes.
 - [ ] `dagger call check --source=.` passes.
 
 ## Acceptance Evidence
