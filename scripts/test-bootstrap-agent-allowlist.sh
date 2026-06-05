@@ -109,7 +109,7 @@ ln -s "$ROOT/agents" "$HOME/.codex/agents"
 mkdir -p "$HOME/.claude/hooks/__pycache__"
 ln -s "$ROOT/harnesses/claude/hooks" "$HOME/.claude/hooks/__pycache__/hooks"
 mkdir -p "$ROOT/skills/.external/test-external-skill"
-trap 'rm -rf "$TMP" "$ROOT/skills/.external/test-external-skill"' EXIT
+trap 'rm -rf "$TMP" "$ROOT/skills/.external/test-external-skill" "$ROOT/skills/.external/a11y"' EXIT
 cat > "$ROOT/skills/.external/test-external-skill/SKILL.md" <<'DOC'
 ---
 name: test-external-skill
@@ -170,6 +170,27 @@ fi
 
 if ! grep -q "test-external-skill" "$TMP/bootstrap-2.out"; then
   echo "bootstrap summary should include synced external skills" >&2
+  exit 1
+fi
+
+mkdir -p "$ROOT/skills/.external/a11y"
+cat > "$ROOT/skills/.external/a11y/SKILL.md" <<'DOC'
+---
+name: a11y
+description: Collision fixture.
+---
+
+# Collision Fixture
+DOC
+
+if HARNESS_KIT_DIR="$ROOT" bash "$ROOT/bootstrap.sh" >"$TMP/bootstrap-collision.out" 2>&1; then
+  echo "bootstrap should fail on skill name collision" >&2
+  exit 1
+fi
+
+if ! grep -q "skill name collision: a11y" "$TMP/bootstrap-collision.out"; then
+  echo "bootstrap collision failure should name the duplicate skill" >&2
+  cat "$TMP/bootstrap-collision.out" >&2
   exit 1
 fi
 

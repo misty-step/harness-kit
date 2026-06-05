@@ -465,18 +465,32 @@ discover_local() {
   GLOBAL_SKILL_PATHS=()
   GLOBAL_AGENTS=()
 
+  add_global_skill() {
+    local name="$1"
+    local path="$2"
+    local i
+
+    for i in "${!GLOBAL_SKILLS[@]}"; do
+      if [ "${GLOBAL_SKILLS[$i]}" = "$name" ]; then
+        err "skill name collision: $name ($path conflicts with ${GLOBAL_SKILL_PATHS[$i]})"
+        exit 1
+      fi
+    done
+
+    GLOBAL_SKILLS+=("$name")
+    GLOBAL_SKILL_PATHS+=("$path")
+  }
+
   for skill in "$HARNESS_KIT"/skills/*; do
     [ -d "$skill" ] || continue
     [ -f "$skill/SKILL.md" ] || continue
-    GLOBAL_SKILLS+=("$(basename "$skill")")
-    GLOBAL_SKILL_PATHS+=("$skill")
+    add_global_skill "$(basename "$skill")" "$skill"
   done
 
   for external_skill in "$HARNESS_KIT"/skills/.external/*; do
     [ -d "$external_skill" ] || continue
     [ -f "$external_skill/SKILL.md" ] || continue
-    GLOBAL_SKILLS+=("$(basename "$external_skill")")
-    GLOBAL_SKILL_PATHS+=("$external_skill")
+    add_global_skill "$(basename "$external_skill")" "$external_skill"
   done
 
   for agent in "$HARNESS_KIT"/agents/*.md; do
@@ -745,7 +759,7 @@ ok "Done. Installed to $installed harness(es)."
 echo
 info "Skills (${#GLOBAL_SKILLS[@]}): ${GLOBAL_SKILLS[*]}"
 info "Agents (${#GLOBAL_AGENTS[@]}): ${GLOBAL_AGENTS[*]}"
-info "All first-party skills are installed system-wide for each detected harness."
+info "All discovered skills are installed system-wide for each detected harness."
 echo
 if [ -n "$HARNESS_KIT" ]; then
   info "Mode: symlink (edits in $HARNESS_KIT propagate instantly)"

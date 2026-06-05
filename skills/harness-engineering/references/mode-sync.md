@@ -1,14 +1,30 @@
 # /harness-engineering sync
 
-Pull primitives from harness-kit into project-local harness directories.
+Synchronize external skill exemplars into Harness Kit without making them
+first-party source.
 
-## How it works
+## Source Of Truth
 
-Reads `.harness-kit.yaml`, pulls declared skills/agents from GitHub into
-project-local harness directories. When a local harness-kit checkout exists,
-uses symlinks instead (edits propagate instantly).
+`registry.yaml` declares external sources, pins, paths, include/exclude filters,
+and alias prefixes. Do not hand-edit `skills/.external/`; it is gitignored
+machine state owned by `scripts/sync-external.sh`.
 
-## Marker file convention
+## Lifecycle
 
-Managed primitives have a `.harness-kit` marker file.
-/harness-engineering sync only touches directories with this marker.
+1. `scripts/sync-external.sh` fetches pinned sources and installs selected
+   skills under `skills/.external/<alias>/`.
+2. `bootstrap.sh` projects first-party `skills/*` and synced
+   `skills/.external/*` into each detected harness as ordinary skill names.
+3. `scripts/lint-external-skills.sh --strict` checks imported skills are
+   self-contained enough to expose.
+
+Partial sync with `--only <repo>` is scoped: it may add/update aliases for that
+source, but it must not prune unrelated external skills. Full sync owns orphan
+cleanup.
+
+## Design Rule
+
+Imported skills are external exemplars/tools. Keep source ownership in the alias
+(`vercel-*`, `every-*`) unless a shaped ticket proves the behavior belongs in a
+first-party Harness Kit primitive. Bootstrap must fail on global skill-name
+collisions instead of relying on projection order.

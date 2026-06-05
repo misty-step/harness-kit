@@ -23,8 +23,8 @@ if matches 'GLOBAL_SKILLS=\(tailor seed\)|minimal global|/tailor or /seed|per-re
   fail "global install docs/scripts must not describe the retired minimal tailor/seed model"
 fi
 
-if ! matches 'All first-party skills are installed system-wide' bootstrap.sh; then
-  fail "bootstrap must report the all-first-party-skills system-wide install contract"
+if ! matches 'All discovered skills are installed system-wide' bootstrap.sh; then
+  fail "bootstrap must report the system-wide projection contract for first-party and synced external skills"
 fi
 
 if ! matches 'install_system_roster|~/.harness-kit/agents.yaml|\\$HOME/.harness-kit' bootstrap.sh; then
@@ -41,7 +41,7 @@ if ! matches 'HARNESS_KIT_ROSTER|system_harness_kit_dir|\\.harness-kit.*agents.y
 fi
 
 if ! matches '\+skills/\*\*' harnesses/pi/settings.json; then
-  fail "Pi settings must allow all globally installed first-party skills"
+  fail "Pi settings must allow all globally installed skills"
 fi
 
 if [ "${#failures[@]}" -gt 0 ]; then
