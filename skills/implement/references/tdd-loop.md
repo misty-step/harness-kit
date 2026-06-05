@@ -21,6 +21,24 @@ Red → Green → Refactor → Commit. The only loop.
 
 Then: next behavior, next red. Never two reds in a row.
 
+## Vertical, Not Horizontal
+
+Do not treat RED as "write every test" and GREEN as "write all code." That
+horizontal slice outruns the feedback loop: tests start describing imagined
+structure, failures blur together, and green can mask behavior that was never
+exercised.
+
+Correct TDD is vertical:
+
+```text
+RED -> GREEN -> REFACTOR: behavior 1
+RED -> GREEN -> REFACTOR: behavior 2
+RED -> GREEN -> REFACTOR: behavior 3
+```
+
+Each test responds to what the last cycle taught you. If several tests are red
+at once, stop and shrink the cycle until one behavior has one clear failure.
+
 ## One behavior per test
 
 A test asserts one observable behavior. If you find yourself writing

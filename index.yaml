@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-05T20:53:12Z
+# Generated: 2026-06-05T21:02:04Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -60,9 +60,9 @@ skills:
     source: first-party
     tags: [artifact,artifact-backed,brand,content,critique,density,explicit,feel,fit,hierarchy]
   - name: diagnose
-    description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause → pattern analysis → hypothesis test → fix. Use"
+    description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis"
     source: first-party
-    tags: [analysis,audit,auditing,cause,debugging,domain,fix,four-phase,hypothesis,incident]
+    tags: [analysis,audit,auditing,before,cause,debugging,domain,feedback-loop-first,fix,incident]
   - name: flywheel
     description: "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel"
     source: first-party

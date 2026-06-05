@@ -2,6 +2,10 @@
 
 Audit. Fix. Verify. One issue at a time.
 
+`/fix` uses `/diagnose`'s feedback-loop-first contract for arbitrary errors
+and bugs. No speculative patch ships without a reproduction, replay,
+instrumentation signal, or explicit no-loop stop.
+
 ## Usage
 
 ```
@@ -32,13 +36,16 @@ Fix priority order: P0 > P1 > P2 > P3. One fix per invocation.
 
 ### Error Fix (argument is an error message / stack trace)
 
-1. **Diagnose** -- Read the full error, locate source, understand context
-2. **Research** -- Find similar issues, check docs for idiomatic solution
-3. **Root cause** -- Ask: "Are we solving the root problem or treating a symptom?"
-4. **Fix** -- Apply minimal fix addressing root cause
-5. **Verify** -- Run tests: `pnpm test && pnpm typecheck`
+1. **Build feedback loop** -- reproduce, replay, or instrument the symptom. If
+   no loop is possible, stop and request the smallest missing artifact or
+   access.
+2. **Diagnose** -- Read the full error, locate source, understand context
+3. **Research** -- Find similar issues, check docs for idiomatic solution
+4. **Root cause** -- Ask: "Are we solving the root problem or treating a symptom?"
+5. **Fix** -- Apply minimal fix addressing the proven root cause
+6. **Verify** -- Re-run the original loop plus relevant tests
    - If user-facing behavior changed, run `/dogfood http://localhost:3000` and validate repro/fix with `agent-browser` / `browser-use`
-6. **Commit** -- `fix: description`
+7. **Commit** -- `fix: description`
 
 `/dogfood` is available as an agent skill in this environment. Do not treat missing shell binaries as missing dogfood capability.
 

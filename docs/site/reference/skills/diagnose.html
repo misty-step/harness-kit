@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>diagnose</h1>
-      <p class="lede">Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause → pattern analysis → hypothesis test → fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, &quot;diagnose&quot;, &quot;why is this broken&quot;, &quot;debug this&quot;, &quot;production down&quot;, &quot;is production ok&quot;, &quot;audit stripe&quot;, &quot;log issues&quot;. Trigger: /diagnose.</p>
+      <p class="lede">Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis, hypothesis test, and fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, &quot;diagnose&quot;, &quot;why is this broken&quot;, &quot;debug this&quot;, &quot;production down&quot;, &quot;is production ok&quot;, &quot;audit stripe&quot;, &quot;log issues&quot;. Trigger: /diagnose.</p>
       <p><code class="trigger large">/diagnose</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/diagnose/SKILL.md">skills/diagnose/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause → pattern analysis → hypothesis test → fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, &quot;diagnose&quot;, &quot;why is this broken&quot;, &quot;debug this&quot;, &quot;production down&quot;, &quot;is production ok&quot;, &quot;audit stripe&quot;, &quot;log issues&quot;. Trigger: /diagnose.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis, hypothesis test, and fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, &quot;diagnose&quot;, &quot;why is this broken&quot;, &quot;debug this&quot;, &quot;production down&quot;, &quot;is production ok&quot;, &quot;audit stripe&quot;, &quot;log issues&quot;. Trigger: /diagnose.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg><h3>Workflow role</h3><p>Repair primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -62,6 +62,7 @@ Local lane guidance: Use independent evidence or hypothesis lanes for competing 
 | Intent | Sub-capability |
 |--------|---------------|
 | Debug a bug, test failure, unexpected behavior | This file (below) |
+| Need a reproduction strategy | `references/feedback-loops.md` |
 | Flaky test investigation | `references/flaky-test-investigation.md` |
 | Incident lifecycle: triage, investigate, postmortem | `references/triage.md` |
 | Domain audit: &quot;audit stripe&quot;, &quot;audit quality&quot; | `references/audit.md` |
@@ -71,7 +72,6 @@ Local lane guidance: Use independent evidence or hypothesis lanes for competing 
 If first argument matches a domain name (stripe, quality, etc.), route to `references/audit.md`.
 If &quot;triage&quot;, &quot;incident&quot;, &quot;postmortem&quot;, &quot;production down&quot; → `references/triage.md`.
 If &quot;flaky&quot;, &quot;flake&quot;, &quot;intermittent&quot;, &quot;nondeterministic test&quot; → `references/flaky-test-investigation.md`.
-If &quot;fix&quot; → `references/fix.md`. If &quot;log issues&quot; → `references/log-issues.md`.
 ...</code></pre>
     </section>
     <section class="checklist">

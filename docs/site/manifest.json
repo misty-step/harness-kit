@@ -279,7 +279,7 @@
       "source": "skills/design/SKILL.md"
     },
     {
-      "description": "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Four-phase protocol: root cause \u2192 pattern analysis \u2192 hypothesis test \u2192 fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, \"diagnose\", \"why is this broken\", \"debug this\", \"production down\", \"is production ok\", \"audit stripe\", \"log issues\". Trigger: /diagnose.",
+      "description": "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis, hypothesis test, and fix. Use for: any bug, test failure, production incident, error spikes, audit, triage, postmortem, \"diagnose\", \"why is this broken\", \"debug this\", \"production down\", \"is production ok\", \"audit stripe\", \"log issues\". Trigger: /diagnose.",
       "icon": "repair",
       "id": "skill:diagnose",
       "kind": "skill",

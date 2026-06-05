@@ -2,8 +2,9 @@
 name: diagnose
 description: |
   Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle,
-  domain auditing, and issue logging. Four-phase protocol: root cause → pattern
-  analysis → hypothesis test → fix.
+  domain auditing, and issue logging. Feedback-loop-first protocol:
+  reproduce or replay before root cause, pattern analysis, hypothesis test,
+  and fix.
   Use for: any bug, test failure, production incident, error spikes, audit,
   triage, postmortem, "diagnose", "why is this broken", "debug this",
   "production down", "is production ok", "audit stripe", "log issues".
@@ -39,6 +40,7 @@ Local lane guidance: Use independent evidence or hypothesis lanes for competing 
 | Intent | Sub-capability |
 |--------|---------------|
 | Debug a bug, test failure, unexpected behavior | This file (below) |
+| Need a reproduction strategy | `references/feedback-loops.md` |
 | Flaky test investigation | `references/flaky-test-investigation.md` |
 | Incident lifecycle: triage, investigate, postmortem | `references/triage.md` |
 | Domain audit: "audit stripe", "audit quality" | `references/audit.md` |
@@ -56,10 +58,14 @@ Otherwise, this is a debugging session — continue below.
 ## The Iron Law
 
 ```
-NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+NO FIXES WITHOUT A FEEDBACK LOOP AND ROOT CAUSE FIRST
 ```
 
-If you haven't completed Phase 1, you cannot propose fixes.
+If you cannot run, replay, or inspect a signal that proves the symptom is
+present, you cannot verify a fix. Build the smallest believable pass/fail loop
+before hypothesizing deeply. If no loop is possible with current access, stop
+and ask for a captured artifact, environment access, or temporary
+instrumentation.
 
 ## Rule #1: Config Before Code
 
@@ -110,7 +116,9 @@ hardware-specific, user-flow-dependent):
 INSTRUMENT → USER REPRODUCES → READ LOGS → REFINE → REPEAT
 ```
 
-1. **Hypothesize** -- form 2-3 candidate root causes from symptoms
+1. **Plan loop probes** -- form 2-3 candidate observations that would
+   discriminate between possible causes. These are instrumentation targets, not
+   root-cause conclusions.
 2. **Instrument** -- add targeted logging that discriminates between hypotheses.
    Write to a log file the user can share back:
    ```bash
@@ -129,32 +137,52 @@ INSTRUMENT → USER REPRODUCES → READ LOGS → REFINE → REPEAT
    not the fix.
 
 Use when: flaky tests, user-reported bugs you can't trigger, environment-specific issues.
-Don't use when: bug reproduces in your environment (just use Phase 1-4 directly).
+Don't use when: bug reproduces in your environment (use the main debugging
+phases directly).
 
-## The Four Phases
+## The Debugging Phases
 
-### Phase 1: Root Cause Investigation
+### Phase 1: Build the Feedback Loop
 
-BEFORE attempting ANY fix:
+The feedback loop is the first deliverable. Choose the narrowest loop that
+reproduces the user's symptom, not a nearby failure.
 
-1. **Read error messages carefully** -- full stack traces, line numbers, error codes
-2. **Reproduce consistently** -- exact steps. If not reproducible, gather more data
-3. **Check recent changes** -- `git diff`, `git log --oneline -10`, new deps, config
-4. **Gather evidence in multi-component systems** -- log at each component boundary, run once, identify failing layer
-5. **Trace data flow** -- where does the bad value originate? Trace backward to source
+1. **Read the symptom exactly** -- full stack traces, user steps, error codes,
+   wrong output, timing, and scope.
+2. **Pick a loop** -- test, curl/API script, CLI fixture, browser script,
+   trace replay, bisect harness, differential run, or HITL log loop. See
+   `references/feedback-loops.md`.
+3. **Run it until you trust it** -- failure matches the reported symptom and
+   repeats, or the reproduction rate is high enough for a flaky bug.
+4. **Sharpen it** -- make it faster, more deterministic, and more specific
+   before moving on.
+5. **Stop if no loop exists** -- report what you tried and request the minimum
+   missing artifact or access. Do not continue on vibes.
 
-### Phase 2: Pattern Analysis
+### Phase 2: Root Cause Investigation
+
+Only after a loop exists:
+
+1. **Check recent changes** -- `git diff`, `git log --oneline -10`, new deps, config
+2. **Gather evidence in multi-component systems** -- log at each component boundary, run once, identify failing layer
+3. **Trace data flow** -- where does the bad value originate? Trace backward to source
+4. **Minimize the repro** -- reduce the loop to the smallest input/path that
+   still fails.
+
+### Phase 3: Pattern Analysis
 
 1. **Find working examples** -- similar working code in same codebase
 2. **Compare completely** -- read reference implementations fully, don't skim
 3. **Identify all differences** -- however small
 4. **Understand dependencies** -- settings, config, environment, assumptions
 
-### Phase 3: Hypothesis and Testing
+### Phase 4: Hypothesis and Testing
 
-Scientific method. One experiment at a time. No stacking.
+Scientific method. Rank 3-5 hypotheses when the cause is not obvious. Test one
+prediction at a time. No stacking.
 
-1. **Form single hypothesis** -- "I think X causes Y because Z" (write it down explicitly)
+1. **Form falsifiable hypotheses** -- "If X is the cause, then changing or
+   observing Y will make Z happen."
 2. **Design experiment** -- What will prove or disprove this? Justify: why this experiment,
    what will it tell us? Smallest possible change, one variable only.
 3. **Run experiment** -- observe result
@@ -169,12 +197,16 @@ Scientific method. One experiment at a time. No stacking.
 Never skip justification. "Just try X" is a red flag — if you can't explain what
 you'll learn from an experiment, you don't understand the problem yet.
 
-### Phase 4: Implementation
+### Phase 5: Implementation
 
-1. **Write failing test first** -- reproduce the bug in a test before any fix
+1. **Write failing regression first** -- use the highest seam that exercises
+   the real bug pattern. If no correct seam exists, record that as an
+   architecture finding and route the follow-up through `/refactor` or
+   `/critique --lens ousterhout`.
 2. **Verify test fails for the right reason** -- not syntax/import errors
 3. **Implement single fix** -- address root cause. ONE change at a time.
-4. **Verify** -- test passes, no other tests broken, issue resolved.
+4. **Rerun original loop** -- the Phase 1 loop must pass, not only the minimized
+   regression.
 5. **If 3+ fixes failed** -- STOP. Question the architecture. See `references/systematic-debugging.md`.
 
 ## Root Cause Discipline

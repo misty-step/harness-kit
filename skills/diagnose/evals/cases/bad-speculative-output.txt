@@ -1,0 +1,3 @@
+I cannot reproduce it locally, but add an idempotency-key fix in the payment
+handler and debounce the submit button. This should address the likely root
+cause.

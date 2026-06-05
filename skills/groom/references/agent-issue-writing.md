@@ -24,6 +24,9 @@ Include only the context needed to make good decisions:
 - existing patterns
 - relevant linked issues or docs
 
+Use domain names and behavioral contracts before file paths. Paths are
+touchpoints, not the source of truth; they go stale faster than the behavior.
+
 ### Acceptance criteria
 
 Write them so they can map to tests, commands, or visible behaviors.
@@ -45,6 +48,19 @@ Provide runnable commands when possible.
 List likely files, modules, routes, tests, or data paths when known. These are starting points, not
 prisons.
 
+### Agent Autonomy
+
+Label the expected execution mode when it matters:
+
+- **AFK:** the issue is fully specified, has an executable or inspectable
+  oracle, and can be completed by an agent without new product judgment.
+- **HITL:** the issue needs a human decision, credential, design review,
+  production access, or external confirmation before implementation can safely
+  finish.
+
+Do not mark an issue AFK unless dependencies, boundaries, and verification are
+visible in the issue body.
+
 ## What to avoid
 
 - vague requests like “clean this up”
@@ -53,6 +69,8 @@ prisons.
 - instructions that describe exact shell steps instead of the desired result
 - “etc”, “as needed”, or other scope leak phrases
 - acceptance criteria that cannot be observed or tested
+- stale line-number directives as the only source of truth
+- AFK labels on work that still needs product or architecture decisions
 
 ## Type-specific guidance
 
@@ -119,6 +137,8 @@ pnpm typecheck
 
 Optimize for first-pass execution:
 - prefer one issue per coherent diff
+- split broad plans into vertical tracer bullets that are independently
+  demoable or verifiable
 - keep prompts goal-oriented, not step-prescriptive
 - include deterministic constraints explicitly
 - separate exploration from implementation when uncertainty is high
