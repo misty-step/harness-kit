@@ -18,6 +18,12 @@ pass, evidence paths exist, forbidden edits absent. Use rubric/model judges
 only for judgment-heavy outputs such as strategy, review quality, or demo
 craft; calibrate them against human examples when possible.
 
+Verification skills need at least one deterministic grader script or an
+explicit semantic waiver. A structural eval tree proves rerunnable shape only;
+it does not prove the skill changed behavior. Objective graders should assert
+files, commands, schemas, forbidden edits, rendered artifacts, or state
+transitions before any rubric judge is considered persuasive.
+
 ### Baseline comparison
 
 Spawn two sub-agents in parallel with the same representative prompt. One runs

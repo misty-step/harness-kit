@@ -6,6 +6,7 @@ description: |
   simplicity, assumptions, or success-criteria judgment calls. Use when:
   "am I overcomplicating this", "what are my assumptions",
   "how do I verify success", "/karpathy", "/principles".
+  Trigger: /karpathy, /principles.
 argument-hint: "[think | simple | surgical | goal]"
 ---
 

@@ -18,10 +18,18 @@ description is wrong — not the model.
 
 ```
 skill-name/
-├── SKILL.md          # < 500 lines. Core instructions.
+├── SKILL.md          # < 500 lines. Core routing + judgment.
 ├── references/       # Deep context loaded on demand.
-└── scripts/          # Executable code for deterministic tasks.
+├── scripts/          # Executable code for deterministic tasks.
+├── examples/         # Representative inputs/outputs when useful.
+├── templates/        # Copyable artifacts the model should not recreate.
+├── assets/           # Images, fixtures, schemas, or static resources.
+└── evals/            # Optional eval cases/graders for load-bearing skills.
 ```
+
+Do not create empty folders. Add the folder when the skill has real reusable
+material for that layer. If the workflow benefits from memory, define an
+append-only JSONL/schema path and privacy rule; otherwise leave it stateless.
 
 ## What to encode
 
@@ -61,10 +69,12 @@ Three layers. Each loads only when needed:
 
 1. **Description** (~100 tokens) — always in context. Decides triggering.
 2. **SKILL.md body** (< 500 lines) — loads when skill fires.
-3. **References** (unlimited) — loaded on demand via file reads.
+3. **References/scripts/assets/templates/examples** — loaded or run on demand
+   when the specific situation requires them.
 
-Keep SKILL.md focused on what to do and what goes wrong. Move deep
-reference material (API docs, checklists, examples) to references/.
+Keep SKILL.md focused on what to do and what goes wrong. Move deep reference
+material, examples, boilerplate, schemas, and repeatable mechanics out of the
+entry file and into the skill folder.
 
 ## Brevity doctrine
 

@@ -316,7 +316,7 @@
       "source": "skills/hardening/SKILL.md"
     },
     {
-      "description": "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness-engineering, /harness, /skill.",
+      "description": "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"skill usage\", \"undertriggering skill\", \"description tax\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness-engineering, /harness, /skill.",
       "icon": "repair",
       "id": "skill:harness-engineering",
       "kind": "skill",
@@ -336,7 +336,7 @@
       "source": "skills/implement/SKILL.md"
     },
     {
-      "description": "Four LLM-agent guardrails: surface assumptions, prefer simplicity, make surgical changes, and drive by verifiable goals. Reference for scope, simplicity, assumptions, or success-criteria judgment calls. Use when: \"am I overcomplicating this\", \"what are my assumptions\", \"how do I verify success\", \"/karpathy\", \"/principles\".",
+      "description": "Four LLM-agent guardrails: surface assumptions, prefer simplicity, make surgical changes, and drive by verifiable goals. Reference for scope, simplicity, assumptions, or success-criteria judgment calls. Use when: \"am I overcomplicating this\", \"what are my assumptions\", \"how do I verify success\", \"/karpathy\", \"/principles\". Trigger: /karpathy, /principles.",
       "icon": "catalog",
       "id": "skill:karpathy-guidelines",
       "kind": "skill",
@@ -346,7 +346,7 @@
       "source": "skills/karpathy-guidelines/SKILL.md"
     },
     {
-      "description": "Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces ranked recommendations. Use when: \"which model\", \"compare models\", \"find a model\", \"model research\", \"best model for\", \"cheapest model\", \"tool calling models\", \"model selection\", \"upgrade model\", \"swap model\", \"fallback models\", \"model chain\".",
+      "description": "Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces ranked recommendations. Use when: \"which model\", \"compare models\", \"find a model\", \"model research\", \"best model for\", \"cheapest model\", \"tool calling models\", \"model selection\", \"upgrade model\", \"swap model\", \"fallback models\", \"model chain\". Trigger: /model-research.",
       "icon": "catalog",
       "id": "skill:model-research",
       "kind": "skill",

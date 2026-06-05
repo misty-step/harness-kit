@@ -7,6 +7,7 @@ description: |
   Use when: "which model", "compare models", "find a model", "model research",
   "best model for", "cheapest model", "tool calling models", "model selection",
   "upgrade model", "swap model", "fallback models", "model chain".
+  Trigger: /model-research.
 argument-hint: "[use-case description] [--platform openrouter|anthropic|openai|vertex]"
 ---
 

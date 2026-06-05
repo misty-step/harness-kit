@@ -119,18 +119,18 @@ def trigger_claims(description):
 def check_trigger_contracts(skill_frontmatters):
     """Return (errors, warnings) for trigger metadata across first-party skills."""
     warnings = []
+    errors = []
     claims = defaultdict(list)
     for path, frontmatter in skill_frontmatters:
         description = frontmatter.get("description") or ""
         triggers = explicit_triggers(description)
         if not triggers:
-            warnings.append(f"{path}: missing Trigger definition in description")
+            errors.append(f"{path}: missing Trigger definition in description")
         for claim in trigger_claims(description):
             key = collision_key(claim)
             if key:
                 claims[key].append(path)
 
-    errors = []
     for claim, owners in sorted(claims.items()):
         unique_owners = sorted(set(owners))
         if len(unique_owners) > 1:

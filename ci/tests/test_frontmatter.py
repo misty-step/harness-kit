@@ -61,7 +61,7 @@ Trigger: /yeet.
         self.assertEqual(checker.collision_key("/ship-it"), "ship it")
         self.assertEqual(checker.collision_key("ship it"), "ship it")
 
-    def test_trigger_contract_warns_on_missing_trigger(self) -> None:
+    def test_trigger_contract_rejects_missing_trigger(self) -> None:
         checker = _load_check_frontmatter_module()
 
         errors, warnings = checker.check_trigger_contracts(
@@ -73,9 +73,9 @@ Trigger: /yeet.
             ]
         )
 
-        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
         self.assertEqual(
-            warnings,
+            errors,
             ["skills/example/SKILL.md: missing Trigger definition in description"],
         )
 

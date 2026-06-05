@@ -4,8 +4,9 @@ description: |
   Harness engineering for Harness Kit primitives: skills, shared doctrine,
   provider roster, harness configs, gates, evals, bootstrap, and sync logic.
   Use for "improve the harness", "harness engineering", "bootstrap is wrong",
-  "AGENTS.md is stale", "skill health", "eval skill", "sync primitives",
-  "roster defaults". Trigger: /harness-engineering, /harness, /skill.
+  "AGENTS.md is stale", "skill health", "skill usage", "undertriggering skill",
+  "description tax", "eval skill", "sync primitives", "roster defaults".
+  Trigger: /harness-engineering, /harness, /skill.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
 ---
 
@@ -20,11 +21,12 @@ Engineer the harness. Keep it thin.
 | create global skill/agent | `references/mode-create.md` |
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
+| apply skill-design lessons | `references/skill-design-principles.md` |
 | clean Codex skill catalog | external `steipete-skill-cleaner` |
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
-| audit catalog | `references/mode-audit.md` |
+| measure skill usage/health/staleness | `references/mode-audit.md` |
 | open-model defaults | `references/open-model-roster.md` |
 
 Use `/create-repo-skill` for generated repository-local skills such as bespoke
@@ -41,6 +43,9 @@ synced locally.
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
 - Skills stay self-contained: scripts/references under the skill; state roots
   from invoking repo.
+- Treat a skill as a folder, not a markdown file. Use scripts, references,
+  examples, templates, assets, evals, or append-only data when prose would
+  make the agent reconstruct repeatable work.
 - Harness Kit source skills live in `skills/`; repo-local `.agents/skills/` and
   harness-specific skill bridge dirs are `/seed` output for consumer repos.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
@@ -62,9 +67,13 @@ Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gat
 ## Quality Bar
 
 - `SKILL.md` encodes judgment, not a procedure the model already knows.
+- Frontmatter descriptions are model trigger classifiers, not human summaries:
+  include explicit `Use when:` phrases and `Trigger:` aliases.
 - Instruction prose is compression, not literature. Sacrifice grammar before
   clarity; keep terse imperatives, named failure modes, and concrete oracles.
 - Put long mode detail in `references/`; keep the entry file short.
+- Build gotchas from repeated agent failures. If a gotcha can be asserted by a
+  script, hook, or eval, codify it there and point the skill at the artifact.
 - Ad-hoc roster lanes beat static project subagents unless tool permissions
   must be isolated.
 - New mechanisms include a gate, eval, or smoke path.
@@ -94,5 +103,12 @@ valid.
 - Stale AGENTS prose is worse than missing prose.
 - Duplicated repo-local skill copies are usually stale context unless a repo
   needs checked-in vendored harness state.
+- Generated catalog/docs drift means the source skill changed but the harness
+  projection did not.
+- Unsupported invocation hooks mean usage telemetry is structurally shaped but
+  not empirically proven for that harness.
+- Structural eval trees are not semantic proof; objective graders must assert
+  behavior or carry an explicit waiver.
+- Helper scripts that are not wired into a gate become optional folklore.
 - Regexes over agent prose are usually the wrong boundary.
 - If a rule matters, enforce it outside prose.

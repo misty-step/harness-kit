@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>harness-engineering</h1>
-      <p class="lede">Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;harness engineering&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness-engineering, /harness, /skill.</p>
+      <p class="lede">Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;harness engineering&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;skill usage&quot;, &quot;undertriggering skill&quot;, &quot;description tax&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness-engineering, /harness, /skill.</p>
       <p><code class="trigger large">/harness-engineering</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/harness-engineering/SKILL.md">skills/harness-engineering/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;harness engineering&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness-engineering, /harness, /skill.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for &quot;improve the harness&quot;, &quot;harness engineering&quot;, &quot;bootstrap is wrong&quot;, &quot;AGENTS.md is stale&quot;, &quot;skill health&quot;, &quot;skill usage&quot;, &quot;undertriggering skill&quot;, &quot;description tax&quot;, &quot;eval skill&quot;, &quot;sync primitives&quot;, &quot;roster defaults&quot;. Trigger: /harness-engineering, /harness, /skill.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-repair"></use></svg><h3>Workflow role</h3><p>Maintain primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -45,11 +45,12 @@
 | create global skill/agent | `references/mode-create.md` |
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
+| apply skill-design lessons | `references/skill-design-principles.md` |
 | clean Codex skill catalog | external `steipete-skill-cleaner` |
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
-| audit catalog | `references/mode-audit.md` |
+| measure skill usage/health/staleness | `references/mode-audit.md` |
 | open-model defaults | `references/open-model-roster.md` |
 
 Use `/create-repo-skill` for generated repository-local skills such as bespoke
@@ -66,18 +67,14 @@ synced locally.
 - Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
 - Skills stay self-contained: scripts/references under the skill; state roots
   from invoking repo.
+- Treat a skill as a folder, not a markdown file. Use scripts, references,
+  examples, templates, assets, evals, or append-only data when prose would
+  make the agent reconstruct repeatable work.
 - Harness Kit source skills live in `skills/`; repo-local `.agents/skills/` and
   harness-specific skill bridge dirs are `/seed` output for consumer repos.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
   only.
 - System bootstrap exposes the full first-party skill catalog; repo-local
-  vendoring is exceptional and must earn its complexity.
-- Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
-  shaped ticket explicitly asks.
-
-## Delegation Floor
-
-Delegation floor applies: probe the roster first; dispatch two or more
 ...</code></pre>
     </section>
     <section class="checklist">
