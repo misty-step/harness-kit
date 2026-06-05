@@ -55,7 +55,7 @@ generated skill catalog for skill discovery; do not mirror the catalog here.
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
 - `scripts/check-agent-roster.py` — roster, doctrine, and source-harness gate.
-- `bootstrap.sh` — system-wide install; all first-party skills are global.
+- `bootstrap.sh` — system-wide install; first-party and synced external skills are global.
 
 ## Red Lines
 

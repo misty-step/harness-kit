@@ -11,8 +11,8 @@ Antigravity, Pi, or the next harness first-try.
 **Target User:** Senior+ engineers running multi-agent workflows across multiple repos.
 **Current Focus:** Rebrand, remove global static agents, and make skills +
 AGENTS.md the durable layer for dynamic task-specific delegation.
-**Key Differentiators:** Agent-agnostic (works across harnesses), manifest-driven (`.harness-kit.yaml`),
-research-backed (web + multi-model validation before codifying).
+**Key Differentiators:** Agent-agnostic (works across harnesses), filesystem-first skills,
+registry-backed external exemplars, and research-backed codification.
 
 ## Domain Glossary
 

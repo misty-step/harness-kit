@@ -827,13 +827,13 @@ def render_bootstrap() -> str:
         <p>Use the local checkout when you have it. The remote one-liner exists for fresh machines.</p>
       </div>
       <div class="quicksteps">
-        <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, agents, shared doctrine, and provider roster files.</p></article>
+        <article class="quickstep"><span>1</span><h3>Local checkout</h3><code>./bootstrap.sh</code><p>Links first-party skills, synced external skills, agents, shared doctrine, and provider roster files.</p></article>
         <article class="quickstep"><span>2</span><h3>Fresh machine</h3><code>curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash</code><p>Downloads the bootstrap script from the Harness Kit repository.</p></article>
         <article class="quickstep"><span>3</span><h3>Verify</h3><code>ls ~/.codex/skills ~/.claude/skills ~/.pi/skills</code><p>At least one supported harness should show Harness Kit skills after install.</p></article>
       </div>
     </section>
     <section class="grid two">
-      {card('System install', 'Installs first-party skills and agents into supported local harnesses.', icon='build', current=current)}
+      {card('System install', 'Installs first-party and synced external skills into supported local harnesses.', icon='build', current=current)}
       {card('Stable checkout', 'Prefers a stable checkout over temporary worktrees unless HARNESS_KIT_DIR is set.', icon='operate', current=current)}
       {card('Roster config', 'Keeps external provider definitions available system-wide.', icon='catalog', current=current)}
       {card('Source cleanliness', 'Does not recreate source-repo .agents/.codex/.claude/.pi skill bridges.', icon='verify', current=current)}

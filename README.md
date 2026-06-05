@@ -1,6 +1,6 @@
 # Harness Kit
 
-29 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
+33 catalog skills, 3 source agents, and harness infrastructure for AI-assisted
 software development. One repo. All harnesses (Claude Code, Codex, Pi, Antigravity).
 
 Harness Kit is an operator-facing harness primitive library, not a buyer-facing
@@ -12,8 +12,9 @@ clients, departments, procurement, security reviewers, or executives.
 
 ```bash
 # Bootstrap (one-time per machine)
-# Installs all first-party skills and the provider roster system-wide; symlinks
-# if a local checkout exists, downloads from GitHub otherwise
+# Installs first-party skills, any synced external skills, and the provider
+# roster system-wide; symlinks if a local checkout exists, downloads first-party
+# skills from GitHub otherwise
 curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
 
@@ -86,7 +87,7 @@ harness-kit/
 ├── agents/        # Agent definitions
 ├── harnesses/     # Per-harness configs (claude/, codex/, pi/, antigravity-cli/, antigravity-ide/)
 │   └── shared/    # Common engineering principles
-├── registry.yaml  # External skill sources (for embeddings)
+├── registry.yaml  # Pinned external skill sources for sync/search
 └── bootstrap.sh   # Discovers skills/agents/roster, symlinks to system harness dirs
 ```
 

@@ -78,9 +78,11 @@ Harness Kit's primary portability layer is the filesystem: the same `SKILL.md`
 and agent markdown files can be discovered by multiple harnesses. Runtime
 features are wrappers around that layer, not the architecture.
 
-`bootstrap.sh` installs the full first-party catalog system-wide:
+`bootstrap.sh` installs discovered skills system-wide:
 
 - global skills: every `skills/*/SKILL.md`
+- synced external skills: every `skills/.external/*/SKILL.md` present after
+  `scripts/sync-external.sh`
 - global agents: every `agents/*.md`
 - global roster: `~/.harness-kit/agents.yaml` plus roster helper scripts under
   `~/.harness-kit/scripts/`
@@ -99,6 +101,8 @@ It feeds:
 
 - `scripts/sync-external.sh`, which syncs selected upstream skills into
   `skills/.external/<alias>/`
+- `bootstrap.sh`, which projects synced external skills into each detected
+  harness alongside first-party skills
 - embedding/index tooling that can search first-party and external skill
   material
 
