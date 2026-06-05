@@ -1,10 +1,5 @@
 {
-  "backlog": [
-    {
-      "source": "backlog.d/031-harness-auto-tune-gepa.md",
-      "title": "GEPA-style harness auto-tune from cycle events"
-    }
-  ],
+  "backlog": [],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [

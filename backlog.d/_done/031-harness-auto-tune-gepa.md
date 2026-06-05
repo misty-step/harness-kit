@@ -1,8 +1,13 @@
 # GEPA-style harness auto-tune from cycle events
 
 Priority: low
-Status: parked
+Status: closed-deferred
 Estimate: L
+
+Closed from the active backlog on 2026-06-05 by operator direction. This was
+not delivered as an implementation slice; it remains deferred until the entry
+criteria below are met. Reopen by moving this file back to `backlog.d/` once
+real `/flywheel` cycle data proves there is enough signal to tune.
 
 Parked during 2026-04-14 grooming. Do not start until `/flywheel` (028) has
 produced ≥20 cycles of event data. Without signal, there's nothing to tune
