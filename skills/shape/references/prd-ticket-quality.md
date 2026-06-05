@@ -13,6 +13,7 @@ oracles:
 ## PRD Summary
 - User: the person or operator whose workflow changes.
 - Problem: the painful condition or opportunity, not the requested mechanism.
+- Goal: one sentence naming the concrete outcome, not the tool to use.
 - Why now: what makes this worth doing before nearby work.
 - UX enabled: what the user can see, do, decide, trust, or avoid after this ships.
 - Deliverable type: working code, research report, docs artifact, harness primitive, cleanup, migration, or decision memo.
@@ -40,9 +41,9 @@ oracles:
 
 ## Writing Rules
 
-- Keep `Goal` to one outcome sentence. If it starts with "explore", "consider",
-  or "maybe" while `Status: ready`, rewrite it or set the deliverable type to a
-  research/decision report.
+- Keep `Goal` to one outcome sentence with a well-defined exit condition. If it
+  starts with "explore", "consider", or "maybe" while `Status: ready`, rewrite
+  it or set the deliverable type to a research/decision report.
 - Put the deliverable type in the first screen of the ticket. Do not make the
   implementer infer whether the output is code, research, a report, or a
   doctrine decision.

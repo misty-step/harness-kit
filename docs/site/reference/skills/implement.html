@@ -69,14 +69,13 @@ oracle (executable preferred), implementation sequence. Resolution order:
 4. **No packet found → stop.** Do not guess the spec from a title.
 
 Required packet fields (hard gate — missing any = stop):
-- `goal` (one sentence, testable)
+- `goal` (one sentence, testable outcome with a well-defined exit condition)
 - `oracle` (how we know it&#x27;s done, ideally executable commands)
 - `implementation sequence` (ordered steps, or explicit &quot;single chunk&quot;)
 
 If the packet contains `Formal Spec Required: yes`, also require a `Formal
 Spec` block with: informal spec, formal examples, acceptance oracle, hardening
 budget, and waiver path. Missing or vague formal-spec fields are packet
-incompleteness, not builder judgment.
 ...</code></pre>
     </section>
     <section class="checklist">

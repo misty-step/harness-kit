@@ -16,10 +16,10 @@ decide, verify, report, and leave the workspace clean.
 
 True regardless of whether an AI or a human writes the code.
 
-### State assumptions before acting
-Name what you are assuming about the request, the code, and the environment
-before you change anything. Prefer exact files, commands, tests, and rendered
-artifacts over prose memory.
+### State the goal and assumptions before acting
+Name the work goal and what you are assuming about the request, the code, and
+the environment before you change anything. Prefer exact files, commands,
+tests, and rendered artifacts over prose memory.
 
 ### Strategic design: deep modules, small surface
 Ousterhout. A module's interface should be far simpler than its
@@ -190,7 +190,7 @@ phase.
 
 Every completion claim must name:
 
-- Exact behavior changed or verified: end-user, developer, or operator.
+- Exact goal achieved or behavior verified: end-user, developer, or operator.
 - Live evidence that proves it, not just a green aggregate gate.
 - Exact command, path, route, artifact, or rendered surface exercised.
 - Repo-fit check: follows local patterns and does not weaken gates.

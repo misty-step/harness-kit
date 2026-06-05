@@ -45,7 +45,7 @@ oracle (executable preferred), implementation sequence. Resolution order:
 4. **No packet found → stop.** Do not guess the spec from a title.
 
 Required packet fields (hard gate — missing any = stop):
-- `goal` (one sentence, testable)
+- `goal` (one sentence, testable outcome with a well-defined exit condition)
 - `oracle` (how we know it's done, ideally executable commands)
 - `implementation sequence` (ordered steps, or explicit "single chunk")
 
