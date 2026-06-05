@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-05T16:58:03Z
+# Generated: 2026-06-05T19:07:15Z
 # Do not edit manually. Run: ./scripts/generate-index.sh
 
 skills:
@@ -108,7 +108,7 @@ skills:
     source: first-party
     tags: [backlog,coaching,codification,critique,cycle,evidence,explicit,harness,hooks,mutations]
   - name: research
-    description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: \"search for\", \"look up\", \"research\", \"delegate"
+    description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
   - name: settle

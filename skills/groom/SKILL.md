@@ -63,9 +63,9 @@ python3 skills/groom/scripts/audit-skills.py
 The report walks `skills/*/SKILL.md` and scores four dimensions:
 
 - frontmatter: `name` and `description`
-- trigger: concrete invocation phrases, not generic "use this skill to" prose
+- trigger: concrete `Use when:` phrases and explicit `Trigger:` aliases
 - test_or_eval: `tests/`, `evals/`, test scripts, or a verification section
-- routing: reference from `harnesses/shared/AGENTS.md`
+- catalog: presence in generated `index.yaml`
 
 Order by severity and present the report as-is. Do not auto-fix skills,
 generate tests, or add a Dagger gate from audit findings.

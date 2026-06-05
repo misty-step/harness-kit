@@ -44,6 +44,7 @@ Targeted validation commands:
 - lint-shell: find . -name '*.sh' -not -path './ci/*' | xargs shellcheck --severity=error
 - lint-python: find . -name '*.py' -not -path './ci/*' | xargs -I{{}} python3 -m py_compile {{}}
 - check-frontmatter: python3 scripts/check-frontmatter.py
+- test-skill-audit: bash skills/groom/scripts/test_audit_skills.sh
 
 When the target gate passes, bind the updated container to $repaired.
 """.strip()
@@ -177,6 +178,22 @@ class HarnessKitCi:
         return await (
             _lint_container(source)
             .with_exec(["python3", "scripts/check-frontmatter.py"])
+            .stdout()
+        )
+
+    @function
+    async def test_skill_audit(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Run the groom skill-quality audit helper self-test."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "skills/groom/scripts/test_audit_skills.sh"])
             .stdout()
         )
 
@@ -814,6 +831,7 @@ print('skills/: no claims primitives found.')
             tg.start_soon(run_gate, "lint-shell", self.lint_shell(source))
             tg.start_soon(run_gate, "lint-python", self.lint_python(source))
             tg.start_soon(run_gate, "check-frontmatter", self.check_frontmatter(source))
+            tg.start_soon(run_gate, "test-skill-audit", self.test_skill_audit(source))
             tg.start_soon(run_gate, "check-index-drift", self.check_index_drift(source))
             tg.start_soon(run_gate, "check-vendored-copies", self.check_vendored_copies(source))
             tg.start_soon(run_gate, "test-bun", self.test_bun(source))

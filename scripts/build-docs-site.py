@@ -88,6 +88,7 @@ GATE_DESCRIPTIONS = {
     "check-skill-evals": "Validates skill eval suites have README, cases, and graders.",
     "check-vendored-copies": "Ensures vendored repo-local harness copies match canonical sources.",
     "test-design-evals": "Runs design eval grader self-tests for scaffold provenance and rendered-artifact caveats.",
+    "test-skill-audit": "Runs the groom skill-quality audit helper self-test.",
     "lint-python": "Compiles Python scripts outside ci/ to catch syntax errors.",
     "lint-shell": "Runs shellcheck on shell scripts outside ci/.",
     "lint-yaml": "Parses top-level YAML files.",

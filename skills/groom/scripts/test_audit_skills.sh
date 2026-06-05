@@ -38,20 +38,32 @@ setup_repo() {
   git -C "$TEST_DIR" config core.hooksPath .empty-hooks
   git -C "$TEST_DIR" config user.email test@example.com
   git -C "$TEST_DIR" config user.name "Groom Audit Test"
-  mkdir -p "$TEST_DIR/skills/good/scripts" "$TEST_DIR/skills/weak" "$TEST_DIR/harnesses/shared"
+  mkdir -p \
+    "$TEST_DIR/skills/good/scripts" \
+    "$TEST_DIR/skills/weak" \
+    "$TEST_DIR/skills/empty-trigger" \
+    "$TEST_DIR/skills/empty-use" \
+    "$TEST_DIR/skills/uncataloged" \
+    "$TEST_DIR/harnesses/shared"
   cat >"$TEST_DIR/AGENTS.md" <<'DOC'
 # root project guidance should not satisfy shared routing
 DOC
   cat >"$TEST_DIR/harnesses/shared/AGENTS.md" <<'DOC'
-| Skill | Role |
-|---|---|
-| `/good` | Routed skill. |
+Use the generated skill catalog for skill discovery; do not mirror skills here.
+DOC
+  cat >"$TEST_DIR/index.yaml" <<'DOC'
+skills:
+  - name: good
+  - name: weak
+  - name: empty-trigger
+  - name: empty-use
 DOC
   cat >"$TEST_DIR/skills/good/SKILL.md" <<'DOC'
 ---
 name: good
 description: |
-  Use when: testing the audit helper on a well-shaped skill.
+  Use when: "testing the audit helper on a well-shaped skill".
+  Trigger: /good.
 ---
 
 # good
@@ -67,6 +79,36 @@ description: This skill helps.
 ---
 
 # weak
+DOC
+  cat >"$TEST_DIR/skills/empty-trigger/SKILL.md" <<'DOC'
+---
+name: empty-trigger
+description: |
+  Use when: "testing an empty trigger label".
+  Trigger:
+---
+
+# empty-trigger
+DOC
+  cat >"$TEST_DIR/skills/empty-use/SKILL.md" <<'DOC'
+---
+name: empty-use
+description: |
+  Use when:
+  Trigger: /empty-use.
+---
+
+# empty-use
+DOC
+  cat >"$TEST_DIR/skills/uncataloged/SKILL.md" <<'DOC'
+---
+name: uncataloged
+description: |
+  Use when: "testing catalog absence".
+  Trigger: /uncataloged.
+---
+
+# uncataloged
 DOC
   git -C "$TEST_DIR" add .
   git -C "$TEST_DIR" commit -q -m init
@@ -88,8 +130,11 @@ test_report_orders_by_severity() {
     assert_eq "report orders failing skill first" "ok" "bad"
   fi
   assert_contains "report names trigger failure" "$report" "description is generic"
+  assert_contains "report rejects empty trigger label" "$report" "description lacks explicit Trigger alias"
+  assert_contains "report rejects empty use label" "$report" "description lacks concrete use-case phrase"
   assert_contains "report names testing failure" "$report" "no tests/, evals/"
-  assert_contains "report uses shared routing only" "$report" "harnesses/shared/AGENTS.md"
+  assert_contains "report uses generated catalog" "$report" "Catalog source: index.yaml"
+  assert_contains "report rejects uncataloged skill" "$report" "not present in generated skill catalog"
   teardown_repo
 }
 

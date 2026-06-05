@@ -3,6 +3,11 @@ name: research
 description: |
   Web research, multi-AI delegation, and multi-perspective validation.
   /research [query], /research delegate [task], /research thinktank [topic].
+  Use when: "search for", "look up", "research", "delegate",
+  "get perspectives", "web search", "find out", "investigate",
+  "introspect", "session analysis", "check readwise", "saved articles",
+  "reading list", "highlights", "what are people saying", "X search",
+  "social sentiment", "trending".
   Triggers: "search for", "look up", "research", "delegate", "get perspectives",
   "web search", "find out", "investigate", "introspect", "session analysis",
   "check readwise", "saved articles", "reading list", "highlights",

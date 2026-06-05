@@ -1,5 +1,14 @@
 {
-  "backlog": [],
+  "backlog": [
+    {
+      "source": "backlog.d/098-skill-quality-evidence-coverage.md",
+      "title": "Skill quality evidence coverage pass"
+    },
+    {
+      "source": "backlog.d/099-bootstrap-runtime-primitive-gates.md",
+      "title": "Bootstrap and runtime primitive projection gates"
+    }
+  ],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
@@ -30,6 +39,7 @@
     "test-design-evals",
     "test-harness-kit-config-loader",
     "test-python",
+    "test-skill-audit",
     "test-trace-record",
     "test-work-ledger"
   ],
@@ -396,7 +406,7 @@
       "source": "skills/reflect/SKILL.md"
     },
     {
-      "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Triggers: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"session analysis\", \"check readwise\", \"saved articles\", \"reading list\", \"highlights\", \"what are people saying\", \"X search\", \"social sentiment\", \"trending\".",
+      "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"session analysis\", \"check readwise\", \"saved articles\", \"reading list\", \"highlights\", \"what are people saying\", \"X search\", \"social sentiment\", \"trending\". Triggers: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"session analysis\", \"check readwise\", \"saved articles\", \"reading list\", \"highlights\", \"what are people saying\", \"X search\", \"social sentiment\", \"trending\".",
       "icon": "catalog",
       "id": "skill:research",
       "kind": "skill",

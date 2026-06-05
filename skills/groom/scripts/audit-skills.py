@@ -19,11 +19,18 @@ from typing import Iterable
 GENERIC_DESCRIPTION_RE = re.compile(
     r"^\s*(use this skill to|this skill|helps?|guides?)\b", re.IGNORECASE
 )
-TRIGGER_RE = re.compile(
+USE_BLOCK_RE = re.compile(
     r"\b(use when|use for|triggered by|when the user|applies when|invoke when|"
-    r"for tasks involving)\b|\btriggers?:",
-    re.IGNORECASE,
+    r"for tasks involving)\b\s*:?\s*(.*?)(?=\btriggers?:|\Z)",
+    re.IGNORECASE | re.DOTALL,
 )
+TRIGGER_BLOCK_RE = re.compile(
+    r"\btriggers?:\s*(.*?)(?=\b(use when|use for|triggered by|when the user|"
+    r"applies when|invoke when|for tasks involving)\b|\Z)",
+    re.IGNORECASE | re.DOTALL,
+)
+SLASH_ALIAS_RE = re.compile(r"/[a-z0-9][a-z0-9_-]*(?:\s+[a-z0-9_-]+)?", re.IGNORECASE)
+QUOTED_PHRASE_RE = re.compile(r'"([^"]+)"')
 TESTING_RE = re.compile(
     r"^#{1,3}\s*(testing|verification|evals?)\b", re.IGNORECASE | re.MULTILINE
 )
@@ -41,13 +48,13 @@ class SkillAudit:
     frontmatter: Check
     trigger: Check
     tests: Check
-    routed: Check
+    cataloged: Check
 
     @property
     def failures(self) -> int:
         return sum(
             1
-            for check in (self.frontmatter, self.trigger, self.tests, self.routed)
+            for check in (self.frontmatter, self.trigger, self.tests, self.cataloged)
             if not check.passed
         )
 
@@ -114,15 +121,41 @@ def has_testing_evidence(skill_dir: Path, body: str) -> Check:
     return Check(False, "no tests/, evals/, test script, or Testing/Verification section")
 
 
-def is_routed(name: str, docs: Iterable[tuple[Path, str]]) -> Check:
-    needles = (f"/{name}", f"skills/{name}", f"`{name}`", f"| `{name}`", f"| /{name}")
+def normalize_claim(value: str) -> str:
+    value = re.sub(r"\s*\([^)]*\)\s*$", "", value)
+    value = value.strip().strip(".").strip('"').strip("'")
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def has_concrete_use_case(description: str) -> bool:
+    for match in USE_BLOCK_RE.finditer(description):
+        block = match.group(2)
+        quoted = [normalize_claim(value) for value in QUOTED_PHRASE_RE.findall(block)]
+        if any(value for value in quoted):
+            return True
+        if normalize_claim(block):
+            return True
+    return False
+
+
+def explicit_trigger_aliases(description: str) -> list[str]:
+    aliases: list[str] = []
+    for match in TRIGGER_BLOCK_RE.finditer(description):
+        block = match.group(1)
+        aliases.extend(normalize_claim(value) for value in SLASH_ALIAS_RE.findall(block))
+        aliases.extend(normalize_claim(value) for value in QUOTED_PHRASE_RE.findall(block))
+    return [alias for alias in aliases if alias]
+
+
+def is_cataloged(name: str, docs: Iterable[tuple[Path, str]]) -> Check:
+    needles = (f"name: {name}\n", f"name: {name}\r\n", f"- name: {name}\n")
     hits = [str(path) for path, text in docs if any(needle in text for needle in needles)]
     if hits:
         return Check(True, ", ".join(hits))
-    return Check(False, "not referenced from harnesses/shared/AGENTS.md routing")
+    return Check(False, "not present in generated skill catalog")
 
 
-def audit_skill(skill_dir: Path, routing_docs: list[tuple[Path, str]]) -> SkillAudit:
+def audit_skill(skill_dir: Path, catalog_docs: list[tuple[Path, str]]) -> SkillAudit:
     skill_md = skill_dir / "SKILL.md"
     text = skill_md.read_text(encoding="utf-8")
     meta = frontmatter(text)
@@ -140,23 +173,25 @@ def audit_skill(skill_dir: Path, routing_docs: list[tuple[Path, str]]) -> SkillA
 
     if not desc:
         trigger = Check(False, "description missing")
-    elif GENERIC_DESCRIPTION_RE.search(desc) and not TRIGGER_RE.search(desc):
-        trigger = Check(False, "description is generic and lacks trigger language")
-    elif not TRIGGER_RE.search(desc):
-        trigger = Check(False, "description lacks concrete trigger phrase")
+    elif GENERIC_DESCRIPTION_RE.search(desc) and not has_concrete_use_case(desc):
+        trigger = Check(False, "description is generic and lacks use-case language")
+    elif not has_concrete_use_case(desc):
+        trigger = Check(False, "description lacks concrete use-case phrase")
+    elif not explicit_trigger_aliases(desc):
+        trigger = Check(False, "description lacks explicit Trigger alias")
     else:
-        trigger = Check(True, "description has trigger language")
+        trigger = Check(True, "description has use-case language and Trigger alias")
 
     return SkillAudit(
         name=name,
         frontmatter=fm,
         trigger=trigger,
         tests=has_testing_evidence(skill_dir, text),
-        routed=is_routed(name, routing_docs),
+        cataloged=is_cataloged(name, catalog_docs),
     )
 
 
-def render_report(audits: list[SkillAudit], routing_paths: list[Path]) -> str:
+def render_report(audits: list[SkillAudit], catalog_paths: list[Path]) -> str:
     ordered = sorted(audits, key=lambda item: (-item.failures, item.name))
     counts = {
         failures: sum(1 for item in audits if item.failures == failures)
@@ -167,7 +202,7 @@ def render_report(audits: list[SkillAudit], routing_paths: list[Path]) -> str:
         "# Skill Quality Audit",
         "",
         f"Skills audited: {len(audits)}",
-        f"Routing docs: {', '.join(str(path) for path in routing_paths) or 'none'}",
+        f"Catalog source: {', '.join(str(path) for path in catalog_paths) or 'none'}",
         "",
         "## Summary",
         "",
@@ -185,7 +220,7 @@ def render_report(audits: list[SkillAudit], routing_paths: list[Path]) -> str:
             ("frontmatter", audit.frontmatter),
             ("trigger", audit.trigger),
             ("tests", audit.tests),
-            ("routing", audit.routed),
+            ("catalog", audit.cataloged),
         ):
             mark = "PASS" if check.passed else "FAIL"
             lines.append(f"- {label}: {mark} - {check.detail}")
@@ -204,18 +239,18 @@ def main() -> int:
     args = parse_args()
     root = repo_root(Path(args.repo).expanduser().resolve())
     skills_root = root / "skills"
-    routing_paths = [root / "harnesses" / "shared" / "AGENTS.md"]
-    routing_paths = [path for path in routing_paths if path.is_file()]
-    routing_docs = [
+    catalog_paths = [root / "index.yaml"]
+    catalog_paths = [path for path in catalog_paths if path.is_file()]
+    catalog_docs = [
         (path.relative_to(root), path.read_text(encoding="utf-8"))
-        for path in routing_paths
+        for path in catalog_paths
     ]
     audits = [
-        audit_skill(skill_dir, routing_docs)
+        audit_skill(skill_dir, catalog_docs)
         for skill_dir in sorted(skills_root.iterdir())
         if (skill_dir / "SKILL.md").is_file()
     ]
-    report = render_report(audits, [path.relative_to(root) for path in routing_paths])
+    report = render_report(audits, [path.relative_to(root) for path in catalog_paths])
     if args.output:
         output = Path(args.output)
         if not output.is_absolute():
