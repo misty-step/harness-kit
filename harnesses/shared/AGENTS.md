@@ -166,6 +166,11 @@ source for the delegation floor: skills point here rather than restating it.
 - Dispatch two or more available providers for research, design,
   implementation, review, QA, diagnosis, backlog, reflection, and harness
   mutation.
+- Dispatch specialized lanes, not generic helpers. Name the role and lens:
+  specifier, repo investigator, builder, refactorer, architect, hardener, QA
+  driver, evidence verifier, release-risk critic, or equivalent phase-specific
+  role. Prefer different providers for genuinely different judgments when the
+  roster supports it.
 - Native in-thread subagents are supplemental fresh-context lanes. They do not
   satisfy the roster floor. Count only configured provider ids from the roster,
   such as `codex`, `claude`, `pi`, `agy`, `cursor-agent`, or `grok-build` as

@@ -56,6 +56,20 @@ before it leaves the machine.
   than duplicate the section.
 - Best effort only: PR/issue creation continues when no safe transcript exists.
 
+## Delegation Floor
+
+Rendering a scoped transcript preview is usually mechanical and may run direct
+solo. Delegation floor applies when transcript evidence requires substantive
+provenance judgment, redaction-risk review, public wording choices, or
+conflicting session narratives: probe the roster first; dispatch two or more
+providers; direct solo only for mechanical, emergency, user-forbidden, or
+fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for scope selector,
+redaction-risk critic, provenance reviewer, and public-copy reviewer. Never
+send raw transcripts to provider lanes; give rendered excerpts or sanitized
+artifact refs only.
+
 ## Helper
 
 Use the self-contained redactor for local previews:
@@ -64,27 +78,6 @@ Use the self-contained redactor for local previews:
 python3 skills/agent-transcript/scripts/agent_transcript.py render \
   --input /path/to/session.log \
   --title &quot;Agent Transcript&quot; \
-  --output /tmp/agent-transcript.md
-```
-
-Smoke test:
-
-```bash
-python3 skills/agent-transcript/scripts/agent_transcript.py --self-test
-```
-
-The helper reads plain text or JSONL-ish logs from stdin or `--input`. It writes
-sanitized Markdown only. It performs no network calls and does not edit GitHub
-bodies; callers pass the rendered block through the repo&#x27;s normal PR/issue
-body-file flow after human approval.
-
-## Workflow
-
-1. Identify scope: branch name, ticket/PR title, changed files, and goal.
-2. Pick the smallest useful session excerpt.
-3. Render locally with the helper.
-4. Inspect the output for remaining secrets or unrelated turns.
-5. If public insertion is desired, ask explicitly and use a temp body file.
 ...</code></pre>
     </section>
     <section class="checklist">

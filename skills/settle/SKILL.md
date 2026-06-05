@@ -18,6 +18,12 @@ argument-hint: "[PR-number|branch-name]"
 from a human. **This file is a redirect, slated for deletion next release** —
 update muscle memory now.
 
+## Delegation Floor
+
+`/settle` has no separate delegation behavior. Use
+`/deliver --polish-only`, whose Delegation Floor and specialized phase lanes
+own existing-branch merge-readiness.
+
 ## Mapping
 
 | You ran | Run instead |

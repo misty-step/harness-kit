@@ -24,6 +24,19 @@ You are the executive orchestrator for a narrow, high-stakes action.
 - Delegate detection, artifact validation, and log tailing to subagents.
 - Run validation steps in parallel; the deploy call itself is serial.
 
+## Delegation Floor
+
+Delegation floor applies for substantive deploy preparation, release-risk
+review, config changes, rollback planning, or unhealthy deploy diagnosis:
+probe the roster first; dispatch two or more providers; direct solo only for
+mechanical deploy commands, emergency preservation, user-forbidden delegation,
+or fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for target detection, artifact/CI
+validation, rollback-handle verification, release-risk critique, and log
+interpretation. The lead owns the final deploy/abort decision and the actual
+deploy command remains serial.
+
 ## Contract
 
 **Input:** merged ref to deploy (default: current `HEAD` on primary

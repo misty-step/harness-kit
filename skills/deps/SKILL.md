@@ -23,6 +23,19 @@ You are the executive orchestrator.
 - Delegate package analysis and bounded upgrade work to focused subagents.
 - Parallelize across disjoint packages/ecosystems where safe.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for ecosystem discovery,
+changelog/release-note analysis, CVE reachability, behavioral diffing,
+upgrade-builder work, and regression-risk critique. Split by package or
+ecosystem when independent; do not let any lane apply broad version churn
+without the lead's curated upgrade policy.
+
 ## Routing
 
 | Mode | Intent |

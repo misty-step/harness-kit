@@ -38,6 +38,18 @@
       <p>This generated excerpt gives readers the beginning of the live primitive contract before they jump to GitHub.</p>
       <pre class="source-excerpt"><code>Single-lens signal. Not a merge gate, not `/code-review`, not a parallel bench.
 
+## Delegation Floor
+
+This skill intentionally runs one focused critic lane. It does not satisfy the
+full roster floor for substantive review, merge-readiness, or delivery claims;
+route those to `/code-review`, `/deliver`, or the calling skill&#x27;s roster
+contract. If the critique itself requires broader judgment, probe the roster
+and dispatch additional specialized provider lanes from the caller before
+synthesizing.
+
+Local lane guidance: The critique lane is specialized by lens and target. Keep
+it read-only, artifact-only, and independent from author reasoning.
+
 ## Contract
 
 - `--lenses` lists available lens names by reading
@@ -64,26 +76,6 @@ Spawn one fresh read-only critic subagent with:
 If the harness cannot spawn a fresh subagent, the primary adopts the exact
 lens text for one read-only pass and marks the header
 `lens-adopted-by-primary`. This is a fallback, not fresh-context separation.
-
-## Output
-
-```markdown
-## Critique
-- Lens: &lt;name&gt;
-- Target: &lt;path&gt;
-- Evidence read: &lt;files/commands inspected&gt;
-- Fresh-context mode: &lt;subagent|lens-adopted-by-primary&gt;
-- Findings:
-  - Finding: &lt;concise claim&gt;
-    Evidence: &lt;file:line&gt;
-    Impact: &lt;high|medium|low&gt;
-    Suggested next step: &lt;smallest useful action&gt;
-- Residual uncertainty: &lt;what was not read or could change the verdict&gt;
-```
-
-Findings require file:line evidence. If no finding survives, say so and cite
-the files that were read. Do not return `Ship`, `Conditional`, or `Don&#x27;t Ship`;
-that verdict belongs to `/code-review`.
 ...</code></pre>
     </section>
     <section class="checklist">

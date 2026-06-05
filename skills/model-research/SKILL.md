@@ -30,6 +30,18 @@ Find the right model for a specific use case. Live data, not training data.
 LLM model landscapes change weekly. Training data is stale within months.
 A model recommended from memory may be discontinued, superseded, or repriced.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive model selection; direct solo only for mechanical
+catalog fetches, emergency preservation, user-forbidden delegation, or
+fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for platform catalog verification,
+benchmark/source review, social/reliability pulse, integration/codebase fit,
+and cost/latency risk. Prefer different model/provider families for independent
+judgment; the lead owns synthesis and final recommendation.
+
 ### The Freshness Rule
 
 **Today's date is always available in system context. Use it.**

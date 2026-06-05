@@ -23,6 +23,18 @@ tasks (renames, find/replace, dep bumps) they're overhead — use
 judgment. The threshold is "does this need a judgment call?", same
 as for delegation.
 
+## Delegation Floor
+
+This is a reference/self-check skill, so reading it does not satisfy the roster
+floor. When the underlying task is substantive, use the caller's Delegation
+Floor and commission specialized lanes for assumptions, simplicity, surgical
+scope, and verification risk as needed. Direct solo is fine for mechanical
+tasks where these guidelines are only a quick checklist.
+
+Local lane guidance: If dispatched, use one narrowly scoped critic lane against
+the live artifact and the relevant principle; do not turn the four principles
+into a standing review bench.
+
 ## 1. Think before coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**

@@ -47,6 +47,18 @@ You are the executive orchestrator.
 - Delegate audit, remediation, and critique to separate focused subagents.
 - Prefer parallel exploration for independent checks; keep remediation sequential when fixes interact.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for accessibility auditor,
+remediation builder, keyboard/screen-reader verifier, and cold WCAG critic.
+Prefer different providers for audit and critique when available; native
+in-thread subagents may supplement but do not satisfy the roster floor.
+
 ## Routing
 
 | Intent | Action |
@@ -73,18 +85,6 @@ Launch an Explore subagent to find issues. It does NOT fix anything.
 - `div onClick` or `span onClick` without `role` + `tabIndex` + `onKeyDown`
 - `&lt;img` without `alt=`
 - `&lt;table&gt;` without `&lt;caption&gt;` or `aria-label`
-- `&lt;Button&gt;` with only icon children and no `aria-label`
-- `&lt;input` or `&lt;select` without associated `&lt;label&gt;` or `aria-label`
-- `tabindex` values &gt; 0
-- `outline: none` or `outline: 0` without replacement focus style
-
-**Structural checks:**
-- Landmarks: `&lt;main&gt;`, `&lt;nav aria-label&gt;`, `&lt;header&gt;`, `&lt;footer&gt;`
-- Skip-to-content link as first focusable element
-- Focus management on SPA route change
-- `aria-required` on required form fields
-- `aria-sort` on sortable table columns
-- Dialog focus restoration on close
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -26,6 +26,18 @@ You are the executive orchestrator.
 - Delegate pillar assessments and bounded fixes to focused subagents.
 - Use parallel fanout by default for independent pillars.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized assessor lanes per readiness pillar and
+separate remediation-builder lanes for approved fixes. Split by pillar or
+ecosystem, prefer provider diversity for architecture/security/CI judgment, and
+record waivers when profile CRUD is purely mechanical.
+
 ## Core Insight
 
 The agent is not broken. The environment is. A codebase with fast feedback

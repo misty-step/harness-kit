@@ -53,6 +53,18 @@
 LLM model landscapes change weekly. Training data is stale within months.
 A model recommended from memory may be discontinued, superseded, or repriced.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive model selection; direct solo only for mechanical
+catalog fetches, emergency preservation, user-forbidden delegation, or
+fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for platform catalog verification,
+benchmark/source review, social/reliability pulse, integration/codebase fit,
+and cost/latency risk. Prefer different model/provider families for independent
+judgment; the lead owns synthesis and final recommendation.
+
 ### The Freshness Rule
 
 **Today&#x27;s date is always available in system context. Use it.**
@@ -65,21 +77,6 @@ For every model under consideration, determine its release date and compute age:
 | 2 weeks – 2 months | **Fresh** | Sweet spot: stabilized but still current-gen. Prefer these. |
 | 2 – 4 months | **Aging** | Check if a successor exists in the same family. Often superseded. |
 | 4+ months | **Stale** | Almost certainly superseded. Do NOT recommend without verifying it&#x27;s still the latest in its family. |
-
-**In a field moving this fast, &quot;a few months old&quot; IS old.** When two models
-are otherwise comparable, prefer the fresher one — it reflects more recent
-training data, RLHF tuning, and architecture improvements.
-
-When presenting models, ALWAYS include the release date (or &quot;unknown&quot; if
-unfindable) and age classification. This lets the user calibrate trust.
-
-## Protocol
-
-### Phase 1: Scope the Use Case
-
-Before searching, answer these questions (ask the user if unclear):
-
-1. **Task type**: tool calling, classification, generation, code, chat, embedding?
 ...</code></pre>
     </section>
     <section class="checklist">
