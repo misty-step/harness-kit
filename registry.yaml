@@ -84,6 +84,19 @@ sources:
     alias_prefix: "vercel-"
     include: [dogfood]
 
+  # EveryInc compound-engineering plugin — imported as source-scoped external
+  # exemplars/tools, not first-party Harness Kit orchestration. Keep the CE
+  # prefix in the upstream skill name and add "every-" for source ownership.
+  - repo: EveryInc/compound-engineering-plugin
+    ref: main
+    pin: bb0c9ab4ee596d546f2965222e0ec8c2a097ae53
+    layout: flat
+    skills_path: plugins/compound-engineering/skills
+    alias_prefix: "every-"
+    include:
+      - ce-dogfood-beta
+      - ce-promote
+
   # JuliusBrussee/caveman — terse-output token compression ("few token do trick").
   # Sibling skills (caveman-commit, caveman-review, compress) intentionally
   # omitted; the base `caveman` skill is the high-leverage one. Revisit if

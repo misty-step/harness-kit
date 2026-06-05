@@ -58,6 +58,12 @@ assert_harness_skill_projection() {
     [ -f "$skill/SKILL.md" ] || continue
     assert_symlink_to "$harness/skills/$(basename "$skill")" "$skill"
   done
+
+  for skill in "$ROOT"/skills/.external/*; do
+    [ -d "$skill" ] || continue
+    [ -f "$skill/SKILL.md" ] || continue
+    assert_symlink_to "$harness/skills/$(basename "$skill")" "$skill"
+  done
 }
 
 assert_harness_agent_projection() {
@@ -102,6 +108,16 @@ ln -s "$ROOT/agents/critic.md" "$HOME/.claude/agents/critic.md"
 ln -s "$ROOT/agents" "$HOME/.codex/agents"
 mkdir -p "$HOME/.claude/hooks/__pycache__"
 ln -s "$ROOT/harnesses/claude/hooks" "$HOME/.claude/hooks/__pycache__/hooks"
+mkdir -p "$ROOT/skills/.external/test-external-skill"
+trap 'rm -rf "$TMP" "$ROOT/skills/.external/test-external-skill"' EXIT
+cat > "$ROOT/skills/.external/test-external-skill/SKILL.md" <<'DOC'
+---
+name: test-external-skill
+description: Test fixture for bootstrap external skill projection.
+---
+
+# Test External Skill
+DOC
 
 HARNESS_KIT_DIR="$ROOT" bash "$ROOT/bootstrap.sh" >"$TMP/bootstrap-1.out"
 HARNESS_KIT_DIR="$ROOT" bash "$ROOT/bootstrap.sh" >"$TMP/bootstrap-2.out"
@@ -149,6 +165,11 @@ assert_symlink_to "$HOME/.spellbook/agents.yaml" "$ROOT/.harness-kit/agents.yaml
 
 if ! grep -q "Agents (3):" "$TMP/bootstrap-2.out"; then
   echo "bootstrap summary should report only three global agents" >&2
+  exit 1
+fi
+
+if ! grep -q "test-external-skill" "$TMP/bootstrap-2.out"; then
+  echo "bootstrap summary should include synced external skills" >&2
   exit 1
 fi
 

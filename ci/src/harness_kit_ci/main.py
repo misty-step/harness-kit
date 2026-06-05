@@ -490,6 +490,22 @@ print('No hardcoded user paths found.')
         )
 
     @function
+    async def test_sync_external_partial(
+        self,
+        source: Annotated[
+            dagger.Directory,
+            DefaultPath("/"),
+            Ignore([".git", "__pycache__", ".venv", "ci", "skills/.external"]),
+        ],
+    ) -> str:
+        """Verify partial external sync does not remove other synced skills."""
+        return await (
+            _lint_container(source)
+            .with_exec(["bash", "scripts/test-sync-external-partial.sh"])
+            .stdout()
+        )
+
+    @function
     async def check_runtime_primitives(
         self,
         source: Annotated[
@@ -867,6 +883,11 @@ print('skills/: no claims primitives found.')
                 run_gate,
                 "test-bootstrap-agent-allowlist",
                 self.test_bootstrap_agent_allowlist(source),
+            )
+            tg.start_soon(
+                run_gate,
+                "test-sync-external-partial",
+                self.test_sync_external_partial(source),
             )
             tg.start_soon(
                 run_gate,

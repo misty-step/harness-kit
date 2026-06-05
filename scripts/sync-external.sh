@@ -426,8 +426,12 @@ while IFS=$'\t' read -r repo ref pin skills_path include exclude alias_prefix al
 
 done <<< "$REGISTRY_TSV"
 
-cleanup_orphans
-cleanup_unused_checkouts
+if [ -z "$ONLY_REPO" ]; then
+  cleanup_orphans
+  cleanup_unused_checkouts
+else
+  info "partial sync: skipping global orphan cleanup"
+fi
 
 if [ "$MODE" = "check" ]; then
   if [ "$CHANGES" -eq 1 ]; then

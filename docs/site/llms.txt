@@ -89,5 +89,6 @@ CI gates:
 - test-harness-kit-config-loader
 - test-python
 - test-skill-audit
+- test-sync-external-partial
 - test-trace-record
 - test-work-ledger

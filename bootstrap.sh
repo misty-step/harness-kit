@@ -12,7 +12,6 @@ set -euo pipefail
 # Run: curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 
 REPO="${HARNESS_KIT_REPO:-misty-step/harness-kit}"
-RAW="https://raw.githubusercontent.com/$REPO/master"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REMOTE_TMP=""
 REMOTE_HARNESS_KIT=""
@@ -461,13 +460,23 @@ cleanup_source_skill_bridges() {
 discover_local() {
   local agent
   local skill
+  local external_skill
   GLOBAL_SKILLS=()
+  GLOBAL_SKILL_PATHS=()
   GLOBAL_AGENTS=()
 
   for skill in "$HARNESS_KIT"/skills/*; do
     [ -d "$skill" ] || continue
     [ -f "$skill/SKILL.md" ] || continue
     GLOBAL_SKILLS+=("$(basename "$skill")")
+    GLOBAL_SKILL_PATHS+=("$skill")
+  done
+
+  for external_skill in "$HARNESS_KIT"/skills/.external/*; do
+    [ -d "$external_skill" ] || continue
+    [ -f "$external_skill/SKILL.md" ] || continue
+    GLOBAL_SKILLS+=("$(basename "$external_skill")")
+    GLOBAL_SKILL_PATHS+=("$external_skill")
   done
 
   for agent in "$HARNESS_KIT"/agents/*.md; do
@@ -555,8 +564,10 @@ link_local() {
   local skill src
   cleanup_symlinks_under_prefix "$skills_dir" "$HARNESS_KIT/skills" "${GLOBAL_SKILLS[@]}"
   mkdir -p "$skills_dir"
-  for skill in "${GLOBAL_SKILLS[@]}"; do
-    src="$HARNESS_KIT/skills/$skill"
+  local i
+  for i in "${!GLOBAL_SKILLS[@]}"; do
+    skill="${GLOBAL_SKILLS[$i]}"
+    src="${GLOBAL_SKILL_PATHS[$i]}"
     [ -d "$src" ] || { warn "    missing local skill: $skill"; continue; }
     ln -sfn "$src" "$skills_dir/$skill"
     ok "    $skill"
