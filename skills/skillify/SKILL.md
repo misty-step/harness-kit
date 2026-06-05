@@ -19,6 +19,19 @@ MVP supports Claude Code JSONL transcripts and `--from-current` style local
 transcript extraction. Gemini, Codex batch ingestion, hosted transcript stores,
 and automatic publication are future work.
 
+## Delegation Floor
+
+Delegation floor applies for novelty classification, portability critique, and
+new skill design: probe the roster first; dispatch two or more providers;
+direct solo only for deterministic parser/CRUD commands, emergency
+preservation, user-forbidden delegation, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for transcript-pattern mining,
+skill-design critique, portability/security review, and generated-skill
+validator. Native in-thread subagents may supplement but do not satisfy the
+roster floor.
+
 ## Workflow
 
 1. Parse the transcript with `scripts/parse-transcript.py`.

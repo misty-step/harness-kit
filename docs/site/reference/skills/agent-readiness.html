@@ -48,6 +48,18 @@ You are the executive orchestrator.
 - Delegate pillar assessments and bounded fixes to focused subagents.
 - Use parallel fanout by default for independent pillars.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized assessor lanes per readiness pillar and
+separate remediation-builder lanes for approved fixes. Split by pillar or
+ecosystem, prefer provider diversity for architecture/security/CI judgment, and
+record waivers when profile CRUD is purely mechanical.
+
 ## Core Insight
 
 The agent is not broken. The environment is. A codebase with fast feedback
@@ -70,19 +82,6 @@ once a profile exists.
 
 If the user asks to create, read, update, delete, or validate the readiness
 profile, run the deterministic profile script first and stop after reporting
-the result. Do not run a pillar assessment just to mutate the profile.
-
-### Phase 1: Assess
-
-Dispatch **parallel subagents** — one per pillar — to evaluate the codebase.
-Each subagent runs the checks from `references/pillar-checks.md` for its
-assigned pillar and returns a structured verdict.
-
-Launch all pillar assessments simultaneously:
-
-| Subagent | Pillar | What it checks |
-|----------|--------|---------------|
-| 1 | Style &amp; Validation | Linters, formatters, type checkers, pre-commit hooks |
 ...</code></pre>
     </section>
     <section class="checklist">

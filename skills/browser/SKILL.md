@@ -16,6 +16,20 @@ argument-hint: "[describe the task]"
 Browser automation is a **testing pyramid**, not a single tool. Pick the
 layer first, then the tool for that layer.
 
+## Delegation Floor
+
+Delegation floor applies for substantive browser strategy, exploratory QA,
+persona walks, visual regression design, or hardening findings into tests:
+probe the roster first; dispatch two or more providers; direct solo only for
+mechanical browser commands, emergency preservation, user-forbidden
+delegation, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for tool/stack selector,
+persona explorer, deterministic-test author, visual/evidence reviewer, and
+flake-risk critic. Runtime browser agents are evidence inputs; the lead owns
+which findings become committed deterministic tests.
+
 ## The Pyramid
 
 | Layer | Purpose | Tooling |

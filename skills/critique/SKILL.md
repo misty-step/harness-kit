@@ -12,6 +12,18 @@ argument-hint: "[--lens <name> --target <path>] [--lenses]"
 
 Single-lens signal. Not a merge gate, not `/code-review`, not a parallel bench.
 
+## Delegation Floor
+
+This skill intentionally runs one focused critic lane. It does not satisfy the
+full roster floor for substantive review, merge-readiness, or delivery claims;
+route those to `/code-review`, `/deliver`, or the calling skill's roster
+contract. If the critique itself requires broader judgment, probe the roster
+and dispatch additional specialized provider lanes from the caller before
+synthesizing.
+
+Local lane guidance: The critique lane is specialized by lens and target. Keep
+it read-only, artifact-only, and independent from author reasoning.
+
 ## Contract
 
 - `--lenses` lists available lens names by reading

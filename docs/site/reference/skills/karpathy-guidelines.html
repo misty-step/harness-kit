@@ -47,6 +47,18 @@ tasks (renames, find/replace, dep bumps) they&#x27;re overhead — use
 judgment. The threshold is &quot;does this need a judgment call?&quot;, same
 as for delegation.
 
+## Delegation Floor
+
+This is a reference/self-check skill, so reading it does not satisfy the roster
+floor. When the underlying task is substantive, use the caller&#x27;s Delegation
+Floor and commission specialized lanes for assumptions, simplicity, surgical
+scope, and verification risk as needed. Direct solo is fine for mechanical
+tasks where these guidelines are only a quick checklist.
+
+Local lane guidance: If dispatched, use one narrowly scoped critic lane against
+the live artifact and the relevant principle; do not turn the four principles
+into a standing review bench.
+
 ## 1. Think before coding
 
 **Don&#x27;t assume. Don&#x27;t hide confusion. Surface tradeoffs.**
@@ -67,22 +79,6 @@ discovers the mismatch after reviewing the diff. Surface the fork
 **Example.** Ticket: &quot;add validation to the signup form.&quot;
 
 Wrong: silently pick &quot;validate email format + password length,&quot;
-ship that, discover the user wanted reCAPTCHA.
-
-Right: before coding, state *&quot;I&#x27;m going to add client-side format
-validation for email and minimum-length for password. I&#x27;m not
-planning to wire up reCAPTCHA, rate limiting, or server-side
-checks. Confirm or redirect.&quot;*
-
-## 2. Simplicity first
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No &quot;flexibility&quot; or &quot;configurability&quot; that wasn&#x27;t requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
 ...</code></pre>
     </section>
     <section class="checklist">

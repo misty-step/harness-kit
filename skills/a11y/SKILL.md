@@ -23,6 +23,18 @@ You are the executive orchestrator.
 - Delegate audit, remediation, and critique to separate focused subagents.
 - Prefer parallel exploration for independent checks; keep remediation sequential when fixes interact.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for accessibility auditor,
+remediation builder, keyboard/screen-reader verifier, and cold WCAG critic.
+Prefer different providers for audit and critique when available; native
+in-thread subagents may supplement but do not satisfy the roster floor.
+
 ## Routing
 
 | Intent | Action |

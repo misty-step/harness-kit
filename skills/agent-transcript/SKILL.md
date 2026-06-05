@@ -30,6 +30,20 @@ before it leaves the machine.
   than duplicate the section.
 - Best effort only: PR/issue creation continues when no safe transcript exists.
 
+## Delegation Floor
+
+Rendering a scoped transcript preview is usually mechanical and may run direct
+solo. Delegation floor applies when transcript evidence requires substantive
+provenance judgment, redaction-risk review, public wording choices, or
+conflicting session narratives: probe the roster first; dispatch two or more
+providers; direct solo only for mechanical, emergency, user-forbidden, or
+fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for scope selector,
+redaction-risk critic, provenance reviewer, and public-copy reviewer. Never
+send raw transcripts to provider lanes; give rendered excerpts or sanitized
+artifact refs only.
+
 ## Helper
 
 Use the self-contained redactor for local previews:

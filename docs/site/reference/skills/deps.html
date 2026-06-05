@@ -47,6 +47,19 @@ You are the executive orchestrator.
 - Delegate package analysis and bounded upgrade work to focused subagents.
 - Parallelize across disjoint packages/ecosystems where safe.
 
+## Delegation Floor
+
+Delegation floor applies: probe the roster first; dispatch two or more
+providers for substantive work; direct solo only for mechanical, emergency,
+user-forbidden, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for ecosystem discovery,
+changelog/release-note analysis, CVE reachability, behavioral diffing,
+upgrade-builder work, and regression-risk critique. Split by package or
+ecosystem when independent; do not let any lane apply broad version churn
+without the lead&#x27;s curated upgrade policy.
+
 ## Routing
 
 | Mode | Intent |
@@ -67,25 +80,6 @@ Otherwise, detect all ecosystems present.
 | security | ✓ | ✓ (security only) | ✓ | ✓ | ✓ | PR |
 | upgrade [pkg] | ✓ | skip | ✓ | ✓ | ✓ | PR |
 | report | skip | ✓ | ✓ | skip | skip | Report only |
-
-## Ecosystem Detection
-
-Detect by lockfile/manifest presence. Multiple ecosystems in a monorepo:
-analyze each independently, upgrade separately.
-
-| Signal | Ecosystem |
-|--------|-----------|
-| `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lockb` | npm/Node |
-| `requirements.txt`, `Pipfile.lock`, `poetry.lock`, `uv.lock` | Python |
-| `Cargo.lock` | Rust |
-| `go.sum` | Go |
-| `Gemfile.lock` | Ruby |
-| `composer.lock` | PHP |
-
-No lockfile found → STOP. Tell the user to generate one first. Upgrading
-without a lockfile is guessing — you can&#x27;t diff what you can&#x27;t pin.
-
-## Workflow
 ...</code></pre>
     </section>
     <section class="checklist">

@@ -51,6 +51,18 @@ Calibrate to the user's wording:
 When using provider lanes, give them live artifacts only: diff, backlog, commit
 range, traces, or docs. Do not leak the lead's conclusions.
 
+## Delegation Floor
+
+Delegation floor applies for substantive or broad debriefs: probe the roster
+first; dispatch two or more providers; direct solo only for quick local
+catch-up, mechanical state summaries, emergency preservation, user-forbidden
+delegation, or fewer-than-two-providers cases. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: Use specialized lanes for git/history reconstruction,
+product/operator implication analysis, risk critique, and next-action review.
+Provider lanes receive artifacts and questions, not the lead's draft story.
+
 ## Workflow
 
 1. **Frame the scope.** Name the repo, branch, time window, backlog item, PR, or
