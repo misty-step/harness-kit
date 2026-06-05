@@ -34,7 +34,10 @@ class ReferenceQualityTests(unittest.TestCase):
         content = self.read("skills/research/references/delegate.md")
 
         self.assertIn("recommend which evidence to trust", content)
-        self.assertIn("```text\nPhase 1", content)
+        self.assertIn("## Dispatch Packet", content)
+        self.assertIn("Evidence requirement: URLs, file:line, command output, receipt id, or artifact.", content)
+        self.assertIn("### Accepted", content)
+        self.assertIn("### Rejected", content)
 
     def test_deliver_receipt_uses_canonical_code_review_phase_name(self) -> None:
         content = self.read("skills/deliver/references/receipt.md")
