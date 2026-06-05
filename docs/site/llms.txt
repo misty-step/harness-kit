@@ -30,6 +30,7 @@ Primitives:
 - skill:karpathy-guidelines | skills/karpathy-guidelines/SKILL.md | docs/site/reference/skills/karpathy-guidelines.html
 - skill:model-research | skills/model-research/SKILL.md | docs/site/reference/skills/model-research.html
 - skill:monitor | skills/monitor/SKILL.md | docs/site/reference/skills/monitor.html
+- skill:orient | skills/orient/SKILL.md | docs/site/reference/skills/orient.html
 - skill:qa | skills/qa/SKILL.md | docs/site/reference/skills/qa.html
 - skill:refactor | skills/refactor/SKILL.md | docs/site/reference/skills/refactor.html
 - skill:reflect | skills/reflect/SKILL.md | docs/site/reference/skills/reflect.html

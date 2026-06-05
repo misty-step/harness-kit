@@ -2701,7 +2701,7 @@ fn usage() -> ! {
   harness-kit-checks critique-eval --self-test
   harness-kit-checks critique-eval <candidate-output>
   harness-kit-checks eval-grader --self-test
-  harness-kit-checks eval-grader code-review-entrypoint|code-review-repo-fit|create-repo-skill|qa-cli-smoke|qa-browser-missing-selector|qa-non-browser <candidate-output>
+  harness-kit-checks eval-grader code-review-entrypoint|code-review-repo-fit|create-repo-skill|orient-session-start|qa-cli-smoke|qa-browser-missing-selector|qa-non-browser <candidate-output>
   harness-kit-checks load-config deploy|monitor|flywheel [--repo PATH] [--config PATH] [--optional]
   harness-kit-checks work-ledger --self-test
   harness-kit-checks work-ledger append [options]

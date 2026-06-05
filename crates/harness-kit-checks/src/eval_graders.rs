@@ -9,6 +9,7 @@ pub enum EvalGrader {
     CodeReviewEntrypoint,
     CodeReviewRepoFit,
     CreateRepoSkill,
+    OrientSessionStart,
     QaBrowserMissingSelector,
     QaCliSmoke,
     QaNonBrowser,
@@ -20,6 +21,7 @@ impl EvalGrader {
             "code-review-entrypoint" => Some(Self::CodeReviewEntrypoint),
             "code-review-repo-fit" => Some(Self::CodeReviewRepoFit),
             "create-repo-skill" => Some(Self::CreateRepoSkill),
+            "orient-session-start" => Some(Self::OrientSessionStart),
             "qa-browser-missing-selector" => Some(Self::QaBrowserMissingSelector),
             "qa-cli-smoke" => Some(Self::QaCliSmoke),
             "qa-non-browser" => Some(Self::QaNonBrowser),
@@ -39,6 +41,7 @@ pub fn grade_text(grader: EvalGrader, text: &str) -> Result<String> {
         EvalGrader::CodeReviewEntrypoint => code_review_entrypoint(text),
         EvalGrader::CodeReviewRepoFit => code_review_repo_fit(text),
         EvalGrader::CreateRepoSkill => create_repo_skill(text),
+        EvalGrader::OrientSessionStart => orient_session_start(text),
         EvalGrader::QaBrowserMissingSelector => qa_browser_missing_selector(text),
         EvalGrader::QaCliSmoke => qa_cli_smoke(text),
         EvalGrader::QaNonBrowser => qa_non_browser(text),
@@ -61,6 +64,11 @@ pub fn self_test() -> Result<String> {
             EvalGrader::CreateRepoSkill,
             "Persona value evidence report eval .agents/skills Completion Gate Residual",
             "Persona value evidence report eval .agents/skills Completion Gate TODO",
+        ),
+        (
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\n- Repo / branch: Harness Kit on deliver/100 from `git status --short --branch --untracked-files=all`.\n- Workspace state: clean.\n- Current focus: skill primitive work from `project.md` and `AGENTS.md`.\n- Backlog signal: `backlog.d/` has no active ticket files.\n- Recent closure signal: `git log -5` shows harness tooling and dispatch work.\n- Roster state: `.harness-kit/agents.yaml` exists; use roster only for substantive work.\n- Applicable constraints: `AGENTS.md` requires live repo evidence and clean closeout.\n- Blockers / gaps: no active shaped ticket.\n- Likely next skill: `/groom` if choosing new work; `/deliver` only after a shaped ticket exists.\n- Residual uncertainty: did not inspect transcripts or readiness profile.",
+            "**Orientation**\nThis repository looks ready. I will run a full readiness score, mine transcripts, save session memory, and then debrief all history.",
         ),
         (
             EvalGrader::QaCliSmoke,
@@ -117,6 +125,61 @@ fn create_repo_skill(text: &str) -> Result<String> {
         bail!("placeholder text remains");
     }
     Ok("generated repo skill shape looks concrete".to_string())
+}
+
+fn orient_session_start(text: &str) -> Result<String> {
+    require(text, r"\*\*Orientation\*\*|#\s*Orientation")?;
+    require_any(text, &["Repo / branch", "Repo:", "Branch:"])?;
+    require_any(text, &["Workspace state", "Workspace:"])?;
+    require_any(text, &["Current focus", "Focus:"])?;
+    require_any(text, &["Backlog signal", "Backlog:"])?;
+    require_any(
+        text,
+        &["Recent closure signal", "Recent closure", "Closure signal"],
+    )?;
+    require_any(text, &["Roster state", "Roster:"])?;
+    require_any(text, &["Applicable constraints", "Constraints:"])?;
+    require_any(text, &["Blockers / gaps", "Blockers:", "Gaps:"])?;
+    require_any(text, &["Likely next skill", "Next skill:"])?;
+    require_any(text, &["Residual uncertainty", "Uncertainty:"])?;
+    for source in [
+        "AGENTS.md",
+        "project.md",
+        "backlog.d/",
+        ".harness-kit/agents.yaml",
+    ] {
+        require(text, &regex::escape(source))?;
+    }
+    require(text, r"git status --short --branch")?;
+    require(text, r"git log (-(\d+)|--oneline)")?;
+    require(
+        text,
+        r"\b(deliver|feat|fix|chore|docs|refactor|master|main|HEAD|detached)/?[A-Za-z0-9._/-]*\b",
+    )?;
+    require(text, r"backlog\.d/[0-9]{3}|no active")?;
+    require(
+        text,
+        r"/(deliver|groom|diagnose|debrief|ship|reflect|agent-readiness|harness-engineering)",
+    )?;
+    if matches(
+        text,
+        r"readiness score|maturity level|mine transcripts|transcript mining|save session memory|store session memory|full debrief|broad reflection|dashboard",
+    ) {
+        bail!("orientation output expanded into a different workflow");
+    }
+    if matches(text, r"\bunknown\b") {
+        bail!("orientation output contains unknown placeholders");
+    }
+    if inline_code_span_count(text) < 4 {
+        bail!("orientation output lacks concrete command/path evidence");
+    }
+    if !matches(
+        text,
+        r"clean|dirty|modified|untracked|detached|no active|active",
+    ) {
+        bail!("workspace or backlog state is too generic");
+    }
+    Ok("PASS: orient-session-start".to_string())
 }
 
 fn qa_cli_smoke(text: &str) -> Result<String> {
@@ -178,10 +241,25 @@ fn require(text: &str, pattern: &str) -> Result<()> {
     }
 }
 
+fn require_any(text: &str, patterns: &[&str]) -> Result<()> {
+    if patterns.iter().any(|pattern| matches(text, pattern)) {
+        Ok(())
+    } else {
+        bail!("missing any required pattern: {}", patterns.join(" | "))
+    }
+}
+
 fn matches(text: &str, pattern: &str) -> bool {
     Regex::new(&format!("(?i){pattern}"))
         .expect("eval grader regex must compile")
         .is_match(text)
+}
+
+fn inline_code_span_count(text: &str) -> usize {
+    Regex::new(r"`[^`\n]+`")
+        .expect("inline code regex must compile")
+        .find_iter(text)
+        .count()
 }
 
 #[cfg(test)]
@@ -229,6 +307,22 @@ mod tests {
         .to_string();
 
         assert_eq!(error, "candidate reached for browser tooling on a CLI repo");
+    }
+
+    #[test]
+    fn orient_session_start_rejects_ceremony_and_other_workflows() {
+        let error = grade_text(
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\nI will inspect the repository and produce a full debrief with readiness score and transcript mining.",
+        )
+        .unwrap_err()
+        .to_string();
+
+        assert!(
+            error.contains("missing required pattern")
+                || error.contains("missing any required pattern")
+                || error == "orientation output expanded into a different workflow"
+        );
     }
 
     #[test]
@@ -337,5 +431,29 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn orient_grader_docs_and_text_contract_cover_session_start() {
+        assert!(grade_text(
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\n- Repo / branch: Harness Kit on deliver/100 from `git status --short --branch --untracked-files=all`.\n- Workspace state: clean.\n- Current focus: skill primitive work from `project.md` and `AGENTS.md`.\n- Backlog signal: `backlog.d/` has no active ticket files.\n- Recent closure signal: `git log -5` shows harness tooling and dispatch work.\n- Roster state: `.harness-kit/agents.yaml` exists; use roster only for substantive work.\n- Applicable constraints: `AGENTS.md` requires live repo evidence and clean closeout.\n- Blockers / gaps: no active shaped ticket.\n- Likely next skill: `/groom` if choosing new work; `/deliver` only after a shaped ticket exists.\n- Residual uncertainty: did not inspect transcripts or readiness profile.\n",
+        )
+        .is_ok());
+        assert!(grade_text(
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\n- Repo / branch: unknown.\n- Workspace state: ready.\n- Current focus: unknown.\n- Backlog signal: unknown.\n- Recent closure signal: unknown.\n- Roster state: unknown.\n- Likely next skill: `/agent-readiness`.\n- Residual uncertainty: none. Run readiness score and mine transcripts.\n",
+        )
+        .is_err());
+        assert!(grade_text(
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\n- Repo / branch: Harness Kit.\n- Workspace state: clean.\n- Current focus: repo work from AGENTS.md and project.md.\n- Backlog signal: backlog.d/ active.\n- Recent closure signal: git log has commits.\n- Roster state: .harness-kit/agents.yaml configured.\n- Applicable constraints: AGENTS.md project.md git status git log backlog.d/ .harness-kit/agents.yaml.\n- Blockers / gaps: none.\n- Likely next skill: /groom.\n- Residual uncertainty: none.\n",
+        )
+        .is_err());
+        assert!(grade_text(
+            EvalGrader::OrientSessionStart,
+            "**Orientation**\n- Repo / branch: Harness Kit.\n- Workspace state: clean.\n- Current focus: repo work from `AGENTS.md` and `project.md`.\n- Backlog signal: `backlog.d/` active.\n- Recent closure signal: `git log` has commits.\n- Roster state: `.harness-kit/agents.yaml` configured.\n- Applicable constraints: `git status` and `git log` checked.\n- Blockers / gaps: none.\n- Likely next skill: `/groom`.\n- Residual uncertainty: none.\n",
+        )
+        .is_err());
     }
 }

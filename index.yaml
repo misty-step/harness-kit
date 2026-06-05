@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-05T21:33:32Z
+# Generated: 2026-06-05T22:26:05Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -95,6 +95,10 @@ skills:
     description: "Watch signals after deploy, release, local run, CI change, or repeated workflow. Uses telemetry when present; otherwise healthchecks, logs, CI, flaky tests, benchmark drift, daemon output, regressions"
     source: first-party
     tags: [after,benchmark,change,ci,daemon,deploy,drift,flaky,healthchecks,local]
+  - name: orient
+    description: "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", \"what should I do next\""
+    source: first-party
+    tags: [acting,before,catch,do,evidence,fast,i,live,local,me]
   - name: qa
     description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party

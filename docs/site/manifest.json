@@ -398,6 +398,16 @@
       "source": "skills/monitor/SKILL.md"
     },
     {
+      "description": "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", \"what should I do next\", after compaction, after switching worktrees, or before choosing a Harness Kit workflow. Trigger: /orient, /ground, /session-start.",
+      "icon": "catalog",
+      "id": "skill:orient",
+      "kind": "skill",
+      "name": "orient",
+      "page": "reference/skills/orient.html",
+      "role": "Support",
+      "source": "skills/orient/SKILL.md"
+    },
+    {
       "description": "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA\", \"verify the feature\", \"test this\", \"check the app\", \"exploratory test\", \"QA this PR\", \"smoke test\", \"manual testing\", \"capture evidence\". For generated repo QA skills, use /create-repo-skill qa. Trigger: /qa.",
       "icon": "verify",
       "id": "skill:qa",
