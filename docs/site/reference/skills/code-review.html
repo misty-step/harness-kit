@@ -25,12 +25,12 @@
       <svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-review"></use></svg>
       <p class="eyebrow">skill</p>
       <h1>code-review</h1>
-      <p class="lede">Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: &quot;review this&quot;, &quot;code review&quot;, &quot;is this ready to ship&quot;, &quot;check this code&quot;, &quot;review my changes&quot;. Trigger: /code-review, /review.</p>
+      <p class="lede">Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: &quot;review this&quot;, &quot;code review&quot;, &quot;is this ready to ship&quot;, &quot;check this code&quot;, &quot;review my changes&quot;, &quot;autoreview&quot;, &quot;Codex review&quot;, &quot;Claude review&quot;, &quot;second-model review&quot;. Trigger: /code-review, /review, /autoreview.</p>
       <p><code class="trigger large">/code-review</code></p>
       <p class="source">Source: <a href="https://github.com/misty-step/harness-kit/blob/master/skills/code-review/SKILL.md">skills/code-review/SKILL.md</a></p>
     </section>
     <section class="grid two">
-      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: &quot;review this&quot;, &quot;code review&quot;, &quot;is this ready to ship&quot;, &quot;check this code&quot;, &quot;review my changes&quot;. Trigger: /code-review, /review.</p></article>
+      <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-catalog"></use></svg><h3>What it does</h3><p>Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: &quot;review this&quot;, &quot;code review&quot;, &quot;is this ready to ship&quot;, &quot;check this code&quot;, &quot;review my changes&quot;, &quot;autoreview&quot;, &quot;Codex review&quot;, &quot;Claude review&quot;, &quot;second-model review&quot;. Trigger: /code-review, /review, /autoreview.</p></article>
       <article class="card"><svg class="icon" aria-hidden="true"><use href="../../assets/icons.svg#icon-review"></use></svg><h3>Workflow role</h3><p>Review primitive in the Harness Kit operating loop.</p></article>
     </section>
     <section>
@@ -60,19 +60,19 @@ fields below for review verdicts.
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
    Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-2. **Load review pattern catalogs.** If the target repo has a local
+2. **Optionally run the structured autoreview helper.** When the human asks for
+   `autoreview`, Codex review, Claude review, or second-model review, or when a
+   frozen local/branch/commit bundle would sharpen synthesis, use
+   `references/autoreview-helper.md`. The helper is a leaf review engine, not a
+   substitute for roster evidence, verdict refs, executable-path verification,
+   or `/deliver` clean loop.
+
+3. **Load review pattern catalogs.** If the target repo has a local
    `references/review-patterns.md` or equivalent repo-local pattern catalog,
    load it before dispatching reviewers. When a local entry links to shared
    Harness Kit references such as
    `references/bounded-payload-discipline.md`, include that reference in the
    reviewer prompt and require findings to cite the local entry ID.
-
-3. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
-   selection algorithm in `references/bench-map.yaml`:
-   - `git diff --name-only $BASE...HEAD` → changed files
-   - Start from `default`; for every rule whose glob matches any changed file,
-     apply `replace`, union `add`, de-dupe, then cap at 5 (critic pinned)
-   - Bench size always in [3, 5]; selection is deterministic per diff
 ...</code></pre>
     </section>
     <section class="checklist">

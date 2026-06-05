@@ -188,7 +188,7 @@
       "source": "skills/ci/SKILL.md"
     },
     {
-      "description": "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this code\", \"review my changes\". Trigger: /code-review, /review.",
+      "description": "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this code\", \"review my changes\", \"autoreview\", \"Codex review\", \"Claude review\", \"second-model review\". Trigger: /code-review, /review, /autoreview.",
       "icon": "review",
       "id": "skill:code-review",
       "kind": "skill",

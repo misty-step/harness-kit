@@ -4,8 +4,9 @@ description: |
   Parallel multi-agent code review. Launch reviewer team, synthesize findings,
   auto-fix blocking issues, loop until clean.
   Use when: "review this", "code review", "is this ready to ship",
-  "check this code", "review my changes".
-  Trigger: /code-review, /review.
+  "check this code", "review my changes", "autoreview", "Codex review",
+  "Claude review", "second-model review".
+  Trigger: /code-review, /review, /autoreview.
 argument-hint: "[branch|diff|files]"
 ---
 
@@ -35,14 +36,21 @@ fields below for review verdicts.
 1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
    Classify: what changed? (API, UI, tests, infra, security, perf, data model, etc.)
 
-2. **Load review pattern catalogs.** If the target repo has a local
+2. **Optionally run the structured autoreview helper.** When the human asks for
+   `autoreview`, Codex review, Claude review, or second-model review, or when a
+   frozen local/branch/commit bundle would sharpen synthesis, use
+   `references/autoreview-helper.md`. The helper is a leaf review engine, not a
+   substitute for roster evidence, verdict refs, executable-path verification,
+   or `/deliver` clean loop.
+
+3. **Load review pattern catalogs.** If the target repo has a local
    `references/review-patterns.md` or equivalent repo-local pattern catalog,
    load it before dispatching reviewers. When a local entry links to shared
    Harness Kit references such as
    `references/bounded-payload-discipline.md`, include that reference in the
    reviewer prompt and require findings to cite the local entry ID.
 
-3. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
+4. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
    selection algorithm in `references/bench-map.yaml`:
    - `git diff --name-only $BASE...HEAD` → changed files
    - Start from `default`; for every rule whose glob matches any changed file,
@@ -54,7 +62,7 @@ fields below for review verdicts.
    `references/deep-review-lens.md` when the diff needs root-cause,
    provenance, or long-running autoreview discipline.
 
-4. **Dispatch all three tiers in parallel:**
+5. **Dispatch all three tiers in parallel:**
 
    | Tier | What | How |
    |------|------|-----|
@@ -67,11 +75,11 @@ fields below for review verdicts.
    `run_completed` event in `trace/events.jsonl`, before you consume the run.
    Mid-run output directories are not final artifacts.
 
-5. **Synthesize.** Collect all outputs. Deduplicate findings across tiers.
+6. **Synthesize.** Collect all outputs. Deduplicate findings across tiers.
    Rank by severity: blocking (correctness, security) > important (architecture,
    testing) > advisory (style, naming).
 
-6. **Verdict.** If no blocking findings → **Ship**. If blocking findings exist →
+7. **Verdict.** If no blocking findings → **Ship**. If blocking findings exist →
    fix loop (below).
 
 ## Fix Loop

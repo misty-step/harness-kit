@@ -142,6 +142,11 @@ let the outer loop own the final session-level shipping brief.
 
 ## Composition
 
+For the human-facing sequence across application repos, see
+`references/application-workflow.md`. Default: `/shape -> /deliver -> /ship`.
+For existing branches or PRs, default:
+`/deliver --polish-only <branch|PR> -> /ship`.
+
 Before `/implement`, verify the ticket or context packet has a visible PRD
 surface: named user, problem/why now, UX enabled, deliverable type, chosen
 technical design, ADR decision, alternatives with verdicts, acceptance oracle,
