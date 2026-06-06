@@ -258,7 +258,7 @@
       "source": "skills/debrief/SKILL.md"
     },
     {
-      "description": "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator brief + /reflect. Use for \"deliver this\", \"make it merge-ready\", shaped-ticket builds, and `--polish-only <branch|PR>` for existing branch/PR cleanup. Trigger: /deliver.",
+      "description": "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, /qa, and /demo evidence; stops before push, merge, or deploy. Emits receipt.json, evidence packet, delivery brief, and learning packet. Use for \"deliver this\", \"make it merge-ready\", shaped-ticket builds, and `--polish-only <branch|PR>` for existing branch/PR cleanup. Trigger: /deliver.",
       "icon": "operate",
       "id": "skill:deliver",
       "kind": "skill",

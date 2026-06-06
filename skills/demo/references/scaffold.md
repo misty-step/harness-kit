@@ -100,7 +100,9 @@ Recommend based on project context:
 - **PR inline visuals:** Optional draft GitHub release + PR comment mirror
 - **README/docs:** Committed GIF in `docs/` or repo root
 - **External:** S3, Cloudflare R2, or hosted service
-- **None:** No artifact; record the no-artifact demo sentence in the PR/changelog
+- **Text proof:** Commit `.evidence/<branch>/<date>/demo.md` with the changed
+  operator/developer behavior, exact command/path/diff surface, repo-fit
+  rationale, and residual risk.
 
 ## Generated Skill Template
 

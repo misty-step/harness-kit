@@ -31,6 +31,20 @@ The entire `.harness-kit/` tree is gitignored.
     {"name": "qa",        "status": "p1", "findings": 1}
   ],
   "evidence": {
+    "evidence_packet_dir": ".evidence/<branch>/<date>/",
+    "evidence_index": ".evidence/<branch>/<date>/evidence-index.md",
+    "runtime_proof_refs": [
+      ".evidence/<branch>/<date>/qa-report.md",
+      ".evidence/<branch>/<date>/cli-output.txt"
+    ],
+    "demo_refs": [
+      ".evidence/<branch>/<date>/demo.md"
+    ],
+    "review_refs": [
+      ".evidence/<branch>/<date>/review-synthesis.md"
+    ],
+    "learning_packet_ref": ".evidence/<branch>/<date>/learning-packet.json",
+    "weak_evidence_risks": [],
     "review_dir": "<state-dir>/review/",
     "evidence_dir": ".evidence/<branch>/<date>/",
     "ci_dir": "<state-dir>/ci/",

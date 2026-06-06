@@ -2,7 +2,8 @@
 
 **Principle (2026-06-02 decision):** Evidence is git-native by default.
 Per-phase skills own their own emission; `/deliver` never writes evidence
-itself, only records pointers in the receipt.
+itself, only records pointers in the receipt. `/deliver` still owns the
+merge-ready decision: missing required evidence keeps the branch dirty.
 
 ## Canonical Surface
 
@@ -18,6 +19,15 @@ Binary evidence under `.evidence/` is scoped to Git LFS by `.gitattributes`.
 When no LFS server is available, fresh clones still retain pointer files at
 minimum. GitHub draft releases, PR comments, Slack posts, and similar surfaces
 are mirrors or audience packaging, not canonical storage.
+
+Every successful delivery has an index:
+
+```text
+.evidence/<branch>/<date>/evidence-index.md
+```
+
+It links runtime proof, demo/text proof, review/CI summaries, and the learning
+packet. A text proof is the lowest-fidelity demo artifact; absence is not a valid pass state.
 
 ## Per-Phase Emission
 
@@ -56,5 +66,6 @@ artifacts.
 `/deliver` itself writes exactly two files: `state.json` and `receipt.json`.
 It does not write review transcripts, CI logs, screenshots, or any other
 evidence. If a phase skill emits committed evidence, the receipt records the
-`.evidence/<branch>/<date>/` pointer. If the phase skill did not emit it, the
-receipt does not invent it.
+`.evidence/<branch>/<date>/` pointer. If required evidence is absent, the
+receipt records the missing pointer as dirty and refuses `merge_ready` instead
+of inventing proof.

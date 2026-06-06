@@ -28,7 +28,7 @@ the demo path must name its durable alternative.
 
 ## Completion Gate
 
-Every demo outcome, including "no artifact needed," answers:
+Every demo outcome answers:
 See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
 core; this phase keeps artifact-specific local fields.
 
@@ -41,14 +41,14 @@ core; this phase keeps artifact-specific local fields.
 - Residual risk: unshown path, unsupported state, or none with reason.
 ```
 
-For internal changes, the demo may be a PR/release-note sentence, but it still
+For internal changes, the demo may be a committed text artifact, but it still
 names the developer/operator behavior that changed.
 
 ## Work Ledger
 
 When `.harness-kit/work/ledger.jsonl` is available, `/demo` calls
 `cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` before capture and
-`phase_completed` after the artifact or explicit "no artifact needed" evidence
+`phase_completed` after the artifact or text-proof evidence
 ref exists. Use `blocker_added` when capture fails and set `next_action` to the
 smallest recovery step.
 
@@ -84,7 +84,7 @@ Before capturing anything, answer three questions in order:
    | CLI / command-line tool | Terminal recording (`asciinema`, `vhs`) or copy/paste of `--help` output plus a representative invocation |
    | Library / SDK / package | Code snippet showing the new API in use; type-check output or REPL session if relevant |
    | MCP server / agent tool / LLM skill | Sample tool-call invocation and its result; conversation transcript excerpt; registration block for new tools |
-   | Internal refactor / infra / dependency bump / build config | Release-notes blurb or PR-description bullet. "No artifact needed" is the recorded outcome, not a skip |
+   | Internal refactor / infra / dependency bump / build config | Committed `demo.md`, release-notes blurb, or PR-description bullet that proves the operator/developer behavior changed |
 
 2. **Who is the audience?** PR reviewer wants the minimum proof the
    change works. Team Slack wants a short, punchy visual. External
@@ -108,22 +108,23 @@ skill) and invoke the full workflow.
 |---|---|
 | First argument is `scaffold`, or user said "scaffold demo" / "generate demo skill" | Read `references/scaffold.md` and follow it |
 | A project-local `.claude/skills/demo/SKILL.md` exists and the change needs polish | Defer to the project-local skill |
-| Change shape is internal / refactor / infra / dep bump | Use the **no-artifact path** below — write the blurb, don't open a capture tool |
+| Change shape is internal / refactor / infra / dep bump | Use the **text-artifact path** below — write durable proof, don't open a capture tool |
 | Change shape is routine (single screenshot, curl paste, terminal paste, code snippet) | Use the **quick-capture path** |
 | Change shape warrants polish (GIF with before/after, edited walkthrough, narrated video) | Use the **polished path** |
 
-## No-artifact path (internal / refactor / infra)
+## Text-artifact path (internal / refactor / infra)
 
-The demo is a sentence, not a file. This is a first-class outcome, not
-a skip.
+The demo is a small text artifact, not a skipped artifact. This is the lowest
+fidelity proof path.
 
-1. State what moved, in one line, in the PR description or changelog
-   entry. Example: `Refactor: extract rate-limiting from handler into
-   middleware. No behavior change; 4 handlers now share the same limiter.`
-2. Link to the diff stats or the most revealing file if helpful.
-3. Note explicitly why no artifact was captured: no user-visible
-   change, or no output worth pasting.
-4. Done. Do not manufacture a contrived screenshot just to have one.
+1. Write `.evidence/<branch>/<date>/demo.md` or the repo's durable equivalent.
+2. State what moved in one or two lines. Example: `Refactor: extract
+   rate-limiting from handler into middleware. No behavior change; 4 handlers
+   now share the same limiter.`
+3. Link to the diff stats, command output, generated docs, or most revealing
+   file.
+4. Name why richer capture was not repo-fit and what residual risk remains.
+5. Do not manufacture a contrived screenshot just to have one.
 
 ## Quick-capture path (routine changes)
 
@@ -198,7 +199,7 @@ from shape; pick the surface from audience.
 | Release notes / changelog entry | Users reading between versions |
 | `.evidence/<branch>/<date>/` | Canonical offline storage; default for QA/demo artifacts |
 | Draft GitHub release (`gh release create --draft`) | Optional mirror for large assets or inline PR URLs |
-| Commit message body | Long-term record, especially for no-artifact outcomes |
+| Commit message body | Long-term record, especially for text-proof outcomes |
 | `git notes` | Durable annotation without touching history |
 | Team Slack / internal post | Timely visual update; lossy over time |
 | Customer email / launch post | External polished path |
@@ -220,9 +221,9 @@ When a repo vendors or specializes this skill, the local guidance should
   release notes? Customer-facing product with launch posts?
 - If the repo is internal-only refactoring territory (an infra-only
   library, a build-tooling monorepo), lean the defaults toward the
-  no-artifact path — PR-description bullets, release-notes blurbs,
-  commit trailers. Do not manufacture a video pipeline the repo
-  doesn't need.
+  text-artifact path — committed proof notes, release-notes blurbs,
+  command transcripts, or commit trailers. Do not manufacture a video
+  pipeline the repo doesn't need.
 
 An exact-copy vendored copy is valid only for a repo that is itself the
 canonical source. For ordinary repos, either rely on the system-wide skill or
@@ -234,9 +235,9 @@ add concrete local demo defaults that earn the checked-in copy.
   Remotion, or `gh release` is a sign that the path is different here,
   not that there is none. `.evidence/<branch>/<date>/` is the default
   durable surface unless the repo declares another.
-- **"No demo needed" is a recorded outcome, not a skip.** For
-  internal changes, the sentence-in-the-PR-description IS the demo.
-  Write it; don't elide it.
+- **Lowest fidelity is text, not absence.** For internal changes, write
+  committed text proof under `.evidence/<branch>/<date>/` or the repo's
+  durable equivalent. Do not elide it.
 - **Default-state evidence proves nothing.** Show the delta, not just
   defaults. A screenshot of an empty page is indistinguishable from
   a screenshot of a broken page.
@@ -253,4 +254,5 @@ add concrete local demo defaults that earn the checked-in copy.
 
 Run `cargo run --locked -p harness-kit-checks -- check-evidence-blocks skills` to prove `/demo` keeps a
 local Completion Gate. Semantic demo quality is verified by the produced
-artifact path, screenshot, GIF, video, release note, or waiver in the run.
+artifact path, screenshot, GIF, video, release note, or text-proof artifact in
+the run.

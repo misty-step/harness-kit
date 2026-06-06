@@ -1,9 +1,9 @@
 # Clean Loop
 
 The clean loop runs `/code-review`, `/ci`, `/refactor`, conditional
-`/design` + `/a11y`, and `/qa` iteratively until all green, capped at
-**3 iterations**, then a final **hindsight sanity pass** before declaring
-merge-ready.
+`/design` + `/a11y`, `/qa`, and `/demo` iteratively until all green, capped at
+**3 iterations**, then a final **hindsight sanity pass**, verdict freshness
+check, and bounded `/reflect` pass before declaring merge-ready.
 
 ## Iteration Cap
 
@@ -30,6 +30,8 @@ A phase is **dirty** when:
 | `/design` | UI surface is present and design findings are unresolved, or no rendered-artifact evidence / waiver exists for a UI diff. |
 | `/a11y` | UI surface is present and critical/serious accessibility findings remain unresolved. |
 | `/qa` | P0 or P1 findings in its receipt. P2 does NOT block; gets recorded in receipt `remaining_work` for human attention. |
+| `/demo` | Missing `.evidence/<branch>/<date>/evidence-index.md`, missing demo/text artifact, or artifact does not prove the changed behavior. |
+| `/reflect` | Missing learning packet or packet lacks codification/backlog/skillify/memory/non-action disposition. |
 
 ## Iteration Logic
 
@@ -47,9 +49,12 @@ A phase is **dirty** when:
    clean. Record rendered evidence or an explicit repo-fit waiver. If the
    detector cannot resolve the base ref, inspect `git diff --name-only`
    manually instead of treating the detector failure as "no UI".
-5. Run `/qa` — skip when the diff has no user-facing surface (pure
-   library / infra / refactor).
-6. **Hindsight sanity pass.** Once the phases are green, read the full branch
+5. Run `/qa` — choose the repo-fit running surface. Browser is only one
+   possible driver; CLI, API, library, MCP, docs, and infra changes still need
+   an exercised surface or an inconclusive/fail result.
+6. Run `/demo` — create the audience-shaped artifact. For non-visual work, use
+   the text-artifact path; do not skip proof.
+7. **Hindsight sanity pass.** Once the phases are green, read the full branch
    diff one last time with fresh eyes — `git diff $(git merge-base HEAD
    <base>)...HEAD` — and ask **"what production embarrassment would justify
    rejection here?"** Look for shallow modules, pass-through layers, hidden
@@ -59,11 +64,16 @@ A phase is **dirty** when:
    against the cap). This is the named successor to `/settle`'s adversarial
    self-review; it is distinct from a `/critique` lens dispatch. Skip only for
    trivial diffs (<20 LOC, single file).
-7. **Verdict-ref freshness** (only if `harness-kit-checks verdict` is available):
+8. **Verdict-ref freshness** (only if `harness-kit-checks verdict` is available):
    confirm `refs/verdicts/<branch>` reads `ship`/`conditional` and its SHA
    matches HEAD. A stale SHA means changes landed after review → return to
    step 1.
-8. If all gates are green → exit 0, `merge_ready`. Else increment iteration
+9. Run bounded `/reflect` distill — emit one learning packet with
+   codification, backlog, skillify, memory, or explicit non-action
+   dispositions. If branch evidence changes after this point, return to step 1
+   and replace the stale packet instead of accumulating duplicate learning
+   packets.
+10. If all gates are green → exit 0, `merge_ready`. Else increment iteration
    counter and repeat from step 1.
 
 ## Escalation Protocol
@@ -85,8 +95,8 @@ A phase is **dirty** when:
 - Invent a 4th iteration
 - Mask a dirty phase as green
 - Push on cap-hit "so the human can see it"
-- Run `/qa` unconditionally on library-only diffs (judgment: if no
-  runtime surface, skip)
+- Skip proof on library-only diffs. Pick a text, command, import, generated
+  docs, or consumer-build artifact instead.
 - Treat `ui_surface:true` as a routing signal, not a verdict. `/design` and
   `/a11y` still own findings and evidence.
 - Treat a detector error as unknown, not clean. Fall back to path inspection.

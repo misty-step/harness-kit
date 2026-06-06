@@ -56,8 +56,29 @@ Follow-up proposals are evidence refs, not hidden chat-only state.
 | **append** | Append issue-scoped retro notes for `/groom` to consume later | `references/retro-format.md` |
 | **cycle** | Bounded end-of-ship retrospective invoked by `/ship` — emit backlog mutations, harness-tuning proposals, and a cycle summary for the caller to apply | `references/cycle.md` |
 
+`distill`, `prompt-debt`, and `cycle` may emit a learning packet for
+`/harness-engineering apply`. Reflect emits proposals; it does not apply them.
+
 If the first argument matches a mode name, route to that reference.
 If no mode is provided, run `distill`.
+
+### Learning Packet Schema
+
+When a mode emits a learning packet, use this machine-consumable shape:
+
+- source: `deliver` | `distill` | `cycle` | `prompt-debt`
+- packet_id
+- evidence_packet_dir
+- observations
+- operations for `/harness-engineering apply`
+  - action: `create` | `update` | `delete` | `move` | `backlog-create` |
+    `gate-add` | `eval-add`
+  - path
+  - evidence_ref
+  - rationale
+  - codification_target: `type` | `lint` | `hook` | `test` | `ci` |
+    `skill` | `agents` | `memory`
+- explicit non-actions with reasons
 
 Interpret natural-language requests as:
 - "checkpoint this", "teach-back", "make sure I understand", or packet marker
@@ -156,7 +177,8 @@ final-mile pipeline to capture learnings from the just-shipped ticket.
    cycle (commit, diff hunk, receipt path, log line).
 2. **Harness-tuning proposals** — may propose skill/agent/hook/AGENTS.md/
    CLAUDE.md edits. Reflect **emits**; it does not apply. The caller
-   routes these to a harness branch for human review.
+   routes these to `/harness-engineering apply` for validation and a harness
+   branch.
 
 All other modes are read-only against `backlog.d/` and the harness. If
 `cycle` cannot cite evidence for a mutation, downgrade it to a finding and
@@ -189,9 +211,9 @@ under different policies.
    - body: full file content for `create`, unified diff for `edit`, new
      priority for `reprioritize`, justification for `delete`
    - evidence: cycle ref justifying the mutation
-   These are **proposals**. The caller (`/ship`) applies them to master
-   via a follow-up commit and owns commit hygiene. Reflect does not stage,
-   commit, or push these files itself.
+   These are **proposals**. A caller may route them through
+   `/harness-engineering apply` or a direct backlog edit, but reflect does not
+   stage, commit, or push these files itself.
 
 2. **Harness-tuning proposals** (structured, machine-consumable). For each:
    - path: concrete file under `skills/`, `agents/`, `harnesses/`,
@@ -199,7 +221,7 @@ under different policies.
    - body: unified diff or full new-file content
    - evidence: cycle ref and codification-hierarchy justification
    Reflect **must not** write these to master. The caller routes them to
-   a harness branch (`/ship` uses `harness/reflect-outputs`). A `cycle`
+   `/harness-engineering apply`, which creates a harness branch. A `cycle`
    run that mutates harness files on the current branch is a bug.
 
 3. **Prompt-debt proposal** (optional, structured). Include at most one by
@@ -218,11 +240,14 @@ under different policies.
    `.harness-kit/reflect/<cycle-id>/` receipts dir, matching whatever
    convention the invoking repo already uses).
 
+5. **Learning packet** (machine-consumable). Use the shared Learning Packet
+   Schema above.
+
 ### Invariants
 
 - **Harness mutations never land on master directly.** Reflect emits;
-  the caller routes to a harness branch. This is a hard cross-skill
-  invariant also asserted in `ship/SKILL.md`.
+  `/harness-engineering apply` validates and routes to a harness branch. This
+  is a hard cross-skill invariant also asserted in `ship/SKILL.md`.
 - **Backlog mutations are proposals, not auto-applied.** Reflect does
   not `git add` / `git commit` on behalf of the caller.
 - **Session-retrospective mode still works standalone.** `distill`,

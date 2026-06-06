@@ -26,6 +26,7 @@ Engineer the harness. Keep it thin.
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
+| apply reflect learning packet to Harness Kit primitives | `references/mode-apply.md` |
 | measure skill usage/health/staleness | `references/mode-audit.md` |
 | open-model defaults | `references/open-model-roster.md` |
 

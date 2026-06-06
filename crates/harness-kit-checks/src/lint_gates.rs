@@ -222,11 +222,7 @@ pub fn check_deliver_composition(root: &Path) -> Result<GateReport> {
         }
     }
 
-    if findings.is_empty() {
-        Ok(GateReport::success(format!(
-            "{target_label}: composition clean (no inlined-phase calls)."
-        )))
-    } else {
+    if !findings.is_empty() {
         let mut errors = vec![format!(
             "Found {} inlined-phase violation(s) in {target_label}:",
             findings.len()
@@ -236,7 +232,124 @@ pub fn check_deliver_composition(root: &Path) -> Result<GateReport> {
         errors.push("/deliver must compose atomic phase skills via trigger syntax,".to_string());
         errors.push("not re-implement their internals. See backlog.d/032.".to_string());
         Ok(GateReport::failure(errors))
+    } else {
+        let mut errors = Vec::new();
+        check_deliver_evidence_contract(root, &text, &mut errors)?;
+        if errors.is_empty() {
+            Ok(GateReport::success(format!(
+                "{target_label}: composition clean (no inlined-phase calls)."
+            )))
+        } else {
+            Ok(GateReport::failure(errors))
+        }
     }
+}
+
+fn check_deliver_evidence_contract(
+    root: &Path,
+    deliver_text: &str,
+    errors: &mut Vec<String>,
+) -> Result<()> {
+    for required in [
+        "/demo",
+        "evidence packet",
+        "learning packet",
+        "Evidence packet dir",
+    ] {
+        if !deliver_text.contains(required) {
+            errors.push(format!(
+                "skills/deliver/SKILL.md must name mandatory {required:?} contract"
+            ));
+        }
+    }
+
+    check_demo_text_artifact_contract(root, Path::new("skills/demo/SKILL.md"), true, errors)?;
+    check_demo_text_artifact_contract(
+        root,
+        Path::new("skills/demo/references/scaffold.md"),
+        false,
+        errors,
+    )?;
+
+    let receipt_path = root.join("skills/deliver/references/receipt.md");
+    if receipt_path.exists() {
+        let receipt = fs::read_to_string(&receipt_path)
+            .with_context(|| format!("failed to read {}", receipt_path.display()))?;
+        for required in [
+            "evidence_packet_dir",
+            "runtime_proof_refs",
+            "demo_refs",
+            "learning_packet_ref",
+            "weak_evidence_risks",
+        ] {
+            if !receipt.contains(required) {
+                errors.push(format!(
+                    "skills/deliver/references/receipt.md missing {required}"
+                ));
+            }
+        }
+    }
+
+    let evidence_path = root.join("skills/deliver/references/evidence.md");
+    if evidence_path.exists() {
+        let evidence = fs::read_to_string(&evidence_path)
+            .with_context(|| format!("failed to read {}", evidence_path.display()))?;
+        for required in [
+            "evidence-index.md",
+            "absence is not a valid pass state",
+            "refuses `merge_ready`",
+        ] {
+            if !evidence.contains(required) {
+                errors.push(format!(
+                    "skills/deliver/references/evidence.md missing {required:?}"
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn check_demo_text_artifact_contract(
+    root: &Path,
+    relative_path: &Path,
+    require_heading: bool,
+    errors: &mut Vec<String>,
+) -> Result<()> {
+    let path = root.join(relative_path);
+    if path.exists() {
+        let text = fs::read_to_string(&path)
+            .with_context(|| format!("failed to read {}", path.display()))?;
+        let normalized = text.to_lowercase();
+        for forbidden in [
+            "no-artifact path",
+            "no artifact needed",
+            "no demo needed",
+            "waiver in the run",
+            "none: no artifact",
+        ] {
+            if normalized.contains(forbidden) {
+                errors.push(format!(
+                    "{} must not allow {forbidden:?} as a pass state",
+                    relative_path.display()
+                ));
+            }
+        }
+        if require_heading && !text.contains("Text-artifact path") {
+            errors.push(format!(
+                "{} must define the text-artifact proof path",
+                relative_path.display()
+            ));
+        }
+        if !text.contains(".evidence/<branch>/<date>/demo.md") {
+            errors.push(format!(
+                "{} must point generated/internal proof at .evidence/<branch>/<date>/demo.md",
+                relative_path.display()
+            ));
+        }
+    }
+
+    Ok(())
 }
 
 pub fn check_no_claims(root: &Path) -> Result<GateReport> {
@@ -542,6 +655,47 @@ mod tests {
         let report = check_deliver_composition(temp.path()).unwrap();
         assert!(report.errors[0].contains("Found 1 inlined-phase violation"));
         assert!(report.errors[1].contains("raw `dagger call check`"));
+    }
+
+    #[test]
+    fn deliver_composition_rejects_no_artifact_demo_escape_hatch() {
+        let temp = tempfile::tempdir().unwrap();
+        fs::create_dir_all(temp.path().join("skills/deliver/references")).unwrap();
+        fs::create_dir_all(temp.path().join("skills/demo")).unwrap();
+        fs::write(
+            temp.path().join("skills/deliver/SKILL.md"),
+            "/demo evidence packet learning packet Evidence packet dir\n",
+        )
+        .unwrap();
+        fs::write(
+            temp.path().join("skills/deliver/references/receipt.md"),
+            "evidence_packet_dir runtime_proof_refs demo_refs learning_packet_ref weak_evidence_risks\n",
+        )
+        .unwrap();
+        fs::write(
+            temp.path().join("skills/deliver/references/evidence.md"),
+            "evidence-index.md\nabsence is not a valid pass state\nrefuses `merge_ready`\n",
+        )
+        .unwrap();
+        fs::write(
+            temp.path().join("skills/demo/SKILL.md"),
+            "## No-artifact path\nno artifact needed\n",
+        )
+        .unwrap();
+
+        let report = check_deliver_composition(temp.path()).unwrap();
+        assert!(
+            report
+                .errors
+                .iter()
+                .any(|error| error.contains("no-artifact path"))
+        );
+        assert!(
+            report
+                .errors
+                .iter()
+                .any(|error| error.contains("text-artifact proof path"))
+        );
     }
 
     #[test]

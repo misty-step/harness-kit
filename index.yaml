@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-05T22:26:05Z
+# Generated: 2026-06-06T16:08:59Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -40,9 +40,9 @@ skills:
     source: first-party
     tags: [a,agent,asks,backlog,branch,catch,catch-up,changed,current,debrief]
   - name: deliver
-    description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before push, merge, or deploy. Emits receipt.json plus operator "
+    description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, /qa, and /demo evidence; stops before push, merge, or deploy. Emits receipt.jso"
     source: first-party
-    tags: [backlog,before,ci,code,code-review,composer,composes,deploy,emits,implement]
+    tags: [backlog,before,ci,code,code-review,composer,composes,demo,deploy,emits]
   - name: demo
     description: "Capture evidence for what changed: blurb, paste, screenshot, GIF, video, launch note, or repo-local demo skill. Pick by change shape, audience, and budget. Use when: \"make a demo\", \"record walkthrough"
     source: first-party

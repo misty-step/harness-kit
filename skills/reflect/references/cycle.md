@@ -8,12 +8,12 @@ and extract learnings worth keeping.
 
 1. **Backlog mutations beyond a single item** — create, consolidate,
    delete, reprioritize. Cite cycle evidence for each.
-2. **Harness-edit suggestions** on a branch for human review — never in
+2. **Harness-edit suggestions** for `/harness-engineering apply` — never in
    place. Skills, agents, hooks, AGENTS.md, CLAUDE.md are all in scope.
 
 ## When to escalate to a harness branch
 
-Branches are expensive — humans must review. Raise something when:
+Harness apply branches are expensive — humans must review. Raise something when:
 
 - The same failure appears in ≥2 cycles.
 - A documented contract was followed and still produced wrong output

@@ -2,8 +2,9 @@
 name: deliver
 description: |
   Inner-loop composer for one backlog item to merge-ready code. Composes
-  /shape, /implement, /code-review, /ci, /refactor, and /qa; stops before
-  push, merge, or deploy. Emits receipt.json plus operator brief + /reflect.
+  /shape, /implement, /code-review, /ci, /refactor, /qa, and /demo evidence;
+  stops before push, merge, or deploy. Emits receipt.json, evidence packet,
+  delivery brief, and learning packet.
   Use for "deliver this", "make it merge-ready", shaped-ticket builds, and
   `--polish-only <branch|PR>` for existing branch/PR cleanup.
   Trigger: /deliver.
@@ -12,14 +13,17 @@ argument-hint: "[backlog-item|issue-id] [--polish-only <branch|PR>] [--resume <u
 
 # /deliver
 
-Inner-loop composer. One backlog item → merge-ready code. **Delivered ≠
-shipped.** The outer loop (`/flywheel`) consumes the receipt and
+Inner-loop composer. One backlog item → merge-ready code plus proof.
+**Delivered ≠ shipped.** The outer loop (`/flywheel`) consumes the receipt and
 decides whether to deploy. Humans merge.
 
 ## Invariants
 
 - Compose atomic phase skills. Never inline phase logic.
 - Fail loud. Never swallow a phase failure into a "best effort" pass.
+- Merge-ready means working code + evidence packet + learning packet. There is
+  no "no visible artifact needed" pass state; downgrade artifact fidelity
+  instead of skipping proof.
 - Clean closeout is part of merge-readiness. Before writing `merge_ready` or
   presenting delivery as complete, shared Closeout applies; every visible path
   must be classified into a follow-up commit, deletion, move-out, durable
@@ -44,7 +48,7 @@ fields in the merge-ready block below.
 
 When `.harness-kit/work/ledger.jsonl` is available, `/deliver` calls
 `cargo run --locked -p harness-kit-checks -- work-ledger append` at transition points: `phase_started` for
-`shape`, `implement`, `review`, `ci`, `qa`, and `reflect`; `blocker_added`
+`shape`, `implement`, `review`, `ci`, `qa`, `demo`, and `reflect`; `blocker_added`
 when a phase fails; `phase_completed` with `status=completed` when the branch
 is merge-ready. On `--resume`, consume the latest record for the same
 backlog/branch/work id to report current phase, blockers, evidence refs,
@@ -61,13 +65,20 @@ before merge-ready.
 
 ## Closeout Contract
 
-Every `/deliver` run ends with two operator-facing outputs, in this order:
-1. A tight delivery brief.
-2. A full `/reflect` session.
+Every successful `/deliver` run ends with four outputs, in this order:
+1. `receipt.json` for callers and automation.
+2. A committed evidence packet under `.evidence/<branch>/<date>/`.
+3. A tight delivery brief.
+4. A bounded learning packet from `/reflect`.
 
-This does not replace the machine contract. `receipt.json` remains the source
-of truth for callers and automation. The brief and reflection are for the
-human operator.
+The evidence packet is not optional. For internal, refactor, infra, docs, or
+library work, the minimum artifact is a text proof such as
+`.evidence/<branch>/<date>/demo.md` or `cli-output.txt` that names the changed
+developer/operator behavior, exact command/path/diff surface exercised,
+repo-fit rationale, and residual risk.
+
+The delivery brief and learning packet do not replace the machine contract.
+`receipt.json` remains the source of truth for callers and automation.
 
 The delivery brief is short and punchy. It is not a file inventory, a raw
 changelog, or a generic "green tests" note. Default shape: 1-2 short
@@ -113,7 +124,8 @@ evidence when the packet includes `Comprehension-required: <topic>`.
 - Exact end-user behavior changed: behavior or internal operator behavior delivered by this branch.
 - Live repo evidence read: files, docs, configs, tests, receipts, or runtime artifacts used to judge fit.
 - Acceptance source: ticket oracle, context packet, spec, fixture, contract, route, command, or explicit absence.
-- Evidence that proves it: test output, QA artifact, gate result, or receipt proving the behavior.
+- Evidence packet dir: committed `.evidence/<branch>/<date>/` directory.
+- Evidence that proves it: runtime proof, demo/text artifact, review/CI summary, or QA artifact proving the behavior.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Oracle / acceptance artifact hash: sha256 digest for any fixture, contract, golden file, transcript, screenshot, or equivalent acceptance source used by the oracle.
 - Contract-change acknowledgment: explicit reason when the branch changes acceptance criteria or weakens an assertion surface.
@@ -121,6 +133,7 @@ evidence when the packet includes `Comprehension-required: <topic>`.
 - Repo-fit check: live repo pattern, contract, or boundary this branch follows.
 - Hardening run / waiver: hardening mode run, blocking recommendation, or waiver reason.
 - Formal-spec ladder evidence: when `Formal Spec Required: yes`, commands run, survivor disposition, critic/verifier result, or named waiver path.
+- Learning packet: `/reflect` packet path or receipt with codification/backlog/non-action outcome.
 - Reflect checkpoint evidence: when `Comprehension-required: <topic>` is present, `/reflect checkpoint` artifact path and validator gate command; otherwise `not required`.
 - Residual risk: unverified path, accepted survivor, or none with reason.
 ```
@@ -134,9 +147,10 @@ skills, stale commands, unexercised executable paths, scaffold-only proof, or
 adjacent tests that do not invoke the changed surface keep `/deliver` out of
 merge-ready.
 
-`/reflect` remains mandatory. Do not collapse reflection into the delivery
-brief. The brief explains the delivered result; `/reflect` captures the
-learnings, harness changes, and follow-on mutations.
+The bounded `/reflect` pass remains mandatory. Do not collapse learning into
+the delivery brief. The brief explains the delivered result; the learning
+packet captures codification candidates, backlog proposals, skillify
+candidates, memory candidates, and explicit non-actions.
 
 When `/deliver` is invoked under `/flywheel`, keep the same content shape but
 let the outer loop own the final session-level shipping brief.
@@ -173,7 +187,8 @@ back to `/shape` instead of treating implementation choices as delivery work.
 │  /refactor        → diff-aware simplify        │
 │  /design + /a11y  → visual surfaces; a11y when applicable│
 │  /qa              → running-surface evidence   │
-│  capture evidence → see references/evidence.md │
+│  /demo            → audience-shaped proof artifact │
+│  evidence packet  → see references/evidence.md │
 └──────────────────────────────────────────────┘
     │ all green → merge-ready (exit 0)
     │ cap hit or hard fail → fail loud (exit 20/10)
@@ -193,6 +208,7 @@ back to `/shape` instead of treating implementation choices as delivery work.
 | refactor | `/refactor` | diff-aware simplification | trivial diffs (<20 LOC, single file) |
 | design | `/design` + `/a11y` | visual intent, taste, DESIGN.md contract, and accessibility evidence | no visual paths by detector or equivalent diff/artifact inspection; `/a11y` only when accessibility applies |
 | qa | `/qa` | browser-driven exploratory test, evidence | no user-facing surface (pure library/refactor) |
+| demo | `/demo` | screenshot, GIF, API capture, CLI transcript, report, or text proof artifact in the evidence packet | never; choose the lowest repo-fit artifact instead of skipping |
 
 Each skill has its own contract and receipt. `/deliver` reads those
 receipts; it never re-implements the phase.
@@ -240,8 +256,9 @@ settle-parity checks (hindsight sanity pass, verdict-ref freshness).
 - **Fail loud.** A dirty phase is a dirty phase — do not mask it, do not
   retry past the cap, do not write `status: merge_ready` when anything is
   red.
-- **Evidence is out-of-band.** `/deliver` writes zero artifacts itself;
-  per-phase skills emit; receipt records pointers only. See
+- **Evidence is out-of-band but mandatory.** `/deliver` writes only state and
+  receipts; phase skills emit evidence and `/deliver` records pointers. A
+  missing required evidence packet keeps the branch out of merge-ready. See
   `references/evidence.md`.
 - **No auto-invoke of `/hardening`.** Downstream phases may flag hardening
   opportunities; `/deliver` records them and any waiver. `/hardening` runs only
