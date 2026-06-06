@@ -27,14 +27,18 @@ Capture the packet before launching lanes:
 
 ## Source Invariant
 
-Default research requires independent evidence from these capability lanes:
+Default research accounts for these capability lanes. Run the lane when it is
+relevant; otherwise keep it in the matrix as `skipped` with the reason.
 
 | Lane | Capability | Primary refs |
 |---|---|---|
-| Retrieval | web, docs, papers, reference implementations | `web-search.md`, `exa-tools.md` |
-| Recency / discourse | current web, X/social discourse, contradiction checks | `xai-search.md` |
-| Repo-aware critique | local fit, architecture tradeoffs, second opinion | `thinktank.md`, `delegate.md` |
 | Codebase | live repo patterns, existing contracts, local prior art | `rg`, `git`, local files |
+| Docs | library/API docs and official references | Context7, official docs, `web-search.md` |
+| Retrieval | web, papers, reference implementations | `web-search.md`, `exa-tools.md` |
+| Extraction | known URL fetch, page extraction, site maps, crawls | `exa-tools.md`, `extraction-tools.md`, `/browser` |
+| Recency / discourse | current web, X/social discourse, contradiction checks | `xai-search.md` |
+| Synthesis | concise answer over gathered evidence | Perplexity/Exa deep/lead synthesis |
+| Repo-aware critique | local fit, architecture tradeoffs, second opinion | `thinktank.md`, `delegate.md` |
 
 If a lane fails, times out, lacks credentials, or is intentionally skipped by
 scope, keep its section and label the status. Do not silently collapse failed
@@ -48,15 +52,21 @@ also dispatch the provider lanes required by `harnesses/shared/AGENTS.md`
 
 | Intent | Prefer | Fallback |
 |---|---|---|
+| Local repo truth | `rg`, git, local files | user-provided context |
 | Code examples or reference implementations | Exa code context | GitHub/source search, web search |
 | Library docs or API usage | docs capability such as Context7 | official docs via web search |
+| Known URL or generated docs extraction | Exa fetch / Firecrawl scrape | browser agent |
+| Site discovery, sitemap, or crawl | Tavily/Firecrawl map/crawl | browser/manual link walk |
 | Model releases, pricing, CVEs, deprecations | recency-filtered web/xAI | Exa recency, official sources |
 | Social sentiment or public discourse | xAI X Search | web results that cite public posts |
+| Grounded answer synthesis | Perplexity/Exa deep after retrieval | lead synthesis over cited sources |
 | Repo architecture or local tradeoffs | Thinktank / roster lanes | scoped grep plus lead analysis |
 | Saved user reading/highlights | Readwise | local notes or explicit web search |
 
 Route by capability. Vendor names are implementation details; if a named
 provider is unavailable, use the closest source and report the substitution.
+Do not add a vendor to the prose unless a script, command recipe, or explicit
+manual fallback can actually invoke it.
 
 ## Thinktank State
 
@@ -82,10 +92,13 @@ Use this shape for default fanout reports:
 ## Source Matrix
 | Source lane | Status | What it contributed | Key refs |
 |---|---|---|---|
-| Retrieval | complete/partial/failed/skipped | ... | URLs/artifacts |
-| Recency / discourse | complete/partial/failed/skipped | ... | URLs/citations |
-| Repo-aware critique | complete/partial/failed/skipped | ... | receipt ids/output dir |
 | Codebase | complete/partial/failed/skipped | ... | file:line/commands |
+| Docs | complete/partial/failed/skipped | ... | URLs/artifacts |
+| Retrieval | complete/partial/failed/skipped | ... | URLs/artifacts |
+| Extraction | complete/partial/failed/skipped | ... | URLs/artifacts |
+| Recency / discourse | complete/partial/failed/skipped | ... | URLs/citations |
+| Synthesis | complete/partial/failed/skipped | ... | citation refs |
+| Repo-aware critique | complete/partial/failed/skipped | ... | receipt ids/output dir |
 
 ## Conflicts
 [Disagreements across sources and the lead's resolution.]

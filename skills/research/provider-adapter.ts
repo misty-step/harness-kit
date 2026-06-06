@@ -1,6 +1,6 @@
 export type WebCommand = "web" | "web-deep" | "web-news" | "web-docs";
 
-export type SearchProviderName = "context7" | "exa" | "brave" | "perplexity";
+export type SearchProviderName = "context7" | "exa" | "xai" | "brave" | "perplexity";
 
 export type ConfidenceLevel = "high" | "medium" | "low";
 

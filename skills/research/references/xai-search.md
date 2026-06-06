@@ -33,7 +33,8 @@ Grok to social sentiment only.
 
 Base URL: `https://api.x.ai/v1`
 Auth: `Authorization: Bearer $XAI_API_KEY`
-API: OpenAI Responses API compatible.
+API: OpenAI Responses API compatible. Default model: `grok-4.3` unless the
+environment overrides it.
 
 ## Web Search
 
@@ -42,7 +43,7 @@ curl https://api.x.ai/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $XAI_API_KEY" \
   -d '{
-  "model": "grok-4.20-beta-latest-non-reasoning",
+  "model": "grok-4.3",
   "input": [{"role": "user", "content": "What is the latest on AI regulation?"}],
   "tools": [{"type": "web_search"}]
 }'
@@ -73,7 +74,7 @@ curl https://api.x.ai/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $XAI_API_KEY" \
   -d '{
-  "model": "grok-4.20-beta-latest-non-reasoning",
+  "model": "grok-4.3",
   "input": [{"role": "user", "content": "What are people saying about Claude 4?"}],
   "tools": [{"type": "x_search"}]
 }'
@@ -114,7 +115,7 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("XAI_API_KEY"), base_url="https://api.x.ai/v1")
 
 response = client.responses.create(
-    model="grok-4.20-beta-latest-non-reasoning",
+    model="grok-4.3",
     input=[{"role": "user", "content": query}],
     tools=[{"type": "x_search"}],  # or "web_search"
 )
@@ -126,7 +127,7 @@ import { xai } from '@ai-sdk/xai';
 import { generateText } from 'ai';
 
 const { text, sources } = await generateText({
-  model: xai.responses('grok-4.20-beta-latest-non-reasoning'),
+  model: xai.responses('grok-4.3'),
   prompt: query,
   tools: {
     x_search: xai.tools.xSearch(),           // X search
@@ -143,7 +144,7 @@ from xai_sdk.tools import web_search, x_search
 
 client = Client(api_key=os.getenv("XAI_API_KEY"))
 chat = client.chat.create(
-    model="grok-4.20-beta-latest-non-reasoning",
+    model="grok-4.3",
     tools=[web_search(), x_search()],
 )
 chat.append(user(query))
@@ -160,3 +161,6 @@ Responses include `response.citations` with source URLs. Always cite them.
 - `enable_video_understanding` is X Search only
 - `allowed_domains` / `excluded_domains` cannot be combined in one request
 - `allowed_x_handles` / `excluded_x_handles` cannot be combined in one request
+- In the Harness Kit runtime, xAI is a retrieval/discourse provider when
+  `XAI_API_KEY` is set. It is routed before Exa for social/discourse queries
+  and after Exa for recency corroboration.

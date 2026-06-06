@@ -4,9 +4,13 @@ Exa provides neural search optimized for code and technical content.
 
 ## Access
 
-**REST API via curl. No MCP.**
+**REST API via curl plus official remote MCP.**
 
 Auth: `x-api-key: $EXA_API_KEY` header. Key is set in shell env.
+
+MCP endpoint: `https://mcp.exa.ai/mcp`. Use it when the active harness has MCP
+tool support; use REST when MCP is unavailable or a script needs deterministic
+fixtures.
 
 ## Search
 
@@ -20,6 +24,23 @@ curl -s https://api.exa.ai/search \
     "numResults": 5,
     "useAutoprompt": true,
     "contents": { "text": { "maxCharacters": 1000 } }
+  }'
+```
+
+### Deep / Structured Search
+
+Use Exa deep search when the task needs stronger source gathering before
+synthesis, or structured output that a downstream script can validate.
+
+```bash
+curl -s https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "best practices for browser agent visual regression",
+    "type": "deep",
+    "numResults": 8,
+    "contents": { "text": { "maxCharacters": 2000 } }
   }'
 ```
 
@@ -96,9 +117,20 @@ curl -s https://api.exa.ai/contents \
 | "Find papers on X" | `auto` | Academic/formal specs |
 | "Pages like this one" | `findSimilar` | Expand from known good source |
 
+## MCP Tool Names
+
+When Exa MCP is configured, prefer these capability-shaped tools:
+
+- `web_search_exa` — broad web search.
+- `web_search_advanced_exa` — filtered/deeper search.
+- `web_fetch_exa` — fetch known URLs into context.
+- Company, LinkedIn, GitHub, and competitor tools are specialized retrieval
+  lanes; do not invoke them for generic research.
+
 ## Integration with Research Skill
 
-The `/research` default fanout calls Exa via curl in parallel with thinktank and xAI.
-Exa results include URLs — always cite them.
+The `/research` default fanout calls Exa for retrieval, code/context examples,
+known URL fetch, and deep/structured search. Exa results include URLs — always
+cite them.
 
 Provider chain: Exa (curl) → WebSearch (fallback only)

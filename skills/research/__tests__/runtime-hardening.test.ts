@@ -7,7 +7,7 @@ import { QueryCache } from "../cache";
 import { runResearch } from "../cli";
 import { WebSearchOrchestrator } from "../orchestrator";
 import type { ProviderAdapter, SearchRequest, SearchResult } from "../provider-adapter";
-import { fetchWithTimeout, ProviderRequestError } from "../providers";
+import { fetchWithTimeout, ProviderRequestError, XaiProvider } from "../providers";
 
 const REQUEST: SearchRequest = {
   query: "latest harness news",
@@ -94,6 +94,36 @@ describe("research runtime hardening", () => {
     expect(response.results).toHaveLength(1);
     expect(response.synthesis).toBeNull();
     expect(response.meta.degraded).toContain("synthesis failed: Error: synthesis unavailable");
+  });
+
+  test("xAI provider maps citations from Responses API payload", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      new Response(
+        JSON.stringify({
+          output_text: "Grounded answer",
+          citations: ["https://x.ai/docs", "https://docs.x.ai/search"],
+        }),
+        { status: 200, headers: { "content-type": "application/json" } }
+      )) as typeof fetch;
+
+    try {
+      const provider = new XaiProvider("test-key", "grok-test");
+      const results = await provider.search({
+        query: "what are people saying about Grok search",
+        command: "web",
+        limit: 2,
+      });
+
+      expect(results.map((item) => item.source_provider)).toEqual(["xai", "xai"]);
+      expect(results.map((item) => item.url)).toEqual([
+        "https://x.ai/docs",
+        "https://docs.x.ai/search",
+      ]);
+      expect(results[0].snippet).toBe("Grounded answer");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
   test("empty post-dedupe results are not cached as success", async () => {

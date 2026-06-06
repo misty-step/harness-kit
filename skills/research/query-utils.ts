@@ -3,6 +3,8 @@ import type { SearchRequest, SearchResult, WebCommand } from "./provider-adapter
 const TIME_SENSITIVE_PATTERN =
   /\b(latest|today|current|currently|now|recent|newest|breaking|this week|this month)\b/i;
 const DOCS_PATTERN = /\b(api|sdk|docs?|documentation|reference|library|framework|package)\b/i;
+const SOCIAL_DISCOURSE_PATTERN =
+  /\b(people saying|what are people saying|sentiment|trending|discourse|twitter|x\/twitter|social|viral|posts?|handles?)\b/i;
 const TRACKING_QUERY_KEYS = new Set([
   "utm_source",
   "utm_medium",
@@ -30,6 +32,10 @@ export function isTimeSensitiveQuery(query: string, command: WebCommand): boolea
     return true;
   }
   return TIME_SENSITIVE_PATTERN.test(query);
+}
+
+export function isSocialDiscourseQuery(query: string): boolean {
+  return SOCIAL_DISCOURSE_PATTERN.test(query);
 }
 
 export function inferRecencyDays(request: SearchRequest): number | null {

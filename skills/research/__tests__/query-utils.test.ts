@@ -5,6 +5,7 @@ import {
   dedupeByCanonicalUrl,
   inferRecencyDays,
   isDocsLookup,
+  isSocialDiscourseQuery,
   isTimeSensitiveQuery,
   normalizeQuery,
 } from "../query-utils";
@@ -25,6 +26,12 @@ describe("query-utils", () => {
     expect(isTimeSensitiveQuery("latest openai api updates", "web")).toBe(true);
     expect(isTimeSensitiveQuery("postgres indexing guide", "web-news")).toBe(true);
     expect(isTimeSensitiveQuery("postgres indexing guide", "web")).toBe(false);
+  });
+
+  test("isSocialDiscourseQuery detects X and sentiment intent", () => {
+    expect(isSocialDiscourseQuery("what are people saying about Exa MCP")).toBe(true);
+    expect(isSocialDiscourseQuery("X/Twitter discourse on Grok search")).toBe(true);
+    expect(isSocialDiscourseQuery("postgres indexing guide")).toBe(false);
   });
 
   test("inferRecencyDays applies explicit value and defaults", () => {

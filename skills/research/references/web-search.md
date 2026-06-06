@@ -20,6 +20,8 @@ user-facing slash command.
 - Use xAI for social/real-time and grounded web with multimodal (see `xai-search.md`)
 - Fallback to Brave on provider failure
 - Optional Perplexity pass allowed only for synthesis, never source of truth
+- Treat Tavily/Firecrawl as extraction or site-map tools, not default broad
+  search, unless the query asks for a URL/site/crawl/map.
 
 ## Exa-First Patterns
 
@@ -54,6 +56,7 @@ Provider: Exa with start_published_date filter
 | Contains "paper", "formal", "specification" | Exa neural search |
 | Contains "people saying", "sentiment", "trending", "discourse" | xAI X Search (see `xai-search.md`) |
 | Contains "X/Twitter", specific handles, social | xAI X Search |
+| Contains "crawl", "extract this page", "map this site", "sitemap" | Tavily/Firecrawl or Exa fetch (see `extraction-tools.md`) |
 | None of the above | Exa neural (default) |
 
 ## Output Schema

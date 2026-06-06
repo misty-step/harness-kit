@@ -263,6 +263,74 @@ export class ExaProvider implements ProviderAdapter {
   }
 }
 
+export class XaiProvider implements ProviderAdapter {
+  readonly name = "xai" as const;
+  private readonly apiKey: string;
+  private readonly model: string;
+
+  constructor(apiKey: string, model = process.env.XAI_SEARCH_MODEL ?? "grok-4.3") {
+    this.apiKey = apiKey;
+    this.model = model;
+  }
+
+  async search(request: SearchRequest): Promise<SearchResult[]> {
+    const useXSearch = /\b(people saying|sentiment|trending|discourse|twitter|x\/twitter|social|viral|posts?|handles?)\b/i.test(
+      request.query
+    );
+    const response = await fetchWithTimeout(this.name, "https://api.x.ai/v1/responses", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${this.apiKey}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: this.model,
+        input: [
+          {
+            role: "user",
+            content: request.query,
+          },
+        ],
+        tools: [{ type: useXSearch ? "x_search" : "web_search" }],
+      }),
+    });
+
+    if (!response.ok) {
+      throw new ProviderRequestError(this.name, "http", `xai search failed: ${response.status}`, {
+        status: response.status,
+      });
+    }
+
+    const payload = (await response.json()) as {
+      citations?: string[];
+      output_text?: string;
+      output?: Array<{
+        content?: Array<{
+          text?: string;
+        }>;
+      }>;
+    };
+    const snippet =
+      payload.output_text ??
+      payload.output
+        ?.flatMap((item) => item.content ?? [])
+        .map((item) => item.text)
+        .find((text) => typeof text === "string" && text.trim()) ??
+      "";
+
+    return dedupeUrls(payload.citations ?? [])
+      .slice(0, request.limit ?? DEFAULT_LIMIT)
+      .map((url, index) => ({
+        title: "xAI citation",
+        url,
+        snippet,
+        published_at: null,
+        score: scoreFromRank(index),
+        source_provider: "xai" as const,
+      }));
+  }
+}
+
 export class BraveProvider implements ProviderAdapter {
   readonly name = "brave" as const;
   private readonly apiKey: string;
