@@ -1770,11 +1770,11 @@ mod tests {
         let temp = TempDir::new().unwrap();
         let log = temp.path().join("skill-invocations.jsonl");
         run_skill_invocation_tracker(
-            r#"{"tool_name":"Skill","tool_input":{"skill":"qa","args":""},"session_id":"abc","cwd":"/tmp/myproject","model_id":"claude-opus-4-7","outcome":"succeeded","duration_ms":1200,"usage":{"input_tokens":10,"output_tokens":5,"total_tokens":15,"cost_usd":0.001,"cost_source":"provider_reported"}}"#,
+            r#"{"tool_name":"Skill","tool_input":{"skill":"qa","args":""},"session_id":"abc","cwd":"/tmp/myproject","model_id":"claude-opus-4-8","outcome":"succeeded","duration_ms":1200,"usage":{"input_tokens":10,"output_tokens":5,"total_tokens":15,"cost_usd":0.001,"cost_source":"provider_reported"}}"#,
             &log,
         );
         let entry = read_rows(&log).remove(0);
-        assert_eq!(entry["model_id"], "claude-opus-4-7");
+        assert_eq!(entry["model_id"], "claude-opus-4-8");
         assert_eq!(entry["outcome"], "succeeded");
         assert_eq!(entry["duration_ms"], 1200);
         assert_eq!(entry["usage"]["total_tokens"], 15);

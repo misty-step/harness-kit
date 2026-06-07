@@ -9,7 +9,7 @@ Use print mode with permissions bypassed and pass one bounded commission as the
 prompt:
 
 ```sh
-claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-7 --effort xhigh "Role: reviewer. Objective: inspect this diff. Output: 5 bullets."
+claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-8 --effort xhigh "Role: reviewer. Objective: inspect this diff. Output: 5 bullets."
 ```
 
 The roster entry should stay thin: launch Claude, provide the scoped prompt,

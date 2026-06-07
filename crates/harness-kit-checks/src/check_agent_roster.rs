@@ -145,6 +145,7 @@ pub fn run(repo: &Path) -> Result<CheckReport> {
     validate_no_source_skill_bridges(repo)?;
     validate_no_retired_provider_references(repo)?;
     validate_open_model_roster_review_due(repo)?;
+    validate_model_provider_harness_index(repo)?;
     validate_source_agent_catalog(repo)?;
     validate_agents_placement_doctrine(repo)?;
     validate_code_review_pattern_references(repo)?;
@@ -223,6 +224,8 @@ pub fn run(repo: &Path) -> Result<CheckReport> {
             "source repo: no repo-local skill bridges".to_string(),
             "active roster/docs: no retired provider references".to_string(),
             "skills/harness-engineering/references/open-model-roster.md: review due date valid"
+                .to_string(),
+            "skills/harness-engineering/references/model-provider-harness-index.md: factual model reference valid"
                 .to_string(),
             "agents/: 3 source agent file(s) valid".to_string(),
             "AGENTS doctrine placement: valid".to_string(),
@@ -760,6 +763,91 @@ fn validate_open_model_roster_review_due(repo: &Path) -> Result<()> {
         bail!("{relative}: roster review overdue since {review_due}");
     }
     Ok(())
+}
+
+fn validate_model_provider_harness_index(repo: &Path) -> Result<()> {
+    let relative = "skills/harness-engineering/references/model-provider-harness-index.md";
+    let text = read_to_string(&repo.join(relative))?;
+    let due = extract_review_due(&text, "model_reference_review_due", relative)?;
+    let today = Utc::now().date_naive();
+    if today > due {
+        bail!("{relative}: model reference review overdue since {due}");
+    }
+    for required in [
+        "Factual context for composition design",
+        "not a routing policy",
+        "must not prescribe role fit",
+        "Do not add subjective labels",
+        "probe-agent-roster",
+        "OpenRouter",
+        "Anthropic",
+    ] {
+        if !text.contains(required) {
+            bail!("{relative}: missing required factual-reference phrase {required:?}");
+        }
+    }
+    if text.contains("best for planning") || text.contains("preferred for review") {
+        bail!("{relative}: contains role-fit policy language");
+    }
+    let active_models = active_roster_models(repo)?;
+    let missing: Vec<_> = active_models
+        .iter()
+        .filter(|model| !model_mentioned(&text, model))
+        .cloned()
+        .collect();
+    if !missing.is_empty() {
+        bail!(
+            "{relative}: missing active roster model(s): {}",
+            missing.join(", ")
+        );
+    }
+    Ok(())
+}
+
+fn extract_review_due(text: &str, key: &str, relative: &str) -> Result<NaiveDate> {
+    let pattern = Regex::new(&format!(r"(?m)^{key}:\s*(\d{{4}}-\d{{2}}-\d{{2}})$"))
+        .expect("static regex compiles");
+    let Some(captures) = pattern.captures(text) else {
+        bail!("{relative}: missing {key}");
+    };
+    NaiveDate::parse_from_str(&captures[1], "%Y-%m-%d")
+        .with_context(|| format!("{relative}: invalid {key}"))
+}
+
+fn active_roster_models(repo: &Path) -> Result<BTreeSet<String>> {
+    let path = repo.join(".harness-kit/agents.yaml");
+    let roster: serde_yaml::Value = serde_yaml::from_str(&read_to_string(&path)?)
+        .with_context(|| ".harness-kit/agents.yaml: invalid YAML")?;
+    let providers = roster
+        .as_mapping()
+        .and_then(|mapping| mapping.get("providers"))
+        .and_then(|value| value.as_mapping())
+        .ok_or_else(|| anyhow!("roster must define providers mapping."))?;
+    let mut models = BTreeSet::new();
+    for provider in providers.values().filter_map(|value| value.as_mapping()) {
+        if let Some(model) = provider.get("model").and_then(|value| value.as_str()) {
+            models.insert(model.to_string());
+        }
+        if let Some(variants) = provider
+            .get("model_variants")
+            .and_then(|value| value.as_mapping())
+        {
+            for model in variants.values().filter_map(|value| value.as_str()) {
+                models.insert(model.to_string());
+            }
+        }
+    }
+    Ok(models)
+}
+
+fn model_mentioned(text: &str, model: &str) -> bool {
+    if text.contains(model) {
+        return true;
+    }
+    if let Some(stripped) = model.strip_prefix("openrouter/") {
+        return text.contains(stripped);
+    }
+    false
 }
 
 fn validate_source_agent_catalog(repo: &Path) -> Result<()> {

@@ -10,7 +10,7 @@ Use print mode with explicit provider/model/thinking/tool settings from the
 roster:
 
 ```sh
-pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls "Role: investigator. Objective: inspect this oracle. Output: risks and proof."
+pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls "Role: investigator. Objective: inspect this oracle. Output: risks and proof."
 ```
 
 The command stays a thin launch surface. `harness-kit-checks dispatch-agent`
@@ -24,8 +24,8 @@ open-model failure mode:
 
 | Variant | Model | Use |
 |---|---|---|
-| `default` | `moonshotai/kimi-k2.5` | Clean roster dispatch, thinking + tools, 262K context. |
-| `latest_kimi_custom` | `moonshotai/kimi-k2.6` | Opt-in only until Pi's registry resolves it without a custom-id warning. |
+| `default` | `moonshotai/kimi-k2.6` | Current Kimi roster dispatch target, thinking + tools, 262K context. |
+| `previous_kimi` | `moonshotai/kimi-k2.5` | Previous Kimi default retained only for explicit comparison or rollback. |
 | `long_context` | `deepseek/deepseek-v4-pro` | Full-codebase or large-document analysis where context length dominates. |
 | `alternate_agentic` | `minimax/minimax-m2.7` | Non-Kimi comparison for planning, debugging, and document-heavy work. |
 

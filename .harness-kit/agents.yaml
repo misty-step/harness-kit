@@ -21,31 +21,31 @@ providers:
     tier: primary
     kind: cli
     probe: claude --version
-    dispatch: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-7 --effort xhigh
+    dispatch: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-8 --effort xhigh
     output: json
-    model: claude-opus-4-7
+    model: claude-opus-4-8
     reasoning: xhigh
     permissions: dangerous skip permissions plus bypass permission mode
     worktree: recommended
-    smoke: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-7 --effort xhigh
+    smoke: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-8 --effort xhigh
     notes: Claude Code CLI; use print mode and structured output when possible.
   pi:
     tier: primary
     kind: cli
     probe: pi --version
-    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
     output: json
-    model: openrouter/moonshotai/kimi-k2.5
+    model: openrouter/moonshotai/kimi-k2.6
     model_variants:
-      default: openrouter/moonshotai/kimi-k2.5
-      latest_kimi_custom: openrouter/moonshotai/kimi-k2.6
+      default: openrouter/moonshotai/kimi-k2.6
+      previous_kimi: openrouter/moonshotai/kimi-k2.5
       long_context: openrouter/deepseek/deepseek-v4-pro
       alternate_agentic: openrouter/minimax/minimax-m2.7
     reasoning: xhigh
     permissions: full read bash edit write grep find ls tool list
     worktree: recommended
-    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.5 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
-    notes: Pi coding agent; sole open-model CLI lane. Pinned to kimi-k2.5 because pi's native model registry recognizes it (thinking + tools, 262K ctx) so the lane resolves clean. Use model_variants through Pi for Kimi, DeepSeek, MiniMax, or other open-model comparisons instead of adding another CLI.
+    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    notes: Pi coding agent; sole open-model CLI lane. Default to Kimi K2.6; use model_variants through Pi for Kimi, DeepSeek, MiniMax, or other open-model comparisons instead of adding another CLI.
   agy:
     tier: conditional
     kind: cli

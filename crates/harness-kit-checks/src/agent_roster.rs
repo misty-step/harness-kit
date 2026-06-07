@@ -1046,7 +1046,7 @@ providers:
         make_executable(&fake)?;
         let mut roster = fixture_roster(
             "fake-pi --version",
-            "fake-pi -p --provider openrouter --model moonshotai/kimi-k2.5 --tools read",
+            "fake-pi -p --provider openrouter --model moonshotai/kimi-k2.6 --tools read",
         );
         provider_mut(&mut roster, "pi").insert(
             YamlValue::String("model_variants".to_string()),

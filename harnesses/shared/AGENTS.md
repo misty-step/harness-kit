@@ -98,6 +98,15 @@ advances — skip only for trivial diffs (<20 LOC, single file).
 When lanes do not depend on each other, run them in parallel: split scope,
 competing attempts, or reviewer/critic roles.
 
+### Consult the composition facts
+Before deciding that repo work is trivial, solo, or already assigned to the
+primary model, read the current model/provider/harness reference sheet from the
+installed `harness-engineering` skill
+(`references/model-provider-harness-index.md`) and use it to design the
+dispatch composition. Skip only for a mechanical command already chosen, then
+record the waiver. The sheet is factual context, not role-fit policy: runtime
+probes, receipts, task evidence, and lead judgment remain authoritative.
+
 ### Stop the grind
 Stop after two tool failures or three edits to the same file. Re-read the
 request and the live file; change approach. Do not loop.

@@ -80,6 +80,10 @@ fn run_unix(repo: &Path) -> Result<String> {
         bail!("user-owned retired agent was modified");
     }
     assert_not_exists(&home.join(".codex/agents/ousterhout.md"))?;
+    assert_symlink_to(
+        &home.join(".claude/CLAUDE.md"),
+        &repo.join("harnesses/shared/AGENTS.md"),
+    )?;
 
     if !second.contains("Agents (3):") || !launcher.contains("Agents (3):") {
         bail!("bootstrap summary should report only three global agents");

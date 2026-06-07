@@ -28,6 +28,7 @@ Engineer the harness. Keep it thin.
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
 | apply reflect learning packet to Harness Kit primitives | `references/mode-apply.md` |
 | measure skill usage/health/staleness | `references/mode-audit.md` |
+| current model/provider/harness facts | `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
 
 Use `/create-repo-skill` for generated repository-local skills such as bespoke
@@ -47,6 +48,11 @@ synced locally.
 - Treat a skill as a folder, not a markdown file. Use scripts, references,
   examples, templates, assets, evals, or append-only data when prose would
   make the agent reconstruct repeatable work.
+- Model/provider/harness selection facts live in
+  `references/model-provider-harness-index.md`. Keep that file factual:
+  model ids, context, price, latency/smoke evidence, tool support, benchmark
+  sources, deprecations, and freshness. Do not encode role-fit policy there;
+  the lead agent composes task-specific teams from current evidence.
 - Harness Kit source skills live in `skills/`; repo-local `.agents/skills/` and
   harness-specific skill bridge dirs are `/seed` output for consumer repos.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
