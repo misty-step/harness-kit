@@ -1,8 +1,9 @@
 ---
 name: ship
 description: |
-  Final mile from merge-ready branch to shipped: squash-merge, archive backlog
-  tickets with trailers, update touched docs, run /reflect, apply outputs.
+  Final mile from merge-ready branch to shipped: squash-merge to master,
+  archive backlog tickets with trailers, update touched docs, run /reflect,
+  apply outputs.
   Assumes /deliver or /deliver --polish-only already made the branch ready.
   Use when: "ship it", "merge and close out", "final mile", "land and
   reflect", "finish this ticket".
@@ -26,13 +27,19 @@ into the repo. One command from "green" to "shipped and learned from."
 3. **Pre-merge prep belongs on the shipping branch.** Archive moves and
    doc syncs go on the feature branch before the squash so the merge
    commit itself carries a single, clean closure event.
-4. **Reflect's harness edits never touch master.** They land on a
+4. **Ship always means squash to master.** `/ship` always lands the current
+   merge-ready branch by creating one squash commit on `master`. No normal
+   merge, no rebase-merge, no fast-forward-only landing, no destination
+   inference from `origin/HEAD`, and no `main` fallback. GitHub mode may use
+   GitHub's squash-merge operation, but the destination remains `master` and
+   trailers must be passed explicitly.
+5. **Reflect's harness edits never touch master.** They land on a
    `harness/reflect-outputs` branch for human review. This is a hard
    invariant from `reflect/SKILL.md`.
-5. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
+6. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
    `/deliver --polish-only` already proved the branch clean. If it wasn't
    run, refuse and route the operator back.
-6. **Roster receipts are required evidence.** In repos with
+7. **Roster receipts are required evidence.** In repos with
    `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
    documented landability evidence includes two or more roster-member receipts
    or an explicit exception before final-mile merge work.
@@ -51,11 +58,16 @@ Local lane guidance: Normally verify upstream roster receipts; if final-mile wor
 Assert at start; refuse with a clear reason on any miss.
 
 - On a feature branch (not `master` / `main` / default protected branch).
-- Branch name matches `^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`.
-  The numeric capture is the **primary backlog ID** being shipped.
+- `master` exists locally or can be fetched from `origin/master`; `master` is
+  the only landing destination.
+- If the branch name matches `^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`,
+  the numeric capture is the **primary backlog ID** being shipped. If it does
+  not match, `/ship` continues with no primary backlog ID and closes only IDs
+  found in trailers or explicit archive evidence.
 - Working tree clean. See `harnesses/shared/AGENTS.md` (Closeout).
-- If a PR exists for the branch: `gh pr view --json mergeable,mergeStateStatus`
-  reports mergeable. A conflicted or blocked PR means `/deliver --polish-only` isn't done.
+- If a PR exists for the branch: `gh pr view --json baseRefName,mergeable,mergeStateStatus`
+  reports `baseRefName` as `master` and mergeable. A non-master PR base,
+  conflicted PR, or blocked PR means `/deliver --polish-only` isn't done.
 - Landability evidence exists for this exact HEAD. Acceptable evidence:
   GitHub mode has a mergeable PR with green required checks; git-native
   mode has a `ship` or `conditional` verdict; or git-native mode has
@@ -96,7 +108,9 @@ trailers, trace handoff, reflect, and follow-up mutations are done.
 
 ### 1. Extract backlog IDs
 
-Primary ID from the branch name regex capture. Then scan branch commits:
+Primary ID is optional. If the branch name matches
+`^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`, use the numeric capture.
+Then scan branch commits:
 
 ```sh
 git log --format=%B master..HEAD \
@@ -104,9 +118,10 @@ git log --format=%B master..HEAD \
 ```
 
 Collect every `Closes-backlog:` and `Ships-backlog:` value (closing) plus
-every `Refs-backlog:` value (reference-only). Merge with the primary ID.
+every `Refs-backlog:` value (reference-only). Merge with the primary ID when
+one exists.
 
-- **Closing set:** primary ID ∪ Closes-backlog ∪ Ships-backlog.
+- **Closing set:** optional primary ID ∪ Closes-backlog ∪ Ships-backlog.
 - **Reference set:** Refs-backlog values. Noted in the final report, never
   archived.
 
@@ -124,9 +139,10 @@ cargo run --locked -p harness-kit-checks -- backlog archive "<id>"
 This performs `git mv backlog.d/<id>-*.md backlog.d/_done/`. Stage the
 moves. Idempotent — already-archived IDs exit 0 silently.
 
-If the primary ID has no matching file AND no trailers were found,
-**refuse** (see Refuse Conditions): the branch is shipping something with
-no backlog association.
+If the closing set is empty, skip archive work and report `Closed: none`.
+Do not refuse solely because a branch has no backlog association; non-backlog
+design, docs, infrastructure, and emergency branches still squash-merge to
+master when all landability and acceptance evidence exists.
 
 ### 3. Sync touched docs
 
@@ -174,7 +190,24 @@ git commit -m "$msg"
 
 Body stays minimal. The trailers are the contract; prose is optional.
 
-### 5. Squash-merge
+### 5. Squash-merge to master
+
+Before merging, fetch and update `master`:
+
+```sh
+if git remote get-url origin >/dev/null 2>&1; then
+  git fetch origin master
+fi
+git checkout master
+if git remote get-url origin >/dev/null 2>&1; then
+  git pull --ff-only origin master
+fi
+git checkout -
+```
+
+The only acceptable landing result is one new squash commit on `master`.
+Never use plain `git merge`, `git merge --ff-only`, `git rebase` as the landing
+operation, or any destination other than `master`.
 
 **GitHub mode** (PR exists, `gh` available):
 
@@ -186,7 +219,7 @@ explicitly:
 body="$(git log --format=%B master..HEAD \
         | git interpret-trailers --parse --no-divider \
         | grep -E '^(Closes-backlog|Ships-backlog|Refs-backlog|QA-Evidence):' \
-        | sort -u)"
+        | sort -u || true)"
 gh pr merge --squash --body "$body"
 ```
 
@@ -205,8 +238,9 @@ git commit -F <constructed-message-file>
 
 Detect mode by: remote URL + `gh` on PATH + `gh pr view` exit code.
 GitHub mode is preferred when available because it records the merge in
-the PR timeline. The Dagger command is explicit here because squash merges do
-not invoke Git's `pre-merge-commit` hook.
+the PR timeline. Both modes still produce exactly one squash commit on
+`master`. The Dagger command is explicit here because squash merges do not
+invoke Git's `pre-merge-commit` hook.
 
 ### 6. Pull master and verify trailers
 
@@ -303,7 +337,7 @@ git checkout master
 Emit a single block covering:
 
 - Merged SHA on master and PR number (if GitHub).
-- Closing IDs archived.
+- Closing IDs archived, or `none`.
 - QA evidence trailer path, or "none" when the branch had no committed
   `.evidence/<branch>/<date>/` artifacts.
 - Reference IDs noted.
@@ -325,7 +359,7 @@ Emit a single block covering:
 
 Stop and surface to the user instead of shipping:
 
-- Branch name doesn't match `^(type)/(\d+)-` — no primary ID extractable.
+- `master` does not exist locally and `origin/master` cannot be fetched.
 - Working tree dirty.
 - On `master` / `main` directly.
 - Verdict ref reads `dont-ship` (`harness-kit-checks verdict check-landable` returns 2).
@@ -334,16 +368,16 @@ Stop and surface to the user instead of shipping:
   receipt.
 - In a repo with `dagger.json`, `dagger call check --source=.` has not passed
   on the exact HEAD being landed.
-- In GitHub mode, `gh pr checks` is red. Do not add a `--force` flag;
-  refuse.
+- In GitHub mode, `gh pr view --json baseRefName` does not report `master`,
+  or `gh pr checks` is red. Do not add a `--force` flag; refuse.
 - If a PR exists, it is not mergeable per
   `gh pr view --json mergeable,mergeStateStatus`.
 - No trace handoff inputs and no explicit `Trace-waiver: <reason>` line.
   Operator must provide a transcript/ref source or a waiver reason before
   merge.
-- Primary ID has no `backlog.d/<id>-*.md` file AND no closing trailers on
-  any branch commit — shipping with no backlog association. Operator must
-  add a ticket or add a marker commit and re-run.
+- Closing IDs are present but their matching backlog files cannot be archived
+  and the missing files are not already archived. A branch with no closing IDs
+  is allowed; report `Closed: none`.
 - Acceptance criteria, oracle artifacts, golden files, fixtures, Gherkin
   features, CLI transcripts, screenshots with asserted data, or assertion
   surfaces changed without an explicit `Contract-change acknowledgment:`
@@ -378,11 +412,12 @@ avoid whitespace and key-casing drift.
 
 | Mode | Detection | Merge command |
 |---|---|---|
-| GitHub | remote URL + `gh` on PATH + `gh pr view` succeeds | `gh pr merge --squash --body "<trailers>"` |
+| GitHub | remote URL + `gh` on PATH + `gh pr view` succeeds with `baseRefName=master` | `gh pr merge --squash --body "<trailers>"` |
 | Git-native | no PR, no `gh`, or no GitHub remote | `git merge --squash <branch> && git commit -F <msg>` |
 
 GitHub mode is preferred when available because the PR timeline records
-the merge. Behavior is otherwise identical: squash-only, trailer-preserving.
+the merge. Behavior is otherwise identical: squash-only, trailer-preserving,
+and always landing on `master`.
 
 ## Interactions
 

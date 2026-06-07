@@ -468,7 +468,7 @@
       "source": "skills/shape/SKILL.md"
     },
     {
-      "description": "Final mile from merge-ready branch to shipped: squash-merge, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already made the branch ready. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
+      "description": "Final mile from merge-ready branch to shipped: squash-merge to master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already made the branch ready. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
       "icon": "ship",
       "id": "skill:ship",
       "kind": "skill",
