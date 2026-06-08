@@ -64,7 +64,12 @@ techniques in the context packet with specific files to study during build.
    finalists on the record; the kill list ships in the packet.
    **Recommend one.**
 3. **Discuss** — One question at a time. Iterate until locked.
-4. **Draft spec** — Goal, non-goals, acceptance criteria
+4. **Alignment pass** — For M+ shapes, ask at most five blocking
+   architecture/product questions before drafting. Each question includes the
+   recommended answer, the evidence behind it, and what breaks if the answer is
+   wrong. If the recommendation follows an existing ADR or repo invariant,
+   name the file/line; if it is an assumption, mark it as such.
+5. **Draft spec** — Goal, non-goals, acceptance criteria
 
 ### Phase 3: Technical Exploration
 
@@ -102,6 +107,9 @@ For M+ shaped tickets, read `references/prd-ticket-quality.md` and make the
 packet a compact PRD plus technical design. The deliverable type, user, UX
 enabled, technical architecture, ADR decision, alternatives, oracle, and
 residual risk must be visible before implementation details.
+The lead must read raw repo evidence directly. Subagent summaries can add
+coverage, but they do not replace repo anchors, ADRs, tests, or source files
+the builder must understand before implementation.
 
 ```markdown
 # Context Packet: <title>
@@ -135,6 +143,12 @@ tests > type system > code > docs > lore
 - `src/auth/middleware.ts` — current pattern to follow
 - `tests/auth/` — existing coverage
 
+## Lead Repo Read
+- Source files read directly: <paths and why they matter>
+- ADRs / invariants read directly: <paths or explicit none>
+- Commands or rendered artifacts inspected: <exact command/path or none>
+- Subagent summaries used only for: <critique, search, or none>
+
 ## Prior Art
 - `src/payments/middleware.ts` — similar pattern
 
@@ -158,8 +172,18 @@ Explain the scoring in prose; numbers alone are not evidence.
 - Data/control flow: <how behavior moves through the system>
 - Build/check boundary: <what fails where>
 - ADR decision: required / not required, with reason and escalation trigger.
+- ADR-style invariants: <conditions, consequence if violated, file refs>
 - Design X vs Y: <main rejected alternatives and why>
 - Comprehension-required: <topic, only when the packet intentionally opts into `/reflect checkpoint`; omit otherwise>
+
+## Alignment Questions
+- Q1: <blocking question>
+  Recommended answer: <answer>
+  Evidence: <repo/source/user evidence>
+  Risk if wrong: <failure mode>
+
+Include no more than five. Use `none; assumptions accepted` only when the
+shape is already locked by live repo evidence and the user request.
 
 ## Agent Readiness
 - Profile source: `.harness-kit/agent-readiness.yaml` if present, otherwise `missing`.
@@ -213,6 +237,7 @@ Residual risk: <what future implementers cannot verify because of the waiver>
 - [ ] All existing auth tests pass
 - [ ] New endpoint returns 200 with valid token
 - [ ] Response time < 100ms p99
+- [ ] Dogfood artifact captured for runtime-visible changes, or waiver explains why no running surface exists
 
 ## Deliverable
 - Output: <exact artifact or behavior left behind>

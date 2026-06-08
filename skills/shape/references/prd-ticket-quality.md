@@ -30,7 +30,21 @@ oracles:
 - Data/control flow: how the behavior moves through the system.
 - Build/check boundary: what fails during build, what fails during verification.
 - ADR decision: required / not required, with reason and escalation trigger.
+- ADR-style invariants: conditions that must remain true, consequence if
+  violated, and core file references.
 - Design X vs Y: the main alternatives, explicit verdicts, and failure modes.
+
+## Lead Repo Read
+- Source files, ADRs, tests, commands, or rendered artifacts the lead read
+  directly before implementation.
+- Subagent summaries used only for search, critique, or coverage; never as the
+  only evidence for code the builder must understand.
+
+## Alignment Questions
+- At most five unresolved product or architecture questions, each with the
+  recommended answer, supporting evidence, and risk if wrong.
+- Use `none; assumptions accepted` only when live repo evidence and the user
+  request already lock the choice.
 
 ## Deliverable
 - Output: exact thing to leave behind.
@@ -59,6 +73,8 @@ oracles:
   boundary. "Use existing patterns" is not enough.
 - ADR decisions must include an escalation trigger. "Not required" is valid only
   when the slice stays inside an existing architecture.
+- Runtime-visible changes need a dogfood artifact or an explicit no-running-
+  surface waiver in the evidence plan.
 
 ## Failure Modes
 
@@ -74,6 +90,8 @@ oracles:
   build/check responsibilities are not decided.
 - **ADR theater:** an ADR is required for every small choice, or never required
   for cross-cutting policy.
+- **Subagent-only understanding:** the packet cites summaries but does not name
+  the source files, ADRs, tests, commands, or rendered artifacts the lead read.
 - **Checkbox oracle:** acceptance is a prose list without commands, artifacts,
   hashes, screenshots, or a named reviewer action.
 - **Transcript bulk:** delegation history overwhelms the product and technical

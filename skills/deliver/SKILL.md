@@ -184,8 +184,15 @@ For existing branches or PRs, default:
 Before `/implement`, verify the ticket or context packet has a visible PRD
 surface: named user, problem/why now, UX enabled, deliverable type, chosen
 technical design, ADR decision, alternatives with verdicts, acceptance oracle,
-and evidence artifact plan. If the target is M+ and lacks these fields, route
-back to `/shape` instead of treating implementation choices as delivery work.
+and evidence artifact plan. For M+ work, also verify lead repo-read evidence,
+resolved or explicitly waived alignment questions, ADR-style invariants, and a
+dogfood/evidence path for runtime-visible changes. If the target is M+ and
+lacks these fields, route back to `/shape` instead of treating implementation
+choices as delivery work.
+
+Goal-mode or long-context execution is allowed only as an execution wrapper
+around the packet's oracle and stop conditions. It does not replace roster
+lanes, milestone critics, the clean loop, Dagger, or clean-tree closeout.
 
 ```
 /deliver [backlog-item|issue-id] [--resume <ulid>] [--state-dir <path>]

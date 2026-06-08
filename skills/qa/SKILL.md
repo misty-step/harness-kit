@@ -51,6 +51,7 @@ core; this phase keeps QA-specific local fields.
 - Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
 - Artifact/evidence location: committed evidence path, temp artifact path, screenshot, transcript, or log.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
+- Dogfood artifact: screenshot, browser trace, CLI transcript, request replay, tool-call trace, or explicit no-running-surface waiver.
 - Repo-fit check: local QA convention or repo contract followed.
 - Adjacent-tests justification: why adjacent tests are sufficient, or why they are not runtime proof.
 - Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
@@ -63,6 +64,9 @@ developer/operator behavior under test. Adjacent unit tests are supporting
 evidence only; QA must name the running surface it actually exercised.
 Adjacent tests are enough only when they invoke the exact changed public
 surface; otherwise QA must say what live path remains unverified.
+For user- or operator-visible changes, dogfood means the agent exercised the
+changed surface before signing off; a green aggregate test run is supporting
+evidence, not the dogfood artifact.
 If the changed behavior has no named post-ship signal, log, receipt, benchmark,
 or evidence artifact, report it as instrumentation debt rather than hiding it
 inside generic residual risk.
