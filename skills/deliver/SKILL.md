@@ -27,7 +27,9 @@ decides whether to deploy. Humans merge.
 - Clean closeout is part of merge-readiness. Before writing `merge_ready` or
   presenting delivery as complete, shared Closeout applies; every visible path
   must be classified into a follow-up commit, deletion, move-out, durable
-  ignore, or explicit handoff. See `harnesses/shared/AGENTS.md` (Closeout).
+  ignore, or explicit blocker. "Unrelated" dirty state is not a handoff unless
+  it is captured as an action item on disk. See `harnesses/shared/AGENTS.md`
+  (Closeout).
 
 ## Delegation Floor
 
@@ -71,6 +73,15 @@ Every successful `/deliver` run ends with four outputs, in this order:
 3. A tight delivery brief.
 4. A bounded learning packet from `/reflect`.
 
+Then run the shared Closeout check and continue until it is clean. `/deliver`
+may stop before merge or deploy, but it may not stop with unstaged, staged,
+untracked, or forgotten unpushed state. If a path does not belong to the
+delivered branch, create a separate action item or move it out of the repo
+before calling the branch merge-ready. If the branch has local commits not on
+its upstream, either run `/yeet` as the next action before ending the workflow,
+or record the unpushed branch as an explicit blocker; do not bury it as
+residual risk.
+
 The evidence packet is not optional. For internal, refactor, infra, docs, or
 library work, the minimum artifact is a text proof such as
 `.evidence/<branch>/<date>/demo.md` or `cli-output.txt` that names the changed
@@ -108,6 +119,12 @@ The delivery brief must answer:
 - What was verified, and what residual risk remains before merge or deploy.
 - What hardening triggers were found by implementation, review, CI, or QA; if
   `/hardening` did not run, why the route was waived.
+- Final workspace disposition: exact
+  `git status --short --branch --untracked-files=all` output or `clean`, plus
+  any action items created for unrelated paths.
+- Final remote disposition: exact
+  `git rev-list --left-right --count <branch>...<upstream>` result when an
+  upstream exists, or the `/yeet` / blocker action item that will create one.
 
 Every merge-ready brief includes this gate:
 
@@ -136,6 +153,8 @@ evidence when the packet includes `Comprehension-required: <topic>`.
 - Learning packet: `/reflect` packet path or receipt with codification/backlog/non-action outcome.
 - Reflect checkpoint evidence: when `Comprehension-required: <topic>` is present, `/reflect checkpoint` artifact path and validator gate command; otherwise `not required`.
 - Residual risk: unverified path, accepted survivor, or none with reason.
+- Final workspace status: exact `git status --short --branch --untracked-files=all` result; must be clean except explicit blocker state.
+- Final remote status: exact `git rev-list --left-right --count <branch>...<upstream>` result, or the explicit `/yeet` / blocker action item for an unpushed merge-ready branch.
 ```
 
 If any phase cannot fill the block with live evidence, `/deliver` is not
@@ -249,7 +268,10 @@ settle-parity checks (hindsight sanity pass, verdict-ref freshness).
   `## What Was Built` or current-branch history contains an explicit closure
   marker like `Closes backlog:<item-id>` / `Ships backlog:<item-id>`, stop
   and route to `/groom tidy`. That is backlog drift, not fresh delivery work.
-- **Never push.** Delivery ≠ shipping. `git push` is the outer loop's call.
+- **Never leave push ambiguous.** Delivery ≠ shipping, and `/deliver` does not
+  silently push by itself. If the branch is ahead of upstream at closeout,
+  route immediately to `/yeet` or record a blocker; unpushed commits are action
+  items, not clean residual risk.
 - **Never merge.** `gh pr merge` is a human decision.
 - **Never deploy.** `/deploy` is the outer loop's concern.
 - **Never commit to default.** Feature branch only; see `references/branch.md`.

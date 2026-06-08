@@ -249,10 +249,20 @@ phase preconditions, but they point here for the universal rule.
 
 - A run is not complete while
   `git status --short --untracked-files=all` shows paths.
-- Every path is committed, deleted, moved out, or durably ignored.
+- A ship/local-publish run is not complete while local commits are unpushed or
+  local refs diverge from their intended remote. Verify with
+  `git rev-list --left-right --count <local>...<remote>` or the repo's
+  equivalent remote-sync check.
+- Every visible path is an action item. Resolve it by committing it, deleting
+  it, moving it out of the repo, or adding a durable ignore rule.
+- Never handwave "unrelated" dirty state at workflow end. If it is not part of
+  the current deliverable, it still needs an explicit disposition: separate
+  commit, backlog item, move-out path, durable ignore, or user-facing blocker.
 - Untracked backlog files are signal by default.
 - Run the repo gate named in root `AGENTS.md`.
-- Report verification and residual risk.
+- Report the final `git status --short --branch --untracked-files=all` result,
+  remote-sync result when the workflow pushes or lands code, verification, and
+  residual risk.
 
 ## Red Lines
 

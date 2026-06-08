@@ -23,6 +23,9 @@ One command. Executive authority. No approval gates.
 2. **Clean tree is the deliverable.** `/yeet` is not done while visible paths
    remain. Shared Closeout applies; resolve every path by commit, ignore, move
    out of the repo, or delete. See `harnesses/shared/AGENTS.md` (Closeout).
+   Local commits also count as unfinished until pushed or explicitly blocked;
+   verify the final local/remote divergence instead of assuming `git push`
+   succeeded.
 3. **Reviewability is the product.** A stack of three focused commits beats
    one 2,000-line "wip" commit, every time. Split on semantic boundaries
    even if the tree was built in one session.
@@ -150,6 +153,10 @@ the project's existing co-author line.
 - After push, rerun `git status --short --untracked-files=all`. If any path
   still appears, continue classifying and resolve it. `/yeet` exits only on a
   clean worktree; ignored files are acceptable, visible status entries are not.
+- After push, run `git rev-list --left-right --count <branch>...<upstream>`.
+  `/yeet` exits only when the intended branch reports `0 0`, or when it
+  refuses with the exact upstream blocker. Unpushed commits are action items,
+  not residual risk.
 
 ### 6. Report
 
@@ -157,6 +164,7 @@ What got committed (one line per commit: sha, type, subject).
 What got removed, ignored, or moved and why.
 Push target + result.
 Final worktree status (`clean` or refuse).
+Final remote-sync status (`0 0` or refuse).
 
 ## Refuse Conditions
 
@@ -179,6 +187,8 @@ Stop and surface to the user instead of committing:
 - Never `git clean -fdx` or delete directories without individual-file classification.
 - Never commit files whose content matches known secret patterns (above).
 - Never declare success while `git status --short` still shows paths.
+- Never declare success while the branch is ahead of or diverged from its
+  intended upstream.
 
 ## Gotchas
 
@@ -227,6 +237,7 @@ Commits:
 
 Pushed feat/014-red-team-attacker-sprite → origin (3 new commits).
 Worktree: clean
+Remote: origin/feat/014-red-team-attacker-sprite 0 0
 ```
 
 On refuse:
@@ -243,4 +254,4 @@ Action: remove or gitignore the file before re-running.
 Semantic waiver: `/yeet` is a git-state classifier whose proof is the produced
 commit stack, push result, and clean worktree. Each run must cite
 `git status --short --untracked-files=all`, created commits, ignored/deleted
-debris, and pushed branch/ref.
+debris, pushed branch/ref, and local/remote divergence count.

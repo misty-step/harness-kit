@@ -43,6 +43,8 @@ into the repo. One command from "green" to "shipped and learned from."
    `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
    documented landability evidence includes two or more roster-member receipts
    or an explicit exception before final-mile merge work.
+8. **Shipped means tidy and synced.** Shared Closeout applies: no visible
+   paths, no unpushed commits, and `master...origin/master` is `0 0`.
 
 ## Delegation Floor
 
@@ -334,6 +336,10 @@ git checkout master
 
 ### 11. Final report
 
+Before reporting completion, run shared Closeout: final `git status` plus
+`git rev-list --left-right --count master...origin/master`; keep working or
+stop blocked on any visible path or nonzero divergence.
+
 Emit a single block covering:
 
 - Merged SHA on master and PR number (if GitHub).
@@ -347,6 +353,8 @@ Emit a single block covering:
   proposals on `harness/reflect-outputs`, retro notes, coaching.
 - Accepted Acceptance Evidence refs carried into `/reflect` and final report.
 - Harness branch name.
+- Final workspace status and remote sync (`master...origin/master`, expected
+  `0 0`).
 - Roster delegation report: provider lanes used upstream and in final-mile
   work, why each was dispatched, parallel/split/competing-worktree pattern,
   provider_status and attempt_status totals, lead_verdict totals, accepted
@@ -361,6 +369,8 @@ Stop and surface to the user instead of shipping:
 
 - `master` does not exist locally and `origin/master` cannot be fetched.
 - Working tree dirty.
+- `master` and `origin/master` diverge after fetch/pull/push and the operator
+  has not authorized the required corrective action.
 - On `master` / `main` directly.
 - Verdict ref reads `dont-ship` (`harness-kit-checks verdict check-landable` returns 2).
 - No same-HEAD landability evidence exists: no green PR checks, no
@@ -407,17 +417,6 @@ Refs-backlog: 024
 IDs are bare numeric strings (`029`, not `BACKLOG-029`). Trailers are
 injected via `git interpret-trailers --trailer`, never hand-formatted, to
 avoid whitespace and key-casing drift.
-
-## GitHub Mode vs Git-Native Mode
-
-| Mode | Detection | Merge command |
-|---|---|---|
-| GitHub | remote URL + `gh` on PATH + `gh pr view` succeeds with `baseRefName=master` | `gh pr merge --squash --body "<trailers>"` |
-| Git-native | no PR, no `gh`, or no GitHub remote | `git merge --squash <branch> && git commit -F <msg>` |
-
-GitHub mode is preferred when available because the PR timeline records
-the merge. Behavior is otherwise identical: squash-only, trailer-preserving,
-and always landing on `master`.
 
 ## Interactions
 
@@ -482,6 +481,8 @@ Docs:       docs/context/lane-runtime.md (synced)
 Reflect:    2 backlog mutations applied, 3 harness proposals on
             harness/reflect-outputs, retro in .harness-kit/reflect/<cycle>/
 Residual:   none
+Workspace:  clean
+Remote:     master...origin/master 0 0
 ```
 
 On refuse, emit the reason and the action the operator must take to

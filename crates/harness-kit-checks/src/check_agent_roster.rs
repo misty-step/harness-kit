@@ -469,6 +469,20 @@ fn validate_runtime_delegation_references(repo: &Path) -> Result<()> {
     if !issues.is_empty() {
         bail!("{}", issues.join("; "));
     }
+    for path in [
+        "skills/deliver/SKILL.md",
+        "skills/flywheel/SKILL.md",
+        "skills/ship/SKILL.md",
+        "skills/yeet/SKILL.md",
+    ] {
+        let text = read_to_string(&repo.join(path))?.to_lowercase();
+        if !text.contains("git rev-list --left-right --count") || !text.contains("unpushed") {
+            issues.push(format!("{path}: missing remote-sync closeout language"));
+        }
+    }
+    if !issues.is_empty() {
+        bail!("{}", issues.join("; "));
+    }
     Ok(())
 }
 
@@ -630,7 +644,9 @@ fn validate_clean_closeout_pointers(repo: &Path) -> Result<()> {
     let missing: Vec<_> = [
         "single source for clean-tree closeout",
         "git status --short --untracked-files=all",
-        "committed, deleted, moved out, or durably ignored",
+        "committing it, deleting",
+        "git rev-list --left-right --count",
+        "visible path is an action item",
     ]
     .into_iter()
     .filter(|phrase| !section.to_lowercase().contains(phrase))
@@ -645,6 +661,7 @@ fn validate_clean_closeout_pointers(repo: &Path) -> Result<()> {
     for path in [
         "AGENTS.md",
         "skills/deliver/SKILL.md",
+        "skills/flywheel/SKILL.md",
         "skills/ship/SKILL.md",
         "skills/yeet/SKILL.md",
     ] {

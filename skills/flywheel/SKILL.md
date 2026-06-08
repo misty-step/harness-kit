@@ -44,6 +44,13 @@ encode the invariants that aren't inferable from the leaf names.
   plus any provider-health follow-ups surfaced by failed or low-signal lanes.
 - `/ship` owns closure: squash-merge, backlog archive, `/reflect`, and
   applying reflect's outputs. Flywheel does not invoke `/reflect` directly.
+- Shared Closeout applies at cycle boundaries. A cycle is not complete while
+  `git status --short --branch --untracked-files=all` shows paths or the
+  shipped branch is unpushed/diverged from its remote. Verify remote sync with
+  `git rev-list --left-right --count <branch>...<upstream>` or the branch's
+  equivalent upstream check. Nonzero entries are action items for `/yeet`,
+  `/ship`, a move-out, durable ignore, or an explicit blocker. See
+  `harnesses/shared/AGENTS.md` (Closeout).
 - Ship before deploy. Always.
 - Harness edits from reflect never touch master. `/ship` routes them to
   `harness/reflect-outputs` for human review.
@@ -65,6 +72,9 @@ Local lane guidance: Leaf skills own dispatch; /flywheel verifies phase receipts
 - Library repos still ship + reflect when deploy/monitor no-op.
 - Two `/flywheel` runs in the same worktree collide on git state. Use
   separate worktrees for parallelism.
+- Do not start the next cycle with leftover untracked evidence, backlog notes,
+  generated docs, or unpushed commits from the last one. Resolve via shared
+  Closeout before starting the next cycle.
 
 ## Non-Goals
 
@@ -78,4 +88,4 @@ Local lane guidance: Leaf skills own dispatch; /flywheel verifies phase receipts
 Semantic waiver: `/flywheel` composes other phase receipts rather than owning a
 standalone deterministic transform. Verify a cycle by the `/deliver`, `/ship`,
 `/deploy`, `/monitor`, and `/reflect` receipts it links, plus clean-tree
-closeout.
+closeout and remote-sync evidence.
