@@ -1,7 +1,7 @@
 # Harness Kit
 
-29 catalog skills, 11 core agents, and harness infrastructure for AI-assisted
-software development. One repo. All harnesses (Claude Code, Codex, Pi, Antigravity).
+Harness infrastructure for AI-assisted software development. One repo. All
+harnesses (Claude Code, Codex, Pi, Antigravity).
 
 Harness Kit is an operator-facing harness primitive library, not a buyer-facing
 governed workflow package or admin-control plane. Read
@@ -30,6 +30,7 @@ is already installed on `PATH`.
 | Skill | Purpose |
 |-------|---------|
 | `/deliver` | Inner-loop composer: ticket → merge-ready (shape → implement → review+ci+refactor+qa) |
+| `/dispatch` | Compose roster-backed specialist lanes with prompt-native lane cards |
 | `/flywheel` | Outer-loop orchestrator: cycles of /deliver → /monitor → /reflect |
 | `/code-review` | Parallel multi-agent review, auto-fix loop |
 | `/diagnose` | Investigate, triage, fix |
@@ -45,7 +46,7 @@ is already installed on `PATH`.
 | `/research` | Multi-source web research, delegation, think tank |
 | `/shape` | Spec/design → context packet output |
 
-## The 8 Core Agents
+## Core Agent Patterns
 
 **GAN triad:** planner (spec) → builder (implement) → critic (evaluate)
 
@@ -64,9 +65,10 @@ loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
 
 ## Focused Lane Harnesses
 
-`dispatch-agent` can run a roster lane with a projected harness root so the
-child provider sees only the skills named by a `lane_harness.v1` manifest
-instead of the full system-wide skill install.
+`/dispatch` composes prompt-native lane cards. `dispatch-agent` can run a
+roster lane with a projected harness root so the child provider sees only the
+skills named by a `lane_harness.v1` manifest instead of the full system-wide
+skill install.
 
 ```bash
 cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
@@ -75,7 +77,7 @@ cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
 cargo run --locked -p harness-kit-checks -- dispatch-agent \
   --provider-target codex \
   --objective "review the CI lane only" \
-  --input-ref backlog.d/101-focused-lane-harness-projection.md \
+  --input-ref backlog.d/_done/101-focused-lane-harness-projection.md \
   --prompt-file /tmp/review.md \
   --lane-harness .harness-kit/examples/lane-harness.yaml
 ```

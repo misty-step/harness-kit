@@ -9,7 +9,7 @@ allowed_tools:
   - shell.readonly
 oracle:
   kind: path
-  value: backlog.d/101-focused-lane-harness-projection.md
+  value: backlog.d/_done/101-focused-lane-harness-projection.md
 evidence_expectations:
   - commands_read
   - blocking_findings_or_none

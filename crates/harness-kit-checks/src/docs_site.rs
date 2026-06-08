@@ -1680,6 +1680,7 @@ fn copy_repo_for_self_test(source: &Path, destination: &Path) -> Result<()> {
                         | "target"
                 )
             })
+            || path.ends_with(".harness-kit/tmp/lane-harness")
             || path.ends_with("skills/.external")
     })
 }
@@ -1697,7 +1698,9 @@ fn copy_dir_filtered(
         return Ok(());
     }
     fs::create_dir_all(destination)?;
-    for entry in fs::read_dir(source)? {
+    for entry in fs::read_dir(source)
+        .with_context(|| format!("failed to read directory {}", source.display()))?
+    {
         let source_path = entry?.path();
         if skip(&source_path) {
             continue;
@@ -1710,7 +1713,13 @@ fn copy_dir_filtered(
         if source_path.is_dir() {
             copy_dir_filtered(&source_path, &destination_path, skip)?;
         } else {
-            fs::copy(&source_path, destination_path)?;
+            fs::copy(&source_path, &destination_path).with_context(|| {
+                format!(
+                    "failed to copy {} to {}",
+                    source_path.display(),
+                    destination_path.display()
+                )
+            })?;
         }
     }
     Ok(())

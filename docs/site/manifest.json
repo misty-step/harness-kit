@@ -318,6 +318,16 @@
       "source": "skills/diagnose/SKILL.md"
     },
     {
+      "description": "Compose and launch roster-backed specialist lanes with prompt-native lane cards and receipts. Use when: \"dispatch agents\", \"use subagents\", \"compose a team\", \"run provider lanes\", \"make lane cards\". Trigger: /dispatch, /subagents, /lanes.",
+      "icon": "catalog",
+      "id": "skill:dispatch",
+      "kind": "skill",
+      "name": "dispatch",
+      "page": "reference/skills/dispatch.html",
+      "role": "Support",
+      "source": "skills/dispatch/SKILL.md"
+    },
+    {
       "description": "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel does not invoke /reflect directly. Use when: \"flywheel\", \"run the outer loop\", \"next N items\", \"overnight queue\", \"cycle\". Trigger: /flywheel.",
       "icon": "operate",
       "id": "skill:flywheel",

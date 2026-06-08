@@ -82,16 +82,14 @@ context rationalizes the author's choices. Hand critics ONLY the artifact
 (diff + acceptance oracle), never your reasoning trail. Same-context review is
 allowed only as a fallback note; it does not count as fresh-context critique.
 
-### Dispatch: executor + critic by default
-Roles, not files. Most non-trivial work runs as ≥2 ad-hoc subagents — an
-**executor** that does the work and a fresh-context **critic** that tries to
-refute it; add a **planner** when the approach is non-obvious (planner →
-executor → critic). Name the role and, when useful, the lens
-(`references/lenses.md`); leave the persona to the primary, do not ship a file
-per role. Strong default, waived only for the same mechanical/trivial cases as
-the roster floor. **Milestone critic gate:** at each implementation milestone
-(chunk in the sequence) a fresh read-only critic sees only the diff + the
-packet oracle + the todo and must return no blocking gap before the work
+### Dispatch through lane cards
+Roles, not files. For substantive work, use `/dispatch` or the active skill's
+local dispatch guidance to compose prompt-native lane cards: role, objective,
+scope, oracle, output shape, boundaries, and receipt expectation. Most
+non-trivial work runs as ≥2 lanes: an executor plus a fresh-context critic;
+add a planner when the approach is non-obvious. **Milestone critic gate:** at
+each implementation milestone, a fresh read-only critic sees only the diff +
+the packet oracle + the todo and must return no blocking gap before work
 advances — skip only for trivial diffs (<20 LOC, single file).
 
 ### Parallel lanes by default
@@ -181,11 +179,12 @@ source for the delegation floor: skills point here rather than restating it.
 - Dispatch two or more available providers for research, design,
   implementation, review, QA, diagnosis, backlog, reflection, and harness
   mutation.
-- Dispatch specialized lanes, not generic helpers. Name the role and lens:
-  specifier, repo investigator, builder, refactorer, architect, hardener, QA
-  driver, evidence verifier, release-risk critic, or equivalent phase-specific
-  role. Prefer different providers for genuinely different judgments when the
-  roster supports it.
+- Dispatch specialized lanes, not generic helpers. Use `/dispatch` lane cards
+  for reusable composition: specifier, repo investigator, builder, refactorer,
+  architect, hardener, QA driver, persona tester, product synthesizer, evidence
+  verifier, release-risk critic, or equivalent phase-specific role. Prefer
+  different providers for genuinely different judgments when the roster
+  supports it.
 - Native in-thread subagents are supplemental fresh-context lanes. They do not
   satisfy the roster floor. Count only configured provider ids from the roster,
   such as `codex`, `claude`, `pi`, `agy`, `cursor-agent`, or `grok-build` as
@@ -193,7 +192,8 @@ source for the delegation floor: skills point here rather than restating it.
   lane.
 - Use independent lanes: split scope, competing attempts, or reviewer/critic
   roles. Parallel by default when lanes do not depend on each other.
-- Record meaningful attempts via the repo receipt script.
+- Record meaningful attempts via the repo receipt script or `/dispatch` run
+  card.
 - Final answer includes: providers used, why, parallel/split/competing shape,
   accepted/rejected output, failures, waiver, receipt ids.
 

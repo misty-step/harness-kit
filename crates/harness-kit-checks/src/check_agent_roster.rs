@@ -15,6 +15,7 @@ const CORE_WORKFLOW_SKILLS: &[&str] = &[
     "code-review",
     "create-repo-skill",
     "deliver",
+    "dispatch",
     "demo",
     "design",
     "diagnose",

@@ -912,7 +912,7 @@ class HarnessKitCi:
         source: Annotated[
             dagger.Directory,
             DefaultPath("/"),
-            Ignore([".git", "__pycache__", ".venv", "skills/.external"]),
+            Ignore([".git", "__pycache__", ".venv", "skills/.external", ".harness-kit/tmp/lane-harness"]),
         ],
     ) -> str:
         """Validate generated public docs site output and drift checks."""
@@ -926,6 +926,8 @@ class HarnessKitCi:
                 "harness-kit-checks",
                 "--",
                 "check-docs-site",
+                "--repo",
+                ".",
                 "--self-test",
             ])
             .stdout()
@@ -960,7 +962,7 @@ class HarnessKitCi:
         source: Annotated[
             dagger.Directory,
             DefaultPath("/"),
-            Ignore([".git", "__pycache__", ".venv", "skills/.external"]),
+            Ignore([".git", "__pycache__", ".venv", "skills/.external", ".harness-kit/tmp/lane-harness"]),
             Doc("Repo source directory"),
         ],
     ) -> str:

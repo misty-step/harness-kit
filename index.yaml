@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-08T22:33:40Z
+# Generated: 2026-06-08T23:50:31Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -63,6 +63,10 @@ skills:
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis"
     source: first-party
     tags: [analysis,audit,auditing,before,cause,debugging,domain,feedback-loop-first,fix,incident]
+  - name: dispatch
+    description: "Compose and launch roster-backed specialist lanes with prompt-native lane cards and receipts. Use when: \"dispatch agents\", \"use subagents\", \"compose a team\", \"run provider lanes\", \"make lane cards\". T"
+    source: first-party
+    tags: [a,agents,cards,compose,dispatch,lane,lanes,launch,make,prompt-native]
   - name: flywheel
     description: "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel"
     source: first-party

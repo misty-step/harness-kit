@@ -22,6 +22,7 @@ Primitives:
 - skill:deps | skills/deps/SKILL.md | docs/site/reference/skills/deps.html
 - skill:design | skills/design/SKILL.md | docs/site/reference/skills/design.html
 - skill:diagnose | skills/diagnose/SKILL.md | docs/site/reference/skills/diagnose.html
+- skill:dispatch | skills/dispatch/SKILL.md | docs/site/reference/skills/dispatch.html
 - skill:flywheel | skills/flywheel/SKILL.md | docs/site/reference/skills/flywheel.html
 - skill:groom | skills/groom/SKILL.md | docs/site/reference/skills/groom.html
 - skill:hardening | skills/hardening/SKILL.md | docs/site/reference/skills/hardening.html
