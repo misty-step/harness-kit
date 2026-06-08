@@ -32,6 +32,7 @@ pub mod pr_reviews;
 pub mod premise_source;
 pub mod reflect_checkpoint;
 pub mod reflect_evidence;
+pub mod repo_skill;
 pub mod review_score_trends;
 pub mod runtime_primitives;
 pub mod shape_renderer;

@@ -10,10 +10,16 @@
 
 ## Skill Shape
 
+Use the scaffold for the first filesystem write, then replace every scaffold
+placeholder from live repo evidence:
+
+```sh
+cargo run --locked -p harness-kit-checks -- repo-skill scaffold <name> --kind qa|persona-acceptance|generic --repo <target-repo>
+```
+
 ```text
 .agents/skills/<name>/
   SKILL.md
-  references/
   evals/
     README.md
     cases/<case>.md
@@ -36,6 +42,17 @@ Bridge harness-specific dirs only when present:
 - Output format is checkable.
 - Eval seed names the expected artifact and grader.
 - No placeholders remain.
+
+Run both artifact gates before claiming usable:
+
+```sh
+cargo run --locked -p harness-kit-checks -- repo-skill validate <target-repo>/.agents/skills/<name>
+cargo run --locked -p harness-kit-checks -- eval-grader create-repo-skill <target-repo>/.agents/skills/<name>
+```
+
+These gates check generated files on disk. They do not replace the agentic
+critic; they catch scaffold, placeholder, bridge, eval, and concrete-anchor
+failures.
 
 ## Sources
 

@@ -4,6 +4,8 @@ use std::path::Path;
 use anyhow::{Result, bail};
 use regex::Regex;
 
+use crate::repo_skill;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EvalGrader {
     CodeReviewEntrypoint,
@@ -31,6 +33,9 @@ impl EvalGrader {
 }
 
 pub fn grade(grader: EvalGrader, path: &Path) -> Result<String> {
+    if grader == EvalGrader::CreateRepoSkill && path.is_dir() {
+        return repo_skill::validate(path);
+    }
     let text =
         fs::read_to_string(path).map_err(|error| anyhow::anyhow!("{}: {error}", path.display()))?;
     grade_text(grader, &text)

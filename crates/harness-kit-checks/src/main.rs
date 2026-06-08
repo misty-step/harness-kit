@@ -8,7 +8,7 @@ use harness_kit_checks::{
     evidence, evidence_blocks, external_skill_lint, external_sync, frontmatter, generate_index,
     git_hooks, heal_commit, heal_support, lint_gates, offline_evidence,
     offline_validation_preflight, pr_reviews, premise_source, reflect_checkpoint, reflect_evidence,
-    review_score_trends, runtime_primitives, shape_renderer, skill_audit, skill_evals,
+    repo_skill, review_score_trends, runtime_primitives, shape_renderer, skill_audit, skill_evals,
     skill_invocation_analytics, skillify_classify, skillify_skill_crud, skillify_transcript,
     summarize_delegations, trace_record, transcript_effectiveness, verdicts, work_ledger,
 };
@@ -144,6 +144,7 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "review-score-trends" => {
             run_review_score_trends(rest);
         }
+        "repo-skill" => run_repo_skill(rest),
         "detect-ui-surfaces" => run_detect_ui_surfaces(rest),
         "offline-validation-preflight" => run_offline_validation_preflight(rest),
         "reflect-gather-evidence" => run_reflect_gather_evidence(rest),
@@ -1037,6 +1038,75 @@ fn parse_audit_skills_args(args: &[String]) -> AuditSkillsOptions {
         index += 1;
     }
     options
+}
+
+fn run_repo_skill(args: &[String]) {
+    let Some((command, rest)) = args.split_first() else {
+        usage();
+    };
+    let result = match command.as_str() {
+        "scaffold" => {
+            let options = parse_repo_skill_scaffold_args(rest);
+            repo_skill::scaffold(&options).map(|paths| {
+                paths
+                    .into_iter()
+                    .map(|path| path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            })
+        }
+        "validate" => {
+            let Some(path) = rest.first() else {
+                usage();
+            };
+            if rest.len() != 1 {
+                usage();
+            }
+            repo_skill::validate(Path::new(path))
+        }
+        "self-test" => {
+            no_args(rest).unwrap_or_else(|_| usage());
+            repo_skill::self_test()
+        }
+        _ => usage(),
+    };
+    match result {
+        Ok(message) => println!("{message}"),
+        Err(error) => {
+            eprintln!("{error:#}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn parse_repo_skill_scaffold_args(args: &[String]) -> repo_skill::ScaffoldOptions {
+    let Some((name, rest)) = args.split_first() else {
+        usage();
+    };
+    let mut root = PathBuf::from(".");
+    let mut kind = repo_skill::SkillKind::Generic;
+    let mut index = 0;
+    while index < rest.len() {
+        let flag = rest[index].as_str();
+        index += 1;
+        let value = || rest.get(index).cloned().unwrap_or_else(|| usage());
+        match flag {
+            "--repo" => root = PathBuf::from(value()),
+            "--kind" => {
+                kind = repo_skill::SkillKind::parse(&value()).unwrap_or_else(|error| {
+                    eprintln!("{error}");
+                    std::process::exit(2);
+                });
+            }
+            _ => usage(),
+        }
+        index += 1;
+    }
+    repo_skill::ScaffoldOptions {
+        root,
+        name: name.clone(),
+        kind,
+    }
 }
 
 fn run_agent_readiness_profile(args: &[String]) {
@@ -2709,6 +2779,9 @@ fn usage() -> ! {
   harness-kit-checks trace-record --self-test
   harness-kit-checks trace-record append [options]
   harness-kit-checks review-score-trends [--self-test|PATH]
+  harness-kit-checks repo-skill scaffold NAME [--kind qa|persona-acceptance|generic] [--repo PATH]
+  harness-kit-checks repo-skill validate .agents/skills/NAME
+  harness-kit-checks repo-skill self-test
   harness-kit-checks shape-render SOURCE --output OUTPUT
   harness-kit-checks shape-render --self-test
   harness-kit-checks skill-invocation-analytics [--skill-log PATH] [--work-ledger PATH] [--delegations PATH] [--since 7d|12h] [--repo NAME] [--project NAME] [--skill NAME] [--format json|text|markdown] [--self-test]

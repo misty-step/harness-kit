@@ -21,3 +21,5 @@ Expected artifact:
 - safe-tenant or ask-user boundary
 - completion gate with exact behavior, live evidence, route/command, repo-fit
   check, and residual risk
+- `cargo run --locked -p harness-kit-checks -- repo-skill validate .agents/skills/persona-acceptance`
+  passes after the agent fills the scaffold from repo evidence

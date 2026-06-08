@@ -12,8 +12,9 @@ argument-hint: "[qa|persona-acceptance|<skill-name>] [target]"
 
 # /create-repo-skill
 
-Generate a local skill for this repo, not Harness Kit globally. This is a thin
-skill authoring lane, not a persona runtime or scheduling engine.
+Agentic compiler: repo evidence + user intent -> one repo-local skill. Not
+global. Not a runtime. Rust tools scaffold and typecheck artifacts; the lead
+agent still owns discovery, product judgment, oracle design, and final report.
 
 ## Route
 
@@ -29,7 +30,11 @@ skill authoring lane, not a persona runtime or scheduling engine.
 - Discover the live repo before drafting.
 - Ask the user for missing product truth: value proposition, target users,
   critical workflows, production/local target, and allowed side effects.
-- Dispatch independent lanes: repo mapper, product/persona mapper, critic.
+- Dispatch independent lanes: repo mapper, product/persona mapper, critic,
+  and oracle designer when the workflow is not obvious.
+- Decide whether a local skill is warranted. If global `/qa`, `/demo`,
+  `/design`, or `/agent-readiness` already owns the job with minor parameters,
+  do not generate a repo-local shadow.
 - Write only repo-local skill artifacts in the target repo.
 - Prefer `.agents/skills/<name>/` as shared root; bridge `.claude/skills/`,
   `.codex/skills/`, and `.pi/skills/` when those dirs exist.
@@ -42,6 +47,22 @@ skill authoring lane, not a persona runtime or scheduling engine.
   behavior that should be watched after ship: healthchecks, logs, analytics
   coverage, receipts, evidence directories, benchmarks, or release smoke.
 - Keep generated `SKILL.md` under 300 lines unless the repo proves otherwise.
+
+## Build Tools
+
+Use the tools as rails, not the generator:
+
+```sh
+cargo run --locked -p harness-kit-checks -- repo-skill scaffold <name> --kind qa|persona-acceptance|generic --repo <target-repo>
+cargo run --locked -p harness-kit-checks -- repo-skill validate <target-repo>/.agents/skills/<name>
+cargo run --locked -p harness-kit-checks -- eval-grader create-repo-skill <target-repo>/.agents/skills/<name>
+```
+
+`scaffold` creates the manifest for the agent to fill. `validate` rejects
+placeholders, missing gates, missing eval seeds, missing concrete repo anchors,
+and copied harness bridges. It cannot prove product fit; the agentic critic
+must still attack the generated skill for generic wording, guessed commands,
+invented routes, and weak oracles.
 
 ## Delegation Floor
 
@@ -65,6 +86,14 @@ Generated local skill includes:
 - A post-generate acceptance block comparing the generated skill to live repo
   language, commands, docs, shared root, bridge topology, observable surfaces,
   and known user corrections.
+
+The final report includes:
+
+- generated paths and bridge paths;
+- repo facts accepted and guesses rejected;
+- validation command output;
+- critic blockers resolved or waived;
+- residual product truth still requiring the user.
 
 ## Post-Generate Acceptance
 
@@ -91,3 +120,4 @@ evidence. Passing frontmatter or scaffold validation is structural proof only.
 - Value propositions are claims to test, not marketing copy to repeat.
 - Browser automation is a tool choice after workflow mapping, not the default.
 - Do not generate a semantic workflow engine. Generate instructions and oracles.
+- Do not confuse scaffold success with generated skill acceptance.
