@@ -38,6 +38,66 @@ Source: `.harness-kit/agents.yaml`, probed with
 Local probe status proves only command discovery. It does not prove task
 quality, current billing, tool-call reliability, or benchmark performance.
 
+## Focused Lane Harness Projection
+
+Roster dispatch can optionally use a `lane_harness.v1` manifest to project a
+minimal child harness before launching a provider. This is for context hygiene:
+the primary lead can give a lane only the local skills and external aliases
+needed for its role instead of inheriting every globally installed Harness Kit
+skill.
+
+Use it when a lane has a narrow responsibility and extra skills would be
+misleading, such as a CI-only critic, a docs-only verifier, or an implementation
+lane that should not see shaping or grooming skills. Do not use it as a semantic
+workflow engine, a permission system, or a substitute for the lead's judgment.
+
+Minimum operating path:
+
+```sh
+cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
+  --manifest .harness-kit/examples/lane-harness.yaml
+
+cargo run --locked -p harness-kit-checks -- dispatch-agent \
+  --provider-target codex \
+  --objective "bounded lane objective" \
+  --input-ref "path/or/ticket" \
+  --prompt-file /tmp/lane.md \
+  --lane-harness .harness-kit/examples/lane-harness.yaml
+```
+
+Manifest constraints:
+
+- `provider_target` must match a provider id in the roster and the dispatch
+  provider target.
+- `model_override`, when present, must match the provider's roster model or one
+  of its configured `model_variants` keys or values.
+- `allowed_local_skills` must name existing first-party skills and cannot
+  escape the repo `skills/` root.
+- `allowed_external_aliases` must resolve to pinned aliases in `registry.yaml`.
+- `fallback.on_provider_failure` is `record_and_return`; a failed Claude,
+  Pi, Codex, Antigravity, Cursor, or Grok lane should produce evidence for the
+  lead, not crash the whole composition.
+- `fallback.replacement_policy` is `lead_explicit`; replacing a failed lane is
+  a lead decision, not an automatic provider loop.
+
+Runtime projection creates an ignored root under
+`.harness-kit/tmp/lane-harness/<id>/`, links the allowed skills into the
+known harness skill locations, sets child environment variables (`HOME`,
+`CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `PI_HOME`, `GEMINI_CONFIG_DIR`,
+`XDG_CONFIG_HOME`), and removes the root after dispatch unless
+`--keep-lane-root` is supplied for debugging.
+
+Receipt fields make projection auditable:
+
+- `lane_harness_ref`: manifest path.
+- `lane_harness_sha256`: manifest hash at dispatch time.
+- `projection_status`: `projected` or `failed`.
+- `failure_kind`: typed provider or projection failure such as
+  `credits_exhausted`, `auth_required`, `missing_binary`, `probe_timeout`,
+  `dispatch_timeout`, `nonzero_exit`, `sentinel_mismatch`, or
+  `projection_failed`.
+- `output_check`: optional sentinel verdict when `--expect-output` is used.
+
 ## Pi / OpenRouter Catalog Snapshot
 
 Pi can attempt OpenRouter model ids through its configured dispatch surface:

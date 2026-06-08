@@ -8,6 +8,8 @@ use anyhow::{Context, Result, anyhow, bail};
 use chrono::{SecondsFormat, Utc};
 use serde_json::{Map, Value, json};
 
+use crate::lane_harness;
+
 const REQUIRED_RECEIPT_FIELDS: &[&str] = &[
     "schema_version",
     "delegation_id",
@@ -33,6 +35,10 @@ const OPTIONAL_RECEIPT_FIELDS: &[&str] = &[
     "usage",
     "transcript_bytes",
     "output_check",
+    "lane_harness_ref",
+    "lane_harness_sha256",
+    "projection_status",
+    "failure_kind",
 ];
 const RECEIPT_PROVIDER_IDS: &[&str] = &[
     "codex",
@@ -70,6 +76,9 @@ pub struct DelegationSummary {
     pub providers: BTreeMap<String, BTreeMap<String, u64>>,
     pub provider_statuses: BTreeMap<String, BTreeMap<String, u64>>,
     pub usage_by_provider: BTreeMap<String, FinalUsageSummary>,
+    pub lane_harnesses: BTreeMap<String, u64>,
+    pub projection_statuses: BTreeMap<String, u64>,
+    pub failure_kinds: BTreeMap<String, u64>,
     pub lead_verdicts: BTreeMap<String, u64>,
     pub worktrees: BTreeMap<String, u64>,
 }
@@ -103,6 +112,11 @@ pub struct ReceiptInput {
     pub duration_ms: Option<u64>,
     pub usage: Option<UsageInput>,
     pub transcript_bytes: Option<u64>,
+    pub lane_harness_ref: Option<String>,
+    pub lane_harness_sha256: Option<String>,
+    pub projection_status: Option<String>,
+    pub failure_kind: Option<String>,
+    pub output_check: Option<OutputCheckInput>,
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -112,6 +126,13 @@ pub struct UsageInput {
     pub total_tokens: Option<u64>,
     pub cost_usd: Option<f64>,
     pub cost_source: Option<String>,
+}
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct OutputCheckInput {
+    pub expected: String,
+    pub matched: bool,
+    pub observed_ref: Option<String>,
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -143,6 +164,9 @@ pub fn summarize_receipts(path: &Path, backlog_ref: &str) -> Result<DelegationSu
     let mut providers = BTreeMap::new();
     let mut provider_statuses = BTreeMap::new();
     let mut usage_by_provider: BTreeMap<String, UsageAccumulator> = BTreeMap::new();
+    let mut lane_harnesses = BTreeMap::new();
+    let mut projection_statuses = BTreeMap::new();
+    let mut failure_kinds = BTreeMap::new();
     let mut lead_verdicts = BTreeMap::new();
     let mut worktrees = BTreeMap::new();
 
@@ -162,6 +186,15 @@ pub fn summarize_receipts(path: &Path, backlog_ref: &str) -> Result<DelegationSu
             usage_by_provider.entry(provider).or_default(),
             receipt.get("usage"),
         );
+        if let Some(value) = receipt.get("lane_harness_ref").and_then(Value::as_str) {
+            increment(&mut lane_harnesses, value);
+        }
+        if let Some(value) = receipt.get("projection_status").and_then(Value::as_str) {
+            increment(&mut projection_statuses, value);
+        }
+        if let Some(value) = receipt.get("failure_kind").and_then(Value::as_str) {
+            increment(&mut failure_kinds, value);
+        }
         increment(&mut lead_verdicts, string_field(receipt, "lead_verdict")?);
         increment(&mut worktrees, string_field(receipt, "worktree_id")?);
     }
@@ -175,6 +208,9 @@ pub fn summarize_receipts(path: &Path, backlog_ref: &str) -> Result<DelegationSu
             .into_iter()
             .map(|(provider, summary)| (provider, summary.finalize()))
             .collect(),
+        lane_harnesses,
+        projection_statuses,
+        failure_kinds,
         lead_verdicts,
         worktrees,
     })
@@ -240,6 +276,18 @@ pub fn format_text(summary: &DelegationSummary) -> String {
         "lead_verdicts: {}",
         format_counts(&summary.lead_verdicts)
     ));
+    lines.push(format!(
+        "lane_harnesses: {}",
+        format_counts(&summary.lane_harnesses)
+    ));
+    lines.push(format!(
+        "projection_statuses: {}",
+        format_counts(&summary.projection_statuses)
+    ));
+    lines.push(format!(
+        "failure_kinds: {}",
+        format_counts(&summary.failure_kinds)
+    ));
     lines.push(format!("worktrees: {}", format_counts(&summary.worktrees)));
     lines.join("\n")
 }
@@ -283,6 +331,31 @@ pub fn build_attempt_receipt(input: ReceiptInput) -> Result<Map<String, Value>> 
     }
     if let Some(transcript_bytes) = input.transcript_bytes {
         receipt.insert("transcript_bytes".to_string(), json!(transcript_bytes));
+    }
+    if let Some(lane_harness_ref) = input.lane_harness_ref {
+        receipt.insert("lane_harness_ref".to_string(), json!(lane_harness_ref));
+    }
+    if let Some(lane_harness_sha256) = input.lane_harness_sha256 {
+        receipt.insert(
+            "lane_harness_sha256".to_string(),
+            json!(lane_harness_sha256),
+        );
+    }
+    if let Some(projection_status) = input.projection_status {
+        receipt.insert("projection_status".to_string(), json!(projection_status));
+    }
+    if let Some(failure_kind) = input.failure_kind {
+        receipt.insert("failure_kind".to_string(), json!(failure_kind));
+    }
+    if let Some(output_check) = input.output_check {
+        receipt.insert(
+            "output_check".to_string(),
+            json!({
+                "expected": output_check.expected,
+                "matched": output_check.matched,
+                "observed_ref": output_check.observed_ref,
+            }),
+        );
     }
     validate_receipt(&receipt)?;
     Ok(receipt)
@@ -426,6 +499,18 @@ fn validate_receipt(receipt: &Map<String, Value>) -> Result<()> {
     )?;
     validate_optional_nonnegative_int(receipt, "duration_ms")?;
     validate_optional_nonnegative_int(receipt, "transcript_bytes")?;
+    validate_optional_text(receipt, "lane_harness_ref")?;
+    validate_optional_sha256(receipt, "lane_harness_sha256")?;
+    if let Some(value) = receipt.get("projection_status").and_then(Value::as_str)
+        && !lane_harness::validate_projection_status(value)
+    {
+        bail!("receipt projection_status is invalid.");
+    }
+    if let Some(value) = receipt.get("failure_kind").and_then(Value::as_str)
+        && !lane_harness::validate_failure_kind(value)
+    {
+        bail!("receipt failure_kind is invalid.");
+    }
     if let Some(usage) = receipt.get("usage") {
         validate_usage(usage)?;
     }
@@ -540,9 +625,15 @@ fn summary_to_value(summary: &DelegationSummary) -> Result<Value> {
     let mut object = Map::new();
     object.insert("backlog_ref".to_string(), json!(summary.backlog_ref));
     object.insert("lead_verdicts".to_string(), json!(summary.lead_verdicts));
+    object.insert("failure_kinds".to_string(), json!(summary.failure_kinds));
+    object.insert("lane_harnesses".to_string(), json!(summary.lane_harnesses));
     object.insert(
         "provider_statuses".to_string(),
         json!(summary.provider_statuses),
+    );
+    object.insert(
+        "projection_statuses".to_string(),
+        json!(summary.projection_statuses),
     );
     object.insert("providers".to_string(), json!(summary.providers));
     object.insert("total".to_string(), json!(summary.total));
@@ -703,6 +794,29 @@ fn validate_optional_nonnegative_int(object: &Map<String, Value>, field: &str) -
     Ok(())
 }
 
+fn validate_optional_text(object: &Map<String, Value>, field: &str) -> Result<()> {
+    if let Some(value) = object.get(field)
+        && !value.is_null()
+        && value.as_str().is_none_or(str::is_empty)
+    {
+        bail!("receipt {field} must be a non-empty string or null.");
+    }
+    Ok(())
+}
+
+fn validate_optional_sha256(object: &Map<String, Value>, field: &str) -> Result<()> {
+    if let Some(value) = object.get(field) {
+        let Some(value) = value.as_str() else {
+            bail!("receipt {field} must be a sha256 hex string.");
+        };
+        let re = regex::Regex::new(r"^[0-9a-f]{64}$").expect("static regex compiles");
+        if !re.is_match(value) {
+            bail!("receipt {field} must be a sha256 hex string.");
+        }
+    }
+    Ok(())
+}
+
 fn format_counts(counts: &BTreeMap<String, u64>) -> String {
     if counts.is_empty() {
         return "none".to_string();
@@ -761,7 +875,7 @@ mod tests {
 
         assert_eq!(
             format_text(&summary),
-            "Roster delegation report\nbacklog_ref: all receipts\ntotal_receipts: 2\nproviders:\n  - codex: attempts[succeeded=2]; status[available=2]\nusage_by_provider:\n  - codex: known=1; unknown=1; input_tokens=1000; output_tokens=200; total_tokens=1200; cost_usd=0.0123; cost_sources[provider_reported=1]\nlead_verdicts: accepted=2\nworktrees: codex-062=1, codex-089=1"
+            "Roster delegation report\nbacklog_ref: all receipts\ntotal_receipts: 2\nproviders:\n  - codex: attempts[succeeded=2]; status[available=2]\nusage_by_provider:\n  - codex: known=1; unknown=1; input_tokens=1000; output_tokens=200; total_tokens=1200; cost_usd=0.0123; cost_sources[provider_reported=1]\nlead_verdicts: accepted=2\nlane_harnesses: none\nprojection_statuses: none\nfailure_kinds: none\nworktrees: codex-062=1, codex-089=1"
         );
         Ok(())
     }
@@ -779,8 +893,11 @@ mod tests {
             json,
             serde_json::json!({
               "backlog_ref": "",
+              "failure_kinds": {},
+              "lane_harnesses": {},
               "lead_verdicts": {"accepted": 2},
               "provider_statuses": {"codex": {"available": 2}},
+              "projection_statuses": {},
               "providers": {"codex": {"succeeded": 2}},
               "total": 2,
               "usage_by_provider": {
@@ -842,6 +959,11 @@ mod tests {
                 cost_source: None,
             }),
             transcript_bytes: Some(42),
+            lane_harness_ref: None,
+            lane_harness_sha256: None,
+            projection_status: None,
+            failure_kind: None,
+            output_check: None,
         })?;
         append_receipt(&path, &receipt)?;
 
@@ -854,6 +976,54 @@ mod tests {
         assert_eq!(row["provider_target"], "codex");
         assert_eq!(row["usage"]["cost_source"], "manual");
         assert_eq!(summarize_receipts(&path, "")?.total, 1);
+        Ok(())
+    }
+
+    #[test]
+    fn summarizes_lane_harness_projection_and_failure_kind() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let path = dir.path().join("delegations.jsonl");
+        let mut rows = fixture_rows();
+        rows.push('\n');
+        rows.push_str(
+            &serde_json::json!({
+                "schema_version": 1,
+                "delegation_id": "c8b56eb0-32e4-48ff-86c7-89439c0f0101",
+                "created_at": "2026-06-08T00:00:00Z",
+                "repo_root": "/tmp/harness-kit",
+                "worktree_id": "deliver-101",
+                "lead_harness": "codex",
+                "lead_provider": "codex",
+                "backlog_ref": "101",
+                "objective": "lane harness fixture",
+                "input_ref": "backlog.d/101-focused-lane-harness-projection.md",
+                "provider_target": "codex",
+                "provider_status": "error",
+                "attempt_status": "failed",
+                "evidence_refs": ["receipt:lane-101"],
+                "summary": "projection failed before dispatch",
+                "lead_verdict": "rejected",
+                "redactions_applied": [],
+                "lane_harness_ref": ".harness-kit/examples/lane-harness.yaml",
+                "lane_harness_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "projection_status": "failed",
+                "failure_kind": "projection_failed"
+            })
+            .to_string(),
+        );
+        fs::write(&path, rows)?;
+
+        let summary = summarize_receipts(&path, "101")?;
+
+        assert_eq!(
+            summary
+                .lane_harnesses
+                .get(".harness-kit/examples/lane-harness.yaml"),
+            Some(&1)
+        );
+        assert_eq!(summary.projection_statuses.get("failed"), Some(&1));
+        assert_eq!(summary.failure_kinds.get("projection_failed"), Some(&1));
+        assert!(format_text(&summary).contains("failure_kinds: projection_failed=1"));
         Ok(())
     }
 

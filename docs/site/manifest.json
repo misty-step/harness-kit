@@ -1,10 +1,5 @@
 {
-  "backlog": [
-    {
-      "source": "backlog.d/101-focused-lane-harness-projection.md",
-      "title": "Context Packet: Focused Lane Harness Projection"
-    }
-  ],
+  "backlog": [],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
@@ -473,7 +468,7 @@
       "source": "skills/shape/SKILL.md"
     },
     {
-      "description": "Final mile from merge-ready branch to shipped: squash-merge to master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-only already made the branch ready. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
+      "description": "Final mile from current committed work to shipped: get the work onto master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Recovers detached HEAD or headless work by creating a shipping ref before squash-merging to master. Use when: \"ship it\", \"merge and close out\", \"final mile\", \"land and reflect\", \"finish this ticket\". Trigger: /ship.",
       "icon": "ship",
       "id": "skill:ship",
       "kind": "skill",

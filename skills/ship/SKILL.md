@@ -1,10 +1,11 @@
 ---
 name: ship
 description: |
-  Final mile from merge-ready branch to shipped: squash-merge to master,
+  Final mile from current committed work to shipped: get the work onto master,
   archive backlog tickets with trailers, update touched docs, run /reflect,
   apply outputs.
-  Assumes /deliver or /deliver --polish-only already made the branch ready.
+  Recovers detached HEAD or headless work by creating a shipping ref before
+  squash-merging to master.
   Use when: "ship it", "merge and close out", "final mile", "land and
   reflect", "finish this ticket".
   Trigger: /ship.
@@ -13,8 +14,8 @@ argument-hint: "[branch-or-pr]"
 
 # /ship
 
-The final mile. Branch is merge-ready; `/ship` lands it, archives the
-ticket(s), syncs docs, runs `/reflect`, and threads reflect's outputs back
+The final mile. `/ship` gets the current committed work onto `master`, archives
+the ticket(s), syncs docs, runs `/reflect`, and threads reflect's outputs back
 into the repo. One command from "green" to "shipped and learned from."
 
 ## Stance
@@ -24,21 +25,23 @@ into the repo. One command from "green" to "shipped and learned from."
 2. **Never lose trailer context.** `Closes-backlog` trailers must survive
    into the squash commit on master. `/groom` sweeps master by trailer —
    a dropped trailer is a ticket that never closes.
-3. **Pre-merge prep belongs on the shipping branch.** Archive moves and
-   doc syncs go on the feature branch before the squash so the merge
-   commit itself carries a single, clean closure event.
-4. **Ship always means squash to master.** `/ship` always lands the current
-   merge-ready branch by creating one squash commit on `master`. No normal
-   merge, no rebase-merge, no fast-forward-only landing, no destination
-   inference from `origin/HEAD`, and no `main` fallback. GitHub mode may use
-   GitHub's squash-merge operation, but the destination remains `master` and
-   trailers must be passed explicitly.
+3. **Pre-merge prep belongs on the shipping ref.** Archive moves and doc syncs
+   go on the feature branch, temporary ship branch, or other normalized
+   shipping ref before the squash so the merge commit itself carries a single,
+   clean closure event.
+4. **Ship always means get it onto master.** `/ship` always lands the current
+   committed work by creating one squash commit on `master`, unless the work is
+   already on `master`, in which case it verifies, pushes, reflects, and
+   reports. No normal merge, no rebase-merge, no fast-forward-only landing, no
+   destination inference from `origin/HEAD`, and no `main` fallback. GitHub mode
+   may use GitHub's squash-merge operation, but the destination remains
+   `master` and trailers must be passed explicitly.
 5. **Reflect's harness edits never touch master.** They land on a
    `harness/reflect-outputs` branch for human review. This is a hard
    invariant from `reflect/SKILL.md`.
-6. **Not a CI runner, not a reviewer, not a refactorer.** `/ship` assumes
-   `/deliver --polish-only` already proved the branch clean. If it wasn't
-   run, refuse and route the operator back.
+6. **Final-mile runner, not a refactorer.** `/ship` may run the repo's
+   documented gate when same-HEAD landability evidence is missing. It does not
+   redesign, refactor, or lower gates to pass.
 7. **Roster receipts are required evidence.** In repos with
    `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
    documented landability evidence includes two or more roster-member receipts
@@ -59,10 +62,25 @@ Local lane guidance: Normally verify upstream roster receipts; if final-mile wor
 
 Assert at start; refuse with a clear reason on any miss.
 
-- On a feature branch (not `master` / `main` / default protected branch).
+- Current `HEAD` identifies the committed work to ship. It may be a feature
+  branch, detached `HEAD`, or already on `master`.
+- If `HEAD` is detached, create a temporary local branch before archive/doc
+  prep:
+
+  ```sh
+  short="$(git rev-parse --short HEAD)"
+  stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+  git switch -c "ship/${stamp}-${short}"
+  ```
+
+  Use that branch as the **shipping ref** in every later step and report it.
+- If already on `master`, do not manufacture a squash merge. Verify the
+  committed work is on `master`, push/sync it, then continue with trace and
+  reflect. Refuse only when `master` has uncommitted work, failed gates, or
+  remote divergence the operator has not authorized.
 - `master` exists locally or can be fetched from `origin/master`; `master` is
   the only landing destination.
-- If the branch name matches `^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`,
+- If the shipping ref name matches `^(feat|fix|chore|refactor|docs|test|perf)/([0-9]+)-`,
   the numeric capture is the **primary backlog ID** being shipped. If it does
   not match, `/ship` continues with no primary backlog ID and closes only IDs
   found in trailers or explicit archive evidence.
@@ -70,7 +88,8 @@ Assert at start; refuse with a clear reason on any miss.
 - If a PR exists for the branch: `gh pr view --json baseRefName,mergeable,mergeStateStatus`
   reports `baseRefName` as `master` and mergeable. A non-master PR base,
   conflicted PR, or blocked PR means `/deliver --polish-only` isn't done.
-- Landability evidence exists for this exact HEAD. Acceptable evidence:
+- Landability evidence exists for this exact HEAD or `/ship` can produce it by
+  running the repo's documented gate before merge. Acceptable evidence:
   GitHub mode has a mergeable PR with green required checks; git-native
   mode has a `ship` or `conditional` verdict; or git-native mode has
   operator-provided/current-session local gate receipts from `/ci` or the
@@ -88,11 +107,11 @@ Assert at start; refuse with a clear reason on any miss.
   artifact contents, or assertion strength changed, the evidence includes an
   explicit `Contract-change acknowledgment:` line. If `.evidence/<branch>/<date>/`
   is non-empty, `/ship` carries it into the final commit as `QA-Evidence:`.
-- Trace handoff inputs exist or a waiver is explicit: transcript refs, review
+- Trace handoff inputs exist or `/ship` records an explicit waiver: transcript refs, review
   receipt refs, QA/demo refs, or another durable trace source are available for
-  `/trace` after merge. If no transcript or trace artifact is available, the
-  operator provides a `Trace-waiver: <reason>` line. Raw session logs do not
-  satisfy this prerequisite.
+  `/trace` after merge. If no transcript or trace artifact is available, use a
+  `Trace-waiver:` line in the trace record and final report. Raw session logs do
+  not satisfy this prerequisite.
 - If `.harness-kit/agent-readiness.yaml` exists, the branch evidence includes
   readiness impact: improved, preserved, or regressed. Regressions must include
   a contract-change reference and a valid future-expiring waiver.
@@ -108,6 +127,22 @@ trailers, trace handoff, reflect, and follow-up mutations are done.
 
 ## Process
 
+### 0. Normalize Shipping Ref
+
+Capture:
+
+```sh
+PRE_SHIP_HEAD="$(git rev-parse HEAD)"
+CURRENT_REF="$(git rev-parse --abbrev-ref HEAD)"
+```
+
+If `CURRENT_REF` is `HEAD`, create the temporary `ship/<timestamp>-<shortsha>`
+branch described in prerequisites. If on `master`, set mode to `already_on_master`.
+Otherwise use the current branch as the shipping ref.
+
+From this point on, every range that used `<branch>` means the normalized
+shipping ref. Never lose `PRE_SHIP_HEAD`.
+
 ### 1. Extract backlog IDs
 
 Primary ID is optional. If the branch name matches
@@ -115,7 +150,7 @@ Primary ID is optional. If the branch name matches
 Then scan branch commits:
 
 ```sh
-git log --format=%B master..HEAD \
+git log --format=%B master.."$PRE_SHIP_HEAD" \
   | git interpret-trailers --parse --no-divider
 ```
 
@@ -127,7 +162,7 @@ one exists.
 - **Reference set:** Refs-backlog values. Noted in the final report, never
   archived.
 
-Prefer `cargo run --locked -p harness-kit-checks -- backlog ids-from-range master..HEAD`
+Prefer `cargo run --locked -p harness-kit-checks -- backlog ids-from-range master.."$PRE_SHIP_HEAD"`
 when available.
 
 ### 2. Archive backlog files on the shipping branch
@@ -151,7 +186,7 @@ master when all landability and acceptance evidence exists.
 Inspect the diff to find docs that may have gone stale:
 
 ```sh
-git diff master..HEAD --name-only
+git diff master.."$PRE_SHIP_HEAD" --name-only
 ```
 
 If the downstream repo has a drift contract (e.g.
@@ -166,7 +201,7 @@ dispatch a focused **general-purpose** subagent with:
 **Do not invent docs that don't already exist.** If the repo has no drift
 contract, skip this step and note it in the final report.
 
-### 4. Create the archive commit on the feature branch
+### 4. Create the archive commit on the shipping ref
 
 One commit. Subject: `chore(backlog): archive shipped tickets`.
 
@@ -207,6 +242,10 @@ fi
 git checkout -
 ```
 
+If mode is `already_on_master`, skip the squash step, run the documented gate
+on `master`, push/sync `master`, and continue at "Pull master and verify
+trailers." Report `Mode: already_on_master`.
+
 The only acceptable landing result is one new squash commit on `master`.
 Never use plain `git merge`, `git merge --ff-only`, `git rebase` as the landing
 operation, or any destination other than `master`.
@@ -218,7 +257,7 @@ default squash template often drops commit trailers, so pass the body
 explicitly:
 
 ```sh
-body="$(git log --format=%B master..HEAD \
+body="$(git log --format=%B master.."$PRE_SHIP_HEAD" \
         | git interpret-trailers --parse --no-divider \
         | grep -E '^(Closes-backlog|Ships-backlog|Refs-backlog|QA-Evidence):' \
         | sort -u || true)"
@@ -234,7 +273,7 @@ block. Match the repo's squash-subject convention (look at recent
 ```sh
 dagger call check --source=.
 git checkout master
-git merge --squash <branch>
+git merge --squash <shipping-ref>
 git commit -F <constructed-message-file>
 ```
 
@@ -284,7 +323,7 @@ persist raw session logs.
 
 Bounded scope: the just-shipped work only. Pass as context:
 
-- Branch name (pre-merge).
+- Shipping ref name (pre-merge, including generated `ship/...` refs).
 - Merged SHA on master.
 - Closing backlog IDs.
 - Reference IDs (non-closing).
@@ -371,20 +410,21 @@ Stop and surface to the user instead of shipping:
 - Working tree dirty.
 - `master` and `origin/master` diverge after fetch/pull/push and the operator
   has not authorized the required corrective action.
-- On `master` / `main` directly.
+- On `main` or another non-`master` protected/default branch directly.
+- On `master` directly with uncommitted work, failed documented gate, or
+  unresolved `master...origin/master` divergence.
 - Verdict ref reads `dont-ship` (`harness-kit-checks verdict check-landable` returns 2).
-- No same-HEAD landability evidence exists: no green PR checks, no
-  landable verdict, and no operator-provided/current-session local gate
-  receipt.
+- Same-HEAD landability cannot be produced: no green PR checks, no landable
+  verdict, no operator-provided/current-session local gate receipt, and the
+  documented gate cannot be run or fails.
 - In a repo with `dagger.json`, `dagger call check --source=.` has not passed
   on the exact HEAD being landed.
 - In GitHub mode, `gh pr view --json baseRefName` does not report `master`,
   or `gh pr checks` is red. Do not add a `--force` flag; refuse.
 - If a PR exists, it is not mergeable per
   `gh pr view --json mergeable,mergeStateStatus`.
-- No trace handoff inputs and no explicit `Trace-waiver: <reason>` line.
-  Operator must provide a transcript/ref source or a waiver reason before
-  merge.
+- Trace handoff cannot be recorded and no explicit `Trace-waiver:` can be
+  included in the trace/final report.
 - Closing IDs are present but their matching backlog files cannot be archived
   and the missing files are not already archived. A branch with no closing IDs
   is allowed; report `Closed: none`.
@@ -420,73 +460,37 @@ avoid whitespace and key-casing drift.
 
 ## Interactions
 
-- **Upstream:** `/deliver --polish-only` leaves the branch merge-ready.
-  `/ship` assumes that work is done; it does not re-run CI, code-review, or
-  refactor.
+- **Upstream:** `/deliver --polish-only` usually leaves the branch merge-ready.
+  `/ship` can also normalize detached/headless committed work and produce the
+  documented gate receipt itself. It still does not refactor or lower gates.
 - **Invokes:** `/reflect cycle` for retro, backlog mutations, and
   harness proposals.
 - **Invoked by:** `/flywheel` as the landing + reflection stage of each
   cycle. `/flywheel` reads `/ship`'s final report to decide the next
   cycle.
-- **Complements `/yeet`:** `/yeet` ships the working tree to the remote
-  (commits + push). `/ship` ships the branch to master (merge + archive
-  + reflect). Both are imperative finals; they operate at different
-  layers.
+- **Complements `/yeet`:** `/yeet` pushes the working tree; `/ship` lands the
+  branch on master, archives, and reflects.
 
 ## Gotchas
 
-- **GitHub default squash body drops trailers.** `gh pr merge --squash`
-  with no `--body` often uses the PR title + description, not commit
-  trailers. Always pass `--body` with the trailer block explicitly.
-- **All trailers live in ONE contiguous block at the end of the message.**
-  A blank line between `Closes-backlog: NNN` lines and `Co-Authored-By:`
-  splits the block; `git interpret-trailers --parse` only recognizes
-  the last block, so downstream `harness-kit-checks backlog ids-from-commit`
-  returns empty.
-  Use `git interpret-trailers --if-exists addIfDifferent --trailer "..."`
-  to inject programmatically — it handles block boundaries correctly.
-- **Archive before merge, not after.** Archiving on master after the
-  merge splits the closure event across two commits and muddies `/groom`
-  sweeps. One commit on the feature branch; one squash commit on master.
-- **Primary ID without a file is a real case.** When the ticket was added
-  via trailers only (hotfix, spike), there may be no `backlog.d/<id>-*.md`
-  to move. Trust the trailers; don't fail the archive step on a missing
-  file, but do note it.
-- **Reflect must not mutate master's harness.** This is not a style
-  preference — `reflect/SKILL.md` encodes it as an invariant. Harness
-  edits go to `harness/reflect-outputs`, full stop. A `/reflect` run that
-  writes to master's `.claude/`, `.agents/`, `AGENTS.md`, or `CLAUDE.md`
-  is a bug; surface it.
-- **Re-running `/ship` on an already-shipped branch.** The branch is
-  gone, the PR is closed. Detect and exit early; do not attempt to
-  re-archive or re-reflect.
-- **Trailer deduplication.** `Closes-backlog: 029` appearing in three
-  branch commits must squash to one trailer on master, not three. The
-  `interpret-trailers --if-exists addIfDifferent` flag handles this;
-  don't sort-and-paste manually.
-- **Library repos.** No deploy target, but `/ship` still merges and
-  reflects. `/flywheel` decides whether `/deploy` runs after.
+- GitHub squash bodies can drop trailers; always pass the trailer block
+  explicitly with `--body`.
+- Keep all trailers in one contiguous final block. Inject with
+  `git interpret-trailers --if-exists addIfDifferent --trailer ...`.
+- Archive before merge so closure is part of the squash, not a follow-up
+  master commit.
+- Primary IDs without backlog files are valid trailer-only work; note missing
+  files instead of failing.
+- Reflect harness edits never mutate master; use `harness/reflect-outputs`.
+- Re-running on an already-shipped branch should exit early.
+- Deduplicate repeated closing trailers through `interpret-trailers`.
 
 ## Output
 
-Single report, plain text:
-
-```
-/ship complete
-
-Merged:     <sha> on master (PR #<n>)
-Closed:     029, 031
-Referenced: 024
-Docs:       docs/context/lane-runtime.md (synced)
-Reflect:    2 backlog mutations applied, 3 harness proposals on
-            harness/reflect-outputs, retro in .harness-kit/reflect/<cycle>/
-Residual:   none
-Workspace:  clean
-Remote:     master...origin/master 0 0
-```
-
-On refuse, emit the reason and the action the operator must take to
-re-enable shipping.
+Single plain-text report: merged SHA/PR, closed and referenced IDs, docs,
+trace, reflect outputs, harness branch, accepted evidence, residual risk,
+workspace status, remote sync, and roster delegation summary. On refuse, emit
+the blocking reason and the exact action that re-enables shipping.
 
 ## Verification
 

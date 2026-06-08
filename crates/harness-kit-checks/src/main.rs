@@ -6,7 +6,7 @@ use harness_kit_checks::{
     bootstrap, bootstrap_agent_allowlist, check_agent_roster, claude_hooks, config_loader,
     critique_eval, design_eval, detect_ui_surfaces, docs_site, embeddings, eval_graders, events,
     evidence, evidence_blocks, external_skill_lint, external_sync, frontmatter, generate_index,
-    git_hooks, heal_commit, heal_support, lint_gates, offline_evidence,
+    git_hooks, heal_commit, heal_support, lane_harness, lint_gates, offline_evidence,
     offline_validation_preflight, pr_reviews, premise_source, reflect_checkpoint, reflect_evidence,
     repo_skill, review_score_trends, runtime_primitives, shape_renderer, skill_audit, skill_evals,
     skill_invocation_analytics, skillify_classify, skillify_skill_crud, skillify_transcript,
@@ -63,6 +63,17 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
                 "{}",
                 serde_json::to_string(&serde_json::Value::Object(receipt))?
             );
+        }
+        "materialize-lane-harness" => {
+            let options = parse_materialize_lane_harness_args(rest);
+            let roster = agent_roster::load_roster(&options.roster)?;
+            let report = lane_harness::materialize_manifest(
+                &options.repo,
+                &roster,
+                &options.manifest,
+                options.root.as_deref(),
+            )?;
+            println!("{}", lane_harness::format_materialize_report(&report));
         }
         "check-frontmatter" => {
             let repo = parse_repo_arg(rest);
@@ -2569,6 +2580,11 @@ fn parse_record_delegation_args(args: &[String]) -> RecordOptions {
             duration_ms,
             usage: has_usage.then_some(usage_input),
             transcript_bytes,
+            lane_harness_ref: None,
+            lane_harness_sha256: None,
+            projection_status: None,
+            failure_kind: None,
+            output_check: None,
         },
     }
 }
@@ -2652,6 +2668,9 @@ fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
             .unwrap_or_else(|| PathBuf::from("provider-lanes")),
         receipt_output: default_receipt_path(),
         path_env: None,
+        lane_harness: None,
+        keep_lane_root: false,
+        expect_output: None,
     };
     let mut index = 0;
     while index < args.len() {
@@ -2674,6 +2693,12 @@ fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
             "--max-prompt-bytes" => options.max_prompt_bytes = parse_u64(flag, &value()),
             "--transcript-dir" => options.transcript_dir = PathBuf::from(value()),
             "--path-env" => options.path_env = Some(value()),
+            "--lane-harness" => options.lane_harness = Some(PathBuf::from(value())),
+            "--expect-output" => options.expect_output = Some(value()),
+            "--keep-lane-root" => {
+                index -= 1;
+                options.keep_lane_root = true;
+            }
             _ => usage(),
         }
         index += 1;
@@ -2683,6 +2708,40 @@ fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
         || options.input_ref.is_empty()
         || options.prompt_file.as_os_str().is_empty()
     {
+        usage();
+    }
+    options
+}
+
+struct MaterializeLaneHarnessOptions {
+    repo: PathBuf,
+    roster: PathBuf,
+    manifest: PathBuf,
+    root: Option<PathBuf>,
+}
+
+fn parse_materialize_lane_harness_args(args: &[String]) -> MaterializeLaneHarnessOptions {
+    let mut options = MaterializeLaneHarnessOptions {
+        repo: repo_root(),
+        roster: default_roster_path(),
+        manifest: PathBuf::new(),
+        root: None,
+    };
+    let mut index = 0;
+    while index < args.len() {
+        let flag = args[index].as_str();
+        index += 1;
+        let value = || args.get(index).cloned().unwrap_or_else(|| usage());
+        match flag {
+            "--repo" => options.repo = PathBuf::from(value()),
+            "--roster" => options.roster = PathBuf::from(value()),
+            "--manifest" => options.manifest = PathBuf::from(value()),
+            "--root" => options.root = Some(PathBuf::from(value())),
+            _ => usage(),
+        }
+        index += 1;
+    }
+    if options.manifest.as_os_str().is_empty() {
         usage();
     }
     options
@@ -2743,6 +2802,13 @@ fn repo_root() -> PathBuf {
         if !trimmed.is_empty() {
             return PathBuf::from(trimmed);
         }
+    }
+    if let Some(repo) = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(Path::parent)
+        .filter(|repo| repo.join(".harness-kit/agents.yaml").is_file())
+    {
+        return repo.to_path_buf();
     }
     env::current_dir().unwrap_or_else(|_| Path::new(".").to_path_buf())
 }
@@ -2830,7 +2896,8 @@ fn usage() -> ! {
   harness-kit-checks verdict write|read|validate|check-landable|delete <branch>
   harness-kit-checks verdict list|push|fetch [remote]
   harness-kit-checks probe-agent-roster [--validate-only] [--write-receipts] [options]
-  harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [options]
+  harness-kit-checks materialize-lane-harness --manifest PATH [--root PATH] [--repo PATH] [--roster PATH]
+  harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [--lane-harness PATH] [--keep-lane-root] [options]
   harness-kit-checks summarize-delegations [--backlog-ref REF] [--format json|text] [PATH]
   harness-kit-checks record-delegation --provider-target ID --provider-status STATUS --attempt-status STATUS --objective TEXT --input-ref REF --worktree-id ID [options]"#
     );

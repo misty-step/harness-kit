@@ -1,0 +1,18 @@
+schema: lane_harness.v1
+role: critic
+provider_target: codex
+model_override: null
+allowed_local_skills:
+  - ci
+allowed_external_aliases: []
+allowed_tools:
+  - shell.readonly
+oracle:
+  kind: path
+  value: backlog.d/101-focused-lane-harness-projection.md
+evidence_expectations:
+  - commands_read
+  - blocking_findings_or_none
+fallback:
+  on_provider_failure: record_and_return
+  replacement_policy: lead_explicit

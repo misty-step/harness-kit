@@ -14,7 +14,10 @@ use serde_yaml::{Mapping, Value as YamlValue};
 use uuid::Uuid;
 use wait_timeout::ChildExt;
 
-use crate::summarize_delegations::{self, ReceiptInput};
+use crate::{
+    lane_harness::{self, LaneHarnessReport},
+    summarize_delegations::{self, OutputCheckInput, ReceiptInput},
+};
 
 #[cfg(unix)]
 use std::os::unix::process::{CommandExt, ExitStatusExt};
@@ -80,6 +83,9 @@ pub struct DispatchOptions {
     pub transcript_dir: PathBuf,
     pub receipt_output: PathBuf,
     pub path_env: Option<String>,
+    pub lane_harness: Option<PathBuf>,
+    pub keep_lane_root: bool,
+    pub expect_output: Option<String>,
 }
 
 pub fn probe_roster(options: &ProbeOptions) -> Result<ProbeReport> {
@@ -122,7 +128,53 @@ pub fn dispatch_from_options(options: &DispatchOptions) -> Result<Map<String, Va
     let prompt = fs::read_to_string(&options.prompt_file)
         .with_context(|| format!("failed to read {}", options.prompt_file.display()))?;
     let roster = load_roster(&options.roster)?;
-    dispatch_provider_lane(
+    let mut effective_model_override = options.model_override.clone();
+    let projection = if let Some(path) = &options.lane_harness {
+        match lane_harness::materialize_manifest(&repo_root(), &roster, path, None) {
+            Ok(report) => {
+                if report.provider_target != options.provider_target {
+                    let _ = fs::remove_dir_all(&report.root);
+                    let receipt = projection_failed_receipt(
+                        options,
+                        path,
+                        anyhow!(
+                            "lane harness provider_target {} does not match dispatch provider_target {}",
+                            report.provider_target,
+                            options.provider_target
+                        ),
+                    )?;
+                    summarize_delegations::append_receipt(&options.receipt_output, &receipt)?;
+                    return Ok(receipt);
+                }
+                if let Some(manifest_model) = &report.model_override {
+                    if let Some(requested_model) = &options.model_override
+                        && requested_model != manifest_model
+                    {
+                        let _ = fs::remove_dir_all(&report.root);
+                        let receipt = projection_failed_receipt(
+                            options,
+                            path,
+                            anyhow!(
+                                "lane harness model_override {manifest_model} does not match dispatch model_override {requested_model}"
+                            ),
+                        )?;
+                        summarize_delegations::append_receipt(&options.receipt_output, &receipt)?;
+                        return Ok(receipt);
+                    }
+                    effective_model_override = Some(manifest_model.clone());
+                }
+                Some(report)
+            }
+            Err(error) => {
+                let receipt = projection_failed_receipt(options, path, error)?;
+                summarize_delegations::append_receipt(&options.receipt_output, &receipt)?;
+                return Ok(receipt);
+            }
+        }
+    } else {
+        None
+    };
+    let receipt = dispatch_provider_lane(
         &roster,
         &options.provider_target,
         &prompt,
@@ -137,9 +189,17 @@ pub fn dispatch_from_options(options: &DispatchOptions) -> Result<Map<String, Va
             lead_provider: &options.lead_provider,
             backlog_ref: &options.backlog_ref,
             path_env: options.path_env.as_deref(),
-            model_override: options.model_override.as_deref(),
+            model_override: effective_model_override.as_deref(),
+            lane_harness: projection.as_ref(),
+            expect_output: options.expect_output.as_deref(),
         },
-    )
+    )?;
+    if let Some(projection) = &projection
+        && !options.keep_lane_root
+    {
+        let _ = fs::remove_dir_all(&projection.root);
+    }
+    Ok(receipt)
 }
 
 pub struct DispatchRequest<'a> {
@@ -154,6 +214,8 @@ pub struct DispatchRequest<'a> {
     pub backlog_ref: &'a str,
     pub path_env: Option<&'a str>,
     pub model_override: Option<&'a str>,
+    pub lane_harness: Option<&'a LaneHarnessReport>,
+    pub expect_output: Option<&'a str>,
 }
 
 pub fn dispatch_provider_lane(
@@ -192,6 +254,11 @@ pub fn dispatch_provider_lane(
             duration_ms: None,
             usage: None,
             transcript_bytes: None,
+            lane_harness_ref: lane_harness_ref(request.lane_harness),
+            lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+            projection_status: projection_status(request.lane_harness),
+            failure_kind: None,
+            output_check: None,
         })?;
         summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
         return Ok(receipt);
@@ -216,6 +283,20 @@ pub fn dispatch_provider_lane(
             duration_ms: None,
             usage: None,
             transcript_bytes: None,
+            lane_harness_ref: lane_harness_ref(request.lane_harness),
+            lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+            projection_status: projection_status(request.lane_harness),
+            failure_kind: Some(
+                if provider_status == "unavailable" {
+                    "missing_binary"
+                } else if provider_status == "partial" {
+                    "probe_timeout"
+                } else {
+                    "probe_failed"
+                }
+                .to_string(),
+            ),
+            output_check: None,
         })?;
         summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
         return Ok(receipt);
@@ -241,15 +322,52 @@ pub fn dispatch_provider_lane(
     if let Some(path_env) = request.path_env {
         process.env("PATH", path_env);
     }
+    if let Some(lane_harness) = request.lane_harness {
+        process.env("HOME", &lane_harness.root);
+        process.env("CODEX_HOME", lane_harness.root.join(".codex"));
+        process.env("CLAUDE_CONFIG_DIR", lane_harness.root.join(".claude"));
+        process.env("PI_HOME", lane_harness.root.join(".pi"));
+        process.env("GEMINI_CONFIG_DIR", lane_harness.root.join(".gemini"));
+        process.env("XDG_CONFIG_HOME", lane_harness.root.join(".config"));
+    }
     #[cfg(unix)]
     {
         process.process_group(0);
     }
 
     let started_at = Instant::now();
-    let mut child = process
-        .spawn()
-        .with_context(|| format!("failed to start provider command {}", command[0]))?;
+    let mut child = match process.spawn() {
+        Ok(child) => child,
+        Err(error) => {
+            let receipt = summarize_delegations::build_attempt_receipt(ReceiptInput {
+                provider_target: provider_target.to_string(),
+                provider_status: "error".to_string(),
+                attempt_status: "failed".to_string(),
+                objective: request.objective.to_string(),
+                input_ref: request.input_ref.to_string(),
+                evidence_refs: vec![transcript.display().to_string()],
+                lead_verdict: "rejected".to_string(),
+                worktree_id,
+                backlog_ref: request.backlog_ref.to_string(),
+                lead_harness: request.lead_harness.to_string(),
+                lead_provider: request.lead_provider.to_string(),
+                summary: format!("failed to start provider command {}: {error}", command[0]),
+                model_id: receipt_model_id(provider, request.model_override),
+                duration_ms: None,
+                usage: None,
+                transcript_bytes: fs::metadata(&transcript)
+                    .ok()
+                    .map(|metadata| metadata.len()),
+                lane_harness_ref: lane_harness_ref(request.lane_harness),
+                lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+                projection_status: projection_status(request.lane_harness),
+                failure_kind: Some("spawn_failed".to_string()),
+                output_check: None,
+            })?;
+            summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
+            return Ok(receipt);
+        }
+    };
     let timeout = Duration::from_secs_f64(request.timeout_s.max(0.0));
     let (timed_out, return_code, cleanup_note) = match child.wait_timeout(timeout)? {
         Some(status) => (false, exit_code(status), None),
@@ -267,7 +385,16 @@ pub fn dispatch_provider_lane(
         .ok()
         .map(|metadata| metadata.len());
 
-    let (provider_status, attempt_status, lead_verdict, summary) = if timed_out {
+    let transcript_text = fs::read_to_string(&transcript).ok();
+    let output_check = request.expect_output.map(|expected| OutputCheckInput {
+        expected: expected.to_string(),
+        matched: transcript_text
+            .as_deref()
+            .is_some_and(|text| text.contains(expected)),
+        observed_ref: Some(transcript.display().to_string()),
+    });
+    let sentinel_mismatch = output_check.as_ref().is_some_and(|check| !check.matched);
+    let (provider_status, attempt_status, lead_verdict, summary, failure_kind) = if timed_out {
         (
             "error".to_string(),
             "failed".to_string(),
@@ -277,6 +404,15 @@ pub fn dispatch_provider_lane(
                 format_seconds(request.timeout_s),
                 cleanup_note.unwrap_or_else(|| "process group killed".to_string())
             ),
+            Some("dispatch_timeout".to_string()),
+        )
+    } else if return_code == 0 && sentinel_mismatch {
+        (
+            "available".to_string(),
+            "failed".to_string(),
+            "rejected".to_string(),
+            "provider dispatch exited 0 but output check did not match".to_string(),
+            Some("sentinel_mismatch".to_string()),
         )
     } else if return_code == 0 {
         let mut summary = "provider dispatch exited 0".to_string();
@@ -291,6 +427,7 @@ pub fn dispatch_provider_lane(
             "succeeded".to_string(),
             "pending".to_string(),
             summary,
+            None,
         )
     } else {
         (
@@ -298,6 +435,9 @@ pub fn dispatch_provider_lane(
             "failed".to_string(),
             "rejected".to_string(),
             format!("provider dispatch exited {return_code}"),
+            Some(
+                lane_harness::classify_failure(return_code, transcript_text.as_deref()).to_string(),
+            ),
         )
     };
 
@@ -318,9 +458,56 @@ pub fn dispatch_provider_lane(
         duration_ms: Some(duration_ms),
         usage: None,
         transcript_bytes,
+        lane_harness_ref: lane_harness_ref(request.lane_harness),
+        lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+        projection_status: projection_status(request.lane_harness),
+        failure_kind,
+        output_check,
     })?;
     summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
     Ok(receipt)
+}
+
+fn projection_failed_receipt(
+    options: &DispatchOptions,
+    manifest_path: &Path,
+    error: anyhow::Error,
+) -> Result<Map<String, Value>> {
+    summarize_delegations::build_attempt_receipt(ReceiptInput {
+        provider_target: options.provider_target.clone(),
+        provider_status: "error".to_string(),
+        attempt_status: "failed".to_string(),
+        objective: options.objective.clone(),
+        input_ref: options.input_ref.clone(),
+        evidence_refs: vec![manifest_path.display().to_string()],
+        lead_verdict: "rejected".to_string(),
+        worktree_id: current_worktree_id(),
+        backlog_ref: options.backlog_ref.clone(),
+        lead_harness: options.lead_harness.clone(),
+        lead_provider: options.lead_provider.clone(),
+        summary: format!("lane harness projection failed: {error}"),
+        model_id: None,
+        duration_ms: None,
+        usage: None,
+        transcript_bytes: None,
+        lane_harness_ref: Some(manifest_path.display().to_string()),
+        lane_harness_sha256: lane_harness::manifest_sha256(manifest_path).ok(),
+        projection_status: Some(lane_harness::PROJECTION_STATUS_FAILED.to_string()),
+        failure_kind: Some("projection_failed".to_string()),
+        output_check: None,
+    })
+}
+
+fn lane_harness_ref(report: Option<&LaneHarnessReport>) -> Option<String> {
+    report.map(|report| report.manifest_path.display().to_string())
+}
+
+fn lane_harness_sha256(report: Option<&LaneHarnessReport>) -> Option<String> {
+    report.map(|report| report.manifest_sha256.clone())
+}
+
+fn projection_status(report: Option<&LaneHarnessReport>) -> Option<String> {
+    report.map(|_| lane_harness::PROJECTION_STATUS_PROJECTED.to_string())
 }
 
 pub fn load_roster(path: &Path) -> Result<YamlValue> {
@@ -470,6 +657,11 @@ pub fn build_probe_receipts(
                 duration_ms: None,
                 usage: None,
                 transcript_bytes: None,
+                lane_harness_ref: None,
+                lane_harness_sha256: None,
+                projection_status: None,
+                failure_kind: None,
+                output_check: None,
             },
         )?);
     }
@@ -599,7 +791,7 @@ fn probe_status(provider_id: &str, provider: &Mapping, path_env: Option<&str>) -
         Ok(None) => {
             let _ = child.kill();
             let _ = child.wait();
-            "error".to_string()
+            "partial".to_string()
         }
         Err(_) => "error".to_string(),
     }
@@ -759,6 +951,29 @@ fn current_worktree_id() -> String {
         })
         .filter(|name| !name.is_empty())
         .unwrap_or_else(|| "unknown".to_string())
+}
+
+fn repo_root() -> PathBuf {
+    let output = Command::new("git")
+        .args(["rev-parse", "--show-toplevel"])
+        .output();
+    if let Ok(output) = output
+        && output.status.success()
+    {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let trimmed = stdout.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+    if let Some(repo) = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(Path::parent)
+        .filter(|repo| repo.join(".harness-kit/agents.yaml").is_file())
+    {
+        return repo.to_path_buf();
+    }
+    env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
 }
 
 fn secret_re() -> Regex {
@@ -962,6 +1177,8 @@ providers:
                 backlog_ref: "backlog.d/072-bounded-roster-lane-dispatch.md",
                 path_env: Some(""),
                 model_override: None,
+                lane_harness: None,
+                expect_output: None,
             },
         )?;
 
@@ -972,6 +1189,126 @@ providers:
             summarize_delegations::summarize_receipts(&receipt_path, "")?.total,
             1
         );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_records_probe_timeout_failure_kind() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let bin_dir = dir.path().join("bin");
+        fs::create_dir(&bin_dir)?;
+        let fake = bin_dir.join("slow-agent");
+        fs::write(&fake, "#!/bin/sh\n/bin/sleep 60\n")?;
+        make_executable(&fake)?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+        let transcript_dir = dir.path().join("traces");
+        let roster = fixture_roster("slow-agent --version", "slow-agent run");
+
+        let receipt = dispatch_provider_lane(
+            &roster,
+            "codex",
+            "hello",
+            DispatchRequest {
+                objective: "probe timeout fixture",
+                input_ref: "prompt.txt",
+                transcript_dir: &transcript_dir,
+                receipt_output: &receipt_path,
+                timeout_s: 1.0,
+                grace_s: 0.1,
+                lead_harness: "codex",
+                lead_provider: "codex",
+                backlog_ref: "101",
+                path_env: Some(&bin_dir.display().to_string()),
+                model_override: None,
+                lane_harness: None,
+                expect_output: None,
+            },
+        )?;
+
+        assert_eq!(receipt["provider_status"], "partial");
+        assert_eq!(receipt["failure_kind"], "probe_timeout");
+        assert!(!transcript_dir.exists());
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_records_spawn_failure_receipt() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+        let transcript_dir = dir.path().join("traces");
+        let roster = fixture_roster("true", "missing-after-probe run");
+
+        let receipt = dispatch_provider_lane(
+            &roster,
+            "codex",
+            "hello",
+            DispatchRequest {
+                objective: "spawn failure fixture",
+                input_ref: "prompt.txt",
+                transcript_dir: &transcript_dir,
+                receipt_output: &receipt_path,
+                timeout_s: 1.0,
+                grace_s: 0.1,
+                lead_harness: "codex",
+                lead_provider: "codex",
+                backlog_ref: "101",
+                path_env: Some("/bin:/usr/bin"),
+                model_override: None,
+                lane_harness: None,
+                expect_output: None,
+            },
+        )?;
+
+        assert_eq!(receipt["provider_status"], "error");
+        assert_eq!(receipt["failure_kind"], "spawn_failed");
+        assert_eq!(
+            summarize_delegations::summarize_receipts(&receipt_path, "101")?
+                .failure_kinds
+                .get("spawn_failed"),
+            Some(&1)
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_records_sentinel_mismatch() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let bin_dir = dir.path().join("bin");
+        fs::create_dir(&bin_dir)?;
+        let fake = bin_dir.join("fake-agent");
+        fs::write(
+            &fake,
+            "#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then exit 0; fi\necho different-output\n",
+        )?;
+        make_executable(&fake)?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+        let transcript_dir = dir.path().join("traces");
+        let roster = fixture_roster("fake-agent --version", "fake-agent run");
+
+        let receipt = dispatch_provider_lane(
+            &roster,
+            "codex",
+            "hello",
+            DispatchRequest {
+                objective: "sentinel fixture",
+                input_ref: "prompt.txt",
+                transcript_dir: &transcript_dir,
+                receipt_output: &receipt_path,
+                timeout_s: 1.0,
+                grace_s: 0.1,
+                lead_harness: "codex",
+                lead_provider: "codex",
+                backlog_ref: "101",
+                path_env: Some(&bin_dir.display().to_string()),
+                model_override: None,
+                lane_harness: None,
+                expect_output: Some("AGENT_OK"),
+            },
+        )?;
+
+        assert_eq!(receipt["attempt_status"], "failed");
+        assert_eq!(receipt["failure_kind"], "sentinel_mismatch");
+        assert_eq!(receipt["output_check"]["matched"], false);
         Ok(())
     }
 
@@ -1013,6 +1350,8 @@ providers:
                 backlog_ref: "",
                 path_env: Some(&bin_dir.display().to_string()),
                 model_override: None,
+                lane_harness: None,
+                expect_output: None,
             },
         )?;
 
@@ -1071,10 +1410,15 @@ providers:
                 backlog_ref: "",
                 path_env: Some(&bin_dir.display().to_string()),
                 model_override: Some("long_context"),
+                lane_harness: None,
+                expect_output: None,
             },
         )?;
 
-        assert_eq!(receipt["attempt_status"], "succeeded");
+        let transcript = fs::read_to_string(receipt["evidence_refs"][0].as_str().unwrap())?;
+        if receipt["attempt_status"] != "succeeded" {
+            panic!("{receipt:?}\n{transcript}");
+        }
         let args: Vec<_> = fs::read_to_string(&argv_path)?
             .lines()
             .map(str::to_string)
@@ -1087,6 +1431,170 @@ providers:
                 .as_str()
                 .unwrap()
                 .contains("model_override=openrouter/deepseek/deepseek-v4-pro")
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_with_lane_harness_projects_child_home_and_records_receipt_fields() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let repo = dir.path().join("repo");
+        fs::create_dir(&repo)?;
+        for skill in ["ci", "shape"] {
+            let skill_dir = repo.join("skills").join(skill);
+            fs::create_dir_all(&skill_dir)?;
+            fs::write(skill_dir.join("SKILL.md"), format!("name: {skill}\n"))?;
+        }
+        fs::write(repo.join("registry.yaml"), "sources: []\n")?;
+        let manifest_path = repo.join("lane.yaml");
+        fs::write(
+            &manifest_path,
+            "schema: lane_harness.v1\nrole: critic\nprovider_target: codex\nmodel_override: null\nallowed_local_skills:\n  - ci\nallowed_external_aliases: []\nallowed_tools:\n  - shell.readonly\noracle:\n  kind: path\n  value: backlog.d/101-focused-lane-harness-projection.md\nevidence_expectations:\n  - commands_read\nfallback:\n  on_provider_failure: record_and_return\n  replacement_policy: lead_explicit\n",
+        )?;
+        let bin_dir = dir.path().join("bin");
+        fs::create_dir(&bin_dir)?;
+        let visible_path = dir.path().join("visible.txt");
+        let fake = bin_dir.join("fake-codex");
+        fs::write(
+            &fake,
+            format!(
+                "#!/bin/sh\nset -e\nif [ \"$1\" = \"--version\" ]; then exit 0; fi\nprintf 'HOME=%s\\n' \"$HOME\"\n/bin/ls \"$HOME/.codex/skills\" > {}\n[ ! -e \"$HOME/.codex/skills/shape\" ]\necho lane-ok\n",
+                visible_path.display()
+            ),
+        )?;
+        make_executable(&fake)?;
+        let roster = fixture_roster("fake-codex --version", "fake-codex run");
+        let report = lane_harness::materialize_manifest(&repo, &roster, &manifest_path, None)?;
+        assert!(report.root.join(".codex/skills/ci/SKILL.md").exists());
+        let receipt_path = dir.path().join("delegations.jsonl");
+        let transcript_dir = dir.path().join("traces");
+
+        let receipt = dispatch_provider_lane(
+            &roster,
+            "codex",
+            "sentinel prompt",
+            DispatchRequest {
+                objective: "lane harness fixture",
+                input_ref: "prompt.txt",
+                transcript_dir: &transcript_dir,
+                receipt_output: &receipt_path,
+                timeout_s: 1.0,
+                grace_s: 0.1,
+                lead_harness: "codex",
+                lead_provider: "codex",
+                backlog_ref: "101",
+                path_env: Some(&bin_dir.display().to_string()),
+                model_override: None,
+                lane_harness: Some(&report),
+                expect_output: None,
+            },
+        )?;
+
+        let transcript = fs::read_to_string(receipt["evidence_refs"][0].as_str().unwrap())?;
+        if receipt["attempt_status"] != "succeeded" {
+            panic!("{receipt:?}\n{transcript}");
+        }
+        assert_eq!(
+            receipt["lane_harness_ref"],
+            manifest_path.display().to_string()
+        );
+        assert_eq!(receipt["projection_status"], "projected");
+        assert_eq!(fs::read_to_string(&visible_path)?.trim(), "ci");
+        let summary = summarize_delegations::summarize_receipts(&receipt_path, "101")?;
+        assert_eq!(summary.projection_statuses.get("projected"), Some(&1));
+        assert_eq!(
+            summary
+                .lane_harnesses
+                .get(&manifest_path.display().to_string()),
+            Some(&1)
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_rejects_lane_harness_provider_mismatch_before_running_provider() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let manifest_path = dir.path().join("lane.yaml");
+        fs::write(
+            &manifest_path,
+            "schema: lane_harness.v1\nrole: critic\nprovider_target: pi\nmodel_override: null\nallowed_local_skills:\n  - ci\nallowed_external_aliases: []\nallowed_tools:\n  - shell.readonly\noracle:\n  kind: path\n  value: backlog.d/101-focused-lane-harness-projection.md\nevidence_expectations:\n  - commands_read\nfallback:\n  on_provider_failure: record_and_return\n  replacement_policy: lead_explicit\n",
+        )?;
+        let prompt_path = dir.path().join("prompt.md");
+        fs::write(&prompt_path, "prompt")?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+
+        let receipt = dispatch_from_options(&DispatchOptions {
+            roster: repo_root().join(".harness-kit/agents.yaml"),
+            provider_target: "codex".to_string(),
+            objective: "mismatch fixture".to_string(),
+            input_ref: "prompt.txt".to_string(),
+            prompt_file: prompt_path,
+            backlog_ref: "101".to_string(),
+            lead_harness: "codex".to_string(),
+            lead_provider: "codex".to_string(),
+            model_override: None,
+            timeout_s: 1.0,
+            grace_s: 0.1,
+            max_prompt_bytes: 1024,
+            transcript_dir: dir.path().join("traces"),
+            receipt_output: receipt_path,
+            path_env: Some("".to_string()),
+            lane_harness: Some(manifest_path),
+            keep_lane_root: false,
+            expect_output: None,
+        })?;
+
+        assert_eq!(receipt["attempt_status"], "failed");
+        assert_eq!(receipt["failure_kind"], "projection_failed");
+        assert!(
+            receipt["summary"]
+                .as_str()
+                .unwrap()
+                .contains("does not match dispatch provider_target")
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_rejects_off_roster_lane_harness_model_before_running_provider() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let manifest_path = dir.path().join("lane.yaml");
+        fs::write(
+            &manifest_path,
+            "schema: lane_harness.v1\nrole: critic\nprovider_target: codex\nmodel_override: claude-opus-4-8\nallowed_local_skills:\n  - ci\nallowed_external_aliases: []\nallowed_tools:\n  - shell.readonly\noracle:\n  kind: path\n  value: backlog.d/101-focused-lane-harness-projection.md\nevidence_expectations:\n  - commands_read\nfallback:\n  on_provider_failure: record_and_return\n  replacement_policy: lead_explicit\n",
+        )?;
+        let prompt_path = dir.path().join("prompt.md");
+        fs::write(&prompt_path, "prompt")?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+
+        let receipt = dispatch_from_options(&DispatchOptions {
+            roster: repo_root().join(".harness-kit/agents.yaml"),
+            provider_target: "codex".to_string(),
+            objective: "model mismatch fixture".to_string(),
+            input_ref: "prompt.txt".to_string(),
+            prompt_file: prompt_path,
+            backlog_ref: "101".to_string(),
+            lead_harness: "codex".to_string(),
+            lead_provider: "codex".to_string(),
+            model_override: None,
+            timeout_s: 1.0,
+            grace_s: 0.1,
+            max_prompt_bytes: 1024,
+            transcript_dir: dir.path().join("traces"),
+            receipt_output: receipt_path,
+            path_env: Some("".to_string()),
+            lane_harness: Some(manifest_path),
+            keep_lane_root: false,
+            expect_output: None,
+        })?;
+
+        assert_eq!(receipt["attempt_status"], "failed");
+        assert_eq!(receipt["failure_kind"], "projection_failed");
+        assert!(
+            receipt["summary"]
+                .as_str()
+                .unwrap()
+                .contains("model_override must match provider model")
         );
         Ok(())
     }
@@ -1127,6 +1635,8 @@ providers:
                 backlog_ref: "backlog.d/072-bounded-roster-lane-dispatch.md",
                 path_env: Some(&bin_dir.display().to_string()),
                 model_override: None,
+                lane_harness: None,
+                expect_output: None,
             },
         )?;
 

@@ -62,6 +62,39 @@ backlog.d/ → /groom → /shape → /deliver → ship
 For a deeper map of the repository architecture, encoded assumptions, operating
 loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
 
+## Focused Lane Harnesses
+
+`dispatch-agent` can run a roster lane with a projected harness root so the
+child provider sees only the skills named by a `lane_harness.v1` manifest
+instead of the full system-wide skill install.
+
+```bash
+cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
+  --manifest .harness-kit/examples/lane-harness.yaml
+
+cargo run --locked -p harness-kit-checks -- dispatch-agent \
+  --provider-target codex \
+  --objective "review the CI lane only" \
+  --input-ref backlog.d/101-focused-lane-harness-projection.md \
+  --prompt-file /tmp/review.md \
+  --lane-harness .harness-kit/examples/lane-harness.yaml
+```
+
+Projection roots are ignored runtime artifacts under
+`.harness-kit/tmp/lane-harness/`. The dispatcher sets harness-specific config
+environment variables (`CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `PI_HOME`,
+`GEMINI_CONFIG_DIR`, and `HOME`) to that projected root for the child process,
+then removes the root unless `--keep-lane-root` is supplied.
+
+Manifests are deliberately small: role, provider target, optional roster model
+override, local skill allowlist, pinned external aliases, tool labels, oracle,
+evidence expectations, and fallback policy. Projection failure is recorded as a
+receipt instead of exploding the whole composition. Provider failures such as
+auth, credits, missing binaries, timeouts, nonzero exits, and sentinel
+mismatches are summarized through `failure_kind`; lane receipts also include
+`lane_harness_ref`, `lane_harness_sha256`, `projection_status`, and
+`output_check`.
+
 ## Static Docs Companion
 
 Harness Kit's public static docs companion is generated from live repo sources:

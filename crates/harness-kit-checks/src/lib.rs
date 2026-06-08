@@ -25,6 +25,7 @@ pub mod generate_index;
 pub mod git_hooks;
 pub mod heal_commit;
 pub mod heal_support;
+pub mod lane_harness;
 pub mod lint_gates;
 pub mod offline_evidence;
 pub mod offline_validation_preflight;

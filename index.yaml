@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-08T21:58:16Z
+# Generated: 2026-06-08T22:33:40Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -124,9 +124,9 @@ skills:
     source: first-party
     tags: [a,buildable,context,critique,design,exploration,feature,idea,is,output]
   - name: ship
-    description: "Final mile from merge-ready branch to shipped: squash-merge to master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Assumes /deliver or /deliver --polish-on"
+    description: "Final mile from current committed work to shipped: get the work onto master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Recovers detached HEAD or headless"
     source: first-party
-    tags: [--polish-on,apply,archive,assumes,backlog,branch,deliver,docs,final,master]
+    tags: [apply,archive,backlog,committed,current,detached,docs,final,get,head]
   - name: skillify
     description: "Turn proven agent-session patterns into first-party Harness Kit skills. Use when: \"skillify this conversation\", \"make this into a skill\", \"generate a skill from current transcript\", \"extract reusable "
     source: first-party

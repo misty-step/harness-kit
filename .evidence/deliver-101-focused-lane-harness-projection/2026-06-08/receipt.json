@@ -1,0 +1,12 @@
+{
+  "schema": "deliver.receipt.v1",
+  "backlog_ref": "101",
+  "branch": "deliver/101-focused-lane-harness-projection",
+  "goal": "Focused lane harness projection",
+  "status": "verified",
+  "evidence_dir": ".evidence/deliver-101-focused-lane-harness-projection/2026-06-08/",
+  "lane_harness_fixture": ".harness-kit/examples/lane-harness.yaml",
+  "lane_harness_sha256": "fd57fde038cdeb5252a64a70921a04c4ab55d579a35d78ac599a144cd16a64f0",
+  "providers_used": ["claude", "codex", "grok-build", "agy"],
+  "final_gate": "dagger call check --source=."
+}

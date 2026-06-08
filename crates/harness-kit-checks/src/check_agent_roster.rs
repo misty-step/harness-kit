@@ -8,7 +8,7 @@ use chrono::{NaiveDate, Utc};
 use regex::Regex;
 use serde_json::Value;
 
-use crate::{agent_roster, summarize_delegations};
+use crate::{agent_roster, lane_harness, summarize_delegations};
 
 const CORE_WORKFLOW_SKILLS: &[&str] = &[
     "ci",
@@ -158,6 +158,7 @@ pub fn run(repo: &Path) -> Result<CheckReport> {
         validate_work_ledger(&repo.join(".harness-kit/examples/work-ledger.jsonl"))?;
     let skill_invocation_records =
         validate_skill_invocations(&repo.join(".harness-kit/examples/skill-invocations.jsonl"))?;
+    validate_lane_harness_fixture(repo, &repo.join(".harness-kit/examples/lane-harness.yaml"))?;
 
     if receipts == 0 {
         bail!(
@@ -211,6 +212,7 @@ pub fn run(repo: &Path) -> Result<CheckReport> {
             format!(
                 ".harness-kit/examples/work-ledger.jsonl: {work_ledger_records} ledger fixture(s) valid"
             ),
+            ".harness-kit/examples/lane-harness.yaml: lane harness fixture valid".to_string(),
             format!(
                 "skills/: {} delegation floor(s) valid",
                 CORE_WORKFLOW_SKILLS.len()
@@ -1177,6 +1179,18 @@ fn validate_receipt_record(record: &Value) -> Result<()> {
     validate_optional_text(object, "model_id")?;
     validate_optional_nonnegative_int(object, "duration_ms")?;
     validate_optional_nonnegative_int(object, "transcript_bytes")?;
+    validate_optional_text(object, "lane_harness_ref")?;
+    validate_optional_sha256(object, "lane_harness_sha256")?;
+    if let Some(value) = object.get("projection_status").and_then(Value::as_str)
+        && !lane_harness::validate_projection_status(value)
+    {
+        bail!("receipt projection_status is invalid.");
+    }
+    if let Some(value) = object.get("failure_kind").and_then(Value::as_str)
+        && !lane_harness::validate_failure_kind(value)
+    {
+        bail!("receipt failure_kind is invalid.");
+    }
     if let Some(usage) = object.get("usage") {
         validate_usage(usage)?;
     }
@@ -1476,6 +1490,9 @@ fn validate_runtime_ignores_and_trace_paths(repo: &Path) -> Result<()> {
     if !gitignore.contains(".harness-kit/work/*.jsonl") {
         bail!(".gitignore must ignore runtime work-ledger JSONL");
     }
+    if !gitignore.contains(".harness-kit/tmp/lane-harness/") {
+        bail!(".gitignore must ignore lane-harness runtime projections");
+    }
     if !read_to_string(&repo.join("crates/harness-kit-checks/src/work_ledger.rs"))?
         .contains(".harness-kit/work/ledger.jsonl")
     {
@@ -1587,6 +1604,8 @@ fn validate_rust_dispatch_helper(path: &Path) -> Result<()> {
             backlog_ref: "",
             path_env: Some(""),
             model_override: None,
+            lane_harness: None,
+            expect_output: None,
         },
     )
     .context("harness-kit-checks dispatch-agent: dispatch helper failed")?;
@@ -1596,6 +1615,29 @@ fn validate_rust_dispatch_helper(path: &Path) -> Result<()> {
     {
         bail!("harness-kit-checks dispatch-agent: dispatch helper failed");
     }
+    Ok(())
+}
+
+fn validate_lane_harness_fixture(repo: &Path, path: &Path) -> Result<()> {
+    let roster = agent_roster::load_roster(&repo.join(".harness-kit/agents.yaml"))
+        .context(".harness-kit/examples/lane-harness.yaml: roster load failed")?;
+    lane_harness::validate_manifest_path(repo, &roster, path)
+        .context(".harness-kit/examples/lane-harness.yaml: manifest validation failed")?;
+    let temp_dir = repo
+        .join(".harness-kit/tmp/lane-harness")
+        .join(format!("check-{}", uuid::Uuid::new_v4().simple()));
+    let report = lane_harness::materialize_manifest(repo, &roster, path, Some(&temp_dir))
+        .context(".harness-kit/examples/lane-harness.yaml: materialization failed")?;
+    let codex_skill_root = report.root.join(".codex/skills");
+    if !codex_skill_root.join("ci/SKILL.md").exists() {
+        let _ = fs::remove_dir_all(&temp_dir);
+        bail!(".harness-kit/examples/lane-harness.yaml: projected ci skill missing");
+    }
+    if codex_skill_root.join("shape").exists() || codex_skill_root.join("groom").exists() {
+        let _ = fs::remove_dir_all(&temp_dir);
+        bail!(".harness-kit/examples/lane-harness.yaml: projected root leaked excluded skills");
+    }
+    let _ = fs::remove_dir_all(&temp_dir);
     Ok(())
 }
 
@@ -1666,6 +1708,10 @@ fn optional_receipt_fields() -> BTreeSet<&'static str> {
         "usage",
         "transcript_bytes",
         "output_check",
+        "lane_harness_ref",
+        "lane_harness_sha256",
+        "projection_status",
+        "failure_kind",
     ])
 }
 
@@ -1787,6 +1833,20 @@ fn validate_optional_text(object: &serde_json::Map<String, Value>, field: &str) 
         bail!("receipt {field} must be a non-empty string or null.");
     }
     validate_no_secret_like_text(text, &format!("receipt {field}"))?;
+    Ok(())
+}
+
+fn validate_optional_sha256(object: &serde_json::Map<String, Value>, field: &str) -> Result<()> {
+    let Some(value) = object.get(field) else {
+        return Ok(());
+    };
+    let Some(text) = value.as_str() else {
+        bail!("receipt {field} must be a sha256 hex string.");
+    };
+    let re = Regex::new(r"^[0-9a-f]{64}$").expect("static regex compiles");
+    if !re.is_match(text) {
+        bail!("receipt {field} must be a sha256 hex string.");
+    }
     Ok(())
 }
 

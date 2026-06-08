@@ -1379,6 +1379,9 @@ fn has_command(command: &str) -> bool {
 }
 
 fn is_running_web_project(cwd: &Path) -> bool {
+    if !cwd.join("package.json").exists() {
+        return false;
+    }
     if !["next.config.js", "next.config.ts", "next.config.mjs"]
         .iter()
         .any(|file| cwd.join(file).exists())
