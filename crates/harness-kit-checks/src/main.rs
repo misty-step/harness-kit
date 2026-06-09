@@ -2649,8 +2649,10 @@ fn parse_probe_agent_roster_args(args: &[String]) -> agent_roster::ProbeOptions 
 }
 
 fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
+    let repo = repo_root();
     let mut options = agent_roster::DispatchOptions {
-        roster: default_roster_path(),
+        repo: repo.clone(),
+        roster: default_roster_path_for_repo(&repo),
         provider_target: String::new(),
         objective: String::new(),
         input_ref: String::new(),
@@ -2662,24 +2664,48 @@ fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
         timeout_s: 600.0,
         grace_s: 2.0,
         max_prompt_bytes: 128 * 1024,
-        transcript_dir: default_receipt_path()
+        transcript_dir: default_receipt_path_for_repo(&repo)
             .parent()
             .map(|parent| parent.join("provider-lanes"))
             .unwrap_or_else(|| PathBuf::from("provider-lanes")),
-        receipt_output: default_receipt_path(),
+        receipt_output: default_receipt_path_for_repo(&repo),
         path_env: None,
         lane_harness: None,
         keep_lane_root: false,
         expect_output: None,
     };
+    let mut roster_explicit = false;
+    let mut receipt_output_explicit = false;
+    let mut transcript_dir_explicit = false;
     let mut index = 0;
     while index < args.len() {
         let flag = args[index].as_str();
         index += 1;
         let value = || args.get(index).cloned().unwrap_or_else(|| usage());
         match flag {
-            "--roster" => options.roster = PathBuf::from(value()),
-            "--receipt-output" => options.receipt_output = PathBuf::from(value()),
+            "--repo" => {
+                options.repo = PathBuf::from(value());
+                if !roster_explicit {
+                    options.roster = default_roster_path_for_repo(&options.repo);
+                }
+                if !receipt_output_explicit {
+                    options.receipt_output = default_receipt_path_for_repo(&options.repo);
+                }
+                if !transcript_dir_explicit {
+                    options.transcript_dir = default_receipt_path_for_repo(&options.repo)
+                        .parent()
+                        .map(|parent| parent.join("provider-lanes"))
+                        .unwrap_or_else(|| PathBuf::from("provider-lanes"));
+                }
+            }
+            "--roster" => {
+                roster_explicit = true;
+                options.roster = PathBuf::from(value());
+            }
+            "--receipt-output" => {
+                receipt_output_explicit = true;
+                options.receipt_output = PathBuf::from(value());
+            }
             "--provider-target" => options.provider_target = value(),
             "--objective" => options.objective = value(),
             "--input-ref" => options.input_ref = value(),
@@ -2691,7 +2717,10 @@ fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {
             "--timeout-s" => options.timeout_s = parse_f64(flag, &value()),
             "--grace-s" => options.grace_s = parse_f64(flag, &value()),
             "--max-prompt-bytes" => options.max_prompt_bytes = parse_u64(flag, &value()),
-            "--transcript-dir" => options.transcript_dir = PathBuf::from(value()),
+            "--transcript-dir" => {
+                transcript_dir_explicit = true;
+                options.transcript_dir = PathBuf::from(value());
+            }
             "--path-env" => options.path_env = Some(value()),
             "--lane-harness" => options.lane_harness = Some(PathBuf::from(value())),
             "--expect-output" => options.expect_output = Some(value()),
@@ -2762,11 +2791,15 @@ fn parse_f64(flag: &str, value: &str) -> f64 {
 }
 
 fn default_roster_path() -> PathBuf {
+    default_roster_path_for_repo(&repo_root())
+}
+
+fn default_roster_path_for_repo(repo: &Path) -> PathBuf {
     env::var_os("HARNESS_KIT_ROSTER")
         .or_else(|| env::var_os("HARNESS_KIT_ROSTER_PATH"))
         .map(PathBuf::from)
         .unwrap_or_else(|| {
-            let local = repo_root().join(".harness-kit/agents.yaml");
+            let local = repo.join(".harness-kit/agents.yaml");
             if local.exists() {
                 local
             } else {
@@ -2784,10 +2817,14 @@ fn default_roster_path() -> PathBuf {
 }
 
 fn default_receipt_path() -> PathBuf {
+    default_receipt_path_for_repo(&repo_root())
+}
+
+fn default_receipt_path_for_repo(repo: &Path) -> PathBuf {
     env::var_os("HARNESS_KIT_RECEIPTS")
         .or_else(|| env::var_os("HARNESS_KIT_RECEIPT_PATH"))
         .map(PathBuf::from)
-        .unwrap_or_else(|| repo_root().join(".harness-kit/traces/delegations.jsonl"))
+        .unwrap_or_else(|| repo.join(".harness-kit/traces/delegations.jsonl"))
 }
 
 fn repo_root() -> PathBuf {
@@ -2897,7 +2934,7 @@ fn usage() -> ! {
   harness-kit-checks verdict list|push|fetch [remote]
   harness-kit-checks probe-agent-roster [--validate-only] [--write-receipts] [options]
   harness-kit-checks materialize-lane-harness --manifest PATH [--root PATH] [--repo PATH] [--roster PATH]
-  harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [--lane-harness PATH] [--keep-lane-root] [options]
+  harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [--repo PATH] [--lane-harness PATH] [--keep-lane-root] [options]
   harness-kit-checks summarize-delegations [--backlog-ref REF] [--format json|text] [PATH]
   harness-kit-checks record-delegation --provider-target ID --provider-status STATUS --attempt-status STATUS --objective TEXT --input-ref REF --worktree-id ID [options]"#
     );

@@ -213,6 +213,8 @@ Every completion claim must name:
 - Exact goal achieved or behavior verified: end-user, developer, or operator.
 - Live evidence that proves it, not just a green aggregate gate.
 - Exact command, path, route, artifact, or rendered surface exercised.
+- Direct links to generated evidence artifacts; inline screenshots, GIFs, or
+  videos in summaries when the destination supports Markdown media.
 - Repo-fit check: follows local patterns and does not weaken gates.
 - Residual unverified paths, waiver, or follow-up.
 

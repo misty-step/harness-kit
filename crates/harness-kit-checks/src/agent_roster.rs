@@ -68,6 +68,7 @@ pub struct ProbeReport {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct DispatchOptions {
+    pub repo: PathBuf,
     pub roster: PathBuf,
     pub provider_target: String,
     pub objective: String,
@@ -130,7 +131,7 @@ pub fn dispatch_from_options(options: &DispatchOptions) -> Result<Map<String, Va
     let roster = load_roster(&options.roster)?;
     let mut effective_model_override = options.model_override.clone();
     let projection = if let Some(path) = &options.lane_harness {
-        match lane_harness::materialize_manifest(&repo_root(), &roster, path, None) {
+        match lane_harness::materialize_manifest(&options.repo, &roster, path, None) {
             Ok(report) => {
                 if report.provider_target != options.provider_target {
                     let _ = fs::remove_dir_all(&report.root);
@@ -192,6 +193,7 @@ pub fn dispatch_from_options(options: &DispatchOptions) -> Result<Map<String, Va
             model_override: effective_model_override.as_deref(),
             lane_harness: projection.as_ref(),
             expect_output: options.expect_output.as_deref(),
+            repo_root: &options.repo,
         },
     )?;
     if let Some(projection) = &projection
@@ -216,6 +218,7 @@ pub struct DispatchRequest<'a> {
     pub model_override: Option<&'a str>,
     pub lane_harness: Option<&'a LaneHarnessReport>,
     pub expect_output: Option<&'a str>,
+    pub repo_root: &'a Path,
 }
 
 pub fn dispatch_provider_lane(
@@ -234,70 +237,76 @@ pub fn dispatch_provider_lane(
         .get(YamlValue::String(provider_target.to_string()))
         .and_then(YamlValue::as_mapping)
         .ok_or_else(|| anyhow!("unknown provider target: {provider_target}"))?;
-    let worktree_id = current_worktree_id();
+    let worktree_id = worktree_id_for(request.repo_root);
 
     if required_string(provider_target, provider, "kind")? == "manual" {
-        let receipt = summarize_delegations::build_attempt_receipt(ReceiptInput {
-            provider_target: provider_target.to_string(),
-            provider_status: "manual".to_string(),
-            attempt_status: "manual".to_string(),
-            objective: request.objective.to_string(),
-            input_ref: request.input_ref.to_string(),
-            evidence_refs: Vec::new(),
-            lead_verdict: "reference_only".to_string(),
-            worktree_id,
-            backlog_ref: request.backlog_ref.to_string(),
-            lead_harness: request.lead_harness.to_string(),
-            lead_provider: request.lead_provider.to_string(),
-            summary: "manual provider cannot be dispatched by CLI".to_string(),
-            model_id: None,
-            duration_ms: None,
-            usage: None,
-            transcript_bytes: None,
-            lane_harness_ref: lane_harness_ref(request.lane_harness),
-            lane_harness_sha256: lane_harness_sha256(request.lane_harness),
-            projection_status: projection_status(request.lane_harness),
-            failure_kind: None,
-            output_check: None,
-        })?;
+        let receipt = summarize_delegations::build_attempt_receipt_with_repo(
+            ReceiptInput {
+                provider_target: provider_target.to_string(),
+                provider_status: "manual".to_string(),
+                attempt_status: "manual".to_string(),
+                objective: request.objective.to_string(),
+                input_ref: request.input_ref.to_string(),
+                evidence_refs: Vec::new(),
+                lead_verdict: "reference_only".to_string(),
+                worktree_id,
+                backlog_ref: request.backlog_ref.to_string(),
+                lead_harness: request.lead_harness.to_string(),
+                lead_provider: request.lead_provider.to_string(),
+                summary: "manual provider cannot be dispatched by CLI".to_string(),
+                model_id: None,
+                duration_ms: None,
+                usage: None,
+                transcript_bytes: None,
+                lane_harness_ref: lane_harness_ref(request.lane_harness),
+                lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+                projection_status: projection_status(request.lane_harness),
+                failure_kind: None,
+                output_check: None,
+            },
+            request.repo_root,
+        )?;
         summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
         return Ok(receipt);
     }
 
     let provider_status = probe_status(provider_target, provider, request.path_env);
     if provider_status != "available" {
-        let receipt = summarize_delegations::build_attempt_receipt(ReceiptInput {
-            provider_target: provider_target.to_string(),
-            provider_status: provider_status.clone(),
-            attempt_status: "failed".to_string(),
-            objective: request.objective.to_string(),
-            input_ref: request.input_ref.to_string(),
-            evidence_refs: Vec::new(),
-            lead_verdict: "rejected".to_string(),
-            worktree_id,
-            backlog_ref: request.backlog_ref.to_string(),
-            lead_harness: request.lead_harness.to_string(),
-            lead_provider: request.lead_provider.to_string(),
-            summary: format!("provider probe was {provider_status}; dispatch skipped"),
-            model_id: None,
-            duration_ms: None,
-            usage: None,
-            transcript_bytes: None,
-            lane_harness_ref: lane_harness_ref(request.lane_harness),
-            lane_harness_sha256: lane_harness_sha256(request.lane_harness),
-            projection_status: projection_status(request.lane_harness),
-            failure_kind: Some(
-                if provider_status == "unavailable" {
-                    "missing_binary"
-                } else if provider_status == "partial" {
-                    "probe_timeout"
-                } else {
-                    "probe_failed"
-                }
-                .to_string(),
-            ),
-            output_check: None,
-        })?;
+        let receipt = summarize_delegations::build_attempt_receipt_with_repo(
+            ReceiptInput {
+                provider_target: provider_target.to_string(),
+                provider_status: provider_status.clone(),
+                attempt_status: "failed".to_string(),
+                objective: request.objective.to_string(),
+                input_ref: request.input_ref.to_string(),
+                evidence_refs: Vec::new(),
+                lead_verdict: "rejected".to_string(),
+                worktree_id,
+                backlog_ref: request.backlog_ref.to_string(),
+                lead_harness: request.lead_harness.to_string(),
+                lead_provider: request.lead_provider.to_string(),
+                summary: format!("provider probe was {provider_status}; dispatch skipped"),
+                model_id: None,
+                duration_ms: None,
+                usage: None,
+                transcript_bytes: None,
+                lane_harness_ref: lane_harness_ref(request.lane_harness),
+                lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+                projection_status: projection_status(request.lane_harness),
+                failure_kind: Some(
+                    if provider_status == "unavailable" {
+                        "missing_binary"
+                    } else if provider_status == "partial" {
+                        "probe_timeout"
+                    } else {
+                        "probe_failed"
+                    }
+                    .to_string(),
+                ),
+                output_check: None,
+            },
+            request.repo_root,
+        )?;
         summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
         return Ok(receipt);
     }
@@ -339,31 +348,34 @@ pub fn dispatch_provider_lane(
     let mut child = match process.spawn() {
         Ok(child) => child,
         Err(error) => {
-            let receipt = summarize_delegations::build_attempt_receipt(ReceiptInput {
-                provider_target: provider_target.to_string(),
-                provider_status: "error".to_string(),
-                attempt_status: "failed".to_string(),
-                objective: request.objective.to_string(),
-                input_ref: request.input_ref.to_string(),
-                evidence_refs: vec![transcript.display().to_string()],
-                lead_verdict: "rejected".to_string(),
-                worktree_id,
-                backlog_ref: request.backlog_ref.to_string(),
-                lead_harness: request.lead_harness.to_string(),
-                lead_provider: request.lead_provider.to_string(),
-                summary: format!("failed to start provider command {}: {error}", command[0]),
-                model_id: receipt_model_id(provider, request.model_override),
-                duration_ms: None,
-                usage: None,
-                transcript_bytes: fs::metadata(&transcript)
-                    .ok()
-                    .map(|metadata| metadata.len()),
-                lane_harness_ref: lane_harness_ref(request.lane_harness),
-                lane_harness_sha256: lane_harness_sha256(request.lane_harness),
-                projection_status: projection_status(request.lane_harness),
-                failure_kind: Some("spawn_failed".to_string()),
-                output_check: None,
-            })?;
+            let receipt = summarize_delegations::build_attempt_receipt_with_repo(
+                ReceiptInput {
+                    provider_target: provider_target.to_string(),
+                    provider_status: "error".to_string(),
+                    attempt_status: "failed".to_string(),
+                    objective: request.objective.to_string(),
+                    input_ref: request.input_ref.to_string(),
+                    evidence_refs: vec![transcript.display().to_string()],
+                    lead_verdict: "rejected".to_string(),
+                    worktree_id,
+                    backlog_ref: request.backlog_ref.to_string(),
+                    lead_harness: request.lead_harness.to_string(),
+                    lead_provider: request.lead_provider.to_string(),
+                    summary: format!("failed to start provider command {}: {error}", command[0]),
+                    model_id: receipt_model_id(provider, request.model_override),
+                    duration_ms: None,
+                    usage: None,
+                    transcript_bytes: fs::metadata(&transcript)
+                        .ok()
+                        .map(|metadata| metadata.len()),
+                    lane_harness_ref: lane_harness_ref(request.lane_harness),
+                    lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+                    projection_status: projection_status(request.lane_harness),
+                    failure_kind: Some("spawn_failed".to_string()),
+                    output_check: None,
+                },
+                request.repo_root,
+            )?;
             summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
             return Ok(receipt);
         }
@@ -441,29 +453,32 @@ pub fn dispatch_provider_lane(
         )
     };
 
-    let receipt = summarize_delegations::build_attempt_receipt(ReceiptInput {
-        provider_target: provider_target.to_string(),
-        provider_status,
-        attempt_status,
-        objective: request.objective.to_string(),
-        input_ref: request.input_ref.to_string(),
-        evidence_refs: vec![transcript.display().to_string()],
-        lead_verdict,
-        worktree_id,
-        backlog_ref: request.backlog_ref.to_string(),
-        lead_harness: request.lead_harness.to_string(),
-        lead_provider: request.lead_provider.to_string(),
-        summary,
-        model_id: receipt_model_id(provider, request.model_override),
-        duration_ms: Some(duration_ms),
-        usage: None,
-        transcript_bytes,
-        lane_harness_ref: lane_harness_ref(request.lane_harness),
-        lane_harness_sha256: lane_harness_sha256(request.lane_harness),
-        projection_status: projection_status(request.lane_harness),
-        failure_kind,
-        output_check,
-    })?;
+    let receipt = summarize_delegations::build_attempt_receipt_with_repo(
+        ReceiptInput {
+            provider_target: provider_target.to_string(),
+            provider_status,
+            attempt_status,
+            objective: request.objective.to_string(),
+            input_ref: request.input_ref.to_string(),
+            evidence_refs: vec![transcript.display().to_string()],
+            lead_verdict,
+            worktree_id,
+            backlog_ref: request.backlog_ref.to_string(),
+            lead_harness: request.lead_harness.to_string(),
+            lead_provider: request.lead_provider.to_string(),
+            summary,
+            model_id: receipt_model_id(provider, request.model_override),
+            duration_ms: Some(duration_ms),
+            usage: None,
+            transcript_bytes,
+            lane_harness_ref: lane_harness_ref(request.lane_harness),
+            lane_harness_sha256: lane_harness_sha256(request.lane_harness),
+            projection_status: projection_status(request.lane_harness),
+            failure_kind,
+            output_check,
+        },
+        request.repo_root,
+    )?;
     summarize_delegations::append_receipt(request.receipt_output, &receipt)?;
     Ok(receipt)
 }
@@ -473,29 +488,32 @@ fn projection_failed_receipt(
     manifest_path: &Path,
     error: anyhow::Error,
 ) -> Result<Map<String, Value>> {
-    summarize_delegations::build_attempt_receipt(ReceiptInput {
-        provider_target: options.provider_target.clone(),
-        provider_status: "error".to_string(),
-        attempt_status: "failed".to_string(),
-        objective: options.objective.clone(),
-        input_ref: options.input_ref.clone(),
-        evidence_refs: vec![manifest_path.display().to_string()],
-        lead_verdict: "rejected".to_string(),
-        worktree_id: current_worktree_id(),
-        backlog_ref: options.backlog_ref.clone(),
-        lead_harness: options.lead_harness.clone(),
-        lead_provider: options.lead_provider.clone(),
-        summary: format!("lane harness projection failed: {error}"),
-        model_id: None,
-        duration_ms: None,
-        usage: None,
-        transcript_bytes: None,
-        lane_harness_ref: Some(manifest_path.display().to_string()),
-        lane_harness_sha256: lane_harness::manifest_sha256(manifest_path).ok(),
-        projection_status: Some(lane_harness::PROJECTION_STATUS_FAILED.to_string()),
-        failure_kind: Some("projection_failed".to_string()),
-        output_check: None,
-    })
+    summarize_delegations::build_attempt_receipt_with_repo(
+        ReceiptInput {
+            provider_target: options.provider_target.clone(),
+            provider_status: "error".to_string(),
+            attempt_status: "failed".to_string(),
+            objective: options.objective.clone(),
+            input_ref: options.input_ref.clone(),
+            evidence_refs: vec![manifest_path.display().to_string()],
+            lead_verdict: "rejected".to_string(),
+            worktree_id: worktree_id_for(&options.repo),
+            backlog_ref: options.backlog_ref.clone(),
+            lead_harness: options.lead_harness.clone(),
+            lead_provider: options.lead_provider.clone(),
+            summary: format!("lane harness projection failed: {error}"),
+            model_id: None,
+            duration_ms: None,
+            usage: None,
+            transcript_bytes: None,
+            lane_harness_ref: Some(manifest_path.display().to_string()),
+            lane_harness_sha256: lane_harness::manifest_sha256(manifest_path).ok(),
+            projection_status: Some(lane_harness::PROJECTION_STATUS_FAILED.to_string()),
+            failure_kind: Some("projection_failed".to_string()),
+            output_check: None,
+        },
+        &options.repo,
+    )
 }
 
 fn lane_harness_ref(report: Option<&LaneHarnessReport>) -> Option<String> {
@@ -945,14 +963,19 @@ fn is_executable(path: &Path) -> bool {
 fn current_worktree_id() -> String {
     env::current_dir()
         .ok()
-        .and_then(|path| {
-            path.file_name()
-                .map(|name| name.to_string_lossy().into_owned())
-        })
+        .map(|path| worktree_id_for(&path))
+        .unwrap_or_else(|| "unknown".to_string())
+}
+
+fn worktree_id_for(repo_root: &Path) -> String {
+    repo_root
+        .file_name()
+        .map(|name| name.to_string_lossy().into_owned())
         .filter(|name| !name.is_empty())
         .unwrap_or_else(|| "unknown".to_string())
 }
 
+#[cfg(test)]
 fn repo_root() -> PathBuf {
     let output = Command::new("git")
         .args(["rev-parse", "--show-toplevel"])
@@ -1179,6 +1202,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1222,6 +1246,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1256,6 +1281,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1303,6 +1329,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: Some("AGENT_OK"),
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1352,6 +1379,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1412,6 +1440,7 @@ providers:
                 model_override: Some("long_context"),
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 
@@ -1487,6 +1516,7 @@ providers:
                 model_override: None,
                 lane_harness: Some(&report),
                 expect_output: None,
+                repo_root: &repo,
             },
         )?;
 
@@ -1524,6 +1554,7 @@ providers:
         let receipt_path = dir.path().join("delegations.jsonl");
 
         let receipt = dispatch_from_options(&DispatchOptions {
+            repo: repo_root(),
             roster: repo_root().join(".harness-kit/agents.yaml"),
             provider_target: "codex".to_string(),
             objective: "mismatch fixture".to_string(),
@@ -1568,6 +1599,7 @@ providers:
         let receipt_path = dir.path().join("delegations.jsonl");
 
         let receipt = dispatch_from_options(&DispatchOptions {
+            repo: repo_root(),
             roster: repo_root().join(".harness-kit/agents.yaml"),
             provider_target: "codex".to_string(),
             objective: "model mismatch fixture".to_string(),
@@ -1596,6 +1628,71 @@ providers:
                 .unwrap()
                 .contains("model_override must match provider model")
         );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_from_options_projects_lane_harness_against_requested_repo() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let repo = dir.path().join("consumer-repo");
+        fs::create_dir(&repo)?;
+        let skill_dir = repo.join("skills/ci");
+        fs::create_dir_all(&skill_dir)?;
+        fs::write(skill_dir.join("SKILL.md"), "name: ci\n")?;
+        fs::write(repo.join("registry.yaml"), "sources: []\n")?;
+        let manifest_path = repo.join("lane.yaml");
+        fs::write(
+            &manifest_path,
+            "schema: lane_harness.v1\nrole: critic\nprovider_target: codex\nmodel_override: null\nallowed_local_skills:\n  - ci\nallowed_external_aliases: []\nallowed_tools:\n  - shell.readonly\noracle:\n  kind: path\n  value: backlog.d/101-focused-lane-harness-projection.md\nevidence_expectations:\n  - commands_read\nfallback:\n  on_provider_failure: record_and_return\n  replacement_policy: lead_explicit\n",
+        )?;
+        let prompt_path = dir.path().join("prompt.md");
+        fs::write(&prompt_path, "prompt")?;
+        let bin_dir = dir.path().join("bin");
+        fs::create_dir(&bin_dir)?;
+        let visible_path = dir.path().join("visible.txt");
+        let fake = bin_dir.join("fake-codex");
+        fs::write(
+            &fake,
+            format!(
+                "#!/bin/sh\nset -e\nif [ \"$1\" = \"--version\" ]; then exit 0; fi\n/bin/ls \"$HOME/.codex/skills\" > {}\necho lane-ok\n",
+                visible_path.display()
+            ),
+        )?;
+        make_executable(&fake)?;
+        let roster_path = dir.path().join("agents.yaml");
+        fs::write(
+            &roster_path,
+            serde_yaml::to_string(&fixture_roster("fake-codex --version", "fake-codex run"))?,
+        )?;
+        let receipt_path = dir.path().join("delegations.jsonl");
+
+        let receipt = dispatch_from_options(&DispatchOptions {
+            repo: repo.clone(),
+            roster: roster_path,
+            provider_target: "codex".to_string(),
+            objective: "repo-scoped lane harness fixture".to_string(),
+            input_ref: "prompt.txt".to_string(),
+            prompt_file: prompt_path,
+            backlog_ref: "101".to_string(),
+            lead_harness: "codex".to_string(),
+            lead_provider: "codex".to_string(),
+            model_override: None,
+            timeout_s: 1.0,
+            grace_s: 0.1,
+            max_prompt_bytes: 1024,
+            transcript_dir: dir.path().join("traces"),
+            receipt_output: receipt_path,
+            path_env: Some(bin_dir.display().to_string()),
+            lane_harness: Some(manifest_path),
+            keep_lane_root: false,
+            expect_output: Some("lane-ok".to_string()),
+        })?;
+
+        assert_eq!(receipt["attempt_status"], "succeeded");
+        assert_eq!(fs::read_to_string(&visible_path)?.trim(), "ci");
+        assert_eq!(receipt["projection_status"], "projected");
+        assert_eq!(receipt["repo_root"], repo.display().to_string());
+        assert_eq!(receipt["worktree_id"], "consumer-repo");
         Ok(())
     }
 
@@ -1637,6 +1734,7 @@ providers:
                 model_override: None,
                 lane_harness: None,
                 expect_output: None,
+                repo_root: dir.path(),
             },
         )?;
 

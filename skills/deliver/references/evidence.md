@@ -28,6 +28,12 @@ Every successful delivery has an index:
 
 It links runtime proof, demo/text proof, review/CI summaries, and the learning
 packet. A text proof is the lowest-fidelity demo artifact; absence is not a valid pass state.
+Every index and final delivery summary should make generated evidence
+one-click reachable: direct Markdown links for text/log artifacts, plus inline
+Markdown image/GIF/video embeds when the destination renders them. Prefer
+`[qa report](.evidence/<branch>/<date>/qa-report.md)` and
+`![walkthrough](.evidence/<branch>/<date>/walkthrough.gif)` over a bare
+directory pointer.
 
 ## Per-Phase Emission
 
@@ -69,3 +75,5 @@ evidence. If a phase skill emits committed evidence, the receipt records the
 `.evidence/<branch>/<date>/` pointer. If required evidence is absent, the
 receipt records the missing pointer as dirty and refuses `merge_ready` instead
 of inventing proof.
+Human-facing summaries should use the receipt/index pointers to link directly
+to the generated artifact, not only to the evidence directory.

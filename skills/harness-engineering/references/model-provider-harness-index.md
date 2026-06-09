@@ -62,6 +62,7 @@ cargo run --locked -p harness-kit-checks -- dispatch-agent \
   --objective "bounded lane objective" \
   --input-ref "path/or/ticket" \
   --prompt-file /tmp/lane.md \
+  --repo . \
   --lane-harness .harness-kit/examples/lane-harness.yaml
 ```
 

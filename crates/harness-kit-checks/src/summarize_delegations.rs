@@ -293,6 +293,13 @@ pub fn format_text(summary: &DelegationSummary) -> String {
 }
 
 pub fn build_attempt_receipt(input: ReceiptInput) -> Result<Map<String, Value>> {
+    build_attempt_receipt_with_repo(input, &repo_root())
+}
+
+pub fn build_attempt_receipt_with_repo(
+    input: ReceiptInput,
+    repo_root: &Path,
+) -> Result<Map<String, Value>> {
     let mut receipt = Map::new();
     receipt.insert("schema_version".to_string(), json!(1));
     receipt.insert(
@@ -305,7 +312,7 @@ pub fn build_attempt_receipt(input: ReceiptInput) -> Result<Map<String, Value>> 
     );
     receipt.insert(
         "repo_root".to_string(),
-        json!(repo_root().display().to_string()),
+        json!(repo_root.display().to_string()),
     );
     receipt.insert("worktree_id".to_string(), json!(input.worktree_id));
     receipt.insert("lead_harness".to_string(), json!(input.lead_harness));

@@ -90,6 +90,11 @@ repo-fit rationale, and residual risk.
 
 The delivery brief and learning packet do not replace the machine contract.
 `receipt.json` remains the source of truth for callers and automation.
+When evidence artifacts exist, the delivery brief must link them directly.
+Use Markdown links for text/log artifacts and inline Markdown media for
+screenshots, GIFs, or videos on surfaces that render them, for example
+`![QA screenshot](.evidence/<branch>/<date>/qa.png)`. Do not make reviewers
+dig through a directory name when a direct artifact link is available.
 
 The delivery brief is short and punchy. It is not a file inventory, a raw
 changelog, or a generic "green tests" note. Default shape: 1-2 short
@@ -143,6 +148,7 @@ evidence when the packet includes `Comprehension-required: <topic>`.
 - Acceptance source: ticket oracle, context packet, spec, fixture, contract, route, command, or explicit absence.
 - Evidence packet dir: committed `.evidence/<branch>/<date>/` directory.
 - Evidence that proves it: runtime proof, demo/text artifact, review/CI summary, or QA artifact proving the behavior.
+- Evidence links / embeds: direct Markdown links to generated evidence and inline screenshots/GIFs/videos when the target summary surface supports them.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Oracle / acceptance artifact hash: sha256 digest for any fixture, contract, golden file, transcript, screenshot, or equivalent acceptance source used by the oracle.
 - Contract-change acknowledgment: explicit reason when the branch changes acceptance criteria or weakens an assertion surface.

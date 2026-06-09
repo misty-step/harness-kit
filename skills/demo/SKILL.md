@@ -35,7 +35,8 @@ core; this phase keeps artifact-specific local fields.
 ```markdown
 ## Completion Gate
 - Exact end-user behavior shown: behavior or internal operator behavior the artifact demonstrates.
-- Evidence that proves it: screenshot, GIF, video, paste, launch note, or artifact path.
+- Evidence that proves it: direct link to screenshot, GIF, video, paste, launch note, or artifact path.
+- Summary embed: inline Markdown media for screenshots/GIFs/videos when the destination supports rendering.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call used to capture it.
 - Repo-fit check: repo convention or audience surface the artifact matches.
 - Residual risk: unshown path, unsupported state, or none with reason.
@@ -203,6 +204,11 @@ from shape; pick the surface from audience.
 | `git notes` | Durable annotation without touching history |
 | Team Slack / internal post | Timely visual update; lossy over time |
 | Customer email / launch post | External polished path |
+
+When publishing or summarizing demo evidence, make the artifact visible from
+the summary itself. Use direct Markdown links for text artifacts and inline
+Markdown media for screenshots, GIFs, or videos where supported, for example
+`![before after](.evidence/<branch>/<date>/before-after.gif)`.
 
 ## Repo guidance
 

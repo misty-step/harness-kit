@@ -1607,6 +1607,7 @@ fn validate_rust_dispatch_helper(path: &Path) -> Result<()> {
             model_override: None,
             lane_harness: None,
             expect_output: None,
+            repo_root: &temp_dir,
         },
     )
     .context("harness-kit-checks dispatch-agent: dispatch helper failed")?;

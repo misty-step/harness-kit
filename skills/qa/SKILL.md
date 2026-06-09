@@ -48,8 +48,9 @@ core; this phase keeps QA-specific local fields.
 - Persona outcome observed: persona-specific success or failure observed in the run.
 - Live repo evidence read: package/config/docs/routes/commands/tests used to choose the QA path.
 - Acceptance source: oracle, ticket, spec, fixture, route, command, or explicit absence.
-- Evidence that proves it: screenshot, trace, transcript, request replay, or artifact path.
+- Evidence that proves it: direct link to screenshot, trace, transcript, request replay, or artifact path.
 - Artifact/evidence location: committed evidence path, temp artifact path, screenshot, transcript, or log.
+- Summary links / embeds: direct Markdown links for generated artifacts and inline screenshots/GIFs/videos when the final surface supports rendering.
 - Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
 - Dogfood artifact: screenshot, browser trace, CLI transcript, request replay, tool-call trace, or explicit no-running-surface waiver.
 - Repo-fit check: local QA convention or repo contract followed.
@@ -156,6 +157,9 @@ mkdir -p "$EVIDENCE_DIR"
 Use `EVIDENCE_DIR` for screenshots, transcripts, request captures, and notes.
 Only fall back to a temporary directory when the target is not in a git repo
 and has no evidence helper.
+The QA summary should not stop at naming `EVIDENCE_DIR`: link the specific
+report, transcript, request replay, screenshot, GIF, or video. Embed visual
+artifacts inline when the destination renders Markdown media.
 
 ### If the app is a browser web app
 
