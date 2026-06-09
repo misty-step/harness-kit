@@ -263,6 +263,7 @@ pub fn dispatch_provider_lane(
                 projection_status: projection_status(request.lane_harness),
                 failure_kind: None,
                 output_check: None,
+                work_source_refs: Vec::new(),
             },
             request.repo_root,
         )?;
@@ -304,6 +305,7 @@ pub fn dispatch_provider_lane(
                     .to_string(),
                 ),
                 output_check: None,
+                work_source_refs: Vec::new(),
             },
             request.repo_root,
         )?;
@@ -373,6 +375,7 @@ pub fn dispatch_provider_lane(
                     projection_status: projection_status(request.lane_harness),
                     failure_kind: Some("spawn_failed".to_string()),
                     output_check: None,
+                    work_source_refs: Vec::new(),
                 },
                 request.repo_root,
             )?;
@@ -476,6 +479,7 @@ pub fn dispatch_provider_lane(
             projection_status: projection_status(request.lane_harness),
             failure_kind,
             output_check,
+            work_source_refs: Vec::new(),
         },
         request.repo_root,
     )?;
@@ -511,6 +515,7 @@ fn projection_failed_receipt(
             projection_status: Some(lane_harness::PROJECTION_STATUS_FAILED.to_string()),
             failure_kind: Some("projection_failed".to_string()),
             output_check: None,
+            work_source_refs: Vec::new(),
         },
         &options.repo,
     )
@@ -680,6 +685,7 @@ pub fn build_probe_receipts(
                 projection_status: None,
                 failure_kind: None,
                 output_check: None,
+                work_source_refs: Vec::new(),
             },
         )?);
     }

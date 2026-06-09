@@ -8,6 +8,8 @@ use regex::Regex;
 use serde_json::{Map as JsonMap, Value as JsonValue, json};
 use uuid::Uuid;
 
+use crate::source_refs;
+
 pub const DEFAULT_STORE: &str = ".harness-kit/traces/work-records.jsonl";
 const RECORD_TYPE: &str = "agent-session-trace";
 
@@ -25,6 +27,7 @@ pub struct AppendOptions {
     pub shipped_ref: String,
     pub waiver_reason: String,
     pub metadata: Vec<String>,
+    pub work_source_refs: Vec<JsonValue>,
 }
 
 pub fn default_store() -> PathBuf {
@@ -36,6 +39,8 @@ pub fn build_record(options: &AppendOptions) -> Result<JsonValue> {
     if options.transcript_refs.is_empty() && options.waiver_reason.is_empty() {
         bail!("provide at least one --transcript-ref or --waiver-reason");
     }
+    source_refs::validate_refs(&options.work_source_refs, Some(&options.backlog))
+        .context("invalid work source refs")?;
 
     let mut record = JsonMap::new();
     record.insert("backlog_ref".to_string(), json!(options.backlog));
@@ -65,6 +70,12 @@ pub fn build_record(options: &AppendOptions) -> Result<JsonValue> {
         json!(options.transcript_refs),
     );
     record.insert("waiver_reason".to_string(), json!(options.waiver_reason));
+    if !options.work_source_refs.is_empty() {
+        record.insert(
+            source_refs::FIELD.to_string(),
+            json!(options.work_source_refs),
+        );
+    }
 
     reject_secret_like(record.values())?;
     Ok(JsonValue::Object(record))
@@ -204,6 +215,7 @@ fn sample_options(store: PathBuf) -> AppendOptions {
         shipped_ref: "master@deadbeef".to_string(),
         waiver_reason: String::new(),
         metadata: vec!["source=self-test".to_string()],
+        work_source_refs: Vec::new(),
     }
 }
 
@@ -311,6 +323,26 @@ mod tests {
         let metadata = parse_metadata(&["source=first".to_string(), "source=last".to_string()])
             .expect("duplicate metadata keys are accepted");
         assert_eq!(metadata["source"], "last");
+    }
+
+    #[test]
+    fn trace_record_records_optional_work_source_refs() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let mut options = sample_options(temp.path().join("records.jsonl"));
+        options.work_source_refs = vec![json!({
+            "role": "backlog",
+            "kind": "local_backlog",
+            "id": "056",
+            "uri": "backlog.d/056-agent-session-trace-lifecycle.md"
+        })];
+
+        let row = build_record(&options)?;
+
+        assert_eq!(
+            row["work_source_refs"][0]["uri"],
+            "backlog.d/056-agent-session-trace-lifecycle.md"
+        );
+        Ok(())
     }
 
     #[test]

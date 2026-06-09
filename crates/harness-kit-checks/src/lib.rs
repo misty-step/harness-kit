@@ -43,6 +43,7 @@ pub mod skill_invocation_analytics;
 pub mod skillify_classify;
 pub mod skillify_skill_crud;
 pub mod skillify_transcript;
+pub mod source_refs;
 pub mod summarize_delegations;
 pub mod trace_record;
 pub mod transcript_effectiveness;

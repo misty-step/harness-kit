@@ -10,7 +10,8 @@ use harness_kit_checks::{
     offline_validation_preflight, pr_reviews, premise_source, reflect_checkpoint, reflect_evidence,
     repo_skill, review_score_trends, runtime_primitives, shape_renderer, skill_audit, skill_evals,
     skill_invocation_analytics, skillify_classify, skillify_skill_crud, skillify_transcript,
-    summarize_delegations, trace_record, transcript_effectiveness, verdicts, work_ledger,
+    source_refs, summarize_delegations, trace_record, transcript_effectiveness, verdicts,
+    work_ledger,
 };
 
 fn main() {
@@ -2280,6 +2281,7 @@ fn parse_trace_record_append_args(args: &[String]) -> trace_record::AppendOption
         shipped_ref: String::new(),
         waiver_reason: String::new(),
         metadata: Vec::new(),
+        work_source_refs: Vec::new(),
     };
     let mut index = 0;
     while index < args.len() {
@@ -2299,6 +2301,13 @@ fn parse_trace_record_append_args(args: &[String]) -> trace_record::AppendOption
             "--shipped-ref" => options.shipped_ref = value(),
             "--waiver-reason" => options.waiver_reason = value(),
             "--metadata" => options.metadata.push(value()),
+            "--work-source-ref" => match source_refs::parse_ref(&value()) {
+                Ok(reference) => options.work_source_refs.push(reference),
+                Err(error) => {
+                    eprintln!("trace-record: {error:#}");
+                    std::process::exit(1);
+                }
+            },
             _ => usage(),
         }
         index += 1;
@@ -2326,6 +2335,7 @@ fn parse_work_ledger_append_args(args: &[String]) -> work_ledger::AppendOptions 
         next_action: String::new(),
         status: "active".to_string(),
         usage: None,
+        work_source_refs: Vec::new(),
     };
     let mut index = 0;
     while index < args.len() {
@@ -2357,6 +2367,13 @@ fn parse_work_ledger_append_args(args: &[String]) -> work_ledger::AppendOptions 
                     }
                 }
             }
+            "--work-source-ref" => match source_refs::parse_ref(&value()) {
+                Ok(reference) => options.work_source_refs.push(reference),
+                Err(error) => {
+                    eprintln!("work-ledger: {error:#}");
+                    std::process::exit(1);
+                }
+            },
             _ => usage(),
         }
         index += 1;
@@ -2505,6 +2522,7 @@ fn parse_record_delegation_args(args: &[String]) -> RecordOptions {
     let mut transcript_bytes = None;
     let mut usage_input = summarize_delegations::UsageInput::default();
     let mut has_usage = false;
+    let mut work_source_refs = Vec::new();
 
     let mut index = 0;
     while index < args.len() {
@@ -2555,6 +2573,13 @@ fn parse_record_delegation_args(args: &[String]) -> RecordOptions {
                 usage_input.cost_source = Some(source);
                 has_usage = true;
             }
+            "--work-source-ref" => match source_refs::parse_ref(&value()) {
+                Ok(reference) => work_source_refs.push(reference),
+                Err(error) => {
+                    eprintln!("record-delegation: {error:#}");
+                    std::process::exit(1);
+                }
+            },
             _ => usage(),
         }
         index += 1;
@@ -2585,6 +2610,7 @@ fn parse_record_delegation_args(args: &[String]) -> RecordOptions {
             projection_status: None,
             failure_kind: None,
             output_check: None,
+            work_source_refs,
         },
     }
 }

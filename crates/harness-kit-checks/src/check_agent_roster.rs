@@ -8,7 +8,7 @@ use chrono::{NaiveDate, Utc};
 use regex::Regex;
 use serde_json::Value;
 
-use crate::{agent_roster, lane_harness, summarize_delegations};
+use crate::{agent_roster, lane_harness, source_refs, summarize_delegations};
 
 const CORE_WORKFLOW_SKILLS: &[&str] = &[
     "ci",
@@ -1198,6 +1198,7 @@ fn validate_receipt_record(record: &Value) -> Result<()> {
     if let Some(output_check) = object.get("output_check") {
         validate_output_check(output_check)?;
     }
+    validate_optional_work_source_refs(object, object.get("backlog_ref").and_then(Value::as_str))?;
     let refs = object
         .get("evidence_refs")
         .and_then(Value::as_array)
@@ -1253,6 +1254,19 @@ fn validate_output_check(value: &Value) -> Result<()> {
         bail!("output_check matched must be a boolean or null.");
     }
     Ok(())
+}
+
+fn validate_optional_work_source_refs(
+    object: &serde_json::Map<String, Value>,
+    backlog_ref: Option<&str>,
+) -> Result<()> {
+    let Some(value) = object.get(source_refs::FIELD) else {
+        return Ok(());
+    };
+    let Some(refs) = value.as_array() else {
+        bail!("work_source_refs must be a list.");
+    };
+    source_refs::validate_refs(refs, backlog_ref).context("invalid work_source_refs")
 }
 
 fn validate_usage(value: &Value) -> Result<()> {
@@ -1315,7 +1329,7 @@ fn validate_work_records(path: &Path) -> Result<usize> {
         validate_field_set(
             object,
             set(WORK_RECORD_FIELDS),
-            BTreeSet::new(),
+            set(&["work_source_refs"]),
             "work-record",
         )
         .with_context(|| format!("{}:{line_number}", display_path(path)))?;
@@ -1363,6 +1377,11 @@ fn validate_work_records(path: &Path) -> Result<usize> {
                 display_path(path)
             );
         }
+        validate_optional_work_source_refs(
+            object,
+            object.get("backlog_ref").and_then(Value::as_str),
+        )
+        .with_context(|| format!("{}:{line_number}", display_path(path)))?;
         validate_no_secret_like_values(&record, &format!("{}:{line_number}", display_path(path)))?;
         count += 1;
     }
@@ -1377,7 +1396,7 @@ fn validate_work_ledger(path: &Path) -> Result<usize> {
         validate_field_set(
             object,
             set(WORK_LEDGER_FIELDS),
-            set(&["usage"]),
+            set(&["usage", "work_source_refs"]),
             "work-ledger",
         )
         .with_context(|| format!("{}:{line_number}", display_path(path)))?;
@@ -1424,6 +1443,11 @@ fn validate_work_ledger(path: &Path) -> Result<usize> {
             validate_usage(usage)
                 .with_context(|| format!("{}:{line_number}", display_path(path)))?;
         }
+        validate_optional_work_source_refs(
+            object,
+            object.get("backlog_ref").and_then(Value::as_str),
+        )
+        .with_context(|| format!("{}:{line_number}", display_path(path)))?;
         count += 1;
     }
     Ok(count)
@@ -1714,6 +1738,7 @@ fn optional_receipt_fields() -> BTreeSet<&'static str> {
         "lane_harness_sha256",
         "projection_status",
         "failure_kind",
+        "work_source_refs",
     ])
 }
 
@@ -2001,6 +2026,143 @@ evidence and owns lead synthesis.
         let error = validate_usage(&usage).unwrap_err().to_string();
 
         assert!(error.contains("usage cost_source is required"));
+    }
+
+    #[test]
+    fn receipt_accepts_work_source_refs_with_path_shaped_backlog_ref() {
+        let receipt = serde_json::json!({
+            "schema_version": 1,
+            "delegation_id": "11111111-1111-4111-8111-111111111111",
+            "created_at": "2026-06-09T00:00:00Z",
+            "repo_root": "/tmp/harness-kit",
+            "worktree_id": "wt",
+            "lead_harness": "codex",
+            "lead_provider": "codex",
+            "backlog_ref": "backlog.d/062-agent-provider-roster.md",
+            "objective": "fixture",
+            "input_ref": "backlog.d/062-agent-provider-roster.md",
+            "provider_target": "codex",
+            "provider_status": "available",
+            "attempt_status": "succeeded",
+            "evidence_refs": ["receipt-062"],
+            "summary": "done",
+            "lead_verdict": "accepted",
+            "redactions_applied": [],
+            "work_source_refs": [{
+                "role": "backlog",
+                "kind": "local_backlog",
+                "id": "062",
+                "uri": "backlog.d/062-agent-provider-roster.md"
+            }]
+        });
+
+        assert!(validate_receipt_record(&receipt).is_ok());
+    }
+
+    #[test]
+    fn receipt_rejects_contradictory_local_backlog_work_source_ref() {
+        let receipt = serde_json::json!({
+            "schema_version": 1,
+            "delegation_id": "11111111-1111-4111-8111-111111111111",
+            "created_at": "2026-06-09T00:00:00Z",
+            "repo_root": "/tmp/harness-kit",
+            "worktree_id": "wt",
+            "lead_harness": "codex",
+            "lead_provider": "codex",
+            "backlog_ref": "backlog.d/062-agent-provider-roster.md",
+            "objective": "fixture",
+            "input_ref": "backlog.d/062-agent-provider-roster.md",
+            "provider_target": "codex",
+            "provider_status": "available",
+            "attempt_status": "succeeded",
+            "evidence_refs": ["receipt-062"],
+            "summary": "done",
+            "lead_verdict": "accepted",
+            "redactions_applied": [],
+            "work_source_refs": [{
+                "role": "backlog",
+                "kind": "local_backlog",
+                "id": "063"
+            }]
+        });
+
+        let error = validate_receipt_record(&receipt).unwrap_err().to_string();
+
+        assert!(error.contains("work_source_refs"));
+    }
+
+    #[test]
+    fn work_record_gate_accepts_optional_work_source_refs() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let path = dir.path().join("work-records.jsonl");
+        fs::write(
+            &path,
+            serde_json::json!({
+                "schema_version": 1,
+                "record_type": "agent-session-trace",
+                "trace_id": "trace-11111111-1111-4111-8111-111111111111",
+                "created_at": "2026-06-09T00:00:00Z",
+                "backlog_ref": "backlog.d/056-agent-session-trace-lifecycle.md",
+                "spec_ref": "backlog.d/056-agent-session-trace-lifecycle.md",
+                "branch": "deliver/056-agent-session-trace-lifecycle",
+                "commits": [],
+                "reviewer_verdict_refs": [],
+                "qa_refs": [],
+                "demo_refs": [],
+                "transcript_refs": [],
+                "shipped_ref": "",
+                "waiver_reason": "fixture waiver",
+                "metadata": {},
+                "work_source_refs": [{
+                    "role": "backlog",
+                    "kind": "local_backlog",
+                    "id": "056",
+                    "uri": "backlog.d/056-agent-session-trace-lifecycle.md"
+                }]
+            })
+            .to_string(),
+        )
+        .expect("write");
+
+        assert_eq!(validate_work_records(&path).expect("valid records"), 1);
+    }
+
+    #[test]
+    fn work_ledger_gate_accepts_optional_work_source_refs() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let path = dir.path().join("work-ledger.jsonl");
+        fs::write(
+            &path,
+            serde_json::json!({
+                "schema_version": 1,
+                "record_type": "work-ledger-event",
+                "event_id": "work-11111111-1111-4111-8111-111111111111",
+                "created_at": "2026-06-09T00:00:00Z",
+                "event_type": "phase_started",
+                "work_id": "work-056",
+                "parent_work_id": "",
+                "backlog_ref": "backlog.d/056-agent-session-trace-lifecycle.md",
+                "branch": "deliver/056-agent-session-trace-lifecycle",
+                "owning_skill": "deliver",
+                "phase": "implement",
+                "evidence_refs": [],
+                "blockers": [],
+                "spawned_agents": [],
+                "trace_refs": [],
+                "next_action": "continue",
+                "status": "active",
+                "work_source_refs": [{
+                    "role": "backlog",
+                    "kind": "local_backlog",
+                    "id": "056",
+                    "uri": "backlog.d/056-agent-session-trace-lifecycle.md"
+                }]
+            })
+            .to_string(),
+        )
+        .expect("write");
+
+        assert_eq!(validate_work_ledger(&path).expect("valid ledger"), 1);
     }
 
     #[test]

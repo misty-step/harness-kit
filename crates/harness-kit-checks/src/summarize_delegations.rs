@@ -9,6 +9,7 @@ use chrono::{SecondsFormat, Utc};
 use serde_json::{Map, Value, json};
 
 use crate::lane_harness;
+use crate::source_refs;
 
 const REQUIRED_RECEIPT_FIELDS: &[&str] = &[
     "schema_version",
@@ -39,6 +40,7 @@ const OPTIONAL_RECEIPT_FIELDS: &[&str] = &[
     "lane_harness_sha256",
     "projection_status",
     "failure_kind",
+    "work_source_refs",
 ];
 const RECEIPT_PROVIDER_IDS: &[&str] = &[
     "codex",
@@ -117,6 +119,7 @@ pub struct ReceiptInput {
     pub projection_status: Option<String>,
     pub failure_kind: Option<String>,
     pub output_check: Option<OutputCheckInput>,
+    pub work_source_refs: Vec<Value>,
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -300,6 +303,8 @@ pub fn build_attempt_receipt_with_repo(
     input: ReceiptInput,
     repo_root: &Path,
 ) -> Result<Map<String, Value>> {
+    source_refs::validate_refs(&input.work_source_refs, Some(&input.backlog_ref))
+        .context("invalid work source refs")?;
     let mut receipt = Map::new();
     receipt.insert("schema_version".to_string(), json!(1));
     receipt.insert(
@@ -362,6 +367,12 @@ pub fn build_attempt_receipt_with_repo(
                 "matched": output_check.matched,
                 "observed_ref": output_check.observed_ref,
             }),
+        );
+    }
+    if !input.work_source_refs.is_empty() {
+        receipt.insert(
+            source_refs::FIELD.to_string(),
+            json!(input.work_source_refs),
         );
     }
     validate_receipt(&receipt)?;
@@ -523,6 +534,13 @@ fn validate_receipt(receipt: &Map<String, Value>) -> Result<()> {
     }
     if let Some(output_check) = receipt.get("output_check") {
         validate_output_check(output_check)?;
+    }
+    if let Some(work_source_refs) = receipt.get(source_refs::FIELD) {
+        let Some(refs) = work_source_refs.as_array() else {
+            bail!("receipt work_source_refs must be a list.");
+        };
+        source_refs::validate_refs(refs, receipt.get("backlog_ref").and_then(Value::as_str))
+            .context("invalid work source refs")?;
     }
     let refs = expect_array(
         receipt,
@@ -971,6 +989,7 @@ mod tests {
             projection_status: None,
             failure_kind: None,
             output_check: None,
+            work_source_refs: Vec::new(),
         })?;
         append_receipt(&path, &receipt)?;
 
@@ -983,6 +1002,46 @@ mod tests {
         assert_eq!(row["provider_target"], "codex");
         assert_eq!(row["usage"]["cost_source"], "manual");
         assert_eq!(summarize_receipts(&path, "")?.total, 1);
+        Ok(())
+    }
+
+    #[test]
+    fn receipt_accepts_optional_work_source_refs() -> Result<()> {
+        let receipt = build_attempt_receipt(ReceiptInput {
+            provider_target: "codex".to_string(),
+            provider_status: "available".to_string(),
+            attempt_status: "succeeded".to_string(),
+            objective: "record external fixture".to_string(),
+            input_ref: "mcp://linear/issues/LIN-123".to_string(),
+            evidence_refs: vec!["evidence-lin-123".to_string()],
+            lead_verdict: "accepted".to_string(),
+            worktree_id: "wt".to_string(),
+            backlog_ref: "089".to_string(),
+            lead_harness: "codex".to_string(),
+            lead_provider: "codex".to_string(),
+            summary: "done".to_string(),
+            model_id: None,
+            duration_ms: None,
+            usage: None,
+            transcript_bytes: None,
+            lane_harness_ref: None,
+            lane_harness_sha256: None,
+            projection_status: None,
+            failure_kind: None,
+            output_check: None,
+            work_source_refs: vec![json!({
+                "role": "acceptance",
+                "kind": "mcp_resource",
+                "system": "linear",
+                "uri": "mcp://linear/issues/LIN-123",
+                "closure": {"mode": "mcp_tool", "capability": "linear.close_issue"}
+            })],
+        })?;
+
+        assert_eq!(
+            receipt["work_source_refs"][0]["uri"],
+            "mcp://linear/issues/LIN-123"
+        );
         Ok(())
     }
 

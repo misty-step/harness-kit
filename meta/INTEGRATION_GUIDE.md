@@ -74,6 +74,20 @@ The CLI is for build, test, debug, and emergency local operation. It may share
 library code with the MCP server, but it is not the primary agent contract
 when multiple harnesses or repos need the integration.
 
+## Work Source Receipts
+
+When a work item, acceptance oracle, review, or operator prompt originates
+outside local `backlog.d/`, record its identity as `work_source_refs` in the
+local ledger, trace, or delegation receipt. These refs are evidence metadata:
+they name `local_backlog`, `local_file`, `mcp_resource`, `cli_resource`, `url`,
+or `manual` sources, plus optional snapshot and closure descriptors.
+
+`work_source_refs` do not fetch, mutate, close, or synchronize external
+systems. MCP servers own authenticated external resources and actions; CLIs
+remain local/debug surfaces. Local `backlog_ref` remains the required
+join/closeout key until a shaped migration replaces the numeric `backlog.d`
+contract.
+
 ## Pointers
 
 - [Model Context Protocol specification](https://modelcontextprotocol.io/specification/)

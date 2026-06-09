@@ -7,6 +7,8 @@ use chrono::{SecondsFormat, Utc};
 use serde_json::{Map as JsonMap, Value as JsonValue, json};
 use uuid::Uuid;
 
+use crate::source_refs;
+
 pub const DEFAULT_STORE: &str = ".harness-kit/work/ledger.jsonl";
 const RECORD_TYPE: &str = "work-ledger-event";
 
@@ -37,6 +39,7 @@ pub struct AppendOptions {
     pub next_action: String,
     pub status: String,
     pub usage: Option<JsonValue>,
+    pub work_source_refs: Vec<JsonValue>,
 }
 
 pub fn default_store() -> PathBuf {
@@ -49,6 +52,8 @@ pub fn build_event(options: &AppendOptions) -> Result<JsonValue> {
     if let Some(usage) = &options.usage {
         validate_usage(usage).context("invalid --usage-json")?;
     }
+    source_refs::validate_refs(&options.work_source_refs, Some(&options.backlog))
+        .context("invalid work source refs")?;
 
     let mut event = JsonMap::new();
     event.insert("backlog_ref".to_string(), json!(options.backlog));
@@ -73,6 +78,12 @@ pub fn build_event(options: &AppendOptions) -> Result<JsonValue> {
     event.insert("spawned_agents".to_string(), json!(options.spawned_agents));
     event.insert("status".to_string(), json!(options.status));
     event.insert("trace_refs".to_string(), json!(options.trace_refs));
+    if !options.work_source_refs.is_empty() {
+        event.insert(
+            source_refs::FIELD.to_string(),
+            json!(options.work_source_refs),
+        );
+    }
     if let Some(usage) = &options.usage {
         event.insert("usage".to_string(), usage.clone());
     }
@@ -280,6 +291,7 @@ pub fn self_test() -> Result<()> {
             "cost_usd": 0.01,
             "cost_source": "manual",
         })),
+        work_source_refs: Vec::new(),
     };
     append_event(&store, &build_event(&options)?)?;
     let text = summary(&store)?;
@@ -391,6 +403,7 @@ mod tests {
             next_action: "address critic output".to_string(),
             status: "active".to_string(),
             usage: None,
+            work_source_refs: Vec::new(),
         }
     }
 
@@ -446,6 +459,41 @@ mod tests {
         assert!(text.contains("trace_refs: .harness-kit/traces/work-records.jsonl#trace-abc"));
         assert!(text.contains("next_action: address critic output"));
         Ok(())
+    }
+
+    #[test]
+    fn work_ledger_records_optional_work_source_refs() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let mut options = sample_options(temp.path().join("ledger.jsonl"));
+        options.work_source_refs = vec![json!({
+            "role": "backlog",
+            "kind": "local_backlog",
+            "id": "058",
+            "uri": "backlog.d/058-work-ledger-mission-control.md",
+            "closure": {"mode": "local_archive"}
+        })];
+
+        let row = build_event(&options)?;
+
+        assert_eq!(
+            row["work_source_refs"][0]["uri"],
+            "backlog.d/058-work-ledger-mission-control.md"
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn work_ledger_rejects_local_backlog_ref_mismatch() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut options = sample_options(temp.path().join("ledger.jsonl"));
+        options.work_source_refs = vec![json!({
+            "role": "backlog",
+            "kind": "local_backlog",
+            "id": "059"
+        })];
+
+        let error = build_event(&options).unwrap_err().to_string();
+        assert!(error.contains("work source refs"));
     }
 
     #[test]
