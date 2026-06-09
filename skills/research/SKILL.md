@@ -50,6 +50,8 @@ single-source requests or simple fact/version lookups.
 - Read the live repo first for repo facts.
 - Use current external sources for drift-prone facts.
 - Keep provider CLIs and web tools thin: launch, bound, record.
+- Prefer acquisition surfaces in this order when available: MCP tool first,
+  local CLI wrapper second, direct REST/API call third, built-in WebSearch last.
 - Treat web search, extraction, X/social search, Thinktank, provider lanes, and
   local grep as evidence inputs, not substitutes for lead synthesis.
 - Do not let synthesis stand in for retrieval. A grounded answer may summarize

@@ -50,6 +50,14 @@ also dispatch the provider lanes required by `harnesses/shared/AGENTS.md`
 
 ## Capability Routing
 
+For each capability, prefer the most agent-native verified surface available:
+MCP tool first, local CLI wrapper second, direct REST/API call third, and
+built-in WebSearch last. Report substitutions explicitly. The local wrapper
+surface, when installed, is intentionally thin and JSON-emitting:
+`exa-search`, `exa-fetch`, `brave-search`, `firecrawl-fetch`, and
+`xai-search web|x`. MCP-only surfaces such as `parallel-search` still belong
+at the first step in the chain.
+
 | Intent | Prefer | Fallback |
 |---|---|---|
 | Local repo truth | `rg`, git, local files | user-provided context |

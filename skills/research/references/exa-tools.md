@@ -4,13 +4,20 @@ Exa provides neural search optimized for code and technical content.
 
 ## Access
 
-**REST API via curl plus official remote MCP.**
+**Official remote MCP plus REST API via local CLI wrappers or curl.**
 
 Auth: `x-api-key: $EXA_API_KEY` header. Key is set in shell env.
 
 MCP endpoint: `https://mcp.exa.ai/mcp`. Use it when the active harness has MCP
-tool support; use REST when MCP is unavailable or a script needs deterministic
-fixtures.
+tool support. Use `exa-search` / `exa-fetch` when MCP is unavailable or a
+script needs deterministic JSON. Use raw REST only when no wrapper is present.
+
+Local wrappers, when installed:
+
+```bash
+exa-search --num 5 --chars 1000 "YOUR QUERY HERE"
+exa-fetch --chars 2000 https://example.com/page1 https://example.com/page2
+```
 
 ## Search
 
@@ -133,4 +140,5 @@ The `/research` default fanout calls Exa for retrieval, code/context examples,
 known URL fetch, and deep/structured search. Exa results include URLs — always
 cite them.
 
-Provider chain: Exa (curl) → WebSearch (fallback only)
+Provider chain: Exa MCP → `exa-search` / `exa-fetch` → Exa REST/curl →
+WebSearch (fallback only)
