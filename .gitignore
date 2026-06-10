@@ -23,6 +23,7 @@ skills/.external/
 .harness-kit/traces/provider-lanes/
 .harness-kit/work/*.jsonl
 .harness-kit/tmp/lane-harness/
+.harness-kit/tmp/pre-push/
 
 # Provider CLI runtime metadata.
 .antigravitycli/

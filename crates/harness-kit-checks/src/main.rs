@@ -1,4 +1,5 @@
 use std::env;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use harness_kit_checks::{
@@ -417,7 +418,11 @@ fn run_git_hook(args: &[String]) {
             }
         }
         "pre-push" => {
-            let output = git_hooks::run_pre_push(&repo_root()).unwrap_or_else(exit_error);
+            let mut stdin = String::new();
+            std::io::stdin()
+                .read_to_string(&mut stdin)
+                .unwrap_or_else(|error| exit_error(error.into()));
+            let output = git_hooks::run_pre_push(&repo_root(), &stdin).unwrap_or_else(exit_error);
             if !output.is_empty() {
                 println!("{output}");
             }
