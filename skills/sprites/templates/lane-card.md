@@ -10,6 +10,7 @@ Allowed skills:
 Allowed tools:
 Output shape:
 Do not touch:
+Stop conditions:
 Receipt expectation:
 Lane harness: none
 

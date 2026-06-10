@@ -73,11 +73,17 @@ scan recipes live in `references/investigation-bench.md`.
   is a proposal with rationale — humans ratify removals.
 - **Audit the repo's own harness.** Agent readiness is backlog work, not a
   separate ceremony: does this repo have a verification skill with its real
-  routes/commands (the highest-impact skill category)? Runbooks for its
-  deployed surfaces? A CI gate that would catch the likely failure? Stale
-  AGENTS/CLAUDE prose? Each gap is a ticket like any other.
+  routes/commands (the highest-impact skill category)? Verified build/test/
+  lint commands and conventions an agent can discover cold? Runbooks for
+  its deployed surfaces? A CI gate that would catch the likely failure?
+  Stale AGENTS/CLAUDE prose? Product context a cold agent would need? Each
+  gap is a ticket like any other.
+- **Vet findings before presenting them.** Re-check each claim against the
+  live repo — open the file, run the command. A plausible finding that
+  doesn't survive a second look is noise that erodes trust in the whole
+  groom.
 - **Theme, then recommend.** Group findings by shared root cause, rank by
-  (impact on product vision) × (feasibility) / (effort), and argue for one
+  leverage — impact ÷ effort, discounted by confidence — and argue for one
   concrete action per theme. Synthesis stays on the lead.
 
 ## Ticket Standard

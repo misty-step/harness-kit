@@ -38,6 +38,12 @@ an architecture choice needs the full treatment.
   the goal isn't clear yet — go back. See `references/executable-oracles.md`.
 - **Deliverable visible up front.** Code, research, docs, or decision — a
   reader should not have to reach the implementation sequence to find out.
+- **Executable by a stranger.** The packet is consumed without your
+  context — by a remote lane, a different model, or you next month. Include
+  current-state excerpts where the code would surprise, one exemplar file
+  for conventions, commands you actually ran, and stop conditions: the
+  surprises that should halt execution and come back rather than be
+  improvised around.
 - **Premise source named.** The packet cites the artifact that explains why
   this shape exists (`Premise Source: sha256:<digest> <path-or-url>`) or
   carries an explicit waiver with residual risk. Voice/raw-transcript
