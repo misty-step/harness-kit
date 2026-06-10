@@ -1,10 +1,5 @@
 {
-  "backlog": [
-    {
-      "source": "backlog.d/102-ci-dx-fast-path-and-dagger-coarsening.md",
-      "title": "Backlog: CI DX Fast Path And Dagger Graph Coarsening"
-    }
-  ],
+  "backlog": [],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
