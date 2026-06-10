@@ -2,7 +2,7 @@
 
 ## What This Repo Is
 
-**Harness Kit** — the ad-hoc operator harness: ~11 judgment skills, a few
+**Harness Kit** — the ad-hoc operator harness: ~12 judgment skills, a few
 saved prompts, vendored external skills, and harness configs, installed to
 every harness (~/.claude, ~/.codex, ~/.pi, antigravity) by the Rust
 bootstrap. Event-driven automation (CI-native review, incident response,

@@ -212,6 +212,16 @@
       "source": "skills/research/SKILL.md"
     },
     {
+      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, claude, pi, opencode, droid, cursor-agent, grok, agy, hermes, gemini, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
+      "icon": "catalog",
+      "id": "skill:roster",
+      "kind": "skill",
+      "name": "roster",
+      "page": "reference/skills/roster.html",
+      "role": "Support",
+      "source": "skills/roster/SKILL.md"
+    },
+    {
       "description": "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"plan this\", \"spec out\", \"context packet\", \"technical design\". Trigger: /shape, /spec, /plan, /cp.",
       "icon": "plan",
       "id": "skill:shape",

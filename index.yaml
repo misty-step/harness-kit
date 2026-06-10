@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-10T17:35:19Z
+# Generated: 2026-06-10T18:32:48Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -39,6 +39,10 @@ skills:
     description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
+  - name: roster
+    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, claude, pi, opencode, droid, cursor-agent, grok, agy, hermes, gemini, thinktank) and how to invoke each headlessly. A capability map"
+    source: first-party
+    tags: [a,agent,agy,ai,capability,claude,clis,codex,cursor-agent,droid]
   - name: shape
     description: "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"pl"
     source: first-party

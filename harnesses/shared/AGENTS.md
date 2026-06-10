@@ -100,13 +100,12 @@ single file).
 When lanes do not depend on each other, run them in parallel: split scope,
 competing attempts, or reviewer/critic roles. Heavy, long-running, or
 isolated lanes route to sprites (`/sprites`); quick exploration stays local.
-
-### Consult the composition facts
-When composing multi-provider or sprite lanes, read the current
-model/provider/harness reference sheet from the installed
-`harness-engineering` skill (`references/model-provider-harness-index.md`).
-The sheet is factual context, not role-fit policy: runtime probes, receipts,
-task evidence, and lead judgment remain authoritative.
+When a task genuinely needs orchestration at scale — tens to hundreds of
+agents, or findings adversarially cross-checked before they reach you — use
+the harness's own large-scale background orchestration feature if it has
+one. That scale costs tokens; reserve it for work that needs it, and fall
+back to parallel subagents or a sprite fleet when the harness has no such
+feature.
 
 ### Stop the grind
 Stop after two tool failures or three edits to the same file. Re-read the
@@ -145,10 +144,11 @@ Concrete trigger → action. When a row matches, take the action.
 | Trigger | Action |
 |---|---|
 | Exploration, scoped search, small review | Native subagent (the harness's own delegation) |
-| Milestone or pre-merge critique of your own work | Fresh-context critic, different model family preferred (see **Roster**) |
-| Heavy, long-running, parallel, or isolation-needing lane | Sprite lane via `/sprites`, receipt recorded |
-| Bounded, well-specified lane where a cheaper provider is demonstrably fit | Roster provider lane (`dispatch-agent`), receipt recorded |
-| Recurring event-driven workflow worth a bespoke agent | Eval-driven agent design (offline), not ad-hoc dispatch |
+| Milestone or pre-merge critique of your own work | Fresh-context critic, different model family preferred (`/roster`) |
+| Question a different model family answers better — second opinion, adversarial critique, competing attempt | Peer harness CLI (`/roster`) |
+| Tens-to-hundreds of parallel agents, or findings that need adversarial cross-checking at scale | The harness's own large-scale orchestration feature when it has one; otherwise parallel subagents or a sprite fleet |
+| Heavy, long-running, detached, or isolation-needing lane | Sprite lane via `/sprites` |
+| Recurring event-driven workflow | Mode B — the event plane (bitterblossom), not ad-hoc dispatch |
 | Mechanical command already chosen; emergency preservation; user forbids delegation | Direct solo |
 | Need tool/permission isolation only | Static project subagent |
 
@@ -177,35 +177,26 @@ Concrete trigger → action. When a row matches, take the action.
 ## Roster
 
 This section is the single source for delegation judgment: skills point here
-rather than restating it. There is no provider quota. Frontier orchestrators
-are trained on their own delegation stacks; work with that grain, not against
-it.
+rather than restating it. There is no provider quota and no mandated
+composition. Frontier orchestrators are trained on their own delegation
+stacks; work with that grain, not against it.
 
 - **Native first.** The harness's own subagents are the default delegation
-  path for exploration, scoped builds, and review fan-out. They need no
-  probe, no receipt, no waiver.
+  path for exploration, scoped builds, and review fan-out.
 - **Cross-model criticism is the strongest multi-provider case.** A
   fresh-context critic on a different model family has decorrelated failure
   modes. Give critics ONLY the artifact (diff + oracle); never the author's
   reasoning trail.
-- **Roster providers** (repo `.harness-kit/agents.yaml` or system
-  `~/.harness-kit/agents.yaml`: `codex`, `claude`, `pi`, `agy`,
-  `cursor-agent`, `grok-build`, …) earn a lane when the card is bounded and
-  specific enough that harness identity doesn't matter, and the provider is
-  better, cheaper, or independent in a way the lead can name. Probe before
-  dispatching; a probe is not a provider attempt.
+- **Peer harness CLIs are available** — codex, pi, opencode, droid,
+  cursor-agent, grok, agy, hermes, gemini, thinktank, and claude itself.
+  The `/roster` skill enumerates them with headless invocations and current
+  model facts. Reach for one when you can name what it adds.
 - **Sprites are substrate, not providers.** Route heavy, long-running,
-  parallel, or isolation-needing lanes to `/sprites` regardless of which
-  model runs them. The lane card is the same contract either way.
-- **Provider experimentation belongs offline.** Designing bespoke
-  cheap-model agents for recurring workflows is eval-driven work
-  (benchmarks, auto-research loops), not something to improvise inside an
-  ad-hoc orchestration run.
-- Record meaningful roster and sprite lanes via delegation receipts
-  (`harness-kit-checks record-delegation` / `dispatch-agent`) or sprite-lane
-  receipts. `manual` is human-supplied evidence, not a dispatch lane.
-- Multi-lane answers name: lanes used and why, parallel/split/competing
-  shape, accepted/rejected evidence, failures, receipt ids.
+  detached, or isolation-needing lanes to `/sprites` regardless of which
+  model runs them.
+- Receipts (`dispatch-agent` / sprite-lane) are worth writing when a lane's
+  evidence feeds a ship decision or should outlive the session; a quick
+  second opinion doesn't need one.
 
 Provider output is evidence, not authority. The lead owns the result.
 

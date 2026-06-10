@@ -42,7 +42,7 @@ default fanout for substantive research; narrow to one source only for explicit
 single-source requests or simple fact/version lookups.
 
 Model selection/comparison is research, not memory: model facts rot in
-weeks. Start from the installed harness-engineering skill's
+weeks. Start from the installed roster skill's
 `references/model-provider-harness-index.md` for current local facts, then
 verify against live sources — availability on the target platform, pricing,
 context, tool-calling support — and return a ranked recommendation with

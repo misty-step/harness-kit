@@ -21,11 +21,14 @@ never ships on its own review — that is the one hard rule.
    model, infra, docs.
 2. **Fan out in parallel, decorrelated.** Native subagents for focused
    lenses (pick 2–4 that fit the diff: correctness, security, simplicity,
-   tests); roster providers from `.harness-kit/agents.yaml` for cross-model
-   judgment — a different model family has decorrelated failure modes;
-   `thinktank review` when installed for a wide bench. Reviewers get the
-   diff, the acceptance oracle, and a risk lens — **never the author's
-   reasoning trail.**
+   tests); peer harness CLIs (`/roster`) for cross-model judgment — a
+   different model family has decorrelated failure modes; `thinktank
+   review` when installed for a wide bench. If the harness can run a
+   large-scale background orchestration where reviewers adversarially
+   cross-check each other's findings before reporting, a substantive diff
+   is a natural fit — that scale costs tokens, so routine diffs don't get
+   it. Reviewers get the diff, the acceptance oracle, and a risk lens —
+   **never the author's reasoning trail.**
 3. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as
    explicitly as what to find.

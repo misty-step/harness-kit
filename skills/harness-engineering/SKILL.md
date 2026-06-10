@@ -27,7 +27,7 @@ Engineer the harness. Keep it thin.
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
 | measure skill usage/health/staleness | `references/mode-audit.md` |
-| current model/provider/harness facts | `references/model-provider-harness-index.md` |
+| current model/provider/harness facts | the roster skill's `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
 
 Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
@@ -47,11 +47,12 @@ below — most patterns are prompts, not skills.
 - Treat a skill as a folder, not a markdown file. Use scripts, references,
   examples, templates, assets, evals, or append-only data when prose would
   make the agent reconstruct repeatable work.
-- Model/provider/harness selection facts live in
-  `references/model-provider-harness-index.md`. Keep that file factual:
-  model ids, context, price, latency/smoke evidence, tool support, benchmark
-  sources, deprecations, and freshness. Do not encode role-fit policy there;
-  the lead agent composes task-specific teams from current evidence.
+- Model/provider/harness selection facts live in the roster skill
+  (`skills/roster/references/model-provider-harness-index.md`). Keep that
+  file factual: model ids, context, price, latency/smoke evidence, tool
+  support, benchmark sources, deprecations, and freshness. Do not encode
+  role-fit policy there; the lead agent composes task-specific teams from
+  current evidence.
 - Harness Kit source skills live in `skills/`; repo-local `.agents/skills/` and
   harness-specific skill bridge dirs are `/seed` output for consumer repos.
 - Generated/root `AGENTS.md` is a router, not a manual. Keep non-obvious facts
@@ -139,6 +140,14 @@ valid.
 - Check telemetry before adding or keeping a skill. The 2026-06 audit found
   ~15 of 36 skills unused; usage is a power law. Low usage with high
   value-when-used is fine (say so); low usage with no story is deletion.
+- A new frontier model release silently converts some skill prose from
+  judgment into railroading: instructions tuned for the last model anchor
+  the new one to stale patterns. After a major model ships, re-audit skill
+  and doctrine prose; prefer deleting an instruction over updating it.
+- Name harness features by capability, not vendor. "Use the harness's
+  large-scale orchestration feature when it has one" degrades gracefully
+  across harnesses; "use dynamic workflows" confuses every harness that
+  lacks them.
 - Meta-work ratio: if this repo's commit rate rivals the product repos',
   the flywheel is feeding itself.
 - Stale AGENTS prose is worse than missing prose.

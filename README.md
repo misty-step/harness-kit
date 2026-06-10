@@ -1,7 +1,7 @@
 # Harness Kit
 
 The ad-hoc operator harness for AI-assisted software development. One repo,
-all harnesses (Claude Code, Codex, Pi, Antigravity): ~11 judgment skills, a
+all harnesses (Claude Code, Codex, Pi, Antigravity): ~12 judgment skills, a
 handful of saved prompts, vendored external skills at pinned versions, and
 per-harness configs, installed system-wide by a Rust bootstrap.
 

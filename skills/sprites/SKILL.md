@@ -22,6 +22,7 @@ caller) use the same primitive.
 | Lane shape | Run it |
 |---|---|
 | Quick exploration, repo Q&A, small review | Local native subagent |
+| Massive parallel fan-out within one session (audits, migrations, cross-checked review) | The harness's own large-scale orchestration feature when it has one — sprites add network overhead for nothing there |
 | Heavy build/test loops, big implementation tickets | Sprite |
 | Long-running or detached work (hours, overnight) | Sprite, `--detach` |
 | Parallel competing attempts on the same repo | One sprite per attempt |
