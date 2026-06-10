@@ -47,6 +47,8 @@ final critique of visible UI changes.
 | `/design polish` | Apply the smallest coherent improvement set, then verify render. |
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
 | `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
+| `/design study`, or the user supplies reference sites/screenshots as inspiration | Run the studied-DNA protocol in `references/external-design-references.md` (§ Reference-Driven Work). Extract DNA, never the dress; one primary donor per surface. The full extraction protocol is the installed `nutlope-hallmark` skill's `study` verb. |
+| Greenfield page or identity generation | Compose the installed generation skills — `nutlope-hallmark` (macrostructure-first, theme rotation, slop gates) and `anthropic-frontend-design` (signature-element discipline) — then run `references/anti-slop.md`'s quick gate on the render. |
 
 Use `/qa` for behavior verification and evidence capture, and `/shape` when
 the product direction itself is unsettled.

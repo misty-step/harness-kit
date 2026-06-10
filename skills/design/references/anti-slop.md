@@ -7,11 +7,13 @@ reading:
 
 - **impeccable** (`impeccable.style`) — desloppification; a deterministic
   41-pattern detector; respect the project's existing tokens/components.
-- **hallmark** (`github.com/Nutlope/hallmark`) — macrostructure variance, a
-  65-gate slop test, "two briefs should feel like different sites, not
-  colour-swaps."
-- **taste-skill** (`github.com/Leonxlnx/taste-skill`) — the VARIANCE / MOTION /
-  DENSITY dials and an anti-slop pre-flight.
+- **hallmark** (`github.com/Nutlope/hallmark`, vendored as
+  `nutlope-hallmark`) — macrostructure variance, a 58-gate slop test,
+  pre-emit self-critique, "two briefs should feel like different sites, not
+  colour-swaps." Run the installed skill for builds, audits, and `study`.
+- **taste-skill** (`github.com/Leonxlnx/taste-skill`, vendored as
+  `leon-taste-skill`) — the VARIANCE / MOTION / DENSITY dials and an
+  anti-slop pre-flight.
 
 ## The slop tells (reject on sight)
 
@@ -30,6 +32,10 @@ These are the defaults every model drifts into. Treat each as a bug:
   punctuation in UI strings.
 - **Placeholder/stock content** — charts, avatars, or numbers that do not show
   real product state.
+- **Reference cloning** — a surface traceable to one inspiration source:
+  its hero composition, palette, and type voice reproduced together. DNA
+  travels (macrostructure, type roles, colour-anchor bands); the dress does
+  not. See `external-design-references.md` § Reference-Driven Work.
 - **Meta-copy as UI** — headings, cards, buttons, nav, or empty states that
   explain internal implementation notes, artifact review/publication status,
   future work, or agent uncertainty instead of naming the thing. "Top holdings,

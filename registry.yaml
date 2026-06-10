@@ -201,3 +201,20 @@ sources:
     skills_path: skills
     alias_prefix: "steipete-"
     include: [skill-cleaner]
+
+  # Nutlope/hallmark — Together AI's anti-AI-slop design skill (MIT, May 2026).
+  # Macrostructure-first generation: picks a page shape for the brief, dresses
+  # it in one of twenty named themes, runs a 57-gate slop test plus pre-emit
+  # self-critique. Four verbs: build (default), `audit`, `redesign`, and
+  # `study <screenshot|URL>` — extracts the DNA of an admired design
+  # (macrostructure, type pairing, colour anchor) while refusing pixel-clones.
+  # `study` is the missing discipline our /design skill points at for
+  # reference-driven work: inspiration distillation with a no-clone gate.
+  # MIT licensed upstream; vendored set is committed for reviewable diffs.
+  - repo: Nutlope/hallmark
+    ref: main
+    pin: aeb42fb354ff4efa36ab475773a082315a3af2ce
+    layout: flat
+    skills_path: skills
+    alias_prefix: "nutlope-"
+    include: [hallmark]
