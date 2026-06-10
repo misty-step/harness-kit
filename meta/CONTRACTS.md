@@ -58,6 +58,20 @@ Artifacts that prove behavior (screenshots, transcripts, request replays)
 live under `.evidence/<branch>/<date>/` when committed, and are linked
 directly from briefs/PRs — never described without a path.
 
+## 6. Loop guardrails (Mode B precondition)
+
+A loop that can't halt is a billing incident, not automation. Before any
+Mode B loop runs unattended, it names all three hard stops:
+
+- **Max iterations** — a ceiling, not a vibe.
+- **No-progress detection** — same failure twice, or no state change
+  between ticks, halts and surfaces instead of retrying.
+- **Token/dollar budget** — per run and per day.
+
+A halted loop files what it found (ticket, receipt, alert) and stops. The
+verifier that decides "done" runs in a fresh context, never the worker
+that produced the result.
+
 ## Mode B roadmap (owned by bitterblossom)
 
 First workload: orchestrated code review (the absorbed Cerberus mission) —

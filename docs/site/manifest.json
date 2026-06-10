@@ -152,7 +152,7 @@
       "source": "skills/deliver/SKILL.md"
     },
     {
-      "description": "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: \"make this look better\", \"improve the design\", \"polish the UI\", \"critique this screen\", \"design pass\", \"art direction\", \"scaffold design\", docs layout, report polish, generated diagrams/images, screenshots, decks, dashboards, charts, or any product-facing visual artifact. Trigger: /design.",
+      "description": "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: \"make this look better\", \"improve the design\", \"polish the UI\", \"critique this screen\", \"design pass\", \"art direction\", \"scaffold design\", \"prototype this\", \"show me a few options\", \"mock up variations\", docs layout, report polish, generated diagrams/images, screenshots, decks, dashboards, charts, or any product-facing visual artifact. Trigger: /design, /prototype.",
       "icon": "catalog",
       "id": "skill:design",
       "kind": "skill",

@@ -32,9 +32,12 @@ Engineer the harness. Keep it thin.
 
 Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
 are written directly into that repo's `.agents/skills/` with its real
-routes and commands; this skill owns the craft either way. Turning a proven
-session pattern into a first-party primitive starts at the primitive test
-below — most patterns are prompts, not skills.
+routes and commands; this skill owns the craft either way. For a repo's
+verification skill, interview the operator first: the manual checks they
+run after the agent responds and before merge are the spec — encode each
+check that has a tool. Turning a proven session pattern into a first-party
+primitive starts at the primitive test below — most patterns are prompts,
+not skills.
 
 ## Contract
 
@@ -61,6 +64,10 @@ below — most patterns are prompts, not skills.
   vendoring is exceptional and must earn its complexity.
 - Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
   shaped ticket explicitly asks.
+- Harness-specific accelerators (e.g. orchestration-workflow templates) may
+  ride inside a skill folder as assets the prose names as optional — a
+  harness without the feature must lose nothing by ignoring them. Build one
+  only after telemetry shows the pattern recurring; never pre-author.
 
 ## Delegation Judgment
 

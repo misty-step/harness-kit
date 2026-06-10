@@ -22,6 +22,13 @@ session before writing it. Place each rule in the highest-leverage layer —
 hook/gate/test over skill prose over always-loaded doctrine. Doctrine lines
 cost every future session; spend them sparingly.
 
+A failure note is not a lesson. Run the full ladder before writing:
+investigate why it happened, verify the diagnosis against the live repo
+(turn the guess into a checked fact), then distill the verified fact into a
+general rule — and write it where it gets consulted, not into a graveyard
+file. "Maybe X?" stored as memory is a future session re-deriving the same
+mistake.
+
 In this repo, apply edits directly and list them. In other repos, write to
 the repo's own AGENTS.md/CLAUDE.md or propose a harness-kit change as a
 `backlog.d/` ticket.

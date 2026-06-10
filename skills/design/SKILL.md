@@ -6,10 +6,11 @@ description: |
   Requires screenshot, URL, rendered artifact, or explicit file plus intent.
   Use when: "make this look better", "improve the design", "polish the UI",
   "critique this screen", "design pass", "art direction", "scaffold design",
+  "prototype this", "show me a few options", "mock up variations",
   docs layout, report polish, generated diagrams/images, screenshots, decks,
   dashboards, charts, or any product-facing visual artifact.
-  Trigger: /design.
-argument-hint: "[audit|redesign|polish|critique|scaffold] <artifact-or-surface>"
+  Trigger: /design, /prototype.
+argument-hint: "[audit|redesign|polish|critique|scaffold|prototype] <artifact-or-surface>"
 ---
 
 # /design
@@ -49,6 +50,7 @@ final critique of visible UI changes.
 | `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
 | `/design study`, or the user supplies reference sites/screenshots as inspiration | Run the studied-DNA protocol in `references/external-design-references.md` (§ Reference-Driven Work). Extract DNA, never the dress; one primary donor per surface. The full extraction protocol is the installed `nutlope-hallmark` skill's `study` verb. |
 | Greenfield page or identity generation | Compose the installed generation skills — `nutlope-hallmark` (macrostructure-first, theme rotation, slop gates) and `anthropic-frontend-design` (signature-element discipline) — then run `references/anti-slop.md`'s quick gate on the render. |
+| `/design prototype`, "show me options", new feature UI where one-shot taste risk is high | Variation fan (below): 3–5 divergent options in one HTML file, operator picks, build the winner. |
 
 Use `/qa` for behavior verification and evidence capture, and `/shape` when
 the product direction itself is unsettled.
@@ -105,6 +107,24 @@ Directions must differ structurally, not just by palette:
 - Inversion: challenge the current organizing metaphor.
 
 For each direction, name what it sacrifices. Recommend one.
+
+## Variation Fan (prototype)
+
+For new feature UI or any surface where one-shot taste risk is high, don't
+one-shot: build 3–5 variations in **one self-contained HTML file** (inline
+CSS/JS, no build step), labeled side-by-side, and let the operator pick.
+
+- Variations must differ structurally — use the Redesign Directions axes
+  above as divergence prompts. Five palette swaps of one layout is one
+  variation.
+- Each variation uses real content from the product, not lorem ipsum;
+  fake content hides hierarchy failures.
+- The fan is a sketch, not the implementation. After the pick, build the
+  winner properly in the real stack with the generation skills and the
+  anti-slop gate; never ship the prototype file.
+- When the field is big and the operator doesn't want to judge it all, a
+  harness with large-scale orchestration can run a tournament against a
+  rubric to pre-filter — but the final pick stays human.
 
 ## Implementation Guardrails
 

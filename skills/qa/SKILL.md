@@ -60,7 +60,10 @@ A pass report names: the exact surface exercised (command/URL/route/tool
 call), what was observed, the evidence artifact, what was NOT covered, and
 whether a post-ship signal exists for this behavior (if nothing would page
 or log when it breaks, say so — that's instrumentation debt, not a
-footnote). When the same agent drove the app and judges the result, have a
+footnote). For AI-feature surfaces, a post-ship signal means behavior-level
+classifiers — hallucination, tool failure, refusal, user frustration — not
+just exception logging; stack traces don't fire when an agent confidently
+does the wrong thing. When the same agent drove the app and judges the result, have a
 fresh subagent attack the pass claim before signing off: what path would
 embarrass us in production?
 
@@ -71,6 +74,8 @@ embarrass us in production?
 - **Shape first, tools second.** Tool-first thinking is how this skill once
   decayed into browser-only framing.
 - **Generic QA is a stopgap.** The durable fix is a repo-local verification
-  skill with the real routes and commands baked in — file the gap.
+  skill with the real routes and commands baked in — file the gap. Build it
+  by interviewing the operator: the manual checks they run before merging
+  are the spec.
 - Browser tool selection and evidence conventions: `references/browser-tools.md`,
   `references/evidence-capture.md`.
