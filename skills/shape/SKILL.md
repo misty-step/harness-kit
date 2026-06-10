@@ -92,9 +92,9 @@ design is contestable.
 ## Critique
 
 Your own design read is not a review. When the design is contestable, hand
-the draft packet — artifact only, not your reasoning trail — to fresh-context
-critique, preferably a different model family, and ask for the production
-failure that would embarrass us. Lens prompts live in
+the draft packet — artifact only, not your reasoning trail — to adversarial
+fresh-context critique, preferably a different model family, and ask for the
+production failure that would embarrass us. Lens prompts live in
 `references/critique-personas.md`. Skip for trivial shapes.
 
 ## Gotchas

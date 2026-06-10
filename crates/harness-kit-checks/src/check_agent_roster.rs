@@ -579,37 +579,21 @@ fn validate_completion_evidence(repo: &Path) -> Result<()> {
 fn validate_groom_completeness_contract(repo: &Path) -> Result<()> {
     let text = read_to_string(&repo.join("skills/groom/SKILL.md"))?.to_lowercase();
     let mut issues = Vec::new();
+    // Contract revised 2026-06 (bitter-lesson thinning): groom asserts
+    // judgment outcomes, not fanout quotas or named research vendors.
     for (label, phrases) in [
-        ("groom completeness gate", vec!["groom completeness gate"]),
+        ("mandatory tidy", vec!["tidy is the price of admission"]),
+        ("premise challenge", vec!["challenge premises"]),
+        ("live-code evidence", vec!["read the live code"]),
+        ("product aperture", vec!["product should become"]),
         (
-            "minimum strategic fanout",
-            vec!["minimum strategic fanout", "at least seven"],
+            "deletion proposals",
+            vec!["propose deletions", "humans ratify"],
         ),
-        (
-            "mandatory research",
-            vec![
-                "research is mandatory",
-                "exa",
-                "xai/grok",
-                "thinktank",
-                "codebase",
-            ],
-        ),
-        (
-            "product aperture",
-            vec!["ideal-form", "product should become"],
-        ),
-        ("security privacy", vec!["security/privacy"]),
-        ("agent readiness", vec!["agent-readiness"]),
-        ("simplification deletion", vec!["simplification/deletion"]),
-        (
-            "operator artifact",
-            vec![
-                "providers used",
-                "accepted/rejected findings",
-                "residual risks",
-            ],
-        ),
+        ("theme then recommend", vec!["theme, then recommend"]),
+        ("backlog cap", vec!["reduction session"]),
+        ("ticket oracle standard", vec!["goal + oracle"]),
+        ("refuse auto-delete", vec!["never auto-delete"]),
     ] {
         let missing: Vec<_> = phrases
             .into_iter()

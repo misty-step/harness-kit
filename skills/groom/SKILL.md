@@ -15,8 +15,8 @@ argument-hint: "[audit|--emphasis explore|rethink|moonshot|scaffold] [context]"
 # /groom
 
 Keep `backlog.d/` true: tidy what shipped, challenge what's queued, surface
-what's missing, propose what to delete. Every run does all four — tidy is
-the price of admission, and a groom that only lists is not a groom.
+what's missing, propose what to delete. Every run does all four —
+tidy is the price of admission, and a groom that only lists is not a groom.
 
 The backlog diff is the artifact. Prose exists to justify it.
 
@@ -67,8 +67,8 @@ scan recipes live in `references/investigation-bench.md`.
   "everything is fine" means the investigation was shallow.
 - **Challenge premises of the top items.** Symptom or root cause? A ticket's
   framing is a first draft. Reframe before re-ranking.
-- **Open the aperture.** What should the product become, separately from
-  what the next ticket is? What's missing from the backlog entirely?
+- **Open the aperture.** Ask what the product should become, separately
+  from what the next ticket is. What's missing from the backlog entirely?
 - **Propose deletions.** The best groom shrinks the backlog. Every deletion
   is a proposal with rationale — humans ratify removals.
 - **Theme, then recommend.** Group findings by shared root cause, rank by
