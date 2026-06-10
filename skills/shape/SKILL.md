@@ -78,6 +78,17 @@ acknowledgment. High-risk work (money/auth/migrations, expensive-to-detect
 regressions) earns formal examples and a hardening budget — route through
 `/hardening` rather than inflating the packet.
 
+## Delegation Judgment
+
+Delegate on judgment per the shared Roster contract: native subagents by
+default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: one lane to map repo constraints, one for prior art or
+premise challenge; fresh-context critique of the draft packet when the
+design is contestable.
+
 ## Critique
 
 Your own design read is not a review. When the design is contestable, hand

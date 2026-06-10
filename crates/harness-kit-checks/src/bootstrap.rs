@@ -189,7 +189,25 @@ fn install_cli(home: &Path, lines: &mut Vec<String>) -> Result<()> {
     let bin_dir = home.join(".harness-kit/bin");
     fs::create_dir_all(&bin_dir)?;
     let destination = bin_dir.join("harness-kit-checks");
-    fs::copy(env::current_exe()?, &destination)
+    let current = env::current_exe()?;
+    // When the running binary IS the installed one (invoked via PATH or a
+    // symlink into bin_dir), fs::copy(src, src) truncates it to zero bytes.
+    // Skip the self-copy; there is nothing newer to install.
+    let same_file = match (current.canonicalize(), destination.canonicalize()) {
+        (Ok(a), Ok(b)) => a == b,
+        _ => false,
+    };
+    if same_file {
+        lines.push(green("    bin/harness-kit-checks (already current)"));
+        lines.push(String::new());
+        return Ok(());
+    }
+    // Copy via temp + rename so a concurrent invocation never sees a
+    // half-written binary.
+    let staging = bin_dir.join(".harness-kit-checks.tmp");
+    fs::copy(&current, &staging)
+        .with_context(|| format!("failed to stage {}", staging.display()))?;
+    fs::rename(&staging, &destination)
         .with_context(|| format!("failed to install {}", destination.display()))?;
     lines.push(green("    bin/harness-kit-checks"));
     lines.push(String::new());

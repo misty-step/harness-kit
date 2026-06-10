@@ -41,6 +41,17 @@ cargo run --locked -p harness-kit-checks -- backlog archive "$id"   # idempotent
 Trailer canon lives in `skills/ship/SKILL.md`. Emit trailers only via
 `git interpret-trailers`; hand-formatted variants are invisible to tooling.
 
+## Delegation Judgment
+
+Delegate on judgment per the shared Roster contract: native subagents by
+default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
+`harnesses/shared/AGENTS.md` (Roster).
+
+Local lane guidance: independent lanes for premise challenge, technical
+hotspots, product opportunity, security/privacy, and simplification when the
+session's stakes warrant them; the lead keeps final prioritization.
+
 ## Judgment (the actual grooming)
 
 Investigate before opining, and let the evidence — not a quota — set the
