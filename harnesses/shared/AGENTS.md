@@ -187,10 +187,10 @@ stacks; work with that grain, not against it.
   fresh-context critic on a different model family has decorrelated failure
   modes. Give critics ONLY the artifact (diff + oracle); never the author's
   reasoning trail.
-- **Peer harness CLIs are available** — codex, pi, opencode, droid,
-  cursor-agent, grok, agy, hermes, gemini, thinktank, and claude itself.
-  The `/roster` skill enumerates them with headless invocations and current
-  model facts. Reach for one when you can name what it adds.
+- **Peer harness CLIs are available** — codex, pi, opencode, cursor-agent,
+  grok, agy, hermes, thinktank, and claude itself. The `/roster` skill
+  enumerates them with headless invocations and current model facts. Reach
+  for one when you can name what it adds.
 - **Sprites are substrate, not providers.** Route heavy, long-running,
   detached, or isolation-needing lanes to `/sprites` regardless of which
   model runs them.

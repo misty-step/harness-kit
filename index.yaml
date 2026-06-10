@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-10T18:33:01Z
+# Generated: 2026-06-10T19:01:47Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -40,9 +40,9 @@ skills:
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
   - name: roster
-    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, claude, pi, opencode, droid, cursor-agent, grok, agy, hermes, gemini, thinktank) and how to invoke each headlessly. A capability map"
+    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, claude, pi, opencode, cursor-agent, grok, agy, hermes, thinktank) and how to invoke each headlessly. A capability map, not a quota: "
     source: first-party
-    tags: [a,agent,agy,ai,capability,claude,clis,codex,cursor-agent,droid]
+    tags: [a,agent,agy,ai,capability,claude,clis,codex,cursor-agent,enumerates]
   - name: shape
     description: "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"pl"
     source: first-party

@@ -2,7 +2,7 @@
 name: roster
 description: |
   Enumerates the peer AI agent CLIs installed on this machine (codex, claude,
-  pi, opencode, droid, cursor-agent, grok, agy, hermes, gemini, thinktank)
+  pi, opencode, cursor-agent, grok, agy, hermes, thinktank)
   and how to invoke each headlessly. A capability map, not a quota: useful
   for fresh-context adversarial review on a different model family, second
   opinions, competing attempts, and wide benches. Use when: "ask codex",
@@ -48,11 +48,9 @@ add the prompt as the argument or via stdin.
 | `claude` | Claude Code (Opus/Fable) | `claude -p "<task>"` (`--model`, `--effort`) |
 | `pi` | Pi over OpenRouter (Kimi, DeepSeek, …) | `pi -p --provider openrouter --model <id> "<task>"` |
 | `opencode` | OpenCode | `opencode run "<task>"` |
-| `droid` | Factory Droid | `droid exec "<task>"` (`--auto low\|medium\|high`) |
 | `cursor-agent` | Cursor (composer) | `cursor-agent -p "<task>"` |
 | `grok` | xAI Grok | `grok -p "<task>"` (`--model`, `--effort`) |
 | `agy` | Antigravity (Gemini) | `agy --print "<task>"` |
-| `gemini` | Gemini CLI | `gemini -p "<task>"` |
 | `hermes` | Hermes agent | `hermes -z "<task>"` (`-m <model>`) |
 | `thinktank` | Multi-model bench | `thinktank review` · `thinktank run <bench> --input "<task>"` |
 
