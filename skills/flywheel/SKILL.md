@@ -37,8 +37,8 @@ encode the invariants that aren't inferable from the leaf names.
   `max_cycles`, token budget, backlog include filters, and stop conditions.
   If absent, use invocation flags and built-in defaults.
 - Provider-roster behavior lives in the leaf workflow skills. If the repo has
-  `.harness-kit/agents.yaml`, `/flywheel` expects two or more roster-member
-  receipts or explicit exceptions in phase evidence, but it does not dispatch
+  `.harness-kit/agents.yaml`, `/flywheel` expects receipts for whatever
+  lanes the leaf skills judged necessary, but it does not dispatch
   providers directly.
 - The cycle closeout includes the roster delegation report from `/ship`,
   plus any provider-health follow-ups surfaced by failed or low-signal lanes.
@@ -55,11 +55,11 @@ encode the invariants that aren't inferable from the leaf names.
 - Harness edits from reflect never touch master. `/ship` routes them to
   `harness/reflect-outputs` for human review.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Leaf skills own dispatch; /flywheel verifies phase receipts and uses lanes only for cycle strategy, risk critique, and closure-state review.

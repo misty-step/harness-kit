@@ -62,14 +62,14 @@ synced locally.
 - Provider CLIs are tools. Do not wrap them in semantic orchestration unless a
   shaped ticket explicitly asks.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gate design, and regression risk; native in-thread subagents may supplement but do not satisfy the roster floor. Do not treat a missing repo-local roster as a waiver; use the resolver-backed probe.
+Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gate design, and regression risk. Do not treat a missing repo-local roster as a waiver; use the resolver-backed probe.
 
 ## Quality Bar
 

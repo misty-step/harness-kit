@@ -23,7 +23,7 @@ tasks (renames, find/replace, dep bumps) they're overhead — use
 judgment. The threshold is "does this need a judgment call?", same
 as for delegation.
 
-## Delegation Floor
+## Delegation Judgment
 
 This is a reference/self-check skill, so reading it does not satisfy the roster
 floor. When the underlying task is substantive, use the caller's Delegation

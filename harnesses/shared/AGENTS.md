@@ -83,27 +83,30 @@ context rationalizes the author's choices. Hand critics ONLY the artifact
 allowed only as a fallback note; it does not count as fresh-context critique.
 
 ### Dispatch through lane cards
-Roles, not files. For substantive work, use `/dispatch` or the active skill's
-local dispatch guidance to compose prompt-native lane cards: role, objective,
-scope, oracle, output shape, boundaries, and receipt expectation. Most
-non-trivial work runs as ≥2 lanes: an executor plus a fresh-context critic;
-add a planner when the approach is non-obvious. **Milestone critic gate:** at
-each implementation milestone, a fresh read-only critic sees only the diff +
-the packet oracle + the todo and must return no blocking gap before work
-advances — skip only for trivial diffs (<20 LOC, single file).
+Roles, not files. When delegating, use `/dispatch` or the active skill's
+local dispatch guidance to compose prompt-native lane cards: end state,
+success criteria, verification affordances, boundaries, output shape, and
+receipt expectation. Lanes are outcome-shaped and big: the oracle field is
+load-bearing, scope is a boundary declaration, and the lane agent owns its
+own decomposition. Do not pre-shred work into atomic tasks; a lane that
+cannot verify itself is under-oracled, not under-decomposed.
+**Milestone critic gate:** at each implementation milestone, a fresh
+read-only critic sees only the diff + the packet oracle + the todo and must
+return no blocking gap before work advances — prefer a different model
+family for decorrelated judgment; skip only for trivial diffs (<20 LOC,
+single file).
 
 ### Parallel lanes by default
 When lanes do not depend on each other, run them in parallel: split scope,
-competing attempts, or reviewer/critic roles.
+competing attempts, or reviewer/critic roles. Heavy, long-running, or
+isolated lanes route to sprites (`/sprites`); quick exploration stays local.
 
 ### Consult the composition facts
-Before deciding that repo work is trivial, solo, or already assigned to the
-primary model, read the current model/provider/harness reference sheet from the
-installed `harness-engineering` skill
-(`references/model-provider-harness-index.md`) and use it to design the
-dispatch composition. Skip only for a mechanical command already chosen, then
-record the waiver. The sheet is factual context, not role-fit policy: runtime
-probes, receipts, task evidence, and lead judgment remain authoritative.
+When composing multi-provider or sprite lanes, read the current
+model/provider/harness reference sheet from the installed
+`harness-engineering` skill (`references/model-provider-harness-index.md`).
+The sheet is factual context, not role-fit policy: runtime probes, receipts,
+task evidence, and lead judgment remain authoritative.
 
 ### Stop the grind
 Stop after two tool failures or three edits to the same file. Re-read the
@@ -141,9 +144,12 @@ Concrete trigger → action. When a row matches, take the action.
 ### Delegate or go solo
 | Trigger | Action |
 |---|---|
-| Substantive research / design / implementation / review / QA / diagnosis / harness work, roster available | Probe roster, dispatch ≥2 providers, record receipts (see **Roster**) |
-| Mechanical command already chosen | Direct solo |
-| Emergency state preservation; user forbids delegation; <2 providers available | Direct solo (record the waiver) |
+| Exploration, scoped search, small review | Native subagent (the harness's own delegation) |
+| Milestone or pre-merge critique of your own work | Fresh-context critic, different model family preferred (see **Roster**) |
+| Heavy, long-running, parallel, or isolation-needing lane | Sprite lane via `/sprites`, receipt recorded |
+| Bounded, well-specified lane where a cheaper provider is demonstrably fit | Roster provider via `/dispatch`, receipt recorded |
+| Recurring event-driven workflow worth a bespoke agent | Eval-driven agent design (offline), not ad-hoc dispatch |
+| Mechanical command already chosen; emergency preservation; user forbids delegation | Direct solo |
 | Need tool/permission isolation only | Static project subagent |
 
 ### Search vs research
@@ -170,35 +176,36 @@ Concrete trigger → action. When a row matches, take the action.
 
 ## Roster
 
-If a provider roster is available (repo `.harness-kit/agents.yaml` or system `~/.harness-kit/agents.yaml`), this section is the single
-source for the delegation floor: skills point here rather than restating it.
+This section is the single source for delegation judgment: skills point here
+rather than restating it. There is no provider quota. Frontier orchestrators
+are trained on their own delegation stacks; work with that grain, not against
+it.
 
-- Probe it before substantive work. A probe is not a provider attempt — probe
-  first, then dispatch a bounded provider prompt through the configured command
-  or an equivalent smoke path.
-- Dispatch two or more available providers for research, design,
-  implementation, review, QA, diagnosis, backlog, reflection, and harness
-  mutation.
-- Dispatch specialized lanes, not generic helpers. Use `/dispatch` lane cards
-  for reusable composition: specifier, repo investigator, builder, refactorer,
-  architect, hardener, QA driver, persona tester, product synthesizer, evidence
-  verifier, release-risk critic, or equivalent phase-specific role. Prefer
-  different providers for genuinely different judgments when the roster
-  supports it.
-- Native in-thread subagents are supplemental fresh-context lanes. They do not
-  satisfy the roster floor. Count only configured provider ids from the roster,
-  such as `codex`, `claude`, `pi`, `agy`, `cursor-agent`, or `grok-build` as
-  one lane among others. `manual` is human-supplied evidence, not a dispatch
-  lane.
-- Use independent lanes: split scope, competing attempts, or reviewer/critic
-  roles. Parallel by default when lanes do not depend on each other.
-- Record meaningful attempts via the repo receipt script or `/dispatch` run
-  card.
-- Final answer includes: providers used, why, parallel/split/competing shape,
-  accepted/rejected output, failures, waiver, receipt ids.
-
-Direct solo work only: mechanical command already chosen; emergency state
-preservation; user forbids delegation; fewer than two providers available.
+- **Native first.** The harness's own subagents are the default delegation
+  path for exploration, scoped builds, and review fan-out. They need no
+  probe, no receipt, no waiver.
+- **Cross-model criticism is the strongest multi-provider case.** A
+  fresh-context critic on a different model family has decorrelated failure
+  modes. Give critics ONLY the artifact (diff + oracle); never the author's
+  reasoning trail.
+- **Roster providers** (repo `.harness-kit/agents.yaml` or system
+  `~/.harness-kit/agents.yaml`: `codex`, `claude`, `pi`, `agy`,
+  `cursor-agent`, `grok-build`, …) earn a lane when the card is bounded and
+  specific enough that harness identity doesn't matter, and the provider is
+  better, cheaper, or independent in a way the lead can name. Probe before
+  dispatching; a probe is not a provider attempt.
+- **Sprites are substrate, not providers.** Route heavy, long-running,
+  parallel, or isolation-needing lanes to `/sprites` regardless of which
+  model runs them. The lane card is the same contract either way.
+- **Provider experimentation belongs offline.** Designing bespoke
+  cheap-model agents for recurring workflows is eval-driven work
+  (benchmarks, auto-research loops), not something to improvise inside an
+  ad-hoc orchestration run.
+- Record meaningful roster and sprite lanes via the repo receipt script,
+  `/dispatch` run card, or sprite-lane receipts. `manual` is human-supplied
+  evidence, not a dispatch lane.
+- Multi-lane answers name: lanes used and why, parallel/split/competing
+  shape, accepted/rejected evidence, failures, receipt ids.
 
 Provider output is evidence, not authority. The lead owns the result.
 

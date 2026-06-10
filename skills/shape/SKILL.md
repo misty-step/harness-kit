@@ -27,14 +27,14 @@ shapes.
 
 Accept: raw idea, backlog.d/ item, issue ID, or observation.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use one lane to map repo constraints and another for prior-art or premise challenge; native in-thread subagents may add signal but do not satisfy the roster floor.
+Local lane guidance: Use one lane to map repo constraints and another for prior-art or premise challenge.
 
 Spawn parallel sub-agents to gather context fast: one to map the relevant
 codebase area (files, patterns, constraints), another to search for prior art
@@ -346,7 +346,7 @@ If you can't write an oracle, the goal isn't clear enough. Go back to Phase 2.
 ## Gotchas
 
 - **Premise unchallenged:** A shape request accepts the stated framing by default. Before Phase 2, five-whys the goal. If the request says "feature X," name the underlying user outcome — the best path to it may not be X. A solid shape of the wrong problem is the failure mode this skill exists to prevent, not cause.
-- **Alternatives-in-name-only:** Three "options" that are the same idea in three outfits is one option. Real divergence means structurally distinct approaches — typically one minimal-viable, one ideal, and one that inverts a load-bearing assumption. If you can't articulate how each would fail differently, go back. For M+ effort, the philosophy bench (ousterhout/carmack/grug) is persona diversity, not foundation diversity — also use `/research` and the roster floor for genuinely heterogeneous signal.
+- **Alternatives-in-name-only:** Three "options" that are the same idea in three outfits is one option. Real divergence means structurally distinct approaches — typically one minimal-viable, one ideal, and one that inverts a load-bearing assumption. If you can't articulate how each would fail differently, go back. For M+ effort, the philosophy bench (ousterhout/carmack/grug) is persona diversity, not foundation diversity — also use `/research` and the shared Roster contract for genuinely heterogeneous signal.
 - **Vague oracles:** "It should work" is not an oracle. "These 3 tests pass and this endpoint returns 200" is. See `references/executable-oracles.md`.
 - **Checkbox oracles:** Prose checklists drift. Write oracles as commands that return pass/fail, not prose that requires interpretation.
 - **Buried deliverable:** If a reader must reach the implementation sequence to

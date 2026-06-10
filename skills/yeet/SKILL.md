@@ -31,17 +31,18 @@ One command. Executive authority. No approval gates.
    even if the tree was built in one session.
    Provider-roster receipts are part of classification evidence when present.
    If classification requires substantive judgment and no receipts exist,
-   dispatch two or more roster members before packaging completed work.
+   a fresh-context critic lane (different model family preferred) reviews
+   the packaging before completed work ships.
 4. **Never lose work.** Untracked scratch that might be the user's in-flight
    thinking gets moved, not deleted, unless it's unambiguous debris.
 5. **Conventional Commits, always.** Type, optional scope, imperative subject.
    Body explains *why*, not *what*.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use lanes for diff classification and risk review; withhold final commit intent until synthesis, then the lead owns staging, messages, verification, and receipts.

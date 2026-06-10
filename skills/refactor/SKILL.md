@@ -17,11 +17,11 @@ Reduce complexity without reducing correctness. Favor fewer states, clearer
 names, stronger invariants, better tests, and current docs. Deletion first,
 then consolidation, then abstraction, then mechanical cleanup.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use one lane to map complexity and another to challenge behavior-preservation risk; add a builder lane for the selected change.

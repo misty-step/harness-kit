@@ -20,11 +20,11 @@ in the evidence set when they are relevant. Reflection should convert
 provider-lane results and failure modes into backlog, harness, or coaching
 outputs without inventing hidden rankings.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use lanes to surface independent failure interpretations and improvement proposals; the lead owns synthesis and codification choices.

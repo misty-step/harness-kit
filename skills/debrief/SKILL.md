@@ -43,20 +43,19 @@ Calibrate to the user's wording:
 
 - "quick debrief", "where are we" -> concise report, no provider lanes unless
   scope is broad or uncertain.
-- "thorough", "comprehensive", "aggressive", "deep retro" -> probe roster and
-  use two or more provider lanes for independent interpretation or risk review.
+- "thorough", "comprehensive", "aggressive", "deep retro" -> fan out lanes
+  (native or cross-model) for independent interpretation or risk review.
 - "right now" usually means prioritize useful synthesis over exhaustive
   archaeology; name gaps instead of blocking on perfect history.
 
 When using provider lanes, give them live artifacts only: diff, backlog, commit
 range, traces, or docs. Do not leak the lead's conclusions.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies for substantive or broad debriefs: probe the roster
-first; dispatch two or more providers; direct solo only for quick local
-catch-up, mechanical state summaries, emergency preservation, user-forbidden
-delegation, or fewer-than-two-providers cases. See
+For substantive or broad debriefs, delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized lanes for git/history reconstruction,

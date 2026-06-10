@@ -19,18 +19,17 @@ MVP supports Claude Code JSONL transcripts and `--from-current` style local
 transcript extraction. Gemini, Codex batch ingestion, hosted transcript stores,
 and automatic publication are future work.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies for novelty classification, portability critique, and
-new skill design: probe the roster first; dispatch two or more providers;
-direct solo only for deterministic parser/CRUD commands, emergency
-preservation, user-forbidden delegation, or fewer-than-two-providers cases. See
+For novelty classification, portability critique, and new skill design,
+delegate on judgment per the shared Roster contract: native subagents by
+default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized lanes for transcript-pattern mining,
 skill-design critique, portability/security review, and generated-skill
-validator. Native in-thread subagents may supplement but do not satisfy the
-roster floor.
+validator.
 
 ## Workflow
 
@@ -38,9 +37,9 @@ roster floor.
    `cargo run --locked -p harness-kit-checks -- skillify-parse-transcript`.
 2. Classify novelty and repeatability with
    `cargo run --locked -p harness-kit-checks -- skillify-classify`.
-   It dispatches two or more roster providers through the existing
-   `harness-kit-checks dispatch-agent` boundary and records delegation
-   receipts.
+   It may dispatch roster providers through the existing
+   `harness-kit-checks dispatch-agent` boundary when their judgment is
+   distinct, recording delegation receipts.
 3. Create or update the candidate skill with
    `cargo run --locked -p harness-kit-checks -- skillify-skill-crud`.
 4. Validate frontmatter, portability, and generated skill shape before

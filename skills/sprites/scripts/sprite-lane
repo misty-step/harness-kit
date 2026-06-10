@@ -1,0 +1,229 @@
+#!/usr/bin/env bash
+# sprite-lane — run one lane card on a Fly Sprite, deterministically provisioned.
+#
+# Thin by doctrine: launch, bound, record. No daemon, no fleet state beyond
+# the sprites themselves and local receipts. Provisioning is the golden-
+# checkpoint pattern: bake once -> checkpoint -> reset between lanes.
+# Sprites cannot fork from another sprite's checkpoint (platform limitation),
+# so determinism = idempotent bake + per-sprite golden checkpoint.
+set -euo pipefail
+
+RECEIPTS_DIR="${SPRITE_LANE_RECEIPTS:-$HOME/.harness-kit/receipts/sprite-lane}"
+GOLDEN_MARKER=".sprite-lane-golden"
+BAKE_VERSION="1"
+
+usage() {
+	cat <<'EOF'
+Usage:
+  sprite-lane bake <sprite>                      Provision (or re-provision) a sprite and
+                                                 cut its golden checkpoint. Idempotent.
+  sprite-lane run <sprite> --repo <url|gh-slug> --card <file>
+                [--branch <b>] [--harness codex|claude] [--detach] [--fresh]
+                                                 Run one lane card. --fresh restores the
+                                                 golden checkpoint first. --detach returns
+                                                 immediately; fetch results later.
+  sprite-lane status <sprite>                    Show golden/bake state and running lanes.
+  sprite-lane fetch <sprite> <lane-id>           Pull log + receipt for a detached lane.
+  sprite-lane reset <sprite>                     Restore the golden checkpoint.
+
+Receipts land in ~/.harness-kit/receipts/sprite-lane/.
+Auth: codex lanes reuse local ~/.codex/auth.json (file credential store).
+      claude lanes need ANTHROPIC_API_KEY exported locally.
+EOF
+	exit 1
+}
+
+sx() { # sx <sprite> <script> [--file src:dest ...]
+	local sprite="$1" script="$2"
+	shift 2
+	sprite exec -s "$sprite" "$@" -- bash -lc "$script"
+}
+
+die() {
+	echo "sprite-lane: $*" >&2
+	exit 1
+}
+
+golden_ok() {
+	sx "$1" "test -f \$HOME/$GOLDEN_MARKER && grep -q \"^v$BAKE_VERSION\$\" \$HOME/$GOLDEN_MARKER" >/dev/null 2>&1
+}
+
+ensure_sprite() {
+	local sprite="$1"
+	if ! sprite list 2>/dev/null | grep -qx "$sprite"; then
+		echo "==> creating sprite $sprite"
+		sprite create --skip-console "$sprite"
+	fi
+}
+
+cmd_bake() {
+	local sprite="${1:?sprite name required}"
+	ensure_sprite "$sprite"
+
+	local auth_src="$HOME/.codex/auth.json"
+	[ -f "$auth_src" ] || die "no $auth_src; run 'codex login' locally first"
+	local gh_token
+	gh_token="$(gh auth token 2>/dev/null || true)"
+
+	echo "==> baking $sprite (bake v$BAKE_VERSION)"
+	# File uploads happen before exec, so the target dir must exist first.
+	sx "$sprite" "mkdir -p \$HOME/.codex \$HOME/lanes \$HOME/work"
+	# Idempotent provision. Every step checks before acting so re-bakes are
+	# cheap and a half-baked sprite converges instead of erroring.
+	sx "$sprite" "
+		set -euo pipefail
+		command -v node >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq nodejs npm; }
+		command -v git  >/dev/null || sudo apt-get install -y -qq git
+		command -v codex  >/dev/null || sudo npm install -g @openai/codex
+		command -v claude >/dev/null || sudo npm install -g @anthropic-ai/claude-code
+		grep -q 'cli_auth_credentials_store = \"file\"' \$HOME/.codex/config.toml 2>/dev/null \
+			|| printf '\ncli_auth_credentials_store = \"file\"\n' >> \$HOME/.codex/config.toml
+		git config --global user.name  'sprite-lane'
+		git config --global user.email 'sprite-lane@users.noreply.github.com'
+		git config --global credential.helper store
+	" --file "$auth_src:/home/sprite/.codex/auth.json"
+
+	if [ -n "$gh_token" ]; then
+		sx "$sprite" "printf 'https://x-access-token:%s@github.com\n' '$gh_token' > \$HOME/.git-credentials; chmod 600 \$HOME/.git-credentials"
+	fi
+
+	sx "$sprite" "printf 'v%s\n' '$BAKE_VERSION' > \$HOME/$GOLDEN_MARKER"
+	echo "==> cutting golden checkpoint"
+	sprite checkpoint create -s "$sprite" --comment "sprite-lane golden v$BAKE_VERSION" 2>/dev/null \
+		|| sprite checkpoint create -s "$sprite" 2>/dev/null \
+		|| echo "warn: checkpoint create failed; bake state is live but unsnapshotted" >&2
+	echo "==> $sprite baked"
+}
+
+golden_checkpoint_id() {
+	sprite checkpoint list -s "$1" 2>/dev/null \
+		| grep "sprite-lane golden v$BAKE_VERSION" | tail -1 | awk '{print $1}'
+}
+
+cmd_reset() {
+	local sprite="${1:?sprite name required}"
+	local id
+	id="$(golden_checkpoint_id "$sprite")"
+	[ -n "$id" ] || die "no golden checkpoint on $sprite; run: sprite-lane bake $sprite"
+	echo "==> restoring $sprite to golden checkpoint $id"
+	sprite restore -s "$sprite" "$id"
+}
+
+cmd_run() {
+	local sprite="${1:?sprite name required}"
+	shift
+	local repo="" card="" branch="" harness="codex" detach=0 fresh=0
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		--repo) repo="$2"; shift 2 ;;
+		--card) card="$2"; shift 2 ;;
+		--branch) branch="$2"; shift 2 ;;
+		--harness) harness="$2"; shift 2 ;;
+		--detach) detach=1; shift ;;
+		--fresh) fresh=1; shift ;;
+		*) die "unknown flag: $1" ;;
+		esac
+	done
+	[ -n "$repo" ] && [ -n "$card" ] || usage
+	[ -f "$card" ] || die "card not found: $card"
+	case "$repo" in
+	http*|git@*) : ;;
+	*/*) repo="https://github.com/$repo.git" ;;
+	*) die "repo must be a URL or owner/name slug" ;;
+	esac
+
+	ensure_sprite "$sprite"
+	[ "$fresh" = 1 ] && cmd_reset "$sprite"
+	if ! golden_ok "$sprite"; then
+		echo "==> $sprite not baked (or stale bake); baking now"
+		cmd_bake "$sprite"
+	fi
+
+	local repo_name lane_id
+	repo_name="$(basename "$repo" .git)"
+	lane_id="$(date -u +%Y%m%dT%H%M%SZ)-$repo_name-$$"
+	local lane_dir="/home/sprite/lanes/$lane_id"
+
+	echo "==> syncing $repo_name on $sprite"
+	sx "$sprite" "
+		set -euo pipefail
+		cd \$HOME/work
+		if [ -d '$repo_name/.git' ]; then
+			cd '$repo_name' && git fetch --all -q && git reset --hard -q ${branch:+origin/$branch} && git clean -fdq
+		else
+			git clone -q ${branch:+-b $branch} '$repo' '$repo_name'
+		fi
+	"
+
+	local agent_cmd
+	case "$harness" in
+	codex) agent_cmd="codex exec --dangerously-bypass-approvals-and-sandbox \"\$(cat $lane_dir/card.md)\"" ;;
+	claude) agent_cmd="ANTHROPIC_API_KEY='${ANTHROPIC_API_KEY:-}' claude -p --dangerously-skip-permissions \"\$(cat $lane_dir/card.md)\"" ;;
+	*) die "unknown harness: $harness" ;;
+	esac
+
+	mkdir -p "$RECEIPTS_DIR"
+	local started rc=0
+	started="$(date -u +%FT%TZ)"
+
+	if [ "$detach" = 1 ]; then
+		sx "$sprite" "
+			mkdir -p '$lane_dir'
+			cd \$HOME/work/'$repo_name'
+			setsid nohup bash -lc '$agent_cmd' > '$lane_dir/lane.log' 2>&1 &
+			echo \$! > '$lane_dir/pid'
+		" --file "$card:$lane_dir/card.md"
+		echo "==> detached lane $lane_id on $sprite"
+		echo "    fetch with: sprite-lane fetch $sprite $lane_id"
+	else
+		sx "$sprite" "mkdir -p '$lane_dir'" --file "$card:$lane_dir/card.md"
+		sx "$sprite" "cd \$HOME/work/'$repo_name' && $agent_cmd 2>&1 | tee '$lane_dir/lane.log'" || rc=$?
+	fi
+
+	cat > "$RECEIPTS_DIR/$lane_id.json" <<EOF
+{
+  "lane_id": "$lane_id",
+  "sprite": "$sprite",
+  "repo": "$repo",
+  "branch": "${branch:-default}",
+  "harness": "$harness",
+  "card": "$(realpath "$card")",
+  "detached": $detach,
+  "started": "$started",
+  "finished": "$(date -u +%FT%TZ)",
+  "exit_code": $rc,
+  "remote_log": "$lane_dir/lane.log"
+}
+EOF
+	echo "==> receipt: $RECEIPTS_DIR/$lane_id.json"
+	return $rc
+}
+
+cmd_status() {
+	local sprite="${1:?sprite name required}"
+	echo "sprite: $sprite"
+	if golden_ok "$sprite"; then echo "bake:   golden v$BAKE_VERSION"; else echo "bake:   NOT BAKED"; fi
+	echo "checkpoint: $(golden_checkpoint_id "$sprite" || echo none)"
+	echo "lanes:"
+	sx "$sprite" "for d in \$HOME/lanes/*/; do [ -d \"\$d\" ] || continue; n=\$(basename \"\$d\"); if [ -f \"\$d/pid\" ] && kill -0 \$(cat \"\$d/pid\") 2>/dev/null; then s=running; else s=done; fi; echo \"  \$n [\$s]\"; done" 2>/dev/null || echo "  (none)"
+}
+
+cmd_fetch() {
+	local sprite="${1:?sprite}" lane_id="${2:?lane-id}"
+	mkdir -p "$RECEIPTS_DIR"
+	sx "$sprite" "cat /home/sprite/lanes/'$lane_id'/lane.log" > "$RECEIPTS_DIR/$lane_id.log"
+	echo "==> $RECEIPTS_DIR/$lane_id.log"
+	tail -20 "$RECEIPTS_DIR/$lane_id.log"
+}
+
+cmd="${1:-}"
+[ -n "$cmd" ] || usage
+shift
+case "$cmd" in
+bake) cmd_bake "$@" ;;
+run) cmd_run "$@" ;;
+reset) cmd_reset "$@" ;;
+status) cmd_status "$@" ;;
+fetch) cmd_fetch "$@" ;;
+*) usage ;;
+esac

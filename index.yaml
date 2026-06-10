@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-09T22:46:27Z
+# Generated: 2026-06-10T02:19:59Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -20,9 +20,9 @@ skills:
     source: first-party
     tags: [agents,automation,browser,ci,deterministic,e2e,electron,expl,exploratory,first]
   - name: ci
-    description: "Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without struc"
+    description: "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --re"
     source: first-party
-    tags: [acts,audit,auto-scaffolded,canonical,ci,coverage,dagger,directly,drive,fixes]
+    tags: [--,--locked,--re,-p,as,audit,canonical,cargo,check,ci]
   - name: code-review
     description: "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this co"
     source: first-party
@@ -135,6 +135,10 @@ skills:
     description: "Turn proven agent-session patterns into first-party Harness Kit skills. Use when: \"skillify this conversation\", \"make this into a skill\", \"generate a skill from current transcript\", \"extract reusable "
     source: first-party
     tags: [a,agent-session,conversation,current,extract,first-party,generate,harness,kit,make]
+  - name: sprites
+    description: "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use w"
+    source: first-party
+    tags: [a,agent,cards,fly,golden-checkpoint,heavy,isolated,lane,lanes,on]
   - name: trace
     description: "Capture agent-session work records as local JSONL audit evidence. Links a backlog/spec, branch, commits, review verdicts, QA/demo evidence, transcript refs, and shipped ref without storing raw private"
     source: first-party

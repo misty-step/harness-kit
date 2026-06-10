@@ -61,14 +61,14 @@ single-source requests or simple fact/version lookups.
 - Label skipped, failed, stale, in-flight, and partial sources.
 - Report residual uncertainty instead of smoothing over missing evidence.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use lanes with distinct sources, methods, or model families; web search, Thinktank, and provider CLIs are evidence inputs, not substitutes for lead synthesis. Native in-thread subagents do not count toward the roster floor.
+Local lane guidance: Use lanes with distinct sources, methods, or model families; web search, Thinktank, and provider CLIs are evidence inputs, not substitutes for lead synthesis.
 
 ## Completion Evidence
 

@@ -18,7 +18,7 @@ argument-hint: "[PR-number|branch-name]"
 from a human. **This file is a redirect, slated for deletion next release** —
 update muscle memory now.
 
-## Delegation Floor
+## Delegation Judgment
 
 `/settle` has no separate delegation behavior. Use
 `/deliver --polish-only`, whose Delegation Floor and specialized phase lanes

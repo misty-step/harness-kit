@@ -30,14 +30,13 @@ before it leaves the machine.
   than duplicate the section.
 - Best effort only: PR/issue creation continues when no safe transcript exists.
 
-## Delegation Floor
+## Delegation Judgment
 
 Rendering a scoped transcript preview is usually mechanical and may run direct
-solo. Delegation floor applies when transcript evidence requires substantive
-provenance judgment, redaction-risk review, public wording choices, or
-conflicting session narratives: probe the roster first; dispatch two or more
-providers; direct solo only for mechanical, emergency, user-forbidden, or
-fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+solo. delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
+`harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized lanes for scope selector,
 redaction-risk critic, provenance reviewer, and public-copy reviewer. Never

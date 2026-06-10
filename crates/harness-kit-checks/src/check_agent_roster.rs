@@ -215,7 +215,7 @@ pub fn run(repo: &Path) -> Result<CheckReport> {
             ),
             ".harness-kit/examples/lane-harness.yaml: lane harness fixture valid".to_string(),
             format!(
-                "skills/: {} delegation floor(s) valid",
+                "skills/: {} delegation judgment section(s) valid",
                 CORE_WORKFLOW_SKILLS.len()
             ),
             "skills/: 4 completion evidence pointer(s) valid".to_string(),
@@ -251,12 +251,12 @@ pub fn markdown_section<'a>(text: &'a str, heading: &str) -> &'a str {
 }
 
 fn delegation_floor_section(text: &str) -> &str {
-    markdown_section(text, "## Delegation Floor")
+    markdown_section(text, "## Delegation Judgment")
 }
 
 fn has_delegation_floor_pointer(section: &str) -> bool {
     let low = section.to_lowercase();
-    low.contains("delegation floor applies")
+    (low.contains("delegate on judgment") || low.contains("native subagents by default"))
         && low.contains("harnesses/shared/agents.md")
         && low.contains("roster")
 }
@@ -273,16 +273,15 @@ pub fn delegation_contract_gaps(section: &str) -> Vec<String> {
     let lowered = section.to_lowercase();
     let mut missing = Vec::new();
     for (name, phrases) in [
-        ("roster floor", vec!["two or more"]),
         (
-            "direct-work exceptions",
-            vec![
-                "mechanical",
-                "emergency",
-                "user-forbidden",
-                "fewer than two",
-            ],
+            "native-first default",
+            vec!["native subagents", "native first"],
         ),
+        (
+            "cross-model criticism",
+            vec!["cross-model", "different model family"],
+        ),
+        ("sprite routing", vec!["sprite"]),
         ("lane responsibilities", vec!["lane"]),
         ("context boundary", vec!["context", "give", "scope"]),
         ("output evidence", vec!["receipt", "evidence"]),
@@ -313,24 +312,26 @@ pub fn delegation_contract_gaps(section: &str) -> Vec<String> {
 fn delegation_commitments() -> Vec<(String, Vec<Regex>)> {
     vec![
         (
-            "two-provider commitment".to_string(),
+            "native-first commitment".to_string(),
             vec![
-                Regex::new(r"\b(dispatch\w*|uses?|requires?|verif\w*|show)\b[^.]{0,160}\btwo or more\b").expect("static regex compiles"),
-                Regex::new(r"\btwo or more\b[^.]{0,160}\b(dispatch\w*|uses?|requires?|verif\w*|show)\b").expect("static regex compiles"),
+                Regex::new(r"\bnative (subagents?|first)\b[^.]{0,160}\b(default|first)\b").expect("static regex compiles"),
+                Regex::new(r"\b(default|first)\b[^.]{0,160}\bnative (subagents?|delegation)\b").expect("static regex compiles"),
+                Regex::new(r"\bsubagents\b[^.]{0,80}\bdefault delegation\b").expect("static regex compiles"),
+                Regex::new(r"\bsubagents\b[^.]{0,80}\bare the default\b").expect("static regex compiles"),
             ],
         ),
         (
-            "direct-work exception commitment".to_string(),
+            "cross-model critic commitment".to_string(),
             vec![
-                Regex::new(r"\b(direct\w*|lead-only)\b[^.]{0,160}\b(is for|limited to|only|exceptions?|mechanical|emergency|user(?:-forbidden| forbids)|fewer than two)\b").expect("static regex compiles"),
-                Regex::new(r"\b(except for|limited to)\b[^.]{0,160}\b(mechanical|emergency|user(?:-forbidden| forbids)|fewer than two)\b").expect("static regex compiles"),
+                Regex::new(r"\b(cross-model|different model family)\b[^.]{0,160}\b(critic\w*|criticism|review\w*|judgment)\b").expect("static regex compiles"),
+                Regex::new(r"\b(critic\w*|criticism|review\w*)\b[^.]{0,160}\b(cross-model|different model family)\b").expect("static regex compiles"),
             ],
         ),
         (
             "scoped lane handoff".to_string(),
             vec![
-                Regex::new(r"\b(give|gives)\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?|them)\b[^.]{0,160}\b(scoped|scope|context|files|questions|commands|output|evidence|receipt|sources|methods|risk|boundar\w*)\b").expect("static regex compiles"),
-                Regex::new(r"\bscoped\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?)\b").expect("static regex compiles"),
+                Regex::new(r"\b(give|gives)\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?|critics?|them)\b[^.]{0,160}\b(scoped|scope|context|files|questions|commands|output|evidence|receipt|sources|methods|risk|artifact|boundar\w*|oracle)\b").expect("static regex compiles"),
+                Regex::new(r"\bscoped\b[^.]{0,80}\b(lane|lanes|each lane|providers?|members?|reviewers?|critics?)\b").expect("static regex compiles"),
                 Regex::new(r"\buse\b[^.]{0,80}\blanes?\b[^.]{0,160}\b(scoped|scope|context|files|questions|commands|output|evidence|receipt|sources|methods|risk|boundar\w*)\b").expect("static regex compiles"),
             ],
         ),
@@ -378,7 +379,6 @@ pub fn phrase_group_gaps(text: &str, requirements: &[(&str, &[&str])]) -> Vec<St
 fn validate_delegation_floor(repo: &Path) -> Result<()> {
     let mut missing = Vec::new();
     let mut weak = Vec::new();
-    let mut ambiguous = Vec::new();
     for skill in CORE_WORKFLOW_SKILLS {
         let path = PathBuf::from("skills").join(skill).join("SKILL.md");
         let full_path = repo.join(&path);
@@ -390,16 +390,6 @@ fn validate_delegation_floor(repo: &Path) -> Result<()> {
         if section.is_empty() {
             missing.push(path.display().to_string());
             continue;
-        }
-        if matches!(
-            *skill,
-            "shape" | "research" | "harness-engineering" | "create-repo-skill"
-        ) {
-            let lowered = text.to_lowercase();
-            if !lowered.contains("native in-thread subagents") || !lowered.contains("do not") {
-                ambiguous.push(path.display().to_string());
-                continue;
-            }
         }
         if has_delegation_floor_pointer(section) {
             if !has_local_lane_guidance(section) {
@@ -418,16 +408,13 @@ fn validate_delegation_floor(repo: &Path) -> Result<()> {
     }
     let mut errors = Vec::new();
     if !missing.is_empty() {
-        errors.push(format!("missing delegation floor: {}", missing.join(", ")));
+        errors.push(format!(
+            "missing delegation judgment: {}",
+            missing.join(", ")
+        ));
     }
     if !weak.is_empty() {
-        errors.push(format!("weak delegation floor: {}", weak.join(", ")));
-    }
-    if !ambiguous.is_empty() {
-        errors.push(format!(
-            "ambiguous roster/subagent boundary: {}",
-            ambiguous.join(", ")
-        ));
+        errors.push(format!("weak delegation judgment: {}", weak.join(", ")));
     }
     if !errors.is_empty() {
         bail!("{}", errors.join("; "));
@@ -494,9 +481,9 @@ fn validate_shared_roster_doctrine(repo: &Path) -> Result<()> {
     let text = read_to_string(&path)?;
     let lowered = text.to_lowercase();
     let missing: Vec<_> = [
-        "native in-thread subagents",
-        "satisfy the roster floor",
-        "configured provider ids",
+        "native first",
+        "cross-model criticism",
+        "sprites are substrate, not providers",
         "a probe is not a provider attempt",
     ]
     .into_iter()
@@ -1946,64 +1933,58 @@ mod tests {
     use super::*;
 
     #[test]
-    fn delegation_floor_rejects_keyword_stuffing_without_commitment() {
-        let weak_section = r#"## Delegation Floor
+    fn delegation_judgment_rejects_keyword_stuffing_without_commitment() {
+        let weak_section = r#"## Delegation Judgment
 
-When a provider roster is available, this section mentions two or more.
-It also contains the words lane and receipt. A separate sentence mentions
-context, give, and scope. It also names mechanical, emergency,
-user-forbidden, fewer than two, evidence, and lead. These are reminders only;
-the primary may decide later whether any roster-backed delegation is useful.
+When a provider roster is available, this section mentions native subagents
+and cross-model and sprite. It also contains the words lane and receipt. A
+separate sentence mentions context, give, and scope, plus the word lead.
+These are reminders only; the primary may decide later whether native
+delegation is the default or whether cross-model review is useful.
 "#;
 
         let gaps = delegation_contract_gaps(weak_section);
 
-        assert!(gaps.contains(&"two-provider commitment".to_string()));
-        assert!(gaps.contains(&"direct-work exception commitment".to_string()));
+        assert!(gaps.contains(&"native-first commitment".to_string()));
+        assert!(gaps.contains(&"cross-model critic commitment".to_string()));
         assert!(gaps.contains(&"scoped lane handoff".to_string()));
         assert!(gaps.contains(&"lead-owned synthesis".to_string()));
     }
 
     #[test]
-    fn delegation_floor_rejects_hedged_commitments() {
-        let hedged_section = r#"## Delegation Floor
+    fn delegation_judgment_rejects_hedged_commitments() {
+        let hedged_section = r#"## Delegation Judgment
 
-When a provider roster is available, the lead may verify whether the roster
-uses two or more members if available. Direct work only matters for mechanical
-commands, emergency unblocks, explicit user-forbidden delegation, or fewer than
-two providers. Use lanes for review. Give them scoped context and evidence.
-The lead agent owns synthesis.
+When a provider roster is available, the lead may treat native subagents as
+the default if available. Cross-model critics might review the work at the
+lead's discretion. Use lanes for review. Give them scoped context and
+evidence. The lead agent owns synthesis. Sprite lanes exist.
 "#;
 
         let gaps = delegation_contract_gaps(hedged_section);
 
-        assert!(gaps.contains(&"two-provider commitment".to_string()));
-        assert!(gaps.contains(&"direct-work exception commitment".to_string()));
+        assert!(gaps.contains(&"native-first commitment".to_string()));
+        assert!(gaps.contains(&"cross-model critic commitment".to_string()));
     }
 
     #[test]
-    fn delegation_floor_accepts_shared_roster_contract() {
+    fn delegation_judgment_accepts_shared_roster_contract() {
         let section = r#"## Roster
 
-If a provider roster is available (repo `.harness-kit/agents.yaml` or system
-`~/.harness-kit/agents.yaml`), this section is the single source.
+This section is the single source for delegation judgment. There is no
+provider quota (repo `.harness-kit/agents.yaml` or system roster).
 
-- Probe it before substantive work. A probe is not a provider attempt.
-- Dispatch two or more available providers for research, design,
-  implementation, review, QA, diagnosis, backlog, reflection, and harness
-  mutation.
-- Native in-thread subagents are supplemental fresh-context lanes. They do not
-  satisfy the roster floor. Count only configured provider ids from the roster.
-- Use independent lanes: split scope, competing attempts, or reviewer/critic
-  roles.
-- Record meaningful attempts via the repo receipt script.
-- Final answer includes receipt-grounded evidence.
+- Native first. The harness's own subagents are the default delegation path
+  for exploration, scoped builds, and review fan-out.
+- Cross-model criticism is the strongest multi-provider case. A
+  fresh-context critic on a different model family has decorrelated failure
+  modes. Give critics ONLY the artifact (diff + oracle).
+- Roster providers earn a lane when the card is bounded. Probe before
+  dispatching; a probe is not a provider attempt.
+- Sprites are substrate, not providers. Route heavy lanes to /sprites.
+- Record meaningful roster and sprite lanes via receipts.
 
-Direct solo work only: mechanical command already chosen; emergency state
-preservation; user-forbidden delegation; fewer than two providers available.
-
-Provider output is evidence, not authority. The lead accepts or rejects the
-evidence and owns lead synthesis.
+Provider output is evidence, not authority. The lead owns the result.
 "#;
 
         assert!(delegation_contract_gaps(section).is_empty());

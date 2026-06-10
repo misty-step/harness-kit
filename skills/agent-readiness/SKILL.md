@@ -26,11 +26,11 @@ You are the executive orchestrator.
 - Delegate pillar assessments and bounded fixes to focused subagents.
 - Use parallel fanout by default for independent pillars.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized assessor lanes per readiness pillar and

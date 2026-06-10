@@ -10,9 +10,10 @@ argument-hint: "[objective|lane-card|provider target]"
 
 # /dispatch
 
-Global delegation, prompt-native. The roster is mandatory for substantive
-work; this skill keeps the implementation small: lane cards, native harness
-commands, receipts, and lead synthesis.
+Global delegation, prompt-native. Native subagents are the default path;
+roster providers and sprites earn lanes on judgment, not quota. This skill
+keeps the implementation small: lane cards, native harness commands,
+receipts, and lead synthesis.
 
 ## Route
 
@@ -22,22 +23,25 @@ commands, receipts, and lead synthesis.
 | copy a lane card | `templates/lane-card.md` |
 | track a multi-lane run | `templates/run-card.md` |
 | choose providers/models | `/harness-engineering models` |
+| run a lane on a remote sandbox | `/sprites` (sprite-lane runner) |
 
 Use the existing `dispatch-agent` helper to launch configured providers. Use
 `lane_harness.v1` projection only when context hygiene matters; otherwise a
 lane card is just the prompt packet.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+No provider quota. Native subagents by default; cross-model critics for
+review of your own work; roster providers for bounded cards where the
+provider is better, cheaper, or independent in a nameable way; sprites for
+heavy, long-running, parallel, or isolation-needing lanes. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use prompt-native lane cards with role, objective, scope,
-inputs/oracle, allowed skills/tools, output shape, boundaries, and receipt
-expectations. Give each lane scoped context and record the lead's accepted or
-rejected evidence.
+Local lane guidance: lane cards are outcome-shaped and big — end state,
+success criteria, verification affordances, boundaries, output shape,
+receipt expectations. The oracle field is load-bearing; the lane agent owns
+its own decomposition. Give each lane scoped context and record the lead's
+accepted or rejected evidence.
 
 ## Contract
 
@@ -84,6 +88,7 @@ rejected evidence.
 - Do not create static subagent files for roles that a lane card can express.
 - Do not generate or mutate global skill installs during a run.
 - Do not count probes, auth failures, or wrapper failures as successful lanes.
-- Do not let "two providers" become ceremony; each lane needs a distinct
-  question, risk, artifact, or model/harness property.
+- Do not add lanes for ceremony; each lane needs a distinct question, risk,
+  artifact, or model/harness property. One good native subagent beats two
+  ritual provider lanes.
 - Do not use projection as a permission system; it is context hygiene.

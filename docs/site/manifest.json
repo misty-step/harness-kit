@@ -3,6 +3,9 @@
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
+    "cargo-clippy",
+    "cargo-fmt",
+    "cargo-test",
     "check-agent-roster",
     "check-bench-map",
     "check-conflict-markers",
@@ -11,7 +14,6 @@
     "check-evidence-blocks",
     "check-exclusions",
     "check-frontmatter",
-    "check-git-hooks",
     "check-harness-install-paths",
     "check-index-drift",
     "check-no-claims",
@@ -22,18 +24,10 @@
     "check-shape-renderer",
     "check-skill-evals",
     "check-vendored-copies",
-    "lint-python",
     "lint-shell",
     "lint-yaml",
-    "test-agent-readiness-profile",
     "test-bootstrap-agent-allowlist",
-    "test-bun",
-    "test-design-evals",
-    "test-harness-kit-config-loader",
-    "test-rust",
-    "test-sync-external-partial",
-    "test-trace-record",
-    "test-work-ledger"
+    "test-design-evals"
   ],
   "generated_by": "harness-kit-checks build-docs-site",
   "icons": [
@@ -51,13 +45,13 @@
   "images": [
     {
       "alt": "Diagram of the Harness Kit ship workflow moving from shaped ticket through delivery, review, gates, QA, clean-tree closeout, ship, and reflection with evidence captured at each step.",
-      "bytes": 4160,
+      "bytes": 4159,
       "max_bytes": 256000,
       "output": "assets/images/ship-workflow-evidence-loop.svg",
       "page": "workflows/ship-a-repo-change-with-review-and-gates.html",
       "regeneration_ref": "Prompt: draw a clean workflow map for Harness Kit showing shaped ticket, /deliver, review lanes, CI gates, QA evidence, clean-tree closeout, /ship, and /reflect. Current OpenAI image-generation docs verified on 2026-06-03: https://platform.openai.com/docs/guides/image-generation/",
       "review_note": "Workflow figure reviewed for ticket 092: text remains authoritative; the image is a visual map only.",
-      "sha256": "1a8e0f2491092250a5311666eeb5f9e366ec89f462232691e9f7cf1534adb4eb",
+      "sha256": "f2a34a0e0a67791595f54b702cef6c617c1b6fdfbc6e14302c29e58992dd6c6b",
       "source": "docs/copy/images/ship-workflow-evidence-loop.svg",
       "source_policy": "Committed static SVG source; CI copies bytes and never calls an image-generation API.",
       "text_equivalent_anchor": "ship-workflow-text-equivalent",
@@ -208,7 +202,7 @@
       "source": "skills/browser/SKILL.md"
     },
     {
-      "description": "Audit CI gates, strengthen weak coverage, then drive green. Dagger owns the canonical pipeline; missing Dagger is auto-scaffolded. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"dagger check\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
+      "description": "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --repo .`. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
       "icon": "verify",
       "id": "skill:ci",
       "kind": "skill",
@@ -496,6 +490,16 @@
       "page": "reference/skills/skillify.html",
       "role": "Support",
       "source": "skills/skillify/SKILL.md"
+    },
+    {
+      "description": "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use when: \"run this on a sprite\", \"remote lane\", \"offload to a sandbox\", \"dispatch to sprites\", \"bake a sprite\", \"sprite fleet\", heavy/long-running/parallel sub-agent work that should not run on this machine. Trigger: /sprites, /sprite-lane.",
+      "icon": "catalog",
+      "id": "skill:sprites",
+      "kind": "skill",
+      "name": "sprites",
+      "page": "reference/skills/sprites.html",
+      "role": "Support",
+      "source": "skills/sprites/SKILL.md"
     },
     {
       "description": "Capture agent-session work records as local JSONL audit evidence. Links a backlog/spec, branch, commits, review verdicts, QA/demo evidence, transcript refs, and shipped ref without storing raw private transcripts. Use when: \"trace this work\", \"write work record\", \"agent session trace\", \"journal this delivery\", \"link transcript evidence\". Trigger: /trace, /journal.",

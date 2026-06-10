@@ -30,11 +30,11 @@ You are the lead hardening engineer.
 - Use repo-native tools first; add new hardening tools only when the repo has
   no reasonable equivalent and the target earns the dependency.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use one lane to identify hardening candidates and one lane to challenge the chosen oracle, domains, mutants, and residual risk.

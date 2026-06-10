@@ -64,14 +64,14 @@ and copied harness bridges. It cannot prove product fit; the agentic critic
 must still attack the generated skill for generic wording, guessed commands,
 invented routes, and weak oracles.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use split lanes: one maps repo truth, one attacks the generated skill for generic wording, missing oracles, and workflow mismatch; native in-thread subagents may supplement but do not satisfy the roster floor.
+Local lane guidance: Use split lanes: one maps repo truth, one attacks the generated skill for generic wording, missing oracles, and workflow mismatch.
 
 ## Output
 

@@ -39,11 +39,11 @@ You are the executive orchestrator. Keep synthesis, prioritization, and
 decision authority on the lead model. Delegate investigation and evidence
 gathering to focused subagents in parallel.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use lanes for backlog drift, premise challenge, technical
@@ -76,8 +76,7 @@ A groom run is not an orientation report. It is complete only when the final
 artifact proves all of these:
 
 - **Roster lanes:** at least two configured providers returned or failed with
-  receipts. Native in-thread subagents can add freshness, but they do not count
-  toward the roster floor.
+  receipts. Native in-thread subagents can add freshness, but they count as lanes when they carry distinct judgment.
 - **Minimum strategic fanout:** at least seven independent perspectives ran:
   backlog drift, premise/design challenge, product opportunity or ideal-form,
   technical hotspots, security/privacy, agent-readiness, and

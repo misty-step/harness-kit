@@ -16,11 +16,11 @@ Multi-provider, multi-harness code review. You are the marshal — read the diff
 select reviewers, craft prompts, dispatch everything in parallel, synthesize
 results, fix blockers, loop until clean.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.

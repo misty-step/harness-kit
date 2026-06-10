@@ -16,13 +16,12 @@ argument-hint: "[describe the task]"
 Browser automation is a **testing pyramid**, not a single tool. Pick the
 layer first, then the tool for that layer.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies for substantive browser strategy, exploratory QA,
-persona walks, visual regression design, or hardening findings into tests:
-probe the roster first; dispatch two or more providers; direct solo only for
-mechanical browser commands, emergency preservation, user-forbidden
-delegation, or fewer-than-two-providers cases. See
+For substantive browser strategy, exploratory QA,
+persona walks, visual regression design, or hardening findings into tests, delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized lanes for tool/stack selector,

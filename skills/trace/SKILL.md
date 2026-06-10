@@ -18,14 +18,14 @@ records that link a unit of work to its backlog/spec, branch, commits, reviewer
 verdicts, QA evidence, demo evidence, transcript refs, and shipped commit/ref.
 The default store is `.harness-kit/traces/work-records.jsonl`.
 
-## Delegation Floor
+## Delegation Judgment
 
 Trace append/preview commands are usually mechanical and may run direct solo.
-Delegation floor applies when the trace requires substantive evidence
-classification, provenance judgment, redaction-risk review, or conflicting
-artifact synthesis: probe the roster first; dispatch two or more providers;
-direct solo only for mechanical, emergency, user-forbidden, or
-fewer-than-two-providers cases. See `harnesses/shared/AGENTS.md` (Roster).
+When the trace requires substantive evidence classification, provenance
+judgment, redaction-risk review, or conflicting artifact synthesis, delegate
+on judgment per the shared Roster contract: native subagents by default; add
+cross-model critics, roster providers, or sprite lanes (`/sprites`) only when
+they answer a distinct question. See `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use specialized lanes for evidence classifier,
 redaction-risk critic, and provenance verifier. Store refs and receipt ids,

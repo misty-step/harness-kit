@@ -91,11 +91,11 @@ You are the executive orchestrator.
   adversarial verifier before signing off on "pass"; ask it to attack the
   pass claim and name the path that would embarrass us in production.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use one lane to drive the running surface and another to attack the evidence, edge cases, and product judgment behind the pass claim.

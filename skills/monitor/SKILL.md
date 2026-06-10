@@ -61,11 +61,11 @@ calls `cargo run --locked -p harness-kit-checks -- work-ledger append` with `pha
 begins, `blocker_added` for a tripped signal, and `phase_completed` when the
 grace window closes green.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Use lanes for signal interpretation and false-positive critique; pure polling is mechanical, and investigations route to /diagnose.

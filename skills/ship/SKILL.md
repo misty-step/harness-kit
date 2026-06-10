@@ -42,18 +42,18 @@ into the repo. One command from "green" to "shipped and learned from."
 6. **Final-mile runner, not a refactorer.** `/ship` may run the repo's
    documented gate when same-HEAD landability evidence is missing. It does not
    redesign, refactor, or lower gates to pass.
-7. **Roster receipts are required evidence.** In repos with
-   `.harness-kit/agents.yaml`, verify that `/deliver --polish-only` or the
-   documented landability evidence includes two or more roster-member receipts
-   or an explicit exception before final-mile merge work.
+7. **Lane receipts are evidence.** In repos with `.harness-kit/agents.yaml`,
+   verify that `/deliver --polish-only` or the documented landability evidence
+   includes receipts for the lanes it ran (cross-model critique receipts carry
+   the most weight) before final-mile merge work.
 8. **Shipped means tidy and synced.** Shared Closeout applies: no visible
    paths, no unpushed commits, and `master...origin/master` is `0 0`.
 
-## Delegation Floor
+## Delegation Judgment
 
-Delegation floor applies: probe the roster first; dispatch two or more
-providers for substantive work; direct solo only for mechanical, emergency,
-user-forbidden, or fewer-than-two-providers cases. See
+delegate on judgment per the shared Roster contract: native subagents
+by default; add cross-model critics, roster providers, or sprite lanes
+(`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
 Local lane guidance: Normally verify upstream roster receipts; if final-mile work surfaces substantive judgment, route back to /deliver --polish-only or dispatch release-risk and closure-state review lanes.
@@ -95,8 +95,9 @@ Assert at start; refuse with a clear reason on any miss.
   operator-provided/current-session local gate receipts from `/ci` or the
   repo's documented gate. Do not require a PR or verdict solely to land a
   locally verified git-native branch. A `dont-ship` verdict still blocks.
-  For Harness Kit and any repo with `dagger.json`, the documented gate is
-  `dagger call check --source=.` on the exact HEAD being landed.
+  For Harness Kit, the documented gate is
+  `cargo run --locked -p harness-kit-checks -- check --repo .` on the exact
+  HEAD being landed.
 - Acceptance evidence exists for this exact HEAD (`git rev-parse HEAD`):
   exact behavior changed, live repo evidence read, acceptance source,
   command/path exercised, repo-fit check, and residual unverified paths.
@@ -271,17 +272,16 @@ block. Match the repo's squash-subject convention (look at recent
 **Git-native mode** (no PR, no `gh`, or no GitHub remote):
 
 ```sh
-dagger call check --source=.
+cargo run --locked -p harness-kit-checks -- check --repo .
 git checkout master
 git merge --squash <shipping-ref>
 git commit -F <constructed-message-file>
 ```
-
-Detect mode by: remote URL + `gh` on PATH + `gh pr view` exit code.
-GitHub mode is preferred when available because it records the merge in
+Detect mode by: remote URL + `gh` on PATH + `gh pr view` exit code. GitHub mode
+is preferred when available because it records the merge in
 the PR timeline. Both modes still produce exactly one squash commit on
-`master`. The Dagger command is explicit here because squash merges do not
-invoke Git's `pre-merge-commit` hook.
+`master`. The gate command is explicit here because squash merges do not invoke
+Git's `pre-merge-commit` hook.
 
 ### 6. Pull master and verify trailers
 
@@ -417,8 +417,8 @@ Stop and surface to the user instead of shipping:
 - Same-HEAD landability cannot be produced: no green PR checks, no landable
   verdict, no operator-provided/current-session local gate receipt, and the
   documented gate cannot be run or fails.
-- In a repo with `dagger.json`, `dagger call check --source=.` has not passed
-  on the exact HEAD being landed.
+- In Harness Kit, `cargo run --locked -p harness-kit-checks -- check --repo .`
+  has not passed on the exact HEAD being landed.
 - In GitHub mode, `gh pr view --json baseRefName` does not report `master`,
   or `gh pr checks` is red. Do not add a `--force` flag; refuse.
 - If a PR exists, it is not mergeable per
