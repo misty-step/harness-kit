@@ -16,25 +16,10 @@ Validate a skill against quality gates.
 | **Folder utility** | Does the skill use scripts/references/examples/templates/assets when that would prevent repeated reconstruction? | Move boilerplate, schemas, templates, examples, or helper code under the skill folder. |
 | **Railroading check** | Does it over-prescribe steps when the repo situation should choose the path? | Replace procedural micromanagement with decision rules, constraints, and oracles. |
 | **Freshness** | Do instructions match current model capabilities? | Strip non-load-bearing scaffold |
-| **Mode bloat** | >4 modes with inline content, or any single mode >60 lines inline? | Extract mode content to references/mode-*.md; use router pattern (see /diagnose, /settle) |
+| **Mode bloat** | >4 modes with inline content, or any single mode >60 lines inline? | Extract mode content to references/mode-*.md; use router pattern (see /diagnose) |
 | **Reference integrity** | Do all referenced local files in routing tables, gotchas, and examples exist? | Create the missing file, fix the path, or delete the stale reference |
 | **Self-containment** | Do scripts source only paths under `skills/<name>/`? Do they resolve `SCRIPT_DIR` via `readlink -f` and `STATE_ROOT` from the invoking project? | Move shared libs into the skill tree; rewrite source paths to use `$SCRIPT_DIR/lib/…`; decouple state root from script dir. |
-| **Delegation floor** | For substantial workflow skills, does `## Delegation Floor` include roster floor, direct-work exceptions, lane responsibilities, context boundary, output/evidence contract, and lead verification? | Add the missing contract terms, or state why the skill is not a substantive workflow skill. Validate with `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`. |
-
-## Delegation floor lint
-
-Run the committed roster audit before approving harness or workflow-skill
-changes:
-
-```bash
-cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .
-```
-
-The check flags substantial workflow skills that lack a delegation floor, have
-a weak floor, omit explicit exception rationale, blur in-thread subagents with
-roster providers, or lack runtime delegation references for Claude Code, Codex,
-Antigravity CLI, and Pi. A skill that truly does not need roster lanes should
-say why instead of inheriting the default silently.
+| **Delegation guidance** | Where a skill delegates, does it point at the shared Roster contract instead of restating it? | Point to `harnesses/shared/AGENTS.md` (Roster); delete restated doctrine. |
 
 ## Self-containment check
 

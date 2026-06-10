@@ -46,8 +46,8 @@ timing injection, or better instrumentation before investigation can proceed.
 A regression test earns trust only when it exercises the bug pattern as it
 appeared. If the only available test seam is too shallow, document that as the
 finding instead of writing a false-confidence test. Fix the bug when the root
-cause is proven, then route the missing seam through `/refactor` or a focused
-`/critique --lens ousterhout` follow-up.
+cause is proven, then fix the missing seam directly or file a ticket with a
+focused `/critique --lens ousterhout` follow-up.
 
 ## No-Loop Stop
 

@@ -1,249 +1,67 @@
 ---
 name: code-review
 description: |
-  Parallel multi-agent code review. Launch reviewer team, synthesize findings,
-  auto-fix blocking issues, loop until clean.
-  Use when: "review this", "code review", "is this ready to ship",
-  "check this code", "review my changes", "autoreview", "Codex review",
-  "Claude review", "second-model review".
-  Trigger: /code-review, /review, /autoreview.
+  Dispatch-shaped code review: fan the diff out to fresh-context reviewers
+  across diverse providers and model families, synthesize, fix blockers,
+  re-review until clean. Use when: "review this", "code review", "is this
+  ready to ship", "second-model review". Trigger: /code-review, /review.
 argument-hint: "[branch|diff|files]"
 ---
 
 # /code-review
 
-Multi-provider, multi-harness code review. You are the marshal — read the diff,
-select reviewers, craft prompts, dispatch everything in parallel, synthesize
-results, fix blockers, loop until clean.
+You are the marshal. Read the diff, dispatch diverse fresh-context
+reviewers, synthesize, fix blockers, loop until clean. The authoring agent
+never ships on its own review — that is the one hard rule.
 
-## Delegation Judgment
+## Dispatch
 
-delegate on judgment per the shared Roster contract: native subagents
-by default; add cross-model critics, roster providers, or sprite lanes
-(`/sprites`) only when they answer a distinct question. See
-`harnesses/shared/AGENTS.md` (Roster).
+1. **Scope = the diff.** `git diff <base>...HEAD` (default base: the repo's
+   default branch). Classify what changed: API, UI, security surface, data
+   model, infra, docs.
+2. **Fan out in parallel, decorrelated.** Native subagents for focused
+   lenses (pick 2–4 that fit the diff: correctness, security, simplicity,
+   tests); roster providers from `.harness-kit/agents.yaml` for cross-model
+   judgment — a different model family has decorrelated failure modes;
+   `thinktank review` when installed for a wide bench. Reviewers get the
+   diff, the acceptance oracle, and a risk lens — **never the author's
+   reasoning trail.**
+3. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
+   one what to ignore (style, naming, speculative "consider…") as
+   explicitly as what to find.
 
-Local lane guidance: Use independent adversarial review lanes calibrated to what would embarrass us in production; give reviewers the diff, acceptance criteria, and risk lens, not author reasoning.
+## What reviewers hunt
 
-## Completion Evidence
+Plausible-but-wrong is the failure mode of model-written code:
 
-Completion evidence core applies: use `harnesses/shared/AGENTS.md`
-(Completion Evidence) as the universal evidence shape, then fill the local
-fields below for review verdicts.
+- Stub or specification-shaped implementations that pass tests but don't work
+- Wrong complexity (O(n²) hiding behind a clean interface)
+- Tests that never invoke the changed entrypoint (adjacent green lanes)
+- Missing invariant checks that only matter at scale or under concurrency
+- Unnecessary abstraction — wrappers, modes, layers that don't earn their keep
+- Swallowed errors, magic fallbacks, internal mocks
 
-## Marshal Protocol
+If the diff adds or changes an executable path (CLI, script, migration, job),
+someone must run it once or cite the gate that does — otherwise it's an
+**unverified runtime path** and blocks Ship. If the diff touches a visual or
+user-facing surface, at least one reviewer exercises it live.
 
-1. **Read the diff.** `git diff $BASE...HEAD` (default base: `main` or `master`).
-   Classify: what changed? (API, UI, visual artifact, docs/report surface,
-   tests, infra, security, perf, data model, etc.)
+## Synthesize and verdict
 
-2. **Optionally run the structured autoreview helper.** When the human asks for
-   `autoreview`, Codex review, Claude review, or second-model review, or when a
-   frozen local/branch/commit bundle would sharpen synthesis, use
-   `references/autoreview-helper.md`. The helper is a leaf review engine, not a
-   substitute for roster evidence, verdict refs, executable-path verification,
-   or `/deliver` clean loop.
-
-3. **Load review pattern catalogs.** If the target repo has a local
-   `references/review-patterns.md` or equivalent repo-local pattern catalog,
-   load it before dispatching reviewers. When a local entry links to shared
-   Harness Kit references such as
-   `references/bounded-payload-discipline.md`, include that reference in the
-   reviewer prompt and require findings to cite the local entry ID.
-
-4. **Select internal reviewers (lens map).** Do NOT hand-pick. Run the
-   selection algorithm in `references/bench-map.yaml`:
-   - `git diff --name-only $BASE...HEAD` → changed files
-   - Start from `default`; for every rule whose glob matches any changed file,
-     apply `replace`, union `add`, de-dupe, then cap at 5 (critic pinned)
-   - Bench size always in [3, 5]; selection is deterministic per diff
-   Read `references/bench-map.md` for the full algorithm and
-   `references/internal-bench.md` for each reviewer lens. Then craft a
-   tailored prompt per selected reviewer. Load
-   `references/deep-review-lens.md` when the diff needs root-cause,
-   provenance, or long-running autoreview discipline.
-
-5. **Dispatch all three tiers in parallel:**
-
-   | Tier | What | How |
-   |------|------|-----|
-   | Internal bench | 3-5 Explore sub-agents with philosophy lenses | Agent tool, tailored prompts |
-   | Thinktank review | 10 agents, 8 model providers | `thinktank review` CLI. See `references/thinktank-review.md` |
-   | Cross-harness | Two or more available non-lead providers from `.harness-kit/agents.yaml` | See `references/cross-harness.md` |
-
-   Thinktank-specific rule: wait for the process to exit, or for
-   `trace/summary.json` to reach `complete` or `degraded` with a
-   `run_completed` event in `trace/events.jsonl`, before you consume the run.
-   Mid-run output directories are not final artifacts.
-
-6. **Synthesize.** Collect all outputs. Deduplicate findings across tiers.
-   Rank by severity: blocking (correctness, security) > important (architecture,
-   testing) > advisory (style, naming).
-
-7. **Verdict.** If no blocking findings → **Ship**. If blocking findings exist →
-   fix loop (below).
-
-## Fix Loop
-
-For each blocking finding, spawn a **builder** sub-agent with the specific
-file:line and fix instruction. Builders fix strategically (Ousterhout) and
-simply (grug). Builder fixes, runs tests, commits.
-
-After all fixes land, **re-dispatch all three review tiers.** Full re-review,
-not a spot-check. Loop until no blocking findings remain. Max 3 iterations —
-escalate to human if still blocked.
-
-## Live Verification
-
-**Trigger:** the diff touches user-facing or visual patterns — `.tsx`, `.jsx`,
-`pages/`, `app/`, `routes/`, `api/`, `endpoints/`, component directories,
-docs/report layouts, diagrams, screenshots, generated site assets, decks, or
-presentation-like artifacts.
-
-**Rule:** at least one reviewer must exercise the affected routes/components.
-**Ship** verdict is blocked until live verification passes.
-
-**Skip:** pure refactors, config-only, test-only, backend-only with no
-user-facing or visual surface.
-
-## Executable Path Verification
-
-**Trigger:** the diff adds or materially changes an executable path —
-script entrypoint, CLI, `package.json` / `make` target, Dagger function,
-migration, runner, responder, or job entrypoint.
-
-**Rule:** the marshal or a reviewer must either:
-
-- run the exact entrypoint once
-- or cite a gate or artifact that invokes that exact path
-
-Helper tests, fixture-only critics, and adjacent lanes do not count.
-
-**Verdict:** if the path was not exercised, label it an
-`unverified runtime path`. That is a blocking finding for a **Ship**
-verdict unless the diff is explicitly framed as scaffolding only.
-
-## Plausible-but-Wrong Patterns
-
-LLMs optimize for plausibility, not correctness. Reviewers must hunt for:
-- Wrong algorithm complexity (O(n²) where O(log n) is needed)
-- Unnecessary abstractions (82K lines vs 1-line solution)
-- Stub implementations that pass tests but don't actually work
-- Adjacent green lanes that never invoked the new entrypoint
-- "Specification-shaped" code — right module names, wrong behavior
-- Missing invariant checks that only matter at scale
-
-## Simplification Pass
-
-After review passes, if diff > 200 LOC net:
-- Look for code that can be deleted
-- Collapse unnecessary abstractions
-- Simplify complex conditionals
-- Remove compatibility shims with no real users
-
-## Thermo / Deslop Lens
-
-For meaningful implementation diffs, apply a harsh maintainability lens before
-issuing a Ship verdict:
-
-- structural simplification beats local polish; look for a code-judo move that
-  deletes branches, helpers, modes, or layers while preserving behavior
-- new ad-hoc conditionals in busy flows are design findings, not style nits
-- thin wrappers, casts, optionality churn, magic fallbacks, and bespoke helpers
-  need to earn their keep
-- files pushed toward giant-module territory require decomposition rationale
-- AI slop is review debt: unnecessary comments, abnormal defensive
-  try/catch, internal mocks, `any` casts, deep nesting, and codegen residue
-
-Route behavior-preserving cleanup to `/refactor`; block Ship when the slop or
-spaghetti makes the changed behavior harder to reason about.
-
-## Hardening Lens
-
-Recommend `/hardening` when the diff exposes a test-strength gap:
-
-- `/hardening property` for broad input domains, parser/serializer laws,
-  normalization, state transitions, totals, allocation, scheduling, sorting, or
-  round trips;
-- `/hardening mutation` when branch-heavy changed code is covered only by
-  shallow examples or assertion-light tests;
-- `/hardening acceptance` when user-facing fixtures, Gherkin, API examples,
-  CLI transcripts, or golden paths should fail if important values change;
-- `/hardening risk` when complexity and coverage need to pick the next target
-  before a Ship verdict is credible.
-
-Do not block Ship merely because a hardening mode exists. Block only when the
-changed behavior is high-risk, the current tests are visibly weak, or the
-review cannot name a live evidence path that would catch the likely failure.
-
-## Completion Gate
-
-Every Ship or Conditional verdict must include:
-
-Completion evidence core applies: behavior changed or verified, live evidence,
-exact command/path/route, repo-fit check, and residual risk. See
-`harnesses/shared/AGENTS.md` (Completion Evidence).
-
-Local fields include hardening recommendation / waiver.
-
-```markdown
-## Completion Gate
-- Exact end-user behavior changed: behavior or internal operator behavior the diff changes.
-- Evidence that proves it: review finding, test output, QA artifact, or command result behind the verdict.
-- Exact command/path/route exercised: command, route, file path, artifact, or tool call inspected.
-- Repo-fit check: live repo pattern or contract the verdict compared against.
-- Hardening recommendation / waiver: mode recommended, mode run, or waiver reason.
-- Residual risk: unverified path, accepted survivor, or none with reason.
-```
-
-If there is no end-user behavior because the diff is internal, say so and name
-the developer/operator behavior that changed instead.
-
-## Review Scoring
-
-After the final verdict, append one JSON line to `.groom/review-scores.ndjson`
-in the target project root (create `.groom/` if needed):
-
-```json
-{"date":"2026-04-06","pr":42,"correctness":8,"depth":7,"simplicity":9,"craft":8,"verdict":"ship","providers":["claude","thinktank","codex","gemini"]}
-```
-
-- Scores (1-10) reflect cross-provider consensus, not any single reviewer.
-- `pr` is the PR number, or `null` when reviewing a branch without a PR.
-- `verdict`: `"ship"`, `"conditional"`, or `"dont-ship"`.
-- `providers`: which review tiers contributed.
-- This file is committed to git (not gitignored). `/groom` reads it for quality trends.
-
-## Verdict Ref (git-native review proof)
-
-After scoring, record the verdict as a git ref so `/deliver --polish-only` and
-pre-merge hooks can enforce review requirements without GitHub PRs.
-
-```bash
-cargo run --locked -p harness-kit-checks -- verdict write "<branch>" '{"branch":"<branch>","base":"<base>","verdict":"<ship|conditional|dont-ship>","reviewers":[...],"scores":{...},"sha":"<HEAD-sha>","date":"<ISO-8601>"}'
-```
-
-- Write on every review, not just "ship" — "dont-ship" verdicts block pre-merge callers (`/deliver --polish-only` and the pre-merge hook).
-- The `sha` field MUST be `git rev-parse HEAD` at the time of review. If the branch
-  gets new commits after review, the verdict is stale and `/deliver --polish-only` will re-trigger review.
-- Verdict refs live under `refs/verdicts/<branch>` and sync via `git push/fetch`.
-- Also write copies to `.evidence/<branch>/<date>/review-synthesis.md` and
-  `.evidence/<branch>/<date>/verdict.json` for browsability.
-- The escape hatch (`HARNESS_KIT_NO_REVIEW=1`) is handled at the caller (`pre-merge-commit` hook), never inside `/code-review`.
-
-Run the snippet from the target project root. Skip this step if
-`harness-kit-checks verdict` is not available there (Harness Kit-only feature, not
-expected in downstream repos).
+Dedupe across reviewers; rank **blocking** (correctness, security, unverified
+runtime path) > **important** (architecture, test strength) > **advisory**
+(everything else). Blocking findings get fixed and the fix re-reviewed —
+full pass, not a spot-check. Max 3 fix-review iterations, then escalate to
+the operator with the open findings. Ship / Don't-ship is the lead's call on
+the reviewers' evidence; advisory findings never block.
 
 ## Gotchas
 
-- **Self-review leniency:** Models overrate their own work. Reviewers must be separate sub-agents, not the builder evaluating itself.
-- **Reviewing the whole codebase:** Review the diff, not the repo. `git diff main...HEAD` is the scope.
-- **Skipping tiers:** Internal bench alone is same-model groupthink. Thinktank + cross-harness provide genuine model and harness diversity.
-- **Misreading a live Thinktank run:** `review.md`, `summary.md`, and
-  `agents/*.md` may not exist until late. Watch stderr progress or
-  `trace/summary.json`, not just the directory listing. `thinktank review eval`
-  is broken in 6.3.0, so consume the final stdout JSON or the finished files.
-- **Treating all concerns equally:** Blocking issues (correctness, security) gate shipping. Style preferences don't.
-- **Monoculture:** The whole point of three tiers is provider diversity. Don't skip external tiers for speed.
-- **Over-prescribing prompts:** You are the marshal. Craft prompts that fit the diff. The references describe lenses, not scripts.
+- **Monoculture.** Same-model subagents alone are groupthink with extra
+  steps. Substantive diffs get at least one other model family.
+- **Reviewing the repo instead of the diff.** Scope discipline keeps
+  findings actionable.
+- **Treating all findings equally.** Severity ranking is the marshal's job;
+  a wall of undifferentiated comments is review theater.
+- **Skipping re-review after fixes.** A fix can introduce the next bug;
+  blockers get a fresh pass.

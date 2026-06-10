@@ -2,8 +2,10 @@
 
 Create a new Harness Kit source skill or agent from scratch.
 
-For a project-local skill in a consumer repo, use `/create-repo-skill`. This
-mode is for first-party catalog primitives under `skills/` or `agents/`.
+For a project-local skill in a consumer repo (bespoke QA drivers, persona
+probes), write it directly into the repo's `.agents/skills/<name>/` with the
+repo's real routes and commands — same craft, local facts. This mode is for
+first-party catalog primitives under `skills/` and `prompts/`.
 
 ## The description field is everything
 
@@ -45,14 +47,12 @@ If you're writing "1. Read the file 2. Find the function 3. Edit it" —
 that's not a skill, that's a task description.
 
 **In-repo exemplars worth reading before drafting:**
-- `skills/flywheel/SKILL.md` — 42 lines. Minimal composer. States
-  invariants, nothing more.
-- `skills/diagnose/SKILL.md` — judgment encoded as a routing table.
-  The table IS the skill; prose around it explains edge cases only.
-- `skills/settle/SKILL.md` — judgment encoded as mode detection.
-  Two modes, different recovery paths per mode.
-- `skills/diagnose/SKILL.md` — phase protocol with concrete stop conditions
-  and escalation paths.
+- `skills/sprites/SKILL.md` — one primitive, a routing table, gotchas.
+  No daemon, no ceremony.
+- `skills/diagnose/SKILL.md` — judgment encoded as a routing table plus
+  phase protocol with concrete stop conditions.
+- `prompts/yeet.md` — what a saved invocation looks like when it is NOT a
+  skill: pure judgment compression, no machinery.
 
 **External exemplars (installed under `skills/.external/`):**
 - `anthropic-skill-creator` — the "theory of mind" framing:

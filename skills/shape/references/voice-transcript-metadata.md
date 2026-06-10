@@ -29,7 +29,7 @@ Voice Transcript Metadata:
 | `transcript_confidence` | yes | `0..1` or `unknown` | sensitive | This is metadata, not accuracy proof. |
 | `audio_duration_seconds` | yes | non-negative number or `unknown` | sensitive | Do not retain raw audio just to compute this. |
 | `redaction_status` | yes | `redacted`, `sanitized` | internal | Raw/unredacted transcript text is not acceptable. |
-| `redaction_tool` | yes | tool name or `unknown` | internal | Prefer `/agent-transcript` for private transcript excerpts. |
+| `redaction_tool` | yes | tool name or `unknown` | internal | Redact private transcript excerpts before inclusion; never embed raw logs. |
 | `created_at` | yes | ISO-8601 timestamp, not future | internal | Timestamp for the transcript/premise artifact metadata. |
 | `residual_risk` | yes | substantive text | internal | Name uncertainty, especially transcript accuracy and omitted context. |
 

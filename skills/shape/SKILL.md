@@ -12,7 +12,7 @@ argument-hint: "[idea|issue|backlog-item] [--spec-only] [--design-only]"
 # /shape
 
 Turn a raw idea into a **context packet** — the unit of specification that
-`/deliver` and `/implement` consume. Spec before code, always.
+`/deliver` consumes. Spec before code, always.
 
 ## Contract
 
@@ -75,8 +75,8 @@ When the oracle depends on an acceptance artifact (fixture, golden file,
 contract, screenshot), pin it: `sha256:<digest> <path>`. If implementation
 intentionally changes that artifact, the handoff carries a contract-change
 acknowledgment. High-risk work (money/auth/migrations, expensive-to-detect
-regressions) earns formal examples and a hardening budget — route through
-`/hardening` rather than inflating the packet.
+regressions) earns formal examples and a test-strength budget — note it in
+the packet for `/deliver` and `/qa` rather than inflating the packet itself.
 
 ## Delegation Judgment
 

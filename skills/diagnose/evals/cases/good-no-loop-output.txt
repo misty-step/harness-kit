@@ -1,6 +1,0 @@
-I would not patch this yet. We cannot verify a fix without a feedback loop
-that reproduces or replays the mobile double-charge symptom. Useful loop
-options are captured mobile logs, a payment request trace replay, a browser or
-mobile repro script, or temporary instrumentation around submit and charge
-creation. Send the smallest available artifact first; until then there is no
-proven root cause.

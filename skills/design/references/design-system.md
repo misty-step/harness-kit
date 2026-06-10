@@ -79,8 +79,8 @@ single bounded polish pass. Improve the rendered surface directly.
 
 Start soft:
 
-1. Route visual diffs through `/design`; add `/a11y` where accessibility applies.
-2. Capture rendered evidence with `/qa`, `/browser`, or `/demo`.
+1. Route visual diffs through `/design`; accessibility checks ride with the design pass.
+2. Capture rendered evidence with `/qa`.
 3. Read, create, or update `DESIGN.md` when durable repo-owned design facts are
    present.
 4. Harden repeated findings into repo-local lint, tests, or scaffolded design

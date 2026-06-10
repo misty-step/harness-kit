@@ -6,9 +6,10 @@ __pycache__/
 embeddings.json
 .env
 
-# External skills — reproducible from registry.yaml via scripts/sync-external.sh.
-# Do not commit upstream code; contributors regenerate locally.
-skills/.external/
+# External skills are vendored (committed) at the pins in registry.yaml so
+# the repo is self-contained and updates arrive as reviewable diffs via
+# `harness-kit-checks sync-external`. Only the raw clone cache stays local.
+skills/.external/_checkouts/
 
 # /deliver runtime state: per-invocation ULID dirs with state.json, receipt.json,
 # review/, ci/ transcripts. Agent-written, never human-edited, never committed.
@@ -23,7 +24,6 @@ skills/.external/
 .harness-kit/traces/provider-lanes/
 .harness-kit/work/*.jsonl
 .harness-kit/tmp/lane-harness/
-.harness-kit/tmp/pre-push/
 
 # Provider CLI runtime metadata.
 .antigravitycli/

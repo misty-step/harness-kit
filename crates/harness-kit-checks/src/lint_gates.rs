@@ -46,6 +46,7 @@ pub fn check_exclusions(root: &Path) -> Result<GateReport> {
         ".next/",
         "node_modules/",
         "ci/",
+        "skills/.external",
     ];
     let mut findings = Vec::new();
 

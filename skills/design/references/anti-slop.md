@@ -67,7 +67,7 @@ template.
 
 1. No gradient text, no purple-on-black default, no decorative glass/blobs.
 2. Palette and type scale come from the product's tokens, used consistently.
-3. Light and dark both legible; contrast meets WCAG AA (verify with `/a11y`).
+3. Light and dark both legible; contrast meets WCAG AA (verify with axe or manual check).
 4. Motion is tied to interaction, not ambient.
 5. Density matches the surface's job; headings are sized for it.
 6. Copy has no em-dashes or placeholder text.

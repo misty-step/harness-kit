@@ -4,9 +4,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::{Context, Result, bail};
-use serde_json::{Value, json};
+use serde_json::Value;
 
-use crate::{bootstrap, docs_site, frontmatter, generate_index, lint_gates, verdicts};
+use crate::{bootstrap, ci_check, docs_site, frontmatter, generate_index, lint_gates};
 
 pub fn run_pre_commit(repo: &Path) -> Result<String> {
     let staged = staged_paths(repo)?;
@@ -58,7 +58,7 @@ pub fn run_pre_commit(repo: &Path) -> Result<String> {
 }
 
 pub fn run_pre_push(repo: &Path, pre_push_input: &str) -> Result<String> {
-    if !repo.join("dagger.json").exists() {
+    if !repo.join("Cargo.toml").exists() {
         return Ok(String::new());
     }
 
@@ -82,7 +82,7 @@ pub fn run_pre_push(repo: &Path, pre_push_input: &str) -> Result<String> {
                 || (!changes.paths.is_empty() && !push_allows_fast_gate(&changes.paths))
             {
                 bail!(
-                    "pre-push: HARNESS_KIT_PRE_PUSH=fast refused because pushed paths require the full Dagger gate"
+                    "pre-push: HARNESS_KIT_PRE_PUSH=fast refused because pushed paths require the full local gate"
                 );
             }
             run_fast_pre_push_gate(repo, &mut lines, &changes.paths)?;
@@ -110,29 +110,8 @@ pub fn run_pre_push(repo: &Path, pre_push_input: &str) -> Result<String> {
 }
 
 fn run_full_pre_push_gate(repo: &Path, lines: &mut Vec<String>) -> Result<()> {
-    if !command_exists("dagger") {
-        lines.push("pre-push: dagger not installed, skipping CI gates".to_string());
-        return Ok(());
-    }
-    if !docker_info_ok()? {
-        lines.push("pre-push: Docker not running, skipping CI gates".to_string());
-        return Ok(());
-    }
-
-    let head = git_output(repo, &["rev-parse", "HEAD"])?.trim().to_string();
-    if has_current_full_gate_receipt(repo, &head) {
-        lines.push(format!(
-            "pre-push: reusing same-HEAD Dagger receipt for {head}"
-        ));
-        return Ok(());
-    }
-
-    lines.push("pre-push: running dagger call check --source=.".to_string());
-    if !run_command(repo, "dagger", &["call", "check", "--source=."])? {
-        bail!("pre-push: CI gates failed. Fix issues before pushing.");
-    }
-    write_full_gate_receipt(repo, &head)?;
-    lines.push(format!("pre-push: recorded Dagger receipt for {head}"));
+    lines.push("pre-push: running harness-kit-checks check --repo .".to_string());
+    lines.extend(ci_check::run(repo)?);
     Ok(())
 }
 
@@ -267,7 +246,7 @@ fn log_push_classification(lines: &mut Vec<String>, changes: &PushChangeSet) {
         lines.push("pre-push: decision fast gate (docs/backlog allowlist only)".to_string());
     } else {
         lines.push(
-            "pre-push: decision full Dagger gate (source or harness path changed)".to_string(),
+            "pre-push: decision full local gate (source or harness path changed)".to_string(),
         );
     }
 }
@@ -330,44 +309,6 @@ fn path_allows_fast_gate(path: &str) -> bool {
     matches!(path, "README.md" | "CHANGELOG.md")
 }
 
-fn full_gate_receipt_path(repo: &Path, head: &str) -> PathBuf {
-    repo.join(".harness-kit")
-        .join("tmp")
-        .join("pre-push")
-        .join("dagger")
-        .join(format!("{head}.json"))
-}
-
-fn has_current_full_gate_receipt(repo: &Path, head: &str) -> bool {
-    let path = full_gate_receipt_path(repo, head);
-    let Ok(text) = fs::read_to_string(path) else {
-        return false;
-    };
-    let Ok(value) = serde_json::from_str::<Value>(&text) else {
-        return false;
-    };
-    value.get("head").and_then(Value::as_str) == Some(head)
-        && value.get("status").and_then(Value::as_str) == Some("passed")
-        && value.get("command").and_then(Value::as_str) == Some("dagger call check --source=.")
-}
-
-fn write_full_gate_receipt(repo: &Path, head: &str) -> Result<()> {
-    let path = full_gate_receipt_path(repo, head);
-    if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)
-            .with_context(|| format!("failed to create {}", parent.display()))?;
-    }
-    let receipt = json!({
-        "head": head,
-        "status": "passed",
-        "command": "dagger call check --source=.",
-        "created_at": chrono::Utc::now().to_rfc3339(),
-    });
-    fs::write(&path, format!("{receipt}\n"))
-        .with_context(|| format!("failed to write {}", path.display()))?;
-    Ok(())
-}
-
 pub fn run_pre_merge_commit(repo: &Path) -> Result<String> {
     run_pre_merge_commit_with_env(repo, env_map())
 }
@@ -400,54 +341,20 @@ pub fn run_post_rewrite(repo: &Path, args: &[String]) -> Result<String> {
 
 fn run_pre_merge_commit_with_env(repo: &Path, env: BTreeMap<String, String>) -> Result<String> {
     let mut lines = Vec::new();
-    if env.get("HARNESS_KIT_NO_REVIEW").map(String::as_str) == Some("1") {
-        lines
-            .push("pre-merge-commit: bypassing verdict gate (HARNESS_KIT_NO_REVIEW=1)".to_string());
-    } else if let Some(branch) = merge_topic_branch(&env) {
-        match verdicts::check_landable(repo, &branch)? {
-            verdicts::Landable::Yes => {}
-            verdicts::Landable::No => bail!(
-                "pre-merge-commit: no valid verdict for '{branch}'.\n  Run /code-review first, or bypass with:\n  HARNESS_KIT_NO_REVIEW=1 git merge --no-ff \"{branch}\""
-            ),
-            verdicts::Landable::DontShip => bail!(
-                "pre-merge-commit: verdict is 'dont-ship' for '{branch}'.\n  Address review findings and re-run /code-review."
-            ),
-        }
-    } else {
-        lines.push(
-            "pre-merge-commit: cannot determine topic branch - allowing verdict gate".to_string(),
-        );
-    }
-
     match current_branch(repo)?.as_deref() {
         Some("master" | "main") => {}
         _ => return Ok(lines.join("\n")),
     }
-    if !repo.join("dagger.json").exists() {
+    if !repo.join("Cargo.toml").exists() {
         return Ok(lines.join("\n"));
     }
-    if env.get("HARNESS_KIT_NO_DAGGER").map(String::as_str) == Some("1") {
-        lines.push("pre-merge-commit: bypassing Dagger gate (HARNESS_KIT_NO_DAGGER=1)".to_string());
+    if env.get("HARNESS_KIT_NO_CI").map(String::as_str) == Some("1") {
+        lines.push("pre-merge-commit: bypassing CI gate (HARNESS_KIT_NO_CI=1)".to_string());
         return Ok(lines.join("\n"));
     }
 
-    if !command_exists("dagger") {
-        bail!(
-            "pre-merge-commit: dagger not installed; cannot merge without Dagger gate.\n  Install dagger or bypass explicitly with HARNESS_KIT_NO_DAGGER=1."
-        );
-    }
-    if !command_exists("docker") || !docker_info_ok()? {
-        bail!(
-            "pre-merge-commit: Docker is unavailable; cannot run Dagger gate.\n  Start Docker or bypass explicitly with HARNESS_KIT_NO_DAGGER=1."
-        );
-    }
-
-    lines.push("pre-merge-commit: running dagger call check --source=.".to_string());
-    if !run_command(repo, "dagger", &["call", "check", "--source=."])? {
-        bail!(
-            "pre-merge-commit: dagger call check --source=. failed.\n  Run /ci or dagger call check --source=. before merging.\n  Bypass explicitly with HARNESS_KIT_NO_DAGGER=1."
-        );
-    }
+    lines.push("pre-merge-commit: running harness-kit-checks check --repo .".to_string());
+    lines.extend(ci_check::run(repo)?);
     Ok(lines.join("\n"))
 }
 
@@ -484,7 +391,7 @@ fn docs_input_changed(paths: &[String]) -> bool {
             || path == "docs/positioning.md"
             || (path.starts_with("backlog.d/") && path.ends_with(".md"))
             || path == "bootstrap.sh"
-            || path == "ci/src/harness_kit_ci/main.py"
+            || path == "crates/harness-kit-checks/src/ci_check.rs"
             || path.starts_with("crates/harness-kit-checks/src/docs_site.rs")
             || path.starts_with("crates/harness-kit-checks/src/generate_index.rs")
     })
@@ -498,19 +405,6 @@ fn bootstrap_relevant_changed<'a>(paths: impl IntoIterator<Item = &'a str>) -> b
             || path.starts_with(".githooks/")
             || path == "bootstrap.sh"
     })
-}
-
-fn merge_topic_branch(env: &BTreeMap<String, String>) -> Option<String> {
-    if let Some(action) = env.get("GIT_REFLOG_ACTION")
-        && let Some(branch) = action.strip_prefix("merge ")
-        && !branch.is_empty()
-    {
-        return Some(branch.to_string());
-    }
-    env.iter()
-        .find_map(|(key, value)| key.starts_with("GITHEAD_").then_some(value))
-        .filter(|branch| !branch.is_empty())
-        .cloned()
 }
 
 fn in_flight_deliver_warnings(repo: &Path) -> Result<Vec<String>> {
@@ -573,43 +467,6 @@ fn current_branch(repo: &Path) -> Result<Option<String>> {
 
 fn env_map() -> BTreeMap<String, String> {
     std::env::vars().collect()
-}
-
-fn command_exists(command: &str) -> bool {
-    let Some(path) = std::env::var_os("PATH") else {
-        return false;
-    };
-    std::env::split_paths(&path).any(|dir| is_executable(dir.join(command)))
-}
-
-fn is_executable(path: PathBuf) -> bool {
-    if !path.is_file() {
-        return false;
-    }
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        fs::metadata(path)
-            .map(|metadata| metadata.permissions().mode() & 0o111 != 0)
-            .unwrap_or(false)
-    }
-    #[cfg(not(unix))]
-    {
-        true
-    }
-}
-
-fn docker_info_ok() -> Result<bool> {
-    run_command(Path::new("."), "docker", &["info"])
-}
-
-fn run_command(repo: &Path, command: &str, args: &[&str]) -> Result<bool> {
-    let status = Command::new(command)
-        .args(args)
-        .current_dir(repo)
-        .status()
-        .with_context(|| format!("failed to run {command} {}", args.join(" ")))?;
-    Ok(status.success())
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<()> {
@@ -676,7 +533,7 @@ mod tests {
             "crates/harness-kit-checks/src/docs_site.rs".to_string()
         ]));
         assert!(docs_input_changed(&[
-            "ci/src/harness_kit_ci/main.py".to_string()
+            "crates/harness-kit-checks/src/ci_check.rs".to_string()
         ]));
         assert!(!docs_input_changed(&["README.md".to_string()]));
     }
@@ -705,7 +562,7 @@ mod tests {
         ]));
         assert!(!push_allows_fast_gate(&[".githooks/pre-push".to_string()]));
         assert!(!push_allows_fast_gate(&[
-            "ci/src/harness_kit_ci/main.py".to_string()
+            "crates/harness-kit-checks/src/ci_check.rs".to_string()
         ]));
         assert!(!push_allows_fast_gate(&[]));
     }
@@ -758,41 +615,8 @@ mod tests {
         assert!(
             lines
                 .iter()
-                .any(|line| line.contains("decision full Dagger gate"))
+                .any(|line| line.contains("decision full local gate"))
         );
-    }
-
-    #[test]
-    fn full_gate_receipt_requires_exact_head_status_and_command() {
-        let temp = TempDir::new().unwrap();
-        let head = "abc123";
-
-        assert!(!has_current_full_gate_receipt(temp.path(), head));
-        write_full_gate_receipt(temp.path(), head).unwrap();
-        assert!(has_current_full_gate_receipt(temp.path(), head));
-        assert!(!has_current_full_gate_receipt(temp.path(), "def456"));
-
-        let path = full_gate_receipt_path(temp.path(), head);
-        fs::write(
-            path,
-            r#"{"head":"abc123","status":"passed","command":"dagger call check"}"#,
-        )
-        .unwrap();
-        assert!(!has_current_full_gate_receipt(temp.path(), head));
-    }
-
-    #[test]
-    fn extracts_merge_topic_branch_from_git_env() {
-        let mut env = BTreeMap::new();
-        env.insert("GIT_REFLOG_ACTION".to_string(), "merge feat-x".to_string());
-        assert_eq!(merge_topic_branch(&env), Some("feat-x".to_string()));
-
-        env.insert("GIT_REFLOG_ACTION".to_string(), "commit".to_string());
-        env.insert("GITHEAD_abc123".to_string(), "feat-y".to_string());
-        assert_eq!(merge_topic_branch(&env), Some("feat-y".to_string()));
-
-        env.clear();
-        assert_eq!(merge_topic_branch(&env), None);
     }
 
     #[test]

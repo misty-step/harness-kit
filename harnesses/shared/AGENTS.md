@@ -83,8 +83,8 @@ context rationalizes the author's choices. Hand critics ONLY the artifact
 allowed only as a fallback note; it does not count as fresh-context critique.
 
 ### Dispatch through lane cards
-Roles, not files. When delegating, use `/dispatch` or the active skill's
-local dispatch guidance to compose prompt-native lane cards: end state,
+Roles, not files. When delegating, compose prompt-native lane cards
+(template: the sprites skill's `templates/lane-card.md`): end state,
 success criteria, verification affordances, boundaries, output shape, and
 receipt expectation. Lanes are outcome-shaped and big: the oracle field is
 load-bearing, scope is a boundary declaration, and the lane agent owns its
@@ -138,7 +138,7 @@ Concrete trigger → action. When a row matches, take the action.
 |---|---|
 | >3 exploratory tool calls, unknown scope | Explore lane with an explicit question |
 | Non-trivial architecture decision not yet shaped | `/shape`, or a plan lane with a scoped design question |
-| Shaped ticket, acceptance criteria clear | `/implement` → `/code-review` + `/ci` |
+| Shaped ticket, acceptance criteria clear | `/deliver` |
 | Fuzzy failure, root cause unknown | `/diagnose`, or an Explore lane with an explicit hypothesis |
 
 ### Delegate or go solo
@@ -147,7 +147,7 @@ Concrete trigger → action. When a row matches, take the action.
 | Exploration, scoped search, small review | Native subagent (the harness's own delegation) |
 | Milestone or pre-merge critique of your own work | Fresh-context critic, different model family preferred (see **Roster**) |
 | Heavy, long-running, parallel, or isolation-needing lane | Sprite lane via `/sprites`, receipt recorded |
-| Bounded, well-specified lane where a cheaper provider is demonstrably fit | Roster provider via `/dispatch`, receipt recorded |
+| Bounded, well-specified lane where a cheaper provider is demonstrably fit | Roster provider lane (`dispatch-agent`), receipt recorded |
 | Recurring event-driven workflow worth a bespoke agent | Eval-driven agent design (offline), not ad-hoc dispatch |
 | Mechanical command already chosen; emergency preservation; user forbids delegation | Direct solo |
 | Need tool/permission isolation only | Static project subagent |
@@ -157,7 +157,7 @@ Concrete trigger → action. When a row matches, take the action.
 |---|---|
 | Need current repo truth (contracts, file content, skill defs) | `grep` / read the live file first |
 | Need external ecosystem facts (libraries, CVEs, recent changes) | `/research` |
-| Need model/provider comparison | `/model-research` |
+| Need model/provider comparison | `/research` |
 
 ### Integration shape
 | Trigger | Action |
@@ -168,7 +168,7 @@ Concrete trigger → action. When a row matches, take the action.
 | Trigger | Action |
 |---|---|
 | Reviewing code you just wrote | Fresh critic lane — diff + oracle only, no author context |
-| Module-depth / information-hiding concern | ousterhout lens, or `/refactor` |
+| Module-depth / information-hiding concern | ousterhout lens critique |
 | Scope / shippability concern | carmack lens |
 | Complexity / abstraction-theater concern | grug lens |
 | TDD / test-shape concern | beck or cooper lens |
@@ -201,9 +201,9 @@ it.
   cheap-model agents for recurring workflows is eval-driven work
   (benchmarks, auto-research loops), not something to improvise inside an
   ad-hoc orchestration run.
-- Record meaningful roster and sprite lanes via the repo receipt script,
-  `/dispatch` run card, or sprite-lane receipts. `manual` is human-supplied
-  evidence, not a dispatch lane.
+- Record meaningful roster and sprite lanes via delegation receipts
+  (`harness-kit-checks record-delegation` / `dispatch-agent`) or sprite-lane
+  receipts. `manual` is human-supplied evidence, not a dispatch lane.
 - Multi-lane answers name: lanes used and why, parallel/split/competing
   shape, accepted/rejected evidence, failures, receipt ids.
 

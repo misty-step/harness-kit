@@ -5,13 +5,9 @@ description: |
   /research [query], /research delegate [task], /research thinktank [topic].
   Use when: "search for", "look up", "research", "delegate",
   "get perspectives", "web search", "find out", "investigate",
-  "introspect", "session analysis", "check readwise", "saved articles",
-  "reading list", "highlights", "what are people saying", "X search",
-  "social sentiment", "trending".
-  Triggers: "search for", "look up", "research", "delegate", "get perspectives",
-  "web search", "find out", "investigate", "introspect", "session analysis",
-  "check readwise", "saved articles", "reading list", "highlights",
-  "what are people saying", "X search", "social sentiment", "trending".
+  "introspect", "check readwise", "saved articles", "reading list",
+  "what are people saying", "X search", "trending", "which model",
+  "compare models", "best model for", "model selection".
 argument-hint: "[query] or [web-search|web-deep|web-news|web-docs|delegate|thinktank|introspect|readwise|xai|exemplars] [args]"
 ---
 
@@ -44,6 +40,13 @@ verification, and synthesis.
 If the user names a sub-capability, load that reference. Otherwise use the
 default fanout for substantive research; narrow to one source only for explicit
 single-source requests or simple fact/version lookups.
+
+Model selection/comparison is research, not memory: model facts rot in
+weeks. Start from the installed harness-engineering skill's
+`references/model-provider-harness-index.md` for current local facts, then
+verify against live sources — availability on the target platform, pricing,
+context, tool-calling support — and return a ranked recommendation with
+dates on every claim.
 
 ## Contract
 

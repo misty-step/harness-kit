@@ -11,7 +11,7 @@ or page content target. Do not route ordinary broad research here by default.
 | Extract clean markdown from a page | Firecrawl scrape/extract | Exa fetch |
 | Map a site or docs corpus | Tavily Map or Firecrawl Map | manual link walk |
 | Crawl a bounded docs site | Firecrawl Crawl | targeted search + fetch |
-| Dynamic or logged-in page | `/browser` | manual operator-provided artifact |
+| Dynamic or logged-in page | browser automation (Playwright/Chrome MCP) | manual operator-provided artifact |
 
 ## Harness Contract
 

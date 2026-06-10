@@ -48,8 +48,14 @@ final critique of visible UI changes.
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
 | `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
 
-Use `/a11y` for WCAG compliance, `/qa` for behavior verification, `/demo` for
-evidence packaging, and `/shape` when the product direction itself is unsettled.
+Use `/qa` for behavior verification and evidence capture, and `/shape` when
+the product direction itself is unsettled.
+
+Accessibility is part of the design pass, not a separate ceremony: keyboard
+reachability and focus order on interactive changes, visible focus states,
+contrast (WCAG AA), labels/alt on controls and images, reduced-motion
+respect. Run axe or equivalent on web surfaces; a11y findings are design
+findings and get fixed with the same minimal-change discipline.
 For recurring or product-facing visual work, use the references:
 
 - `references/scaffold.md` for repo-owned `DESIGN.md` and

@@ -15,78 +15,23 @@ Every eval has four pieces:
 
 Prefer objective outcome graders first: commands run, files created, tests
 pass, evidence paths exist, forbidden edits absent. Use rubric/model judges
-only for judgment-heavy outputs such as strategy, review quality, or demo
-craft; calibrate them against human examples when possible.
+only for judgment-heavy outputs; calibrate against human examples.
 
-Verification skills need at least one deterministic grader script or an
-explicit semantic waiver. A structural eval tree proves rerunnable shape only;
-it does not prove the skill changed behavior. Objective graders should assert
-files, commands, schemas, forbidden edits, rendered artifacts, or state
-transitions before any rubric judge is considered persuasive.
+## How to run one
 
-### Baseline comparison
+A/B in worktrees: spin one agent on the task with the skill installed and
+one without (or with the candidate revision), then a fresh comparison agent
+grades both outputs against the rubric — it must not know which is which.
+Two or three task instances beat one; decorrelate the grader's model family
+from the workers'.
 
-Spawn two sub-agents in parallel with the same representative prompt. One runs
-without the skill loaded (baseline). The other runs with the skill active.
-Both produce their output and confidence, but confidence is not the score.
-Score the outcome and transcript with the same graders.
+## Boundaries
 
-Then spawn a critic sub-agent to compare the two outputs: which is better?
-By how much? Is the skill load-bearing or marginal?
-
-If improvement is marginal, the skill isn't load-bearing. Delete it.
-
-## Eval directory convention
-
-Write eval prompts and graders to `evals/` in the skill directory. Rerun after
-changes and after model upgrades.
-
-Minimum tree:
-
-```
-skills/<name>/evals/
-  README.md              # capability under test and expected failure mode
-  cases/<case>.md        # prompt + fixture/context pointers
-  graders/<grader>       # command, rubric, or script used to judge outcome
-```
-
-Invented repo-local skills must include at least one eval seed before
-installation. The seed can be small, but it must name the expected artifact and
-the grader that proves the skill helped.
-
-## Validator
-
-Run the structural validator before calling an eval suite ready:
-
-```bash
-cargo run --locked -p harness-kit-checks -- check-skill-evals --repo .
-```
-
-The validator checks every existing `skills/<name>/evals/` tree has:
-
-- `README.md`
-- at least one file under `cases/`
-- at least one file under `graders/`
-
-This is deliberately structural. It proves the eval has a rerunnable shape; it
-does not prove the grader is semantically strong.
-
-## Result artifacts
-
-When `/harness-engineering eval <skill>` runs a comparison, write a short markdown result
-under:
-
-```text
-skills/<name>/evals/results/<date>-<case>.md
-```
-
-Each result records:
-
-- baseline output path
-- skill output path
-- grader command or rubric used
-- verdict: `skill-wins`, `baseline-wins`, `tie`, or `invalid`
-- one paragraph explaining why
-
-Do not commit bulky transcripts unless they are small and useful. Prefer paths
-to `.evidence/` or `/tmp` artifacts for raw transcripts.
+- Structural eval trees are theater; they were deleted in the 2026-06
+  consolidation. An eval is a run with a grader, not a directory shape.
+- The cheapest valid eval is live telemetry plus judgment: did the skill
+  trigger when it should, and did sessions that loaded it end better?
+  (`harness-kit-checks telemetry`.)
+- Serious, repeated eval work (benchmarking agent compositions, model
+  selection for a recurring workflow) belongs in Daedalus's arena loop, not
+  ad-hoc here.

@@ -201,8 +201,8 @@ you'll learn from an experiment, you don't understand the problem yet.
 
 1. **Write failing regression first** -- use the highest seam that exercises
    the real bug pattern. If no correct seam exists, record that as an
-   architecture finding and route the follow-up through `/refactor` or
-   `/critique --lens ousterhout`.
+   architecture finding and file a follow-up ticket (or run a `/critique
+   --lens ousterhout` pass) rather than forcing a bad seam.
 2. **Verify test fails for the right reason** -- not syntax/import errors
 3. **Implement single fix** -- address root cause. ONE change at a time.
 4. **Rerun original loop** -- the Phase 1 loop must pass, not only the minimized

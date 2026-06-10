@@ -1,1 +1,0 @@
-Raw operator premise artifact for the premise-source checker fixture.

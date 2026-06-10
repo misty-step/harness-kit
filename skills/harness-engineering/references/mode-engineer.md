@@ -22,13 +22,17 @@ For any harness component, apply the Norman test:
 Prevention hierarchy: Type system > Hook > Lint > Test > Skill > Prose.
 Prose is the burner label. Hooks are the redesigned stove.
 
-## Local CI via Dagger
+## Local CI
 
-If the project has a `dagger.json`, it has a Dagger CI pipeline. Run `dagger call check`
-to execute all quality gates locally before push. Individual gates are also callable
-(e.g., `dagger call lint-shell`). When scaffolding a new project or adding CI,
-prefer Dagger (pipelines as code) over GitHub Actions YAML for the inner dev loop.
-See harness-kit's own `ci/` directory for a reference implementation.
+For Harness Kit itself, run the Rust-owned local gate:
+
+```sh
+cargo run --locked -p harness-kit-checks -- check --repo .
+```
+
+When adding gate coverage, put durable checks in `harness-kit-checks` first.
+Do not make Dagger, Docker, GitHub Actions YAML, or provider CLIs the default
+inner-loop gate for Harness Kit.
 
 ## Hooks are the highest-leverage investment
 
@@ -68,13 +72,13 @@ recovering meaning from free-form agent prose, that is a strong smell.
 When multiple skills touch the same delivery lane, enforce strict layering:
 
 - **Leaf skills own one domain and are runnable standalone.** Examples:
-  `/ci`, `/refactor`, `/qa`, `/code-review`.
+  `/ci`, `/qa`, `/code-review`.
 - **Composer skills orchestrate leaves around one bounded objective.**
-  Examples: `/deliver`, `/settle`.
-- **Outer-loop skills orchestrate composers plus lifecycle work.**
-  Example: `/flywheel`.
-- **Aliases are vocabulary, not new domains.** `/land` is a landing
-  mode/alias of `/settle`, not a separate skill with an independent contract.
+  Example: `/deliver`.
+- **Outer-loop / event workflows are Mode B** (bitterblossom), not new
+  skills here — see `meta/CONTRACTS.md`.
+- **Aliases are vocabulary, not new domains.** Do not add a skill when a
+  trigger alias on an existing one covers the request.
 
 Redundancy test:
 - If a composer explains a leaf skill's internal methodology in detail, that is

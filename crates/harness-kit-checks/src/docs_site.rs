@@ -677,8 +677,8 @@ fn workflow_role(name: &str) -> &'static str {
 }
 
 fn collect_gates(repo: &Path) -> Result<Vec<String>> {
-    let text = fs::read_to_string(repo.join("ci/src/harness_kit_ci/main.py"))?;
-    let regex = Regex::new(r#"run_gate,\s+"([^"]+)""#)?;
+    let text = fs::read_to_string(repo.join("crates/harness-kit-checks/src/ci_check.rs"))?;
+    let regex = Regex::new(r#"gate(?:_report)?\(&mut lines,\s+"([^"]+)""#)?;
     let mut gates = regex
         .captures_iter(&text)
         .filter_map(|captures| captures.get(1).map(|value| value.as_str().to_string()))
@@ -872,7 +872,7 @@ fn render_gates_page(gates: &[String]) -> String {
     let mut html = String::from("<section><h1>CI gate map</h1>");
     for gate in gates {
         html.push_str(&format!(
-            r#"<article class="card"><h2>{}</h2><p>Runs as part of dagger call check --source=.</p></article>"#,
+            r#"<article class="card"><h2>{}</h2><p>Runs as part of harness-kit-checks check --repo .</p></article>"#,
             escape_html(gate)
         ));
     }

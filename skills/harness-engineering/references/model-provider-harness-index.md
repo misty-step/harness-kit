@@ -283,7 +283,7 @@ scannable catalog snapshot.
 
 ## Refresh Procedure
 
-Use `/harness-engineering models` or `/model-research` when this file is stale
+Use `/harness-engineering models` or `/research` when this file is stale
 or a user asks for current model/provider/harness choices.
 
 1. Read `.harness-kit/agents.yaml`, harness settings, and this file.
@@ -293,7 +293,7 @@ or a user asks for current model/provider/harness choices.
 4. Update this file with hard facts only.
 5. Update `.harness-kit/agents.yaml` and harness settings only when changing a
    runnable default or variant.
-6. Run `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`.
+6. Run `cargo run --locked -p harness-kit-checks -- probe-agent-roster --validate-only`.
 
 Do not add subjective labels such as role fit, taste, or task suitability to
 this file. Put task-specific composition rationale in the run's receipts,

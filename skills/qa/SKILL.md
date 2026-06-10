@@ -2,279 +2,75 @@
 name: qa
 description: |
   Verify the running thing works. Browser walks for web, request replay for
-  APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay
-  for MCP. "Tests pass" is not QA. Use when: "run QA", "verify the feature",
-  "test this", "check the app", "exploratory test", "QA this PR",
-  "smoke test", "manual testing", "capture evidence".
-  For generated repo QA skills, use /create-repo-skill qa. Trigger: /qa.
-argument-hint: "[url|route|command|endpoint|feature|scaffold]"
+  APIs, shell smoke for CLIs, consumer builds for libraries, tool-call
+  replay for MCP. "Tests pass" is not QA. Use when: "run QA", "verify the
+  feature", "test this", "check the app", "smoke test", "exploratory test",
+  "capture evidence". Trigger: /qa.
+argument-hint: "[url|route|command|endpoint|feature]"
 ---
 
 # /qa
 
-**Every app has a QA path.** The question this skill answers first is not
-"how do I drive a browser?" — it's "what shape is this app, and what does
-verifying it actually look like here?" A CLI is QA'd with shell
-invocations and exit-code audits. An API is QA'd by replaying requests
-against a preview deploy. A Next.js app is QA'd by walking golden paths
-in a browser. A library is QA'd by installing it into a sandbox consumer.
-An MCP server is QA'd by replaying tool calls through the harness that
-registered it. None of these are optional; all of them are QA.
+**Every app has a QA path.** The first question is not "how do I drive a
+browser?" — it's "what shape is this app, and what does verifying it look
+like here?" If the repo has its own QA/verification skill, defer to it: it
+encodes the actual routes, commands, and golden paths. If it doesn't, that
+absence is a harness gap — run the protocol below AND flag the gap to
+`/groom` so the repo grows one.
 
-The skill's job is to route to the right shape, then either defer to a
-project-local QA skill that encodes this repo's actual paths, or run a
-quick protocol on the fly.
+## Step 0: shape
 
-## Hardening Hook
+Read the signals (`package.json` bin/framework deps, `playwright.config.*`,
+`Cargo.toml` bin vs lib, `cmd/` trees, MCP deps, deploy configs) and pick:
 
-Route to `/hardening acceptance` when QA relies on examples whose values should
-matter: Gherkin scenarios, API fixtures, CLI transcripts, golden files,
-seeded workflows, screenshots with asserted data, or contract examples. QA can
-still pass without it when the check directly drives the live behavior, but the
-report must name whether acceptance mutation was run, waived as not useful, or
-left as residual risk.
-
-## Completion Gate
-
-Every QA pass/fail report includes:
-See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
-core; this phase keeps QA-specific local fields.
-
-```markdown
-## Completion Gate
-- Exact end-user behavior verified: user or operator behavior exercised through the running surface.
-- App shape and live path chosen: browser, API, CLI, library, MCP, hybrid, or other concrete surface.
-- Value proposition exercised: specific promised outcome the QA walk covered.
-- Persona outcome observed: persona-specific success or failure observed in the run.
-- Live repo evidence read: package/config/docs/routes/commands/tests used to choose the QA path.
-- Acceptance source: oracle, ticket, spec, fixture, route, command, or explicit absence.
-- Evidence that proves it: direct link to screenshot, trace, transcript, request replay, or artifact path.
-- Artifact/evidence location: committed evidence path, temp artifact path, screenshot, transcript, or log.
-- Summary links / embeds: direct Markdown links for generated artifacts and inline screenshots/GIFs/videos when the final surface supports rendering.
-- Exact command/path/route exercised: command, URL, route, file path, or tool call actually run.
-- Dogfood artifact: screenshot, browser trace, CLI transcript, request replay, tool-call trace, or explicit no-running-surface waiver.
-- Repo-fit check: local QA convention or repo contract followed.
-- Adjacent-tests justification: why adjacent tests are sufficient, or why they are not runtime proof.
-- Acceptance mutation / hardening: mutation/hardening run, recommendation, or waiver reason.
-- Observability / instrumentation debt: named post-ship signal exists, was added, or is logged as debt.
-- Residual risk: unverified path, uncovered persona, or none with reason.
-```
-
-For internal libraries or harness changes, replace end-user behavior with the
-developer/operator behavior under test. Adjacent unit tests are supporting
-evidence only; QA must name the running surface it actually exercised.
-Adjacent tests are enough only when they invoke the exact changed public
-surface; otherwise QA must say what live path remains unverified.
-For user- or operator-visible changes, dogfood means the agent exercised the
-changed surface before signing off; a green aggregate test run is supporting
-evidence, not the dogfood artifact.
-If the changed behavior has no named post-ship signal, log, receipt, benchmark,
-or evidence artifact, report it as instrumentation debt rather than hiding it
-inside generic residual risk.
-
-## Work Ledger
-
-When `.harness-kit/work/ledger.jsonl` is available, `/qa` calls
-`cargo run --locked -p harness-kit-checks -- work-ledger append` with `phase_started` at QA start,
-`next_action_changed` when evidence is captured, `blocker_added` for failed or
-unverified critical paths, and `phase_completed` when QA passes or is waived.
-Each event links evidence refs and any trace refs already known.
-
-## Execution Stance
-
-You are the executive orchestrator.
-- Keep test scope, severity classification, and the final pass/fail call
-  on the lead model.
-- Delegate drive-the-app execution and evidence capture to focused
-  subagents.
-- When the same agent both executed and judged, dispatch an independent
-  adversarial verifier before signing off on "pass"; ask it to attack the
-  pass claim and name the path that would embarrass us in production.
-
-## Delegation Judgment
-
-delegate on judgment per the shared Roster contract: native subagents
-by default; add cross-model critics, roster providers, or sprite lanes
-(`/sprites`) only when they answer a distinct question. See
-`harnesses/shared/AGENTS.md` (Roster).
-
-Local lane guidance: Use one lane to drive the running surface and another to attack the evidence, edge cases, and product judgment behind the pass claim.
-
-## Step 0: Identify the app's shape
-
-Before anything else, answer: **what kind of app is this, and what does
-"verify it works" look like for that kind?** The shape determines the
-path; the path determines the tools.
-
-Signals to read (any of these; stop when you have enough):
-
-- `package.json` — `"bin"` field → CLI. `"main"` + no bin + no
-  framework deps → library. `next` / `remix` / `astro` / `vite` +
-  framework routes → browser web app. `express` / `fastify` /
-  `hono` + no SSR pages → API service.
-- `playwright.config.*`, `cypress.config.*` → browser harness already
-  wired; use it when the path is browser.
-- `mcp/`, `servers/mcp/`, `@modelcontextprotocol/*` in deps → MCP server.
-- `Dockerfile`, `fly.*.toml`, `vercel.json`, `.github/workflows/*deploy*`
-  → deploy target hints; helps pick "which preview do I hit?"
-- `Cargo.toml` (`[[bin]]` vs `[lib]`), `pyproject.toml` (`scripts` vs
-  package), `go.mod` (`cmd/` tree), etc., for non-JS stacks.
-
-Map the shape to the path:
-
-| App shape | QA path |
+| Shape | QA path |
 |---|---|
-| Browser web app (Next.js, Remix, SvelteKit, SPA) | Start dev server; walk golden paths; scan console errors; scan network panel for 4xx/5xx; optionally Playwright if `playwright.config.*` exists |
-| API / serverless / backend service | Replay representative requests (`curl`, HTTPie, `.http` file, Postman export) against a preview deploy or local server; spot-check JSON contract; enumerate error statuses; verify auth paths |
-| CLI | Shell-driven smoke: `--help`, key invocations with representative flags, malformed-input paths; audit exit codes; audit error messages for clarity |
-| Library / SDK | Install into a sandbox consumer project (`npm pack && npm i <tarball>`, `cargo add --path`, `pip install -e .`); exercise the public API; check type surface; verify no runtime import of dev-only deps |
-| MCP server / agent tool | Register with the harness (`claude mcp add` / Codex `/plugins`); replay tool calls; inspect responses; confirm error paths return structured failures, not crashes |
-| Hybrid (e.g. Next.js app + MCP server + CLI) | Pick the path per surface touched by the change; do not pretend one path covers all |
+| Browser app | Start dev server or hit preview; walk the golden paths the change touched; watch console + network panel for errors |
+| API / service | Replay representative requests against local/preview; check status, contract shape, and error paths (bad auth, malformed body) |
+| CLI | `--help` accuracy, happy-path invocations from the docs, malformed-input paths; audit exit codes and error-message clarity |
+| Library / SDK | Build the distributable, install into a throwaway consumer, exercise the changed public API, check the type surface |
+| MCP / agent tool | Register with a harness, replay each affected tool call, confirm errors come back structured rather than crashing the server |
+| Hybrid | One path per surface the change touched — one path does not cover all |
 
-If the shape is ambiguous, name both candidates and ask — do not silently
-pick one.
+Ambiguous shape: name both candidates and ask; don't silently pick.
 
-## Routing
+**The canonical misread:** "no playwright config" does not mean "skip QA."
+It means Playwright isn't the path — name the one that is. If you can't
+name a path, ask; never ship a generic shrug.
 
-| Intent | Action |
-|---|---|
-| `"scaffold"` first arg, or "scaffold qa" / "generate qa skill" | Prefer `/create-repo-skill qa`; `references/scaffold.md` is the legacy template |
-| Commit-triggered, PR-triggered, or outer-loop-triggered user-like scenario evidence | Run Step 0, then use `references/per-commit-lane.md` with the shape-specific driver |
-| Project-local QA skill exists (`.agent/skills/qa/` or `.claude/skills/qa/` bridged to shared root) | Defer — it already encodes this repo's shape and paths |
-| No project-local skill; need to verify something right now | Run the quick protocol below, routed by Step 0's shape |
+## Run it
 
-## Quick One-Off QA (no scaffold)
+Drive the changed surface specifically — happy path first, then the edges
+the change plausibly broke. Capture evidence as you go (screenshot on
+anomaly, terminal transcript, request/response pairs) under the repo's
+evidence convention or a dated scratch dir; link the specific artifact in
+the report, not just a directory name.
 
-Shaped by Step 0. Pick the matching sub-protocol.
+When the verification leans on examples whose *values* matter (golden
+files, fixtures, seeded data, asserted screenshots), spot-check that a
+wrong value would actually fail — mutate one and watch it catch. Weak
+oracles that pass on anything are the most expensive kind of green.
 
-Set evidence root before capture:
+Classify findings: **P0** blocks ship, **P1** fix before merge, **P2** log
+and move on.
 
-```bash
-EVIDENCE_DIR="$(cargo run --quiet --locked -p harness-kit-checks -- evidence create 2>/dev/null || printf '.evidence/manual/%s/\n' "$(date -u +%Y-%m-%d)")"
-mkdir -p "$EVIDENCE_DIR"
-```
+## Verdict
 
-Use `EVIDENCE_DIR` for screenshots, transcripts, request captures, and notes.
-Only fall back to a temporary directory when the target is not in a git repo
-and has no evidence helper.
-The QA summary should not stop at naming `EVIDENCE_DIR`: link the specific
-report, transcript, request replay, screenshot, GIF, or video. Embed visual
-artifacts inline when the destination renders Markdown media.
-
-### If the app is a browser web app
-
-1. Start the dev server (or hit a preview URL).
-2. Navigate to the affected routes.
-3. Verify in order: happy path, edge cases, console errors, network
-   panel failures.
-4. Capture evidence to `$EVIDENCE_DIR` — screenshots on anomaly,
-   accessibility snapshot on ambiguity.
-5. Classify findings: P0 (blocks ship), P1 (fix before merge),
-   P2 (log and move).
-
-For browser tool selection (Playwright MCP, Chrome MCP, agent-browser),
-read `references/browser-tools.md`. For evidence capture conventions
-across tools, read `references/evidence-capture.md`.
-
-### If the app is an API / backend service
-
-1. Identify the target: local server, preview URL, or staging.
-2. Replay the representative request set (from `.http` files, Postman
-   collection, README examples, or the endpoint list you mapped).
-3. For each: check status code, response shape against the documented
-   contract, and error-path behavior (bad auth, missing field,
-   malformed body).
-4. Capture evidence to `$EVIDENCE_DIR`: request/response pairs as
-   `.json` or `.http` transcripts, plus a short findings note.
-5. Classify P0/P1/P2.
-
-### If the app is a CLI
-
-1. Run `<bin> --help` / `<bin> <subcommand> --help` — confirm help
-   text matches the code's actual flags.
-2. Exercise the happy-path invocations from README / docs.
-3. Exercise malformed-input paths: missing required args, bad flag
-   values, nonexistent files. Audit exit codes (should be non-zero)
-   and error messages (should name the problem).
-4. Capture evidence to `$EVIDENCE_DIR`: terminal transcripts
-   (`script -q` or tee'd stdout/stderr).
-5. Classify P0/P1/P2.
-
-### If the app is a library / SDK
-
-1. Build the distributable (`npm pack`, `cargo build --release`,
-   `python -m build`, etc.).
-2. Install into a throwaway consumer project (`$EVIDENCE_DIR/consumer`).
-3. Import the public API; call the entry points the change touched.
-4. Check the type surface (TypeScript: `tsc --noEmit` in the consumer;
-   Rust: consumer `cargo check`; Python: `mypy` against a stub).
-5. Verify no runtime import of dev-only deps (inspect the tarball /
-   built artifact if in doubt).
-6. Classify P0/P1/P2.
-
-### If the app is an MCP server / agent tool
-
-1. Register the server with a harness (`claude mcp add <name> <cmd>`
-   for Claude Code; equivalent `/plugins` flow for Codex).
-2. From an agent session, invoke each affected tool with a
-   representative payload.
-3. Verify: success responses match the documented schema; error
-   responses are structured (not thrown exceptions that kill the
-   server); the server survives a malformed request.
-4. Capture evidence to `$EVIDENCE_DIR`: tool-call transcripts
-   (input JSON, output JSON, server logs).
-5. Classify P0/P1/P2.
-
-## Repo guidance
-
-When a repo vendors or specializes this skill, the local guidance should
-**name the single QA path that applies to THIS codebase**, with the actual
-commands, URLs, route list, endpoint list, or tool-call list embedded.
-
-- If this repo is a Next.js app, the rewrite's body is browser-walk
-  instructions with the actual golden-path routes named, the actual
-  dev-server command, and the actual Playwright config path (if one
-  exists). The other shapes disappear from the body.
-- If this repo is a CLI, the rewrite's body is shell-smoke
-  instructions with the actual binary name, the actual subcommand
-  list, and the actual exit-code contract named. The other shapes
-  disappear.
-- If this repo is a hybrid (CLI + library, app + MCP server), the
-  rewrite enumerates the paths that surface in this repo — **each
-  one fully-concrete** — and names when to run which.
-
-**Do not read "no `playwright.config.*` in the repo" as "skip QA."**
-That reading is the canonical Norman-bug in this skill's history. The
-correct reading is: "Playwright isn't the QA path here; name the one
-that is." Every repo has a QA path. Find it. Write it. If you cannot
-name the path, that is a signal to ask the user, not to ship a generic
-rewrite.
+A pass report names: the exact surface exercised (command/URL/route/tool
+call), what was observed, the evidence artifact, what was NOT covered, and
+whether a post-ship signal exists for this behavior (if nothing would page
+or log when it breaks, say so — that's instrumentation debt, not a
+footnote). When the same agent drove the app and judges the result, have a
+fresh subagent attack the pass claim before signing off: what path would
+embarrass us in production?
 
 ## Gotchas
 
-- **"Tests pass" is not QA.** Unit and integration tests verify code
-  paths the author thought of. QA verifies the running app against the
-  user's actual experience — including the paths no test covers.
-- **Shape first, tools second.** Reaching for Playwright before
-  confirming the app is browser-shaped is how this skill drifted
-  into its old browser-only framing. Always answer Step 0 first.
-- **This generic fallback is intentionally thin.** It cannot encode
-  your app's routes, endpoints, CLI flags, tool contracts, or
-  failure modes. Scaffold a project-local QA skill for durable
-  coverage: `/qa scaffold`.
-- **`/deliver` expects a scaffolded skill.** If `/deliver` invokes
-  `/qa` and lands on this generic fallback, scaffold before
-  continuing — the delivery gate wants repo-specific coverage.
-- **Independent verification matters most when the same agent drove
-  the app and judged it.** Dispatch a fresh-context verifier for any
-  "pass" verdict that would otherwise be self-reported.
-
-## References
-
-- `references/scaffold.md` — project-local QA skill generator.
-- `references/per-commit-lane.md` — commit/PR/outer-loop scenario evidence
-  contract; consulted after Step 0 resolves the app shape.
-- `references/browser-tools.md` — long-form browser-automation guide;
-  consulted only when Step 0 resolves to "browser web app".
-- `references/evidence-capture.md` — cross-tool evidence conventions
-  (screenshots, transcripts, GIFs, network logs).
+- **"Tests pass" is not QA.** Tests verify the paths the author imagined;
+  QA verifies the running app against reality.
+- **Shape first, tools second.** Tool-first thinking is how this skill once
+  decayed into browser-only framing.
+- **Generic QA is a stopgap.** The durable fix is a repo-local verification
+  skill with the real routes and commands baked in — file the gap.
+- Browser tool selection and evidence conventions: `references/browser-tools.md`,
+  `references/evidence-capture.md`.

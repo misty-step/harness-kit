@@ -1,149 +1,96 @@
 # Harness Kit
 
-Harness infrastructure for AI-assisted software development. One repo. All
-harnesses (Claude Code, Codex, Pi, Antigravity).
+The ad-hoc operator harness for AI-assisted software development. One repo,
+all harnesses (Claude Code, Codex, Pi, Antigravity): ~11 judgment skills, a
+handful of saved prompts, vendored external skills at pinned versions, and
+per-harness configs, installed system-wide by a Rust bootstrap.
 
-Harness Kit is an operator-facing harness primitive library, not a buyer-facing
-governed workflow package or admin-control plane. Read
-[`docs/positioning.md`](docs/positioning.md) before framing this repo for
-clients, departments, procurement, security reviewers, or executives.
+Event-driven automation (CI-native code review, incident response, outer
+loops) is a separate plane — see [`meta/CONTRACTS.md`](meta/CONTRACTS.md)
+for the boundary. Harness Kit is operator-facing implementation substrate,
+not a buyer-facing governed workflow package; see
+[`docs/positioning.md`](docs/positioning.md) before framing it for clients
+or procurement.
 
 ## Quick Start
 
 ```bash
 # Bootstrap (one-time per machine)
-# Installs first-party skills, synced external skills, and the provider roster
-# system-wide; symlinks if a local checkout exists, downloads Rust source otherwise
+# Installs skills, prompts, vendored externals, configs, and the provider
+# roster system-wide; symlinks when a local checkout exists.
 curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
 
-If you're running bootstrap from a temporary git worktree, it now prefers a
-stable checkout like `~/Development/harness-kit` automatically. To intentionally
-point your harnesses at a specific checkout, set
-`HARNESS_KIT_DIR=/path/to/harness-kit`.
-
 Fresh-machine bootstrap requires a Rust toolchain unless `harness-kit-checks`
-is already installed on `PATH`.
+is already on `PATH`. Bootstrap from a stable checkout (set
+`HARNESS_KIT_DIR=/path/to/harness-kit` to pin one), never a disposable
+worktree.
 
-## Core Workflow Skills
+## Skills
 
 | Skill | Purpose |
 |-------|---------|
-| `/deliver` | Inner-loop composer: ticket → merge-ready (shape → implement → review+ci+refactor+qa) |
-| `/dispatch` | Compose roster-backed specialist lanes with prompt-native lane cards |
-| `/flywheel` | Outer-loop orchestrator: cycles of /deliver → /monitor → /reflect |
-| `/code-review` | Parallel multi-agent review, auto-fix loop |
-| `/diagnose` | Investigate, triage, fix |
-| `/qa` | Verify the changed surface and capture evidence |
-| `/hardening` | Property tests, mutation testing, CRAP/SCRAP, DRY, and acceptance mutation |
-| `/demo` | Show what changed with the right artifact for the change shape |
-| `/design` | Artifact-backed critique and polish for hierarchy, typography, layout, and taste |
-| `/monitor` | Watch post-change signals and escalate regressions |
-| `/groom` | Backlog management, brainstorming, rethink, scaffold |
-| `/harness-engineering` | Skill engineering, primitive management, context lifecycle |
-| `/create-repo-skill` | Generate repo-local QA, persona acceptance, and bespoke workflow skills |
-| `/reflect` | Session retrospective, harness postmortem, operator coaching |
-| `/research` | Multi-source web research, delegation, think tank |
-| `/shape` | Spec/design → context packet output |
+| `/deliver` | One ticket end to end: context-first, docs→tests→code, live QA, three-altitude refactor, diverse review, adversarial pre-ship |
+| `/groom` | Backlog truth: tidy, challenge, surface gaps (including the repo's own harness gaps) |
+| `/shape` | Raw idea → context packet with an acceptance oracle |
+| `/code-review` | Dispatch-shaped review across diverse providers and model families |
+| `/qa` | Verify the running thing, shaped to the app (browser/API/CLI/library/MCP) |
+| `/ci` | Audit and strengthen the repo gate, then drive it green |
+| `/diagnose` | Feedback-loop-first debugging and incident investigation |
+| `/design` | Artifact-backed visual critique and polish, accessibility included |
+| `/research` | Multi-source research, delegation, model selection |
+| `/sprites` | Run lane cards on Fly Sprites for heavy/parallel/isolated work |
+| `/harness-engineering` | Engineer this harness: skills, prompts, gates, sync, telemetry |
 
-## Core Agent Patterns
-
-**GAN triad:** planner (spec) → builder (implement) → critic (evaluate)
-
-**Design review bench:** ousterhout (depth), carmack (ship), grug (simplicity), beck (TDD), cooper (classicist testing)
+Prompts (saved invocations, installed as slash commands): `/yeet`, `/ship`,
+`/orient`, `/critique`, `/reflect`.
 
 ## Workflow
 
 ```
-backlog.d/ → /groom → /shape → /deliver → ship
-                              └─ /flywheel (outer loop cycles:
-                                  /deliver → /monitor → /reflect → next)
+backlog.d/ → /groom → /shape (when it needs shaping) → /deliver → /ship
 ```
 
-For a deeper map of the repository architecture, encoded assumptions, operating
-loop, and active backlog, read [`CODEBASE.md`](CODEBASE.md).
-
-## Focused Lane Harnesses
-
-`/dispatch` composes prompt-native lane cards. `dispatch-agent` can run a
-roster lane with a projected harness root so the child provider sees only the
-skills named by a `lane_harness.v1` manifest instead of the full system-wide
-skill install.
-
-```bash
-cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
-  --manifest .harness-kit/examples/lane-harness.yaml
-
-cargo run --locked -p harness-kit-checks -- dispatch-agent \
-  --provider-target codex \
-  --objective "review the CI lane only" \
-  --input-ref backlog.d/_done/101-focused-lane-harness-projection.md \
-  --prompt-file /tmp/review.md \
-  --lane-harness .harness-kit/examples/lane-harness.yaml
-```
-
-Projection roots are ignored runtime artifacts under
-`.harness-kit/tmp/lane-harness/`. The dispatcher sets harness-specific config
-environment variables (`CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `PI_HOME`,
-`GEMINI_CONFIG_DIR`, and `HOME`) to that projected root for the child process,
-then removes the root unless `--keep-lane-root` is supplied.
-
-Manifests are deliberately small: role, provider target, optional roster model
-override, local skill allowlist, pinned external aliases, tool labels, oracle,
-evidence expectations, and fallback policy. Projection failure is recorded as a
-receipt instead of exploding the whole composition. Provider failures such as
-auth, credits, missing binaries, timeouts, nonzero exits, and sentinel
-mismatches are summarized through `failure_kind`; lane receipts also include
-`lane_harness_ref`, `lane_harness_sha256`, `projection_status`, and
-`output_check`.
+For the deeper architecture map, read [`CODEBASE.md`](CODEBASE.md).
 
 ## Static Docs Companion
 
-Harness Kit's public static docs companion is generated from live repo sources:
-
 ```bash
 cargo run --locked -p harness-kit-checks -- build-docs-site
-cargo run --locked -p harness-kit-checks -- check-docs-site --self-test
 ```
 
-Open [`docs/site/index.html`](docs/site/index.html) for the rendered site.
-Public-facing copy lives in [`docs/copy/site.json`](docs/copy/site.json).
-Source changes auto-regenerate the site via pre-commit; CI fails on drift.
-The generated catalog includes every local skill and agent, CI gate map,
-workflow walkthroughs, governance notes, and an agent-readable
-[`docs/site/llms.txt`](docs/site/llms.txt).
-
-Deploys publish [`docs/site`](docs/site) to GitHub Pages from `master` after
-the generated-site check passes.
+Generated from live sources into [`docs/site`](docs/site); pre-commit
+regenerates, CI fails on drift, and master deploys to GitHub Pages.
 
 ## Structure
 
 ```
 harness-kit/
-├── skills/        # Canonical skill catalog
-├── agents/        # Agent definitions
-├── harnesses/     # Per-harness configs (claude/, codex/, pi/, antigravity-cli/, antigravity-ide/)
-│   └── shared/    # Common engineering principles
-├── registry.yaml  # Pinned external skill sources for sync/search
-└── bootstrap.sh   # Curl-compatible launcher for the Rust bootstrap command
+├── skills/         # Judgment skills
+│   └── .external/  # Vendored third-party skills (pins in registry.yaml)
+├── prompts/        # Saved invocations
+├── harnesses/      # Per-harness configs + shared AGENTS.md doctrine
+├── meta/           # Cross-repo contracts
+├── registry.yaml   # External source provenance (repo, pin, license)
+├── crates/harness-kit-checks/  # Bootstrap, gates, hooks, sync, telemetry
+└── bootstrap.sh    # Curl-compatible launcher
 ```
 
-## Adding a Skill
+## Adding a Primitive
 
-1. Create `skills/{name}/SKILL.md` with frontmatter
-2. Keep it < 500 lines. Encode judgment, not procedures.
-3. Run `/harness-engineering lint` to validate quality gates
-4. Run `cargo run --locked -p harness-kit-checks -- bootstrap` or
-   `./bootstrap.sh` — bootstrap discovers skills from the filesystem
-   automatically
+1. Run the primitive test (`skills/harness-engineering/SKILL.md`): most
+   ideas are prompts or doctrine lines, not skills.
+2. Skills: `skills/{name}/SKILL.md`, < 500 lines, judgment not procedure.
+   Prompts: one file in `prompts/`.
+3. Check telemetry before and after: `harness-kit-checks telemetry`.
+4. Re-bootstrap; discovery is filesystem-based.
 
 ## Principles
 
-- **Thin skills, strong agents** — resist ceremony
+- **Thin harness, strong models** — resist ceremony
 - **Gotchas > instructions** — enumerate what goes wrong
 - **Strip non-load-bearing scaffold** — stress-test after model upgrades
-- **Symlink, not copy** — the Rust bootstrap links to local checkout when
-  available
+- **Symlink, not copy** — edits in the checkout propagate instantly
 - **Progressive disclosure** — description → SKILL.md → references
 
 ## License

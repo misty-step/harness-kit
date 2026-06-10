@@ -2,80 +2,78 @@
 
 ## What This Repo Is
 
-**Harness Kit** — focused workflow skills, specialized agents, and harness
-configs for AI-assisted development. One repo, all harnesses, symlinked
-to ~/.claude, ~/.codex, ~/.pi via bootstrap.sh.
+**Harness Kit** — the ad-hoc operator harness: ~11 judgment skills, a few
+saved prompts, vendored external skills, and harness configs, installed to
+every harness (~/.claude, ~/.codex, ~/.pi, antigravity) by the Rust
+bootstrap. Event-driven automation (CI-native review, incident response,
+outer loops) is Mode B and lives in bitterblossom, not here; the boundary
+contract is `meta/CONTRACTS.md`.
 
 ## Structure
 
 ```
 harness-kit/
-├── skills/        # Leaf skills (qa, demo, diagnose, research, ...) and
-│                  #   orchestrators (deliver, flywheel, code-review, settle, ...)
-├── agents/        # Specialized agents: planner, builder, critic,
-│                  #   ousterhout, carmack, grug, beck
-├── harnesses/     # Per-harness configs, hooks, shared principles
-├── registry.yaml  # External skill sources (for embeddings)
-└── bootstrap.sh   # Discovers skills/agents from filesystem, symlinks to harness dirs
+├── skills/         # Judgment skills (deliver, groom, qa, code-review, …)
+│   └── .external/  # Vendored third-party skills, pinned via registry.yaml
+├── prompts/        # Saved invocations (yeet, ship, orient, critique, reflect)
+├── harnesses/      # Per-harness configs, hooks, shared AGENTS.md doctrine
+├── meta/           # Cross-repo contracts (Mode B boundary, trailers)
+├── registry.yaml   # External source provenance: repo, pin, license notes
+├── crates/harness-kit-checks/  # Bootstrap, gates, hooks, sync, telemetry
+└── bootstrap.sh    # curl-compatible launcher for the Rust bootstrap
 ```
+
+Primitive test (full version in `skills/harness-engineering/SKILL.md`):
+prompt = "what I'd retype"; skill = "changes what a frontier model does";
+doctrine line = "worth paying for every session"; event-triggered = Mode B,
+not here.
 
 ## Issue Tracking
 
 **`backlog.d/` is the single source of truth.** Open work lives in
-`backlog.d/NNN-<slug>.md`; closed work moves to `backlog.d/_done/`. No
-external distributed tracker.
-
-Closure is trailer-driven. Feature branches carry `Closes-backlog: NNN` /
-`Ships-backlog: NNN` / `Refs-backlog: NNN` trailers on the squash-merge
-commit to master — `/ship` injects them and archives the ticket file into
-`_done/` before merge. `/groom` sweeps recent master commit trailers
-against active `backlog.d/` to detect stale tickets; see
-`.agents/skills/groom/SKILL.md`.
+`backlog.d/NNN-<slug>.md`; closed work moves to `backlog.d/_done/`.
+Closure is trailer-driven (`Closes-backlog:` on the squash commit; canon in
+`meta/CONTRACTS.md`). `/ship` injects trailers and archives; `/groom`
+sweeps for drift.
 
 ## Workflow
 
 ```
-backlog.d/ → /groom → /shape → /deliver → ship
-                              └─ /flywheel (outer loop: cycles of
-                                  /deliver → /deploy → /monitor → /reflect)
+backlog.d/ → /groom → /shape (when the idea needs it) → /deliver → /ship
 ```
 
-`/deliver` is the inner-loop composer: one ticket → merge-ready code via
-`/shape` → `/implement` → clean loop over `/code-review` + `/ci` +
-`/refactor` + `/qa`. It stops at merge-ready; humans merge.
-
-`/flywheel` is the outer-loop orchestrator (028): continuous, unattended,
-budgeted cycles that compose `/deliver` as a black-box merge-readiness step
-then `/deploy`, `/monitor`, `/diagnose` (on alert), `/reflect`, and
-backlog/harness mutation.
+`/deliver` is the spine: context-first, docs→tests→code, live QA,
+three-altitude refactor, diverse-provider review, adversarial pre-ship
+thinking. It stops at merge-ready unless asked to ship.
 
 ## Principles
 
 See `harnesses/shared/AGENTS.md` — one file, symlinked to every harness.
 
-- **Cross-harness first** — every new mechanism works on Claude, Codex,
-  AND Pi. Harness-native runtime features are optimizations on top of a
-  filesystem-level base, not the base itself. Red Line. Primary layer is
-  SKILL.md + what bootstrap symlinks into each harness's skills dir
-- **Focused set of skills and agents** — resist bloat, justify additions
-- **Thin harness, strong models** — don't compensate for weak models with scaffold
-- **Gotchas > instructions** — enumerate what goes wrong
-- **Description is the trigger** — write it assertively
-- **Strip non-load-bearing scaffold** — stress-test after model upgrades
-- **Map, not manual** — AGENTS.md and CLAUDE.md point to skills, not contain them
+- **Thin harness, strong models** — judgment and context, not process
+  machinery. Phase prose the model already knows is railroading.
+- **Cross-harness first** — filesystem + SKILL.md is the primary layer;
+  harness-native features are optimizations. Codex and Claude are
+  first-class; Pi/antigravity ride the same format.
+- **Gotchas > instructions**; **description is the trigger**; **map, not
+  manual** — AGENTS/CLAUDE point at skills, never contain them.
+- **Telemetry before catalog changes** — `harness-kit-checks telemetry`;
+  usage evidence beats vibes in both directions.
 
 ## Gotchas for Contributing to This Repo
 
-- Skills encode judgment, not procedures. If the model already knows how, delete the skill.
-- SKILL.md must be < 500 lines. Extract deep content to references/.
-- Regexes over agent prose and semantic workflow DSLs are strong smells.
-- Run `/harness lint` on any skill you create or modify.
-- Run `/harness eval` to verify the skill actually improves output vs baseline.
-- The pre-commit hook regenerates index.yaml — don't edit it manually.
-- bootstrap.sh has two modes: symlink (local checkout) and download (remote).
-  Test both paths if you change it.
-- If you bootstrap from a temporary worktree, prefer pinning
-  `HARNESS_KIT_DIR` to a stable checkout. `HARNESS_KIT_DIR` remains a legacy
-  alias. Disposable worktree symlinks make global harness skills disappear later.
-- `harnesses/claude/settings.json` is COPIED by bootstrap (Claude modifies it
-  at runtime), not symlinked. Changes there need a re-bootstrap to take effect.
+- Run the primitive test before adding anything. Most "new skills" are
+  prompts or doctrine lines.
+- Skills encode judgment, not procedures. If the model already knows how,
+  delete it.
+- The pre-commit hook regenerates `index.yaml` and `docs/site` — never edit
+  them manually.
+- The gate is `cargo run --locked -p harness-kit-checks -- check --repo .`.
+  Every gate must be able to name a real failure it catches; otherwise
+  delete it.
+- `harnesses/claude/settings.json` is COPIED by bootstrap (Claude mutates it
+  at runtime); changes need a re-bootstrap.
+- Bootstrap from a stable checkout, not a disposable worktree — worktree
+  symlinks make global skills vanish when the worktree dies.
+- External skills are vendored at pins; edit one and it's a fork — mark it
+  in `registry.yaml` and stop syncing it.

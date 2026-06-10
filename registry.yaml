@@ -1,9 +1,12 @@
-# Harness Kit Registry — external skill sources for embeddings and on-demand pull.
+# Harness Kit Registry — external skill sources, pinned.
 #
-# Skills and agents are discovered from the filesystem (skills/*/SKILL.md,
-# agents/*.md). This file lists third-party sources that feed:
-#   1. harness-kit-checks sync-external → installs into skills/.external/<alias>/
-#   2. harness-kit-checks generate-embeddings → builds the semantic search index
+# Skills and prompts are discovered from the filesystem (skills/*/SKILL.md,
+# prompts/*.md). This file is the provenance ledger for third-party skills:
+# `harness-kit-checks sync-external` installs each source into
+# skills/.external/<alias>/ at its pinned sha. Small, actually-loaded sets
+# are committed (vendored) for reviewable diffs; sync is the update path.
+# Editing a vendored external makes it a fork — mark it here and stop
+# syncing it.
 #
 # Schema (per source):
 #   repo:          <org>/<repo>          required. GitHub path.
@@ -40,21 +43,22 @@ sources:
     layout: flat
     skills_path: skills
 
-  # Anthropic official skills. Curate via include/exclude per workflow need.
-  # Keep frontend-design synced locally so Codex/Pi and repo-local bridges can
-  # consume the same design primitive as Claude.
+  # Anthropic official skills. frontend-design only: the /design skill points
+  # at it, and Codex/Pi consume the same primitive as Claude.
   - repo: anthropics/skills
     ref: main
+    pin: 57546260929473d4e0d1c1bb75297be2fdfa1949
     layout: flat
     skills_path: skills
     alias_prefix: "anthropic-"
-    allow_floating: true  # TODO: pin after first successful sync writes resolved sha here.
+    include: [frontend-design]
 
   # Vercel Labs curated agent skills — React / web-design primitives.
   - repo: vercel-labs/agent-skills
     ref: main
     layout: flat
     skills_path: skills
+    pin: 4ec6f84b61cd3c931046c3e6e398f3ae7de372f7
     alias_prefix: "vercel-"
     include:
       - react-best-practices
@@ -62,7 +66,6 @@ sources:
       - react-native-skills
       - react-view-transitions
       - composition-patterns
-    allow_floating: true  # TODO: pin after first sync.
 
   # Vercel Labs agent-browser — browser automation primitives.
   # Shares alias_prefix "vercel-" with agent-skills; skill names are disjoint.
@@ -109,33 +112,18 @@ sources:
     alias_prefix: "julius-"
     include: [caveman]
 
-  # OpenAI .curated — skip SaaS-credentialed skills unless the operator uses them.
+  # OpenAI .curated — only the GitHub workflow skills with proven usage
+  # (gh-address-comments: 200+ Codex sessions). Widen by evidence, not
+  # default.
   - repo: openai/skills
     ref: main
+    pin: a8924c2a35cfa290458852c4fad17c9133054c2e
     layout: flat
     skills_path: skills/.curated
     alias_prefix: "openai-"
-    exclude:
-      - figma
-      - linear
-      - notion
-      - sentry
-      - vercel
-      - cloudflare
-    allow_floating: true  # TODO: pin after first sync.
-
-  # forrestchang/andrej-karpathy-skills — community compilation of Karpathy's
-  # Twitter observations on LLM coding pitfalls: four principles (surface
-  # assumptions, simplicity first, surgical changes, goal-driven execution).
-  # Canonical distillation lives in-tree at skills/karpathy-guidelines/ —
-  # this registry entry exists so embeddings index the upstream repo and
-  # surface it alongside the native version on semantic search.
-  - repo: forrestchang/andrej-karpathy-skills
-    ref: main
-    layout: flat
-    skills_path: skills
-    alias_prefix: "karpathy-"
-    allow_floating: true  # TODO: pin after first sync.
+    include:
+      - gh-address-comments
+      - gh-fix-ci
 
   # jakubkrehel/make-interfaces-feel-better — design-engineering skill for UI
   # polish. Encodes 16 specific techniques (concentric border radius, optical

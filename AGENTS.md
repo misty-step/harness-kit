@@ -7,8 +7,9 @@ disk; do not restate obvious filesystem facts.
 ## Non-Negotiables
 
 - Base branch: `master`.
-- Gate: `dagger call check --source=.`. Green means all lanes pass; `/ci` owns
-  the exact lane list in `ci/src/harness_kit_ci/main.py`.
+- Gate: `cargo run --locked -p harness-kit-checks -- check --repo .`. Green
+  means the Rust-owned local gate passed; `/ci` owns the exact lane list in
+  `crates/harness-kit-checks/src/ci_check.rs`.
 - Clean-tree closeout: shared Closeout applies; see
   `harnesses/shared/AGENTS.md` (Closeout). Harness Kit additionally treats
   untracked `backlog.d/NNN-*.md` as signal unless the user explicitly says
@@ -17,9 +18,9 @@ disk; do not restate obvious filesystem facts.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
 - Durable tooling is Rust in `crates/harness-kit-checks`. The only allowed
-  non-Rust implementation surfaces are tiny platform boundaries: `bootstrap.sh`
-  as the curl-compatible Rust launcher, and `ci/src/harness_kit_ci/main.py` as
-  the Dagger Python module entrypoint.
+  non-Rust implementation surface is `bootstrap.sh` as the curl-compatible
+  Rust launcher. Every gate must name a real failure it catches; gates that
+  enforce prose structure are the historical failure mode here.
 - Harness Kit source skills live only in `skills/`. Do not commit source-repo
   `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, `.pi/skills/`, or
   `.antigravitycli/skills/` bridges; those duplicate the global install here.
@@ -51,17 +52,22 @@ package or admin-control plane.
 
 ## Harness Work
 
-Do not define static project subagents here. Spawn roster/ad-hoc lanes from
-the active skill with a role, scope, output shape, and boundaries. Use the
-generated skill catalog for skill discovery; do not mirror the catalog here.
+This repo is Mode A only: the ad-hoc operator harness. Event-driven
+workflows (CI-native review, incident response, outer loops) belong to
+bitterblossom; see `meta/CONTRACTS.md`. Do not define static project
+subagents here. Spawn roster/ad-hoc lanes from the active skill with a
+role, scope, output shape, and boundaries. New primitives pass the
+primitive test in `skills/harness-engineering/SKILL.md` (prompt vs skill vs
+doctrine line vs Mode B).
 
 ## Hot Paths
 
 - `harnesses/shared/AGENTS.md` — shared cross-harness doctrine.
-- `cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` —
-  roster, doctrine, and source-harness gate.
+- `meta/CONTRACTS.md` — Mode B boundary, trailer canon, shared disk state.
 - `cargo run --locked -p harness-kit-checks -- bootstrap` — system-wide
-  install implementation; first-party and synced external skills are global.
+  install (skills, prompts, configs); externals are vendored at registry pins.
+- `cargo run --locked -p harness-kit-checks -- telemetry` — skill/prompt
+  usage summarizer; consult before catalog changes.
 - `bootstrap.sh` — curl-compatible launcher for the Rust bootstrap command.
 
 ## Red Lines

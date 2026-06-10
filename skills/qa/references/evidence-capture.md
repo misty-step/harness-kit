@@ -161,6 +161,5 @@ names that indicate what the screenshot shows.
 
 ## Uploading Evidence
 
-Commit `.evidence/<branch>/<date>/` on the feature branch. Use `/demo upload`
-only as an optional GitHub mirror when PR comments need inline image URLs.
-See the `/demo` skill for the full protocol.
+Commit `.evidence/<branch>/<date>/` on the feature branch. Mirror images to
+the PR (e.g. `gh` upload or a comment) only when inline URLs are needed.

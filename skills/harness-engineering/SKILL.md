@@ -18,7 +18,7 @@ Engineer the harness. Keep it thin.
 
 | Need | Load |
 |---|---|
-| create global skill/agent | `references/mode-create.md` |
+| create skill or prompt | `references/mode-create.md` |
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
 | apply skill-design lessons | `references/skill-design-principles.md` |
@@ -26,16 +26,15 @@ Engineer the harness. Keep it thin.
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
-| apply reflect learning packet to Harness Kit primitives | `references/mode-apply.md` |
 | measure skill usage/health/staleness | `references/mode-audit.md` |
 | current model/provider/harness facts | `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
 
-Use `/create-repo-skill` for generated repository-local skills such as bespoke
-QA and persona acceptance probes. Use this skill when changing Harness Kit
-itself. Use `/skill-cleaner` before catalog deletions, duplicate cleanup, or
-description-budget work when the external `steipete-skill-cleaner` skill is
-synced locally.
+Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
+are written directly into that repo's `.agents/skills/` with its real
+routes and commands; this skill owns the craft either way. Turning a proven
+session pattern into a first-party primitive starts at the primitive test
+below — most patterns are prompts, not skills.
 
 ## Contract
 
@@ -71,6 +70,24 @@ by default; add cross-model critics, roster providers, or sprite lanes
 
 Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gate design, and regression risk. Do not treat a missing repo-local roster as a waiver; use the resolver-backed probe.
 
+## Primitive Test
+
+Before creating or growing anything, classify it (2026-06 audit, backlog 103):
+
+- **Prompt** — "is this just what the operator would retype to a strong
+  model?" One file, no references/, no receipts, exempt from skill machinery.
+- **Skill** — "does this change what a frontier model does, for the better,
+  repeatedly?" Judgment + context the model can't derive.
+- **Doctrine line** — "worth paying for in every session?" Goes in AGENTS.md,
+  not a folder.
+- **Mode B** — event-triggered (on PR-ready, on production error, on
+  schedule)? It belongs in the event plane (bitterblossom), not this harness.
+  This repo is the ad-hoc operator layer plus the shared disk contracts.
+
+History: slash commands were collapsed into skills when skills arrived, so
+saved prompts masqueraded as skills and the catalog tripled. Do not recreate
+that.
+
 ## Quality Bar
 
 - `SKILL.md` encodes judgment, not a procedure the model already knows.
@@ -96,17 +113,34 @@ valid.
 ## Acceptance Evidence
 - Live repo evidence read: source skill, shared doctrine, generated docs, bootstrap output, roster, or harness projection inspected.
 - Acceptance source: backlog oracle, skill contract, generated index/docs contract, bootstrap contract, or explicit absence.
-- Evidence that proves it: command output, diff, generated artifact, bootstrap transcript, eval result, or Dagger output.
+- Evidence that proves it: command output, diff, generated artifact, bootstrap transcript, or gate output.
 - Exact command/path/route exercised: check, generator, bootstrap, smoke path, projection path, or route run.
 - Oracle / acceptance artifact hash: sha256 digest for any fixture, generated artifact, transcript, or contract used as the oracle, or state that no artifact-backed oracle exists.
 - Contract-change acknowledgment: reason when the change alters an acceptance contract, generated source, or assertion surface, or state that no contract changed.
 - Repo-fit check: source/generator/projection agree; no stale generated docs, wrong skill root, stale command, or copied bridge remains.
-- Structural gate: frontmatter, roster, evidence-block, docs, index, eval, or Dagger gate result.
+- Structural gate: `check --repo .` result, or the specific sub-gate exercised.
 - Residual risk: skipped harness, external dependency, or none with reason.
 ```
 
 ## Gotchas
 
+- Phase prose is not judgment. Frontier models know the SDLC; a skill that
+  restates implement/refactor/review steps is railroading (Anthropic's own
+  top skill lesson: don't state the obvious, avoid railroading). Encode the
+  bespoke part — oracles, repo facts, taste — or nothing.
+- Process bureaucracy trains checkbox compliance, not quality. Multi-field
+  completion gates, oracle hashes, and learning-packet ceremonies get filled
+  in plausibly by strong models. Verification is tests, CI, and driving the
+  live surface.
+- Deterministic scaffold is the historical failure mode here: agents unsure
+  of harness engineering fall back to Rust/scripts that enforce prose. Every
+  gate must answer "what real failure did you catch in the last 90 days?" —
+  no answer, delete it.
+- Check telemetry before adding or keeping a skill. The 2026-06 audit found
+  ~15 of 36 skills unused; usage is a power law. Low usage with high
+  value-when-used is fine (say so); low usage with no story is deletion.
+- Meta-work ratio: if this repo's commit rate rivals the product repos',
+  the flywheel is feeding itself.
 - Stale AGENTS prose is worse than missing prose.
 - Duplicated repo-local skill copies are usually stale context unless a repo
   needs checked-in vendored harness state.
@@ -122,8 +156,7 @@ valid.
 
 ## Verification
 
-Run `cargo run --locked -p harness-kit-checks -- check-skill-evals --repo .`,
-`cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .`, and
-`cargo run --locked -p harness-kit-checks -- check-runtime-primitives --repo .`
-after changing harness primitives, gates, evals, roster, bootstrap, or runtime
-projections.
+Run `cargo run --locked -p harness-kit-checks -- check --repo .` after
+changing harness primitives, gates, roster, bootstrap, or sync logic. For
+bootstrap changes, also re-run the bootstrap and confirm the installed
+symlinks (skills, prompts, configs) match the source tree.

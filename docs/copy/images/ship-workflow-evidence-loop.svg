@@ -47,7 +47,7 @@
   <rect class="card" x="686" y="205" width="150" height="190" rx="14"/>
   <circle class="green" cx="761" cy="250" r="25"/>
   <text class="ink label" x="726" y="318">Gates</text>
-  <text class="ink tiny" x="720" y="350">Dagger lanes</text>
+  <text class="ink tiny" x="720" y="350">local gates</text>
   <text class="ink tiny" x="726" y="373">QA proof</text>
 
   <rect class="card" x="886" y="205" width="150" height="190" rx="14"/>

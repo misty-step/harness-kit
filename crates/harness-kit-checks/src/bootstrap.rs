@@ -57,11 +57,9 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
 
     let skills = discover_skills(&repo)?;
     let agents = discover_agents(&repo)?;
+    let prompts = discover_prompts(&repo)?;
     if skills.is_empty() {
         bail!("No skills found");
-    }
-    if agents.is_empty() {
-        bail!("No agents found");
     }
 
     let mut lines = vec![
@@ -88,7 +86,15 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         }
         fs::create_dir_all(&harness_dir)?;
         lines.push(blue(format!("Detected: {harness}")));
-        link_harness(&repo, harness, &harness_dir, &skills, &agents, &mut lines)?;
+        link_harness(
+            &repo,
+            harness,
+            &harness_dir,
+            &skills,
+            &agents,
+            &prompts,
+            &mut lines,
+        )?;
         installed += 1;
         lines.push(String::new());
     }
@@ -98,7 +104,9 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         lines.push(yellow("Installing to ~/.claude/ as default."));
         let claude = options.home.join(".claude");
         fs::create_dir_all(&claude)?;
-        link_harness(&repo, "claude", &claude, &skills, &agents, &mut lines)?;
+        link_harness(
+            &repo, "claude", &claude, &skills, &agents, &prompts, &mut lines,
+        )?;
         installed = 1;
     }
 
@@ -113,10 +121,17 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         skills.join(" ")
     )));
     lines.push(blue(format!(
-        "Agents ({}): {}",
-        agents.len(),
-        agents.join(" ")
+        "Prompts ({}): {}",
+        prompts.len(),
+        prompts.join(" ")
     )));
+    if !agents.is_empty() {
+        lines.push(blue(format!(
+            "Agents ({}): {}",
+            agents.len(),
+            agents.join(" ")
+        )));
+    }
     lines.push(blue(
         "All first-party skills are installed system-wide for each detected harness.",
     ));
@@ -129,10 +144,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
 }
 
 fn ensure_checkout(repo: &Path) -> Result<()> {
-    if repo.join("skills").is_dir()
-        && repo.join("agents").is_dir()
-        && repo.join("harnesses").is_dir()
-    {
+    if repo.join("skills").is_dir() && repo.join("harnesses").is_dir() {
         Ok(())
     } else {
         bail!("{} is not a Harness Kit checkout", repo.display())
@@ -159,6 +171,39 @@ fn discover_agents(repo: &Path) -> Result<Vec<String>> {
         .filter(|agent| repo.join("agents").join(format!("{agent}.md")).is_file())
         .map(|agent| (*agent).to_string())
         .collect())
+}
+
+fn discover_external_skills(repo: &Path) -> Result<Vec<String>> {
+    let external = repo.join("skills/.external");
+    let mut skills = BTreeSet::new();
+    if external.is_dir() {
+        for entry in fs::read_dir(&external)? {
+            let path = entry?.path();
+            if path.is_dir()
+                && path.join("SKILL.md").is_file()
+                && let Some(name) = path.file_name().and_then(|name| name.to_str())
+            {
+                skills.insert(name.to_string());
+            }
+        }
+    }
+    Ok(skills.into_iter().collect())
+}
+
+fn discover_prompts(repo: &Path) -> Result<Vec<String>> {
+    let prompts_dir = repo.join("prompts");
+    let mut prompts = BTreeSet::new();
+    if prompts_dir.is_dir() {
+        for entry in fs::read_dir(&prompts_dir)? {
+            let path = entry?.path();
+            if path.extension().and_then(|ext| ext.to_str()) == Some("md")
+                && let Some(name) = path.file_stem().and_then(|name| name.to_str())
+            {
+                prompts.insert(name.to_string());
+            }
+        }
+    }
+    Ok(prompts.into_iter().collect())
 }
 
 #[cfg(unix)]
@@ -221,15 +266,55 @@ fn link_harness(
     harness_dir: &Path,
     skills: &[String],
     agents: &[String],
+    prompts: &[String],
     lines: &mut Vec<String>,
 ) -> Result<()> {
     let skills_dir = harness_dir.join("skills");
     fs::create_dir_all(&skills_dir)?;
     lines.push(blue("  Linking skills..."));
-    cleanup_symlinks_under_prefix(&skills_dir, &repo.join("skills"), skills, lines)?;
+    let externals = discover_external_skills(repo)?;
+    let mut all_expected = skills.to_vec();
+    all_expected.extend(externals.iter().cloned());
+    cleanup_symlinks_under_prefix(&skills_dir, &repo.join("skills"), &all_expected, lines)?;
     for skill in skills {
         link_or_replace(&repo.join("skills").join(skill), &skills_dir.join(skill))?;
         lines.push(green(format!("    {skill}")));
+    }
+    for alias in &externals {
+        link_or_replace(
+            &repo.join("skills/.external").join(alias),
+            &skills_dir.join(alias),
+        )?;
+    }
+    if !externals.is_empty() {
+        lines.push(green(format!(
+            "    + {} vendored externals",
+            externals.len()
+        )));
+    }
+
+    // Prompts: saved invocations, lighter than skills. Claude reads
+    // commands/, Codex and Pi read prompts/. Other harnesses skip.
+    let prompts_dest = match harness {
+        "claude" => Some(harness_dir.join("commands")),
+        "codex" | "pi" => Some(harness_dir.join("prompts")),
+        _ => None,
+    };
+    if let Some(prompts_dir) = prompts_dest {
+        fs::create_dir_all(&prompts_dir)?;
+        lines.push(blue("  Linking prompts..."));
+        let expected = prompts
+            .iter()
+            .map(|prompt| format!("{prompt}.md"))
+            .collect::<Vec<_>>();
+        cleanup_symlinks_under_prefix(&prompts_dir, &repo.join("prompts"), &expected, lines)?;
+        for prompt in prompts {
+            link_or_replace(
+                &repo.join("prompts").join(format!("{prompt}.md")),
+                &prompts_dir.join(format!("{prompt}.md")),
+            )?;
+            lines.push(green(format!("    {prompt}")));
+        }
     }
 
     let agents_dir = harness_dir.join("agents");
@@ -377,19 +462,37 @@ fn cleanup_symlinks_under_prefix(
         if !is_symlink(&path) {
             continue;
         }
+        let base = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or("");
+        if expected.contains(base) {
+            continue;
+        }
         let target = fs::read_link(&path).unwrap_or_default();
-        if target.starts_with(prefix) {
-            let base = path
-                .file_name()
-                .and_then(|name| name.to_str())
-                .unwrap_or("");
-            if !expected.contains(base) {
-                fs::remove_file(&path)?;
-                lines.push(green(format!("    removed stale {base}")));
-            }
+        // Remove links we own: into this checkout, into any other Harness
+        // Kit checkout (old clone or worktree), or dangling. Links into
+        // non-Harness-Kit locations are user-owned and preserved.
+        let stale = target.starts_with(prefix)
+            || !path.exists()
+            || points_into_harness_kit_checkout(&target);
+        if stale {
+            fs::remove_file(&path)?;
+            lines.push(green(format!("    removed stale {base}")));
         }
     }
     Ok(())
+}
+
+#[cfg(unix)]
+fn points_into_harness_kit_checkout(target: &Path) -> bool {
+    // Managed link targets look like <checkout>/{skills,prompts,agents}/…
+    // Walk ancestors and look for the checkout markers.
+    target.ancestors().skip(1).any(|ancestor| {
+        ancestor.join("harnesses").is_dir()
+            && ancestor.join("bootstrap.sh").is_file()
+            && ancestor.join("skills").is_dir()
+    })
 }
 
 #[cfg(unix)]

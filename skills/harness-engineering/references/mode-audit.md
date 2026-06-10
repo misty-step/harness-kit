@@ -1,103 +1,43 @@
-# /harness-engineering audit — Skill Health Assessment
+# /harness-engineering audit — Harness Health
 
-Analyze skill invocation data to assess skill health, identify waste, and
-recommend lifecycle actions.
+Measure what the catalog actually earns, then recommend lifecycle actions.
 
-For Codex skill prompt budget, duplicate copies, unused candidates, and loaded
-roots, sync and run the external `steipete-skill-cleaner` first. Use this audit
-when the question is lifecycle strategy rather than catalog mechanics.
+## Data
 
-## Data Source
+```sh
+cargo run --locked -p harness-kit-checks -- telemetry --format markdown
+```
 
-Run `cargo run --locked -p harness-kit-checks -- skill-invocation-analytics --format markdown`. By
-default it reads `~/.claude/skill-invocations.jsonl`,
-`.harness-kit/work/ledger.jsonl`, and `.harness-kit/traces/delegations.jsonl`,
-then reports coverage for Claude, Codex, Pi, and Antigravity. Only Claude has
-a verified skill invocation hook today; unsupported harnesses must remain
-explicit warnings until a real event surface and smoke path exists.
-Each skill invocation line is a JSON object:
-`{"schema_version": 2, "event_type": "skill_invocation", "ts": "ISO8601", "harness": "claude", "source_protocol": "post_tool_use", "skill": "name", "args": "...", "session_id": "...", "cwd": "...", "project": "..."}`.
-The analyzer tolerates legacy rows without `schema_version` or
-`source_protocol`, but fixture validation requires the v2 shape.
+Reads `~/.claude/skill-invocations.jsonl` (written by the Claude
+`skill-invocation-tracker` PostToolUse hook) plus delegation receipts in
+`.harness-kit/traces/delegations.jsonl`. Filter with `--since 30d`,
+`--skill NAME`, `--project NAME`.
 
-If the file doesn't exist or is empty, report: "No invocation data found.
-Skill invocations are tracked automatically via PostToolUse hook. Once you
-have data, re-run `/harness-engineering audit`."
+**Codex has no invocation hook.** Its usage signal comes from session-log
+mining — count distinct sessions that actually read a skill file:
 
-## Flags
+```sh
+cd ~/.codex/sessions && find . -name '*.jsonl' -mtime -60 -print0 \
+  | xargs -0 grep -EHo '(cat|view|sed -n) [^"]*skills/[a-z-]+/SKILL.md' \
+  | awk -F: '{match($0,/skills\/[a-z-]+\/SKILL/); print $1" "substr($0,RSTART+7,RLENGTH-13)}' \
+  | sort -u | awk '{print $2}' | sort | uniq -c | sort -rn
+```
 
-- `--since <duration>` — filter to recent data (e.g., `30d`, `7d`, `90d`).
-  Default: all data.
-- `--skill <name>` — deep-dive on a single skill instead of the full report.
+Raw occurrence counts without the per-session `sort -u` are catalog noise,
+not usage — the skill list rides in every prompt.
 
-## Full Report (default)
+## Judgment
 
-### 1. Frequency Table
+- Usage is a power law; that's normal. The per-skill question is "low usage
+  with a value-when-used story, or low usage with no story?" Only the
+  second is a deletion candidate.
+- Recency matters: a skill created last week with zero usage is unproven,
+  not dead.
+- Check staleness the other way too: heavy usage of a skill whose prose has
+  rotted is a rewrite signal, not a health signal.
+- Cross-check the primitive test (SKILL.md): a "skill" only ever invoked
+  explicitly by the operator, never auto-triggered, may really be a prompt.
 
-| Skill | Invocations | Last Used | Projects |
-|-------|-------------|-----------|----------|
-
-Sort by invocation count descending.
-
-### 2. Health Categories
-
-Classify each installed skill (read `skills/*/SKILL.md` for the full list):
-
-| Category | Criteria | Action |
-|----------|----------|--------|
-| **Hot** | >10 invocations in period | Keep, consider investing (deeper references, sub-modes) |
-| **Warm** | 3-10 invocations | Keep, monitor |
-| **Cold** | 1-2 invocations | Evaluate: niche or dead? |
-| **Dead** | 0 invocations in period | Candidate for deprecation |
-
-### 3. Consolidation Candidates
-
-Flag skills that:
-- Are always invoked in sequence (A then B in the same session → merge into A)
-- Share >50% of trigger phrases with another skill (description overlap)
-- Have complementary domains that could be one skill without exceeding 3 workflows
-
-### 3b. Delegation Contract Coverage
-
-For substantial workflow skills, run or mirror
-`cargo run --locked -p harness-kit-checks -- check-agent-roster --repo .` and report any missing or weak
-`## Delegation Floor` sections. Flag:
-
-- no two-provider roster floor when a roster exists;
-- missing exception rationale for direct lead-only work;
-- vague lane responsibilities or context boundaries;
-- absent output/evidence or receipt contract;
-- no statement that the lead owns synthesis and verification;
-- missing runtime delegation references for Claude Code, Codex, Antigravity
-  CLI, or Pi.
-
-Treat a missing floor as harness debt, not a stylistic note.
-
-### 4. Recommendations
-
-For each skill, emit one of:
-- **keep** — healthy, earning its description tax
-- **invest** — hot skill, would benefit from deeper references or sub-modes
-- **deprecate** — dead or cold with no clear niche
-- **merge [target]** — consolidation candidate, specify merge target
-- **split** — exceeding mode-bloat gate
-- **promote** — project-local skill used across >2 projects, promote to global
-
-### 5. Description Tax Report
-
-Count installed skills (from `skills/*/SKILL.md`). Estimate ~100 tokens per
-skill description, always loaded. Report total. Flag if >2,000 tokens (20+ skills).
-
-## Deep-Dive Report (--skill flag)
-
-For a single skill:
-
-- Invocation timeline (count by week or month)
-- Project breakdown: which projects use it most
-- Session co-occurrence: which other skills fire in the same sessions
-- Recommendations: specific, actionable
-
-## Output Format
-
-Structured markdown. Tables and bullets only. No prose filler.
-End with a **TLDR**: 3-5 bullet summary of the most actionable findings.
+Output: per-skill verdict (keep / rewrite / demote to prompt / delete) with
+the usage number, recency, and story behind each. Findings feed `/groom`
+tickets; do not auto-fix.

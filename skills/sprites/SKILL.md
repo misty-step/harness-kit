@@ -55,10 +55,11 @@ invalidates stale bakes everywhere. Details, auth flows, and failure modes:
 
 ## Lane cards
 
-A sprite lane card is the same contract as `/dispatch`: end state, success
-criteria, verification affordances, boundaries. Big outcome-shaped tickets
-beat atomic tasks — the agent on the sprite owns its own decomposition. Put
-the oracle in the card; the sprite has no access to your local context.
+A lane card states: end state, success criteria, verification affordances,
+boundaries, and expected output shape (template:
+`templates/lane-card.md`). Big outcome-shaped tickets beat atomic tasks —
+the agent on the sprite owns its own decomposition. Put the oracle in the
+card; the sprite has no access to your local context.
 
 ## Gotchas
 

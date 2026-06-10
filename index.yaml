@@ -1,60 +1,20 @@
 # Harness Kit Index
-# Generated: 2026-06-10T02:59:11Z
+# Generated: 2026-06-10T16:00:07Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
-  - name: a11y
-    description: "Accessibility audit, remediation, and verification. WCAG 2.2 AA compliance. Three-agent protocol: audit (find issues) → remediate (fix them) → critique (verify fixes). Use when: \"accessibility aud"
-    source: first-party
-    tags: [2,aa,accessibility,aud,audit,compliance,critique,find,fix,fixes]
-  - name: agent-readiness
-    description: "Assess and improve codebase readiness for AI coding agents across style, tests, docs, architecture, CI, observability, security, and dev setup. Produces a scored report, prioritizes remediation, then "
-    source: first-party
-    tags: [a,across,agents,ai,architecture,assess,ci,codebase,coding,dev]
-  - name: agent-transcript
-    description: "Redact and package local agent-session excerpts for PRs, issues, receipts, or review evidence. Use when: \"add agent transcript\", \"attach session proof\", \"show agent provenance\", \"redact transcript\", \""
-    source: first-party
-    tags: [add,agent,agent-session,attach,evidence,excerpts,issues,local,or,package]
-  - name: browser
-    description: "Pick browser automation for web/Electron: CI E2E, scripted flows, scraping, visual regression, exploratory QA, persona walks, monitoring, or browser agents. Deterministic Playwright first; harden expl"
-    source: first-party
-    tags: [agents,automation,browser,ci,deterministic,e2e,electron,expl,exploratory,first]
   - name: ci
     description: "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --re"
     source: first-party
     tags: [--,--locked,--re,-p,as,audit,canonical,cargo,check,ci]
   - name: code-review
-    description: "Parallel multi-agent code review. Launch reviewer team, synthesize findings, auto-fix blocking issues, loop until clean. Use when: \"review this\", \"code review\", \"is this ready to ship\", \"check this co"
+    description: "Dispatch-shaped code review: fan the diff out to fresh-context reviewers across diverse providers and model families, synthesize, fix blockers, re-review until clean. Use when: \"review this\", \"code re"
     source: first-party
-    tags: [auto-fix,blocking,check,clean,co,code,findings,is,issues,launch]
-  - name: create-repo-skill
-    description: "Generate a repository-local skill from live repo discovery and user intent. Use when: \"create QA skill\", \"generate repo skill\", \"make a local skill\", \"persona acceptance skill\", \"value proposition QA\""
-    source: first-party
-    tags: [a,acceptance,create,discovery,generate,intent,live,local,make,persona]
-  - name: critique
-    description: "Run one targeted, read-only architecture or quality critique through a named lens from the shared rubric. Use when: \"critique this module\", \"run an Ousterhout pass\", \"lens critique\", \"architecture cri"
-    source: first-party
-    tags: [a,an,architecture,cri,critique,lens,module,named,one,or]
-  - name: debrief
-    description: "Lightweight evidence-backed retro and catch-up reports for a current repo, branch, PR, backlog slice, or recent agent session. Use when the user asks for a debrief, catch me up, what changed, why it m"
-    source: first-party
-    tags: [a,agent,asks,backlog,branch,catch,catch-up,changed,current,debrief]
+    tags: [across,blockers,clean,code,diff,dispatch-shaped,diverse,families,fan,fix]
   - name: deliver
-    description: "Inner-loop composer for one backlog item to merge-ready code. Composes /shape, /implement, /code-review, /ci, /refactor, /qa, and /demo evidence; stops before push, merge, or deploy. Emits receipt.jso"
+    description: "Take one ticket or idea from raw intent to merge-ready (or shipped, when asked): context-first, docs→tests→code, live QA, refactor at three altitudes, semantic commits, diverse-provider review, ad"
     source: first-party
-    tags: [backlog,before,ci,code,code-review,composer,composes,demo,deploy,emits]
-  - name: demo
-    description: "Capture evidence for what changed: blurb, paste, screenshot, GIF, video, launch note, or repo-local demo skill. Pick by change shape, audience, and budget. Use when: \"make a demo\", \"record walkthrough"
-    source: first-party
-    tags: [a,audience,blurb,budget,by,capture,change,changed,demo,evidence]
-  - name: deploy
-    description: "Ship merged code to one deploy target. Thin router: detect target, run the platform recipe, capture receipt (sha, version, URL, rollback handle), stop when healthy. Does not monitor, triage, or decide"
-    source: first-party
-    tags: [capture,code,decide,deploy,detect,handle,healthy,merged,monitor,one]
-  - name: deps
-    description: "Analyze, test, and upgrade dependencies. One curated PR, not 47 version bumps. Reachability analysis, behavioral diffs, risk assessment. Package-manager agnostic. Use when: \"upgrade deps\", \"dependency"
-    source: first-party
-    tags: [47,agnostic,analysis,analyze,assessment,behavioral,bumps,curated,dependencies,dependency]
+    tags: [ad,altitudes,asked,at,code,commits,context-first,diverse-provider,docs,idea]
   - name: design
     description: "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit "
     source: first-party
@@ -63,97 +23,32 @@ skills:
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis"
     source: first-party
     tags: [analysis,audit,auditing,before,cause,debugging,domain,feedback-loop-first,fix,incident]
-  - name: dispatch
-    description: "Compose and launch roster-backed specialist lanes with prompt-native lane cards and receipts. Use when: \"dispatch agents\", \"use subagents\", \"compose a team\", \"run provider lanes\", \"make lane cards\". T"
-    source: first-party
-    tags: [a,agents,cards,compose,dispatch,lane,lanes,launch,make,prompt-native]
-  - name: flywheel
-    description: "Outer-loop shipping orchestrator. Composes /shape, /implement, /yeet, /deliver --polish-only, /ship, and /monitor per backlog item. Closure (archive, reflect, harness routing) lives in /ship; flywheel"
-    source: first-party
-    tags: [--polish-only,archive,backlog,closure,composes,deliver,flywheel,harness,implement,in]
   - name: groom
     description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work fans out parallel in"
     source: first-party
     tags: [a,always-on,backlog,brainstorm,every,fans,grooming,happens,in,interrogate]
-  - name: hardening
-    description: "Agent-driven test hardening for functions, specs, and acceptance surfaces: property testing, mutation testing, acceptance mutation, CRAP/SCRAP risk, and structural DRY analysis. Use when: \"property te"
-    source: first-party
-    tags: [acceptance,agent-driven,analysis,crap,dry,functions,hardening,mutation,property,risk]
   - name: harness-engineering
     description: "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\""
     source: first-party
     tags: [bootstrap,configs,doctrine,engineering,evals,gates,harness,improve,kit,logic]
-  - name: implement
-    description: "Atomic TDD build skill. Takes a context packet (shaped ticket) and produces code + tests on a feature branch. Red → Green → Refactor. Does not shape, review, QA, or ship — single concern: spec t"
-    source: first-party
-    tags: [a,atomic,branch,build,code,concern,context,feature,green,on]
-  - name: karpathy-guidelines
-    description: "Four LLM-agent guardrails: surface assumptions, prefer simplicity, make surgical changes, and drive by verifiable goals. Reference for scope, simplicity, assumptions, or success-criteria judgment call"
-    source: first-party
-    tags: [assumptions,by,call,changes,drive,four,goals,guardrails,judgment,llm-agent]
-  - name: model-research
-    description: "Research, compare, and select LLM models for AI-powered apps and workflows. Finds latest models per family, verifies availability on target platform, compares pricing/benchmarks/tool-calling, produces"
-    source: first-party
-    tags: [ai-powered,apps,availability,benchmarks,compare,compares,family,finds,latest,llm]
-  - name: monitor
-    description: "Watch signals after deploy, release, local run, CI change, or repeated workflow. Uses telemetry when present; otherwise healthchecks, logs, CI, flaky tests, benchmark drift, daemon output, regressions"
-    source: first-party
-    tags: [after,benchmark,change,ci,daemon,deploy,drift,flaky,healthchecks,local]
-  - name: orient
-    description: "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", \"what should I do next\""
-    source: first-party
-    tags: [acting,before,catch,do,evidence,fast,i,live,local,me]
   - name: qa
     description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party
     tags: [apis,browser,builds,clis,consumer,is,libraries,mcp,pass,qa]
-  - name: refactor
-    description: "Branch-aware simplification. On feature branches, compare against base and simplify the diff before merge. On primary branch, scan for the highest impact deletion, consolidation, or boundary improveme"
-    source: first-party
-    tags: [against,base,before,boundary,branch,branch-aware,branches,compare,consolidation,deletion]
-  - name: reflect
-    description: "Session retrospective, operator coaching, harness postmortem, codification, and outer-loop cycle critique. Turns evidence into hooks, rules, skills, backlog mutations, or explicit non-actions. Use whe"
-    source: first-party
-    tags: [backlog,coaching,codification,critique,cycle,evidence,explicit,harness,hooks,mutations]
   - name: research
     description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
-  - name: settle
-    description: "DEPRECATED redirect. /settle, /pr-fix, and /pr-polish now route to /deliver --polish-only <branch|PR> — the single owner of \"existing branch -> merge-ready\" (backlog 080 collapsed settle into delive"
-    source: first-party
-    tags: [-,--polish-only,080,backlog,branch,collapsed,delive,deliver,deprecated,existing]
   - name: shape
     description: "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"pl"
     source: first-party
     tags: [a,buildable,context,critique,design,exploration,feature,idea,is,output]
-  - name: ship
-    description: "Final mile from current committed work to shipped: get the work onto master, archive backlog tickets with trailers, update touched docs, run /reflect, apply outputs. Recovers detached HEAD or headless"
-    source: first-party
-    tags: [apply,archive,backlog,committed,current,detached,docs,final,get,head]
-  - name: skillify
-    description: "Turn proven agent-session patterns into first-party Harness Kit skills. Use when: \"skillify this conversation\", \"make this into a skill\", \"generate a skill from current transcript\", \"extract reusable "
-    source: first-party
-    tags: [a,agent-session,conversation,current,extract,first-party,generate,harness,kit,make]
   - name: sprites
     description: "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use w"
     source: first-party
     tags: [a,agent,cards,fly,golden-checkpoint,heavy,isolated,lane,lanes,on]
-  - name: trace
-    description: "Capture agent-session work records as local JSONL audit evidence. Links a backlog/spec, branch, commits, review verdicts, QA/demo evidence, transcript refs, and shipped ref without storing raw private"
-    source: first-party
-    tags: [a,agent-session,as,audit,backlog,branch,capture,commits,demo,evidence]
-  - name: yeet
-    description: "End-to-end \"ship it to the remote\": read worktree, classify changes, tidy debris, split semantic commits, and push. Judgment layer over git, not a wrapper; decides what belongs and how reviewers shoul"
-    source: first-party
-    tags: [a,belongs,changes,classify,commits,debris,decides,end-to-end,git,how]
 
 agents:
-  - name: a11y-auditor
-    description: "Finds accessibility issues. Does NOT fix them. Read-only investigation."
-  - name: a11y-critic
-    description: "Verifies accessibility fixes. Skeptical by default. Tests keyboard, axe, screen reader semantics."
-  - name: a11y-fixer
-    description: "Fixes accessibility issues from audit findings. Minimal surgical changes. Native HTML over ARIA."
+  []
 
 # Collections are defined in collections.yaml

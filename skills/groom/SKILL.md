@@ -38,7 +38,7 @@ cargo run --locked -p harness-kit-checks -- backlog archive "$id"   # idempotent
 - **Cap:** more than 30 open items is storage, not strategy. Declare a
   reduction session; no new items until under cap.
 
-Trailer canon lives in `skills/ship/SKILL.md`. Emit trailers only via
+Trailer canon lives in `meta/CONTRACTS.md`. Emit trailers only via
 `git interpret-trailers`; hand-formatted variants are invisible to tooling.
 
 ## Delegation Judgment
@@ -71,6 +71,11 @@ scan recipes live in `references/investigation-bench.md`.
   from what the next ticket is. What's missing from the backlog entirely?
 - **Propose deletions.** The best groom shrinks the backlog. Every deletion
   is a proposal with rationale — humans ratify removals.
+- **Audit the repo's own harness.** Agent readiness is backlog work, not a
+  separate ceremony: does this repo have a verification skill with its real
+  routes/commands (the highest-impact skill category)? Runbooks for its
+  deployed surfaces? A CI gate that would catch the likely failure? Stale
+  AGENTS/CLAUDE prose? Each gap is a ticket like any other.
 - **Theme, then recommend.** Group findings by shared root cause, rank by
   (impact on product vision) × (feasibility) / (effort), and argue for one
   concrete action per theme. Synthesis stays on the lead.
@@ -112,13 +117,16 @@ User ratifies per theme. Silence is not consent.
 
 ## Audit Mode
 
-`/groom audit` is a read-only skill-quality report, not a grooming run:
+`/groom audit` is a read-only harness-health report, not a grooming run:
 
 ```sh
-cargo run --locked -p harness-kit-checks -- audit-skills --repo .
+cargo run --locked -p harness-kit-checks -- telemetry --repo .
 ```
 
-Present the report ordered by severity. Do not auto-fix from findings.
+It summarizes skill/prompt usage from hook logs (and staleness vs last
+edit). Read it with judgment: low usage with high value-when-used is fine —
+say so; low usage with no story is a deletion candidate. Present findings
+ordered by severity; do not auto-fix.
 
 ## Refuse
 

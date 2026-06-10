@@ -207,9 +207,21 @@ mod tests {
             "closure": {"mode": "local_archive"}
         });
 
-        assert!(validate_refs(&[value.clone()], Some("023")).is_ok());
-        assert!(validate_refs(&[value.clone()], Some("backlog.d/023-example.md")).is_ok());
-        assert!(validate_refs(&[value.clone()], Some("backlog.d/_done/023-example.md")).is_ok());
+        assert!(validate_refs(std::slice::from_ref(&value), Some("023")).is_ok());
+        assert!(
+            validate_refs(
+                std::slice::from_ref(&value),
+                Some("backlog.d/023-example.md")
+            )
+            .is_ok()
+        );
+        assert!(
+            validate_refs(
+                std::slice::from_ref(&value),
+                Some("backlog.d/_done/023-example.md")
+            )
+            .is_ok()
+        );
         assert!(validate_refs(&[value], Some("024")).is_err());
     }
 
