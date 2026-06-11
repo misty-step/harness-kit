@@ -3,6 +3,12 @@
 Prompt templates for groom investigators. Each investigator is a named agent
 with a distinct lens, launched in parallel via the Agent tool.
 
+The named investigators below are worked examples of the prompt shape, not a
+fixed bench. Compose the perspective set for the repo in front of you — keep
+the output contract, swap the lens. A strategic session should usually
+include at least one investigator invented for this codebase that no stock
+list contains: an oblique angle, a borrowed discipline, an inverted premise.
+
 ## Prompt Requirements
 
 - Include: persona, mandate (3-5 sentences), output format, scope boundary

@@ -3,10 +3,9 @@ name: groom
 description: |
   Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate,
   research, and simplify in a single loop. Tidy is not a mode — it happens
-  every time. Strategic-layer work fans out parallel interrogation,
-  design-critique, technical-review, and research lanes and lands an
-  epic-scoped backlog that sweeps every layer: product, experience,
-  design, debt, automation, agentics.
+  every time. Strategic-layer work is a deep multi-perspective brainstorm —
+  parallel investigation, critique, and research lanes composed for the
+  repo at hand — that lands an epic-scoped, ambitious backlog.
   Use when: "groom", "what should we build", "rethink this", "biggest
   opportunity", "backlog", "prioritize", "backlog session",
   "audit skills", "skill quality audit".
@@ -62,13 +61,14 @@ can staff. Execution is cheap; vision is the scarce input. A strategic groom
 that lands a handful of small, safe tickets has failed no matter how
 well-vetted they are.
 
-- **Sweep every layer, every session:** product value, user interface and
-  experience, system design (Ousterhout — deep modules, small surfaces),
-  performance (Carmack — measure, then make it fast), correctness (every
-  behavior provable by a test), tech debt, automation of recurring toil,
-  and agentic capability at each layer of the stack. A lens that yields
-  nothing must come with evidence the repo is already excellent there —
-  that claim is a finding, and it gets vetted like one.
+- **Brainstorm deep, from perspectives composed for this repo.** There is
+  no canonical list of layers to sweep. Pick the obvious axes this codebase
+  demands, then add lenses no stock list would hand you — invert a premise,
+  borrow from an adjacent domain, ask what a competitor, operator, or
+  first-time user would notice. Fan the perspectives out as parallel
+  fresh-context lanes; pull in `/research` when outside knowledge would
+  change a verdict. The bar is genuine diversity and depth of exploration,
+  judged fresh each session.
 - **Describe the best version of this software,** not the next safe
   increment: elegant, easy to change, personalizable, delightful. The
   distance between that vision and the live repo is backlog material;
@@ -77,19 +77,19 @@ well-vetted they are.
   outcome with an ordered child sequence — never pre-shredded tasks. Small
   items exist as children of an epic or as genuine isolated fixes.
 - **Ambition is not slop.** Every epic's premise survives the same vetting
-  as any finding: open the file, run the command. The floor raises scope,
-  not tolerance for unevidenced claims.
+  as any finding: open the file, run the command. A perspective that comes
+  back with "all fine here" is making a claim — vet it like one. The floor
+  raises scope, not tolerance for unevidenced claims.
 
 ## Judgment (the actual grooming)
 
 Investigate before opining. A tidy-only pass exists, but only when the user
-asks for one; any session that reaches this layer owes the full Ambition
-Floor sweep, with genuinely independent perspectives run in parallel
-(premise challenge, product opportunity, experience critique, technical
-debt, automation/agentics, security/privacy, simplification), plus
+asks for one; any other session owes a deep brainstorm at the Ambition
+Floor's bar, with genuinely independent perspectives run in parallel and
 `/research` when outside context would change a verdict. Fresh-context
-lanes exist to decorrelate judgment, not to fill a roster. Lane prompts and
-scan recipes live in `references/investigation-bench.md`.
+lanes exist to decorrelate judgment, not to fill a roster. Starter prompts
+and scan recipes live in `references/investigation-bench.md` — worked
+examples to adapt, not a bench to re-run.
 
 - **Read the live code, not just ticket text.** Hotspots, debt
   concentrations, the oldest stuck ticket. Every codebase has findings;
@@ -151,8 +151,8 @@ grooming Harness Kit itself, apply the product lens in
 2. **Themes** — recommendation first, evidence second, one at a time.
 3. **Emissions** — new epic or ticket / edit / deletion candidate, each
    with a one-line `**Why:**` naming the perspective it came from.
-   Strategic emissions default to epic shape and collectively cover the
-   Ambition Floor lenses.
+   Strategic emissions default to epic shape; the set should show the
+   brainstorm's breadth.
 4. **Residual** — open questions, blocked dependencies, next pickups.
 
 User ratifies per theme. Silence is not consent.
@@ -181,8 +181,11 @@ ordered by severity; do not auto-fix.
 - **Menu, not grooming.** Themes without a defended recommendation are a
   report. Pick one action per theme and argue it.
 - **Mundane harvest.** Four small, safe tickets from a strategic session is
-  a failed groom. A modest harvest means the lens sweep was shallow, not
-  that the repo is healthy — re-run the missing lenses before reporting.
+  a failed groom. A modest harvest means the brainstorm was shallow, not
+  that the repo is healthy — widen the perspective set before reporting.
+- **Stock-lens grooming.** Running the same investigator roster in every
+  repo is process, not thought. The revealing perspectives are the ones
+  composed for this codebase, this session.
 - **Over-decomposing.** An agent-hour of work is one ticket, not three; a
   coherent multi-ticket ambition is one epic, not ten orphan tasks.
 - **Backlog as graveyard.** 30+ days with no progress is dead — archive or
