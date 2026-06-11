@@ -4,7 +4,9 @@ description: |
   Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate,
   research, and simplify in a single loop. Tidy is not a mode — it happens
   every time. Strategic-layer work fans out parallel interrogation,
-  design-critique, technical-review, and research lanes.
+  design-critique, technical-review, and research lanes and lands an
+  epic-scoped backlog that sweeps every layer: product, experience,
+  design, debt, automation, agentics.
   Use when: "groom", "what should we build", "rethink this", "biggest
   opportunity", "backlog", "prioritize", "backlog session",
   "audit skills", "skill quality audit".
@@ -35,8 +37,9 @@ cargo run --locked -p harness-kit-checks -- backlog archive "$id"   # idempotent
   `chore(backlog): archive shipped tickets swept by /groom`.
 - Flag stale `in-progress` (merged/deleted branch, or 30+ days untouched).
 - Surface duplicates with a proposed consolidation — never merge silently.
-- **Cap:** more than 30 open items is storage, not strategy. Declare a
-  reduction session; no new items until under cap.
+- **Cap:** more than 30 open items is storage, not strategy — an epic with
+  inline children counts once. Over cap, consolidate small items into the
+  epics they serve before cutting ambition; no new items until under cap.
 
 Trailer canon lives in `meta/CONTRACTS.md`. Emit trailers only via
 `git interpret-trailers`; hand-formatted variants are invisible to tooling.
@@ -52,13 +55,39 @@ Local lane guidance: independent lanes for premise challenge, technical
 hotspots, product opportunity, security/privacy, and simplification when the
 session's stakes warrant them; the lead keeps final prioritization.
 
+## Ambition Floor
+
+Calibrate scope to what frontier agents can execute, not what a human team
+can staff. Execution is cheap; vision is the scarce input. A strategic groom
+that lands a handful of small, safe tickets has failed no matter how
+well-vetted they are.
+
+- **Sweep every layer, every session:** product value, user interface and
+  experience, system design (Ousterhout — deep modules, small surfaces),
+  performance (Carmack — measure, then make it fast), correctness (every
+  behavior provable by a test), tech debt, automation of recurring toil,
+  and agentic capability at each layer of the stack. A lens that yields
+  nothing must come with evidence the repo is already excellent there —
+  that claim is a finding, and it gets vetted like one.
+- **Describe the best version of this software,** not the next safe
+  increment: elegant, easy to change, personalizable, delightful. The
+  distance between that vision and the live repo is backlog material;
+  close it with epics.
+- **Epic-scoped by default.** Strategic emissions are epics — a product
+  outcome with an ordered child sequence — never pre-shredded tasks. Small
+  items exist as children of an epic or as genuine isolated fixes.
+- **Ambition is not slop.** Every epic's premise survives the same vetting
+  as any finding: open the file, run the command. The floor raises scope,
+  not tolerance for unevidenced claims.
+
 ## Judgment (the actual grooming)
 
-Investigate before opining, and let the evidence — not a quota — set the
-depth. A routine sweep needs less; a "what should we build" session needs
-genuinely independent perspectives run in parallel (premise challenge,
-product opportunity, technical debt, security/privacy, simplification),
-plus `/research` when outside context would change a verdict. Fresh-context
+Investigate before opining. A tidy-only pass exists, but only when the user
+asks for one; any session that reaches this layer owes the full Ambition
+Floor sweep, with genuinely independent perspectives run in parallel
+(premise challenge, product opportunity, experience critique, technical
+debt, automation/agentics, security/privacy, simplification), plus
+`/research` when outside context would change a verdict. Fresh-context
 lanes exist to decorrelate judgment, not to fill a roster. Lane prompts and
 scan recipes live in `references/investigation-bench.md`.
 
@@ -67,8 +96,6 @@ scan recipes live in `references/investigation-bench.md`.
   "everything is fine" means the investigation was shallow.
 - **Challenge premises of the top items.** Symptom or root cause? A ticket's
   framing is a first draft. Reframe before re-ranking.
-- **Open the aperture.** Ask what the product should become, separately
-  from what the next ticket is. What's missing from the backlog entirely?
 - **Propose deletions.** The best groom shrinks the backlog. Every deletion
   is a proposal with rationale — humans ratify removals.
 - **Audit the repo's own harness.** Agent readiness is backlog work, not a
@@ -83,8 +110,9 @@ scan recipes live in `references/investigation-bench.md`.
   doesn't survive a second look is noise that erodes trust in the whole
   groom.
 - **Theme, then recommend.** Group findings by shared root cause, rank by
-  leverage — impact ÷ effort, discounted by confidence — and argue for one
-  concrete action per theme. Synthesis stays on the lead.
+  impact discounted by confidence — effort barely discounts now that agents
+  execute — and argue for one concrete action per theme. Synthesis stays on
+  the lead.
 
 ## Ticket Standard
 
@@ -105,6 +133,12 @@ Priority: P0–P3 · Status: pending|ready|blocked|in-progress|done|shipped|aban
 <constraints, prior art, open questions>
 ```
 
+Epics are the default shape for strategic emissions: same file, plus a
+`## Children` section — ordered child outcomes that stay inline until
+picked up, then graduate to their own tickets. An epic still needs a Goal
+and an Oracle for the whole arc; "umbrella" files with no done criteria are
+storage, not epics.
+
 Every active ticket has Goal + Oracle; fix or demote anything that doesn't.
 M+ tickets promoted to `Status: ready` follow `/shape`'s
 `references/prd-ticket-quality.md`; otherwise they stay raw ideas. When
@@ -115,8 +149,10 @@ grooming Harness Kit itself, apply the product lens in
 
 1. **Tidy diff** — archived, flipped, flagged; by ID, no padding.
 2. **Themes** — recommendation first, evidence second, one at a time.
-3. **Emissions** — new ticket / edit / deletion candidate, each with a
-   one-line `**Why:**` naming the perspective it came from.
+3. **Emissions** — new epic or ticket / edit / deletion candidate, each
+   with a one-line `**Why:**` naming the perspective it came from.
+   Strategic emissions default to epic shape and collectively cover the
+   Ambition Floor lenses.
 4. **Residual** — open questions, blocked dependencies, next pickups.
 
 User ratifies per theme. Silence is not consent.
@@ -144,7 +180,11 @@ ordered by severity; do not auto-fix.
 
 - **Menu, not grooming.** Themes without a defended recommendation are a
   report. Pick one action per theme and argue it.
-- **Over-decomposing.** An agent-hour of work is one ticket, not three.
+- **Mundane harvest.** Four small, safe tickets from a strategic session is
+  a failed groom. A modest harvest means the lens sweep was shallow, not
+  that the repo is healthy — re-run the missing lenses before reporting.
+- **Over-decomposing.** An agent-hour of work is one ticket, not three; a
+  coherent multi-ticket ambition is one epic, not ten orphan tasks.
 - **Backlog as graveyard.** 30+ days with no progress is dead — archive or
   propose deletion.
 - **Accepting the ticket's framing.** Five-whys the top items before

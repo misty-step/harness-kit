@@ -38,8 +38,13 @@ merge it into a broader reusable effort, or rewrite it until the downstream payo
 
 ## Core rules
 
-- **Soft cap: 20-30 open items.** Over cap triggers reduction, not addition.
-- Reduce before adding.
+- **Soft cap: 20-30 open items; an epic with inline children counts once.**
+  Over cap, consolidate small items into the epics they serve before
+  cutting ambition.
+- Reduce before adding — by consolidation first, deletion second.
+- **The backlog describes the best version of the software**, not the next
+  safe increment. Rank by impact discounted by confidence; effort barely
+  discounts when agents execute.
 - Prefer one canonical item per outcome.
 - Split discovery from delivery.
 - Order work by user value, risk reduction, learning, and enablement.
@@ -64,8 +69,10 @@ intends to close it later.
 
 ### Epic
 
-Use for a multi-issue initiative with a clear product outcome. The epic should explain why the
-theme matters, what success looks like, and which child issues carry execution.
+The default shape for strategic groom emissions. Use for a multi-issue initiative with a clear
+product outcome. The epic should explain why the theme matters, what success looks like, and
+which child issues carry execution. The epic itself still needs done criteria; an umbrella with
+no oracle is the omnibus smell, not an epic.
 
 ### Feature
 

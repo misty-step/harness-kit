@@ -64,7 +64,8 @@ visible in the issue body.
 ## What to avoid
 
 - vague requests like “clean this up”
-- giant multi-outcome tickets
+- giant multi-outcome tickets (an epic with one coherent outcome, an oracle,
+  and ordered children is fine; a grab-bag without done criteria is not)
 - hidden dependencies in comments only
 - instructions that describe exact shell steps instead of the desired result
 - “etc”, “as needed”, or other scope leak phrases
