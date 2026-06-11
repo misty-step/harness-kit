@@ -74,8 +74,11 @@ embarrass us in production?
 - **Shape first, tools second.** Tool-first thinking is how this skill once
   decayed into browser-only framing.
 - **Generic QA is a stopgap.** The durable fix is a repo-local verification
-  skill with the real routes and commands baked in — file the gap. Build it
-  by interviewing the operator: the manual checks they run before merging
-  are the spec.
+  harness: one command that seeds/auths/drives the real surface and writes
+  an evidence packet (screenshots, transcripts, verdict). If you'll QA this
+  surface more than once, build the harness *now* — verification system
+  first (shared AGENTS.md, Layer 1) — don't just file the gap. Build it by
+  interviewing the operator: the manual checks they run before merging are
+  the spec. Ad-hoc QA evaporates; a harness compounds.
 - Browser tool selection and evidence conventions: `references/browser-tools.md`,
   `references/evidence-capture.md`.

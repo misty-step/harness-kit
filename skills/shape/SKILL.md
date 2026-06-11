@@ -36,6 +36,10 @@ an architecture choice needs the full treatment.
 - **Oracle is executable.** "It should work" is not an oracle; "these
   commands pass, this route returns X" is. If you can't write the oracle,
   the goal isn't clear yet — go back. See `references/executable-oracles.md`.
+- **Verification harness named.** The packet states which live-verification
+  harness will prove the work (the repo's one-command evidence loop) — and
+  when none exists, the packet's first milestone is building it
+  (verification system first, shared AGENTS.md Layer 1), not the feature.
 - **Deliverable visible up front.** Code, research, docs, or decision — a
   reader should not have to reach the implementation sequence to find out.
 - **Executable by a stranger.** The packet is consumed without your

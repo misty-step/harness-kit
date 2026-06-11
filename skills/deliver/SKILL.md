@@ -25,6 +25,13 @@ as its own commit. If the ticket has no goal or acceptance oracle, run
 `/shape` (or write the oracle yourself for small work) before building.
 Building without an oracle yields plausible garbage.
 
+**Verification system first** (shared AGENTS.md, Layer 1): locate the
+repo's live-verification harness — the one command that exercises a change
+against the running thing and emits reviewable evidence. If none exists,
+building it is the ticket's first milestone, not a detour; every milestone
+after ships through it. The harness-before-feature session catches the
+bugs unit tests structurally cannot.
+
 ## Docs → tests → code
 
 Write the documentation first: what will be true when this works (README
@@ -41,8 +48,10 @@ what users do, not implementation), Uncle Bob (leave it cleaner than found).
 
 "Tests pass" is not verification. Run the application and drive the surface
 that changed — `/qa` routes by app shape (browser, API, CLI, library, MCP).
-Prefer the repo's own verification skill when one exists. Capture what you
-saw (screenshot, transcript, request/response) so the claim is checkable.
+Run it through the verification harness you located or built in Context
+first. Leave an evidence packet — screenshots, transcripts,
+request/response pairs, a verdict — where the repo keeps its receipts, so
+the claim is checkable after you're gone.
 
 ## Refactor at three altitudes
 
