@@ -51,6 +51,7 @@ final critique of visible UI changes.
 | `/design study`, or the user supplies reference sites/screenshots as inspiration | Run the studied-DNA protocol in `references/external-design-references.md` (§ Reference-Driven Work). Extract DNA, never the dress; one primary donor per surface. The full extraction protocol is the installed `nutlope-hallmark` skill's `study` verb. |
 | Greenfield page or identity generation | Compose the installed generation skills — `nutlope-hallmark` (macrostructure-first, theme rotation, slop gates) and `anthropic-frontend-design` (signature-element discipline) — then run `references/anti-slop.md`'s quick gate on the render. |
 | `/design prototype`, "show me options", new feature UI where one-shot taste risk is high | Variation fan (below): 3–5 divergent options in one HTML file, operator picks, build the winner. |
+| Iterative multi-issue prototyping: several named issues, verdict rounds, full-page compositions, viewport-dependent judgment | Lab registry (`references/lab-registry.md`): paged viewer with an adjustable viewport, one persistent section per issue, ≥6 options each, kill/mutate/seed across rounds. |
 
 Use `/qa` for behavior verification and evidence capture, and `/shape` when
 the product direction itself is unsettled.
@@ -122,6 +123,9 @@ CSS/JS, no build step), labeled side-by-side, and let the operator pick.
 - The fan is a sketch, not the implementation. After the pick, build the
   winner properly in the real stack with the generation skills and the
   anti-slop gate; never ship the prototype file.
+- The fan is for one decision. When the work is several named issues
+  iterated over verdict rounds — or judgment depends on viewport size —
+  graduate to the lab registry (`references/lab-registry.md`).
 - When the field is big and the operator doesn't want to judge it all, a
   harness with large-scale orchestration can run a tournament against a
   rubric to pre-filter — but the final pick stays human.
