@@ -78,6 +78,15 @@ Things that bite AI agents specifically.
 Training data and prior summaries are stale until rechecked. After a
 compaction or context handoff, re-read the live files before acting on memory.
 
+### Prefer the local checkout by default
+Default to the user's real local checkout, not a Codex-managed worktree under
+`/Users/phaedrus/.codex/worktrees`. If a task starts in a generated or stale
+worktree path and a canonical local checkout exists, pivot to the local
+checkout before editing, running gates, or treating repo state as authoritative,
+and report the pivot. Use a worktree only when the user explicitly asks for
+one, when Codex product behavior makes it unavoidable, or when isolation is
+essential and the tradeoff has been accepted.
+
 ### Plausible ≠ correct
 A confident, well-formed answer can still be wrong. No "validated" claim
 without the exact command or artifact that proves it.
