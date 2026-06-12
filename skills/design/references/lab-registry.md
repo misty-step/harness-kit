@@ -66,6 +66,19 @@ Gotchas learned the hard way:
 - Re-place nav indicators after render, on `document.fonts.ready`, and on
   resize — fallback-font metrics lie.
 - Replay entrance animations by replacing the view node, not mutating it.
+- **Stale-cache bite:** `python3 -m http.server` sends no `Cache-Control`,
+  so Chrome heuristically caches lab JS/CSS (~10% of file age) and a new
+  round can silently run the previous round's code while the server serves
+  the new one. Serve with a no-cache handler AND version the asset URLs
+  (`frame.js?v=N`, bumped each round) — old cache entries ignore new
+  headers, only a changed URL is bulletproof. Verify which round actually
+  executes (e.g., log a round marker) before trusting a sweep.
+- Sims that depict ongoing work must open mid-work: pre-run the state a
+  few hundred frames at init (offscreen 2×2 context works), or the first
+  impression is an empty scene.
+- A hidden tab reports a 0×0 viewport; canvases init at degenerate sizes
+  and DOM sweeps pass anyway. Assert `innerWidth > 0` in programmatic
+  sweeps and screenshot from a visible tab.
 
 ## Round mechanics
 
