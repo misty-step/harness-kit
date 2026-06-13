@@ -16,8 +16,8 @@ argument-hint: "[audit|--emphasis explore|rethink|moonshot|scaffold] [context]"
 # /groom
 
 Keep `backlog.d/` true: tidy what shipped, challenge what's queued, surface
-what's missing, propose what to delete. Every run does all four —
-tidy is the price of admission, and a groom that only lists is not a groom.
+what's missing, propose what to delete. A groom that only lists is not a
+groom; the depth comes from repo evidence, not fixed quotas.
 
 The backlog diff is the artifact. Prose exists to justify it.
 
@@ -36,9 +36,11 @@ cargo run --locked -p harness-kit-checks -- backlog archive "$id"   # idempotent
   `chore(backlog): archive shipped tickets swept by /groom`.
 - Flag stale `in-progress` (merged/deleted branch, or 30+ days untouched).
 - Surface duplicates with a proposed consolidation — never merge silently.
-- **Cap:** more than 30 open items is storage, not strategy — an epic with
-  inline children counts once. Over cap, consolidate small items into the
-  epics they serve before cutting ambition; no new items until under cap.
+- **Backlog size is telemetry, not policy.** If the active queue looks too
+  broad, report the evidence: count, age, duplicates, stale owners, orphaned
+  themes, and unfocused small items. Consolidate only when tickets genuinely
+  share one outcome. Never veto an evidenced emission because of an arbitrary
+  item count.
 
 Trailer canon lives in `meta/CONTRACTS.md`. Emit trailers only via
 `git interpret-trailers`; hand-formatted variants are invisible to tooling.
@@ -57,9 +59,9 @@ session's stakes warrant them; the lead keeps final prioritization.
 ## Ambition Floor
 
 Calibrate scope to what frontier agents can execute, not what a human team
-can staff. Execution is cheap; vision is the scarce input. A strategic groom
-that lands a handful of small, safe tickets has failed no matter how
-well-vetted they are.
+can staff. Execution is cheap; vision is the scarce input. If a strategic
+groom lands only small, safe tickets, explain why broad exploration did not
+justify a larger move; do not force epics to satisfy process.
 
 - **Brainstorm deep, from perspectives composed for this repo.** There is
   no canonical list of layers to sweep. Pick the obvious axes this codebase
@@ -155,7 +157,9 @@ grooming Harness Kit itself, apply the product lens in
    brainstorm's breadth.
 4. **Residual** — open questions, blocked dependencies, next pickups.
 
-User ratifies per theme. Silence is not consent.
+Apply non-destructive backlog edits when the user asked for grooming.
+Deletions, abandonments, and silent merges stay proposals unless explicitly
+approved.
 
 ## Audit Mode
 
@@ -174,22 +178,23 @@ ordered by severity; do not auto-fix.
 
 - Never auto-delete or silently merge tickets.
 - Never archive a ticket whose trailer points at an unmerged branch.
-- Never add items past the cap without a reduction session.
+- Never let backlog size alone veto an evidenced ticket or epic.
 
 ## Gotchas
 
 - **Menu, not grooming.** Themes without a defended recommendation are a
   report. Pick one action per theme and argue it.
-- **Mundane harvest.** Four small, safe tickets from a strategic session is
-  a failed groom. A modest harvest means the brainstorm was shallow, not
-  that the repo is healthy — widen the perspective set before reporting.
+- **Mundane harvest.** A strategic session that only finds small, safe work is
+  suspicious. Widen the perspective set before concluding the repo simply has
+  no ambitious, evidence-backed moves.
 - **Stock-lens grooming.** Running the same investigator roster in every
   repo is process, not thought. The revealing perspectives are the ones
   composed for this codebase, this session.
 - **Over-decomposing.** An agent-hour of work is one ticket, not three; a
   coherent multi-ticket ambition is one epic, not ten orphan tasks.
-- **Backlog as graveyard.** 30+ days with no progress is dead — archive or
-  propose deletion.
+- **Backlog as graveyard.** Age is a stale signal, not an automatic verdict.
+  Inspect branch, owner, and live relevance before flipping, archiving, or
+  proposing deletion.
 - **Accepting the ticket's framing.** Five-whys the top items before
   re-ranking them.
 
