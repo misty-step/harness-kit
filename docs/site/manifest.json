@@ -232,6 +232,16 @@
       "source": "skills/shape/SKILL.md"
     },
     {
+      "description": "Turn a working repo into credible external-facing proof: demoability audit, deterministic demo path, marketing site, case study, screenshots, demo video, launch copy, and consulting portfolio assets. Use when: \"productize this\", \"make this demoable\", \"make this polished\", \"make a marketing site\", \"show this off\", \"demo video\", \"case study\", \"portfolio piece\", \"consulting asset\", \"launch page\", \"sales demo\". Trigger: /showcase, /productize, /demoability.",
+      "icon": "catalog",
+      "id": "skill:showcase",
+      "kind": "skill",
+      "name": "showcase",
+      "page": "reference/skills/showcase.html",
+      "role": "Support",
+      "source": "skills/showcase/SKILL.md"
+    },
+    {
       "description": "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use when: \"run this on a sprite\", \"remote lane\", \"offload to a sandbox\", \"dispatch to sprites\", \"bake a sprite\", \"sprite fleet\", heavy/long-running/parallel sub-agent work that should not run on this machine. Trigger: /sprites, /sprite-lane.",
       "icon": "catalog",
       "id": "skill:sprites",

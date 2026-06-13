@@ -15,6 +15,7 @@ Primitives:
 - skill:research | skills/research/SKILL.md | docs/site/reference/skills/research.html
 - skill:roster | skills/roster/SKILL.md | docs/site/reference/skills/roster.html
 - skill:shape | skills/shape/SKILL.md | docs/site/reference/skills/shape.html
+- skill:showcase | skills/showcase/SKILL.md | docs/site/reference/skills/showcase.html
 - skill:sprites | skills/sprites/SKILL.md | docs/site/reference/skills/sprites.html
 
 Docs figures:

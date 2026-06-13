@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-13T17:53:02Z
+# Generated: 2026-06-13T22:54:42Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -47,6 +47,10 @@ skills:
     description: "Shape a raw idea into something buildable. Product + technical exploration. Spec, design, critique, plan. Output is a context packet. Use when: \"shape this\", \"write a spec\", \"design this feature\", \"pl"
     source: first-party
     tags: [a,buildable,context,critique,design,exploration,feature,idea,is,output]
+  - name: showcase
+    description: "Turn a working repo into credible external-facing proof: demoability audit, deterministic demo path, marketing site, case study, screenshots, demo video, launch copy, and consulting portfolio assets. "
+    source: first-party
+    tags: [a,assets,audit,case,consulting,copy,credible,demo,demoability,deterministic]
   - name: sprites
     description: "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use w"
     source: first-party

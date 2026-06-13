@@ -38,6 +38,7 @@ worktree.
 | `/ci` | Audit and strengthen the repo gate, then drive it green |
 | `/diagnose` | Feedback-loop-first debugging and incident investigation |
 | `/design` | Artifact-backed visual critique and polish, accessibility included |
+| `/showcase` | Demoability, product polish, marketing assets, and evidence-backed consulting proof |
 | `/research` | Multi-source research, delegation, model selection |
 | `/sprites` | Run lane cards on Fly Sprites for heavy/parallel/isolated work |
 | `/harness-engineering` | Engineer this harness: skills, prompts, gates, sync, telemetry |
