@@ -3,9 +3,10 @@ name: groom
 description: |
   Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate,
   research, and simplify in a single loop. Tidy is not a mode — it happens
-  every time. Strategic-layer work is a deep multi-perspective brainstorm —
-  parallel investigation, critique, and research lanes composed for the
-  repo at hand — that lands an epic-scoped, ambitious backlog.
+  every time. Strategic-layer work is a mega-sweep: swarm investigation,
+  external research, critique, synthesis, and backlog shaping across product,
+  codebase, docs, infrastructure, ops, architecture, system design, value prop,
+  and agent readiness.
   Use when: "groom", "what should we build", "rethink this", "biggest
   opportunity", "backlog", "prioritize", "backlog session",
   "audit skills", "skill quality audit".
@@ -15,9 +16,11 @@ argument-hint: "[audit|--emphasis explore|rethink|moonshot|scaffold] [context]"
 
 # /groom
 
-Keep `backlog.d/` true: tidy what shipped, challenge what's queued, surface
-what's missing, propose what to delete. A groom that only lists is not a
-groom; the depth comes from repo evidence, not fixed quotas.
+Keep `backlog.d/` true and make the project more ambitious. Normal strategic
+`/groom` is a mega-sweep, not triage: boil the ocean on purpose, then distill
+it into a world-class plan and backlog diff. A groom that only lists, lightly
+prioritizes, or emits a tiny handful of issues is incomplete unless the user
+explicitly scoped the run down.
 
 The backlog diff is the artifact. Prose exists to justify it.
 
@@ -52,16 +55,25 @@ default; add cross-model critics, roster providers, or sprite lanes
 (`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: independent lanes for premise challenge, technical
-hotspots, product opportunity, security/privacy, and simplification when the
-session's stakes warrant them; the lead keeps final prioritization.
+Local lane guidance: strategic grooming uses swarms by default. Launch
+independent lanes for product/value, operator experience, runtime reliability,
+architecture, simplification/deletion, security/privacy, docs/onboarding,
+ops/infra, testing/verification, agent readiness, and external exemplars.
+The lead keeps final prioritization.
+
+## Mega Sweep
+
+For any strategic groom, load `references/mega-groom.md`. It is the contract
+for swarm size, coverage map, source matrix, output shape, and the
+"world-class plan" bar. Use `references/investigation-bench.md` only for lane
+prompt shapes; it is a template library, not the whole run.
 
 ## Ambition Floor
 
 Calibrate scope to what frontier agents can execute, not what a human team
-can staff. Execution is cheap; vision is the scarce input. If a strategic
-groom lands only small, safe tickets, explain why broad exploration did not
-justify a larger move; do not force epics to satisfy process.
+can staff. Execution is cheap; vision is the scarce input. Strategic grooming
+must describe the best version of the whole project, then backchain from that
+standard into epics, deletions, sequencing, and first pickups.
 
 - **Brainstorm deep, from perspectives composed for this repo.** There is
   no canonical list of layers to sweep. Pick the obvious axes this codebase
@@ -72,9 +84,9 @@ justify a larger move; do not force epics to satisfy process.
   change a verdict. The bar is genuine diversity and depth of exploration,
   judged fresh each session.
 - **Describe the best version of this software,** not the next safe
-  increment: elegant, easy to change, personalizable, delightful. The
-  distance between that vision and the live repo is backlog material;
-  close it with epics.
+  increment: elegant, easy to change, personalizable, delightful,
+  operationally boring, and valuable enough to matter. The distance between
+  that vision and the live repo is backlog material; close it with epics.
 - **Epic-scoped by default.** Strategic emissions are epics — a product
   outcome with an ordered child sequence — never pre-shredded tasks. Small
   items exist as children of an epic or as genuine isolated fixes.
@@ -86,12 +98,10 @@ justify a larger move; do not force epics to satisfy process.
 ## Judgment (the actual grooming)
 
 Investigate before opining. A tidy-only pass exists, but only when the user
-asks for one; any other session owes a deep brainstorm at the Ambition
-Floor's bar, with genuinely independent perspectives run in parallel and
-`/research` when outside context would change a verdict. Fresh-context
-lanes exist to decorrelate judgment, not to fill a roster. Starter prompts
-and scan recipes live in `references/investigation-bench.md` — worked
-examples to adapt, not a bench to re-run.
+asks for one; any other session owes the `references/mega-groom.md` sweep,
+with genuinely independent perspectives run in parallel and `/research` when
+outside context would change a verdict. Fresh-context lanes exist to
+decorrelate judgment, not to fill a roster.
 
 - **Read the live code, not just ticket text.** Hotspots, debt
   concentrations, the oldest stuck ticket. Every codebase has findings;
@@ -150,12 +160,15 @@ grooming Harness Kit itself, apply the product lens in
 ## Output
 
 1. **Tidy diff** — archived, flipped, flagged; by ID, no padding.
-2. **Themes** — recommendation first, evidence second, one at a time.
-3. **Emissions** — new epic or ticket / edit / deletion candidate, each
-   with a one-line `**Why:**` naming the perspective it came from.
-   Strategic emissions default to epic shape; the set should show the
-   brainstorm's breadth.
-4. **Residual** — open questions, blocked dependencies, next pickups.
+2. **Source matrix** — swarm lanes, local commands, external research,
+   skipped/failed lanes, and what each contributed.
+3. **World-class plan** — project vision, gaps, themes, sequencing,
+   deletion/consolidation candidates, and the one best next pickup.
+4. **Emissions** — epic/ticket edits with `**Why:**` naming the evidence lane.
+   Strategic emissions should show breadth across the domain map, not just
+   the easiest implementation slice.
+5. **Residual** — open questions, blocked dependencies, unverified areas,
+   and what would make the sweep stronger.
 
 Apply non-destructive backlog edits when the user asked for grooming.
 Deletions, abandonments, and silent merges stay proposals unless explicitly
@@ -179,14 +192,19 @@ ordered by severity; do not auto-fix.
 - Never auto-delete or silently merge tickets.
 - Never archive a ticket whose trailer points at an unmerged branch.
 - Never let backlog size alone veto an evidenced ticket or epic.
+- Never call a strategic groom complete after a tiny issue set unless the user
+  explicitly asked for a narrow pass.
+- Never skip the swarm when subagent, peer CLI, or sprite lanes are available;
+  if all delegation is blocked, report degraded mode and do the local matrix.
 
 ## Gotchas
 
 - **Menu, not grooming.** Themes without a defended recommendation are a
   report. Pick one action per theme and argue it.
 - **Mundane harvest.** A strategic session that only finds small, safe work is
-  suspicious. Widen the perspective set before concluding the repo simply has
-  no ambitious, evidence-backed moves.
+  not done. Widen the swarm, add external research, invert the premise, and
+  inspect neglected surfaces before concluding the repo has no ambitious,
+  evidence-backed moves.
 - **Stock-lens grooming.** Running the same investigator roster in every
   repo is process, not thought. The revealing perspectives are the ones
   composed for this codebase, this session.

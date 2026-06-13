@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-13T16:45:02Z
+# Generated: 2026-06-13T17:53:02Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -24,9 +24,9 @@ skills:
     source: first-party
     tags: [analysis,audit,auditing,before,cause,debugging,domain,feedback-loop-first,fix,incident]
   - name: groom
-    description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a deep multi-pers"
+    description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a mega-sweep: swa"
     source: first-party
-    tags: [a,always-on,backlog,brainstorm,deep,every,grooming,happens,in,interrogate]
+    tags: [a,always-on,backlog,brainstorm,every,grooming,happens,in,interrogate,investigate]
   - name: harness-engineering
     description: "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\""
     source: first-party

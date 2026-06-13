@@ -172,7 +172,7 @@
       "source": "skills/diagnose/SKILL.md"
     },
     {
-      "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a deep multi-perspective brainstorm — parallel investigation, critique, and research lanes composed for the repo at hand — that lands an epic-scoped, ambitious backlog. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\", \"audit skills\", \"skill quality audit\". Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.",
+      "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a mega-sweep: swarm investigation, external research, critique, synthesis, and backlog shaping across product, codebase, docs, infrastructure, ops, architecture, system design, value prop, and agent readiness. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\", \"audit skills\", \"skill quality audit\". Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.",
       "icon": "plan",
       "id": "skill:groom",
       "kind": "skill",

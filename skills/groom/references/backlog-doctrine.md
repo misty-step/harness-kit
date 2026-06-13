@@ -2,10 +2,10 @@
 
 ## Two-Tier Backlog
 
-| Tier | Location | Purpose | Cap |
+| Tier | Location | Purpose | Queue health |
 |------|----------|---------|-----|
-| **Shaped work** | `backlog.d/` | Ready-to-build items with goal + oracle + sequence | 20-30 |
-| **Icebox** | `.groom/BACKLOG.md` | Everything else worth remembering | Unlimited |
+| **Shaped work** | `backlog.d/` | Ready-to-build items with goal + oracle + sequence | Evidence-backed, ordered, actively maintained |
+| **Icebox** | `.groom/BACKLOG.md` | Everything else worth remembering | Searchable, pruned, not a substitute for shaping |
 
 `backlog.d/` is the canonical backlog. Files are the source of truth; there is
 no parallel issue store.
@@ -38,10 +38,11 @@ merge it into a broader reusable effort, or rewrite it until the downstream payo
 
 ## Core rules
 
-- **Soft cap: 20-30 open items; an epic with inline children counts once.**
-  Over cap, consolidate small items into the epics they serve before
-  cutting ambition.
-- Reduce before adding — by consolidation first, deletion second.
+- **Backlog size is telemetry, not policy.** Large queues demand evidence:
+  duplicates, stale owners, orphaned themes, unclear sequencing, or weak
+  oracles. Consolidate because outcomes overlap, not because a counter fired.
+- Reduce while adding: consolidation and deletion proposals are part of the
+  same strategic groom that emits new ambition.
 - **The backlog describes the best version of the software**, not the next
   safe increment. Rank by impact discounted by confidence; effort barely
   discounts when agents execute.
@@ -123,7 +124,7 @@ Move items down when they:
 - giant omnibus tickets with unclear done criteria
 - items that require tribal knowledge to start
 - “investigate” tickets with no decision target
-- >30 open items (backlog is storage, not strategy)
+- many open items with no ordering, theme, owner, or oracle
 - stale items sitting open for weeks (ungroomed noise)
 - BACKLOG.md not updated in 3+ groom sessions (icebox is rotting)
 
