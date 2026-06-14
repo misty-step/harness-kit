@@ -207,10 +207,11 @@ stacks; work with that grain, not against it.
   fresh-context critic on a different model family has decorrelated failure
   modes. Give critics ONLY the artifact (diff + oracle); never the author's
   reasoning trail.
-- **Peer harness CLIs are available** — codex, pi, opencode, cursor-agent,
-  grok, agy, hermes, thinktank, and claude itself. The `/roster` skill
-  enumerates them with headless invocations and current model facts. Reach
-  for one when you can name what it adds.
+- **Peer harness CLIs are available** — codex, pi, goose, opencode,
+  cursor-agent, grok, agy, hermes, thinktank, and claude itself. Prefer
+  well-designed open-model lanes through Pi/Goose/OpenCode on OpenRouter when
+  they are smoke-tested for the task; use Claude, Antigravity, Cursor, or Grok
+  only when their specific surface answers a distinct question.
 - **Sprites are substrate, not providers.** Route heavy, long-running,
   detached, or isolation-needing lanes to `/sprites` regardless of which
   model runs them.
@@ -253,8 +254,9 @@ quality matters, it is probably wrong.
 
 ## Harness
 
-- Cross-harness first: Claude, Codex, Pi, Antigravity. Filesystem + `SKILL.md`
-  is primary. Runtime features are optimizations.
+- Cross-harness first means filesystem + `SKILL.md` portability, with
+  smoke-tested open-model peer lanes preferred for breadth: Pi, Goose, and
+  OpenCode through OpenRouter. Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
 - System bootstrap installs every first-party skill into each detected harness.
   Repo-local vendored skill roots with per-harness bridges are exceptional

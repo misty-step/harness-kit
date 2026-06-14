@@ -1,8 +1,8 @@
 ---
 name: roster
 description: |
-  Enumerates the peer AI agent CLIs installed on this machine (codex, claude,
-  pi, opencode, cursor-agent, grok, agy, hermes, thinktank)
+  Enumerates the peer AI agent CLIs installed on this machine (codex, pi,
+  goose, opencode, claude, cursor-agent, grok, agy, hermes, thinktank)
   and how to invoke each headlessly. A capability map, not a quota: useful
   for fresh-context adversarial review on a different model family, second
   opinions, competing attempts, and wide benches. Use when: "ask codex",
@@ -39,15 +39,16 @@ needs no cold start, and the orchestrator is trained on it.
 
 ## The CLIs
 
-Verified installed and probed 2026-06-10. Each row is the headless form;
+Verified installed and probed 2026-06-14. Each row is the headless form;
 add the prompt as the argument or via stdin.
 
 | CLI | Stack | Headless invocation |
 |---|---|---|
 | `codex` | OpenAI Codex (gpt-5.5) | `codex exec "<task>"` (`--model`, `--config model_reasoning_effort=`) |
+| `pi` | Pi over OpenRouter (Kimi, DeepSeek, …) | `pi -p --no-extensions --provider openrouter --model <id> "<task>"` |
+| `goose` | Goose over OpenRouter | `goose run --no-session --quiet --provider openrouter --model <id> --text "<task>"` |
+| `opencode` | OpenCode over OpenRouter | `opencode run --model openrouter/<id> --format json "<task>"` |
 | `claude` | Claude Code (Opus/Fable) | `claude -p "<task>"` (`--model`, `--effort`) |
-| `pi` | Pi over OpenRouter (Kimi, DeepSeek, …) | `pi -p --provider openrouter --model <id> "<task>"` |
-| `opencode` | OpenCode | `opencode run "<task>"` |
 | `cursor-agent` | Cursor (composer) | `cursor-agent -p "<task>"` |
 | `grok` | xAI Grok | `grok -p "<task>"` (`--model`, `--effort`) |
 | `agy` | Antigravity (Gemini) | `agy --print "<task>"` |
@@ -55,7 +56,7 @@ add the prompt as the argument or via stdin.
 | `thinktank` | Multi-model bench | `thinktank review` · `thinktank run <bench> --input "<task>"` |
 
 Current model ids, pricing, context windows, and freshness dates:
-`references/model-provider-harness-index.md`. Facts there rot in weeks —
+`references/model-provider-harness-index.md`. Open-model facts rot in days —
 check the review-due date before quoting them.
 
 ## Judgment

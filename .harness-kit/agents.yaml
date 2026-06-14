@@ -18,7 +18,7 @@ providers:
     smoke: codex exec --dangerously-bypass-approvals-and-sandbox --model gpt-5.5 --config model_reasoning_effort="medium"
     notes: OpenAI Codex CLI; prefer non-interactive exec for isolated attempts.
   claude:
-    tier: primary
+    tier: conditional
     kind: cli
     probe: claude --version
     dispatch: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-8 --effort xhigh
@@ -28,24 +28,67 @@ providers:
     permissions: dangerous skip permissions plus bypass permission mode
     worktree: recommended
     smoke: claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --model claude-opus-4-8 --effort xhigh
-    notes: Claude Code CLI; use print mode and structured output when possible.
+    notes: Claude Code CLI; conditional critic or Anthropic-specific lane, not the default roster bias.
   pi:
     tier: primary
     kind: cli
     probe: pi --version
-    dispatch: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    dispatch: pi -p --no-extensions --provider openrouter --model moonshotai/kimi-k2.7-code --thinking xhigh --tools read,bash,edit,write,grep,find,ls
     output: json
-    model: openrouter/moonshotai/kimi-k2.6
+    model: openrouter/moonshotai/kimi-k2.7-code
     model_variants:
-      default: openrouter/moonshotai/kimi-k2.6
-      previous_kimi: openrouter/moonshotai/kimi-k2.5
+      default: openrouter/moonshotai/kimi-k2.7-code
+      previous_kimi: openrouter/moonshotai/kimi-k2.6
+      thinking_kimi: openrouter/moonshotai/kimi-k2-thinking
       long_context: openrouter/deepseek/deepseek-v4-pro
-      alternate_agentic: openrouter/minimax/minimax-m2.7
+      budget_long_context: openrouter/deepseek/deepseek-v4-flash
+      alternate_agentic: openrouter/minimax/minimax-m3
+      qwen_coder: openrouter/qwen/qwen3-coder-next
     reasoning: xhigh
     permissions: full read bash edit write grep find ls tool list
     worktree: recommended
-    smoke: pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls
-    notes: Pi coding agent; sole open-model CLI lane. Default to Kimi K2.6; use model_variants through Pi for Kimi, DeepSeek, MiniMax, or other open-model comparisons instead of adding another CLI.
+    smoke: pi -p --no-extensions --provider openrouter --model moonshotai/kimi-k2.7-code --thinking xhigh --tools read,bash,edit,write,grep,find,ls
+    notes: Pi coding agent through OpenRouter. Primary open-model lane; default to Kimi K2.7 Code and use variants for Kimi rollback, DeepSeek, MiniMax, and Qwen comparisons. Dispatch disables extensions so personal Pi extensions cannot fail harness receipts after model output.
+  goose:
+    tier: primary
+    kind: cli
+    probe: goose --version
+    dispatch: goose run --no-session --quiet --provider openrouter --model moonshotai/kimi-k2.7-code --text
+    output: text
+    model: openrouter/moonshotai/kimi-k2.7-code
+    model_variants:
+      default: openrouter/moonshotai/kimi-k2.7-code
+      previous_kimi: openrouter/moonshotai/kimi-k2.6
+      thinking_kimi: openrouter/moonshotai/kimi-k2-thinking
+      long_context: openrouter/deepseek/deepseek-v4-pro
+      budget_long_context: openrouter/deepseek/deepseek-v4-flash
+      alternate_agentic: openrouter/minimax/minimax-m3
+      qwen_coder: openrouter/qwen/qwen3-coder-next
+    reasoning: provider-default
+    permissions: goose configured tool permissions
+    worktree: recommended
+    smoke: goose run --no-session --quiet --provider openrouter --model moonshotai/kimi-k2.7-code --text
+    notes: Goose on-machine agent through OpenRouter; primary bespoke open-model harness when its local provider credentials and tool permissions are configured.
+  opencode:
+    tier: primary
+    kind: cli
+    probe: opencode --version
+    dispatch: opencode run --model openrouter/moonshotai/kimi-k2.7-code --variant max --format json
+    output: stream-json
+    model: openrouter/moonshotai/kimi-k2.7-code
+    model_variants:
+      default: openrouter/moonshotai/kimi-k2.7-code
+      previous_kimi: openrouter/moonshotai/kimi-k2.6
+      thinking_kimi: openrouter/moonshotai/kimi-k2-thinking
+      long_context: openrouter/deepseek/deepseek-v4-pro
+      budget_long_context: openrouter/deepseek/deepseek-v4-flash
+      alternate_agentic: openrouter/minimax/minimax-m3
+      qwen_coder: openrouter/qwen/qwen3-coder-next
+    reasoning: max variant
+    permissions: opencode configured permissions
+    worktree: recommended
+    smoke: opencode run --model openrouter/moonshotai/kimi-k2.7-code --variant max --format json
+    notes: OpenCode CLI through OpenRouter; primary bespoke open-model harness with JSON event output and independent tool/runtime behavior from Pi and Goose.
   agy:
     tier: conditional
     kind: cli

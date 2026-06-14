@@ -1,126 +1,135 @@
 ---
-roster_review_due: 2026-06-13
+roster_review_due: 2026-06-15
 ---
 
-# Pi Open-Model Roster Notes
+# Open-Model Roster Notes
 
-Last researched: 2026-06-06.
+Last researched: 2026-06-14.
 
-Use this when choosing open-model defaults and variants for the Harness Kit Pi
-roster lane. Treat this as an operating snapshot, not a permanent ranking.
-Re-check model lists and live smokes before changing defaults.
+Use this when choosing open-model defaults and variants for Harness Kit roster
+lanes. Treat this as a one-day operating snapshot. Re-check OpenRouter and run
+live local smokes before each default change.
 
-## Current Default
+## Current Defaults
 
 | Lane | Default | Why |
 |---|---|---|
-| Pi | `openrouter/moonshotai/kimi-k2.6` | Current Kimi model line in the local roster, with OpenRouter listing 262K context and tool parameters. |
+| Pi | `openrouter/moonshotai/kimi-k2.7-code` | Current coding-focused Kimi line on OpenRouter, 262K context, tool parameters, image input, and code positioning. |
+| Goose | `openrouter/moonshotai/kimi-k2.7-code` | Bespoke on-machine agent surface with first-class OpenRouter provider support. |
+| OpenCode | `openrouter/moonshotai/kimi-k2.7-code` | Bespoke open-source coding agent with built-in OpenRouter provider support and JSON event output. |
 
-Pi is the open-model CLI lane. Get independent failure modes by rotating Pi
-models, not by adding another CLI wrapper. A second open-model provider lane
-must earn entry with a live roster smoke, at least one real Harness Kit task,
-and a clear failure mode that Pi model variants cannot cover.
+Claude, Antigravity, Cursor, and Grok remain useful conditional tools. They are
+not the default composition bias for Harness Kit peer lanes when a
+smoke-tested open-model lane can answer the same question.
+
+## Local Smoke Evidence
+
+Sentinel objective: `open-model-roster-smoke`, expected output
+`HARNESS_OPEN_MODEL_OK`, run through `harness-kit-checks dispatch-agent` on
+2026-06-14.
+
+| Lane | Receipt | Verdict | Note |
+|---|---|---|---|
+| Pi | `efd464ab-bed2-465c-9a89-b644822733ae` | succeeded | Passed after adding `--no-extensions`; previous attempt matched output but exited 1 due personal `ops-watchdog` extension. |
+| Goose | `4f0b6928-7abc-4080-a0cb-1b195a7dd74a` | succeeded | `goose run --provider openrouter --model moonshotai/kimi-k2.7-code`. |
+| OpenCode | `9601cf81-428f-4718-980f-15ee161b7b6e` | succeeded | `opencode run --model openrouter/moonshotai/kimi-k2.7-code --format json`. |
 
 ## Model Notes
 
-### Kimi
+### Kimi K2.7 Code
 
-#### Current default — K2.6
+`moonshotai/kimi-k2.7-code` is the current open-model dispatch-floor default.
+OpenRouter listed it on 2026-06-14 with:
 
-`moonshotai/kimi-k2.6` is the current dispatch-floor default. OpenRouter listed
-it on 2026-06-06 with 262,144 context tokens, 262,144 max completion tokens,
-text+image input, tools, structured outputs, and reasoning parameters.
+- 262,144 context tokens.
+- 262,144 max completion tokens.
+- text+image input to text output.
+- prompt `$0.75/M`, completion `$3.50/M`, cache read `$0.16/M` in the API
+  catalog; the model page summarized `$0.95/M` input and `$4/M` output.
+- supported parameters including tools, tool choice, structured outputs,
+  reasoning, and response format.
 
-Evidence source: `curl -s https://openrouter.ai/api/v1/models` filtered to
-`moonshotai/kimi-k2.6` on 2026-06-06.
+Treat the price mismatch between the API catalog and model page as a live
+provider drift signal. Quote prices from the catalog/page at dispatch time; do
+not hard-code them into gates.
 
-#### Previous default — K2.5
+Sources: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
+`moonshotai/kimi-k2.7-code` on 2026-06-14, and
+https://openrouter.ai/moonshotai/kimi-k2.7-code.
 
-`moonshotai/kimi-k2.5` remains as `previous_kimi` for explicit comparison or
-rollback. OpenRouter listed it on 2026-06-06 with the same 262,144 context
-window, lower listed token prices, and no `parallel_tool_calls` parameter in
-the model record returned by the API.
+### Kimi rollback and reasoning variants
 
-Provider-specific K2.5 deprecation/replacement behavior has been reported; do
-not restore K2.5 as default without a fresh model-catalog check and local Pi
-smoke.
+- `moonshotai/kimi-k2.6` remains `previous_kimi` for rollback and A/B checks.
+- `moonshotai/kimi-k2-thinking` remains `thinking_kimi` when the lead wants
+  the Kimi family but a different reasoning surface.
 
-Sources: https://openrouter.ai/moonshotai/kimi-k2.6,
-https://forums.developer.nvidia.com/t/kimi-k2-5-replacement/368480
-
-### MiniMax
-
-`minimax/minimax-m2.7` is the first rotation candidate. OpenRouter lists it
-as released 2026-03-18 with 205K context, agentic workflow positioning, and
-reported benchmark signals including SWE-Pro 56.2, Terminal Bench 2 57.0, and
-GDPval-AA ELO 1495. Pi did not list it in the filtered model table but accepted
-the model id as a custom OpenRouter id and returned a successful smoke.
-
-Use as an alternate open-model comparison when the lead wants a non-Kimi and
-non-DeepSeek result.
-
-Source: https://openrouter.ai/minimax/minimax-m2.7
+Do not restore K2.6 as default without a fresh OpenRouter catalog check and a
+local task smoke.
 
 ### DeepSeek
 
-`deepseek/deepseek-v4-pro` is the Pi long-context comparison variant.
-OpenRouter lists 1M context, 1.6T total parameters, 49B active
-parameters, and support for `high`/`xhigh` reasoning. NIST CAISI evaluated
-DeepSeek V4 Pro in May 2026 and found it was the most capable PRC model CAISI
-had evaluated, but that its aggregate capability lagged leading U.S. frontier
-models by about 8 months; CAISI also found it cost-efficient on several
-benchmarks relative to a U.S. reference model.
+- `deepseek/deepseek-v4-pro` remains `long_context`: OpenRouter listed 1,048,576
+  context tokens, 384,000 max completion tokens, tools, structured outputs,
+  and reasoning on 2026-06-14.
+- `deepseek/deepseek-v4-flash` is `budget_long_context`: same 1M context class,
+  lower catalog price, smaller max completion.
 
-Use through Pi when the lead explicitly wants a DeepSeek-family comparison.
+Use through Pi/Goose/OpenCode when long context or cheap large-context review
+matters more than Kimi-family continuity.
 
-Sources: https://openrouter.ai/deepseek/deepseek-v4-pro,
-https://www.nist.gov/news-events/news/2026/05/caisi-evaluation-deepseek-v4-pro
+### MiniMax
+
+`minimax/minimax-m3` is the `alternate_agentic` candidate. OpenRouter listed it
+on 2026-06-14 with 1,048,576 context tokens, 512,000 max completion tokens,
+text+image+video input, tools, structured outputs, and reasoning. Prefer it
+over stale M2.x defaults unless a smoke shows a regression.
 
 ### Qwen
 
-`qwen/qwen3.5-397b-a17b` is a major open-weight reference model, not the
-current default. OpenRouter lists it as released 2026-02-16 with 262K context
-and describes strong language, reasoning, code-generation, agent, image, video,
-and GUI interaction capabilities. The family is broad and fast-moving; test
-Qwen when multimodal/GUI interaction is first-order or when we need an Alibaba
-lineage comparator.
+`qwen/qwen3-coder-next` is `qwen_coder`: a coding-family comparator with 262K
+context and tool parameters in the 2026-06-14 OpenRouter catalog. Use it when
+we need a non-Kimi, non-DeepSeek coding lane.
 
-Keep in the candidate pool for multimodal, GUI, or self-hosting experiments.
+## Harness Notes
 
-Source: https://openrouter.ai/qwen/qwen3.5-397b-a17b
+### Pi
 
-### GLM / Z.ai
+Pi stays the first open-model lane because Harness Kit already has dispatch
+receipts and model override support for it. Roster dispatch uses
+`--no-extensions` so optional personal Pi extensions cannot make a successful
+model response exit nonzero. Pi also supports custom OpenAI-compatible
+providers/models through `~/.pi/agent/models.json`.
 
-`z-ai/glm-5.1` is a credible long-horizon coding contender. OpenRouter lists it
-as released 2026-04-07 with 203K context and describes 8+ hour autonomous
-coding-task capability. Keep it in the candidate pool, but do not make it a
-default until we have provider-specific tool-call smokes and at least one real
-Harness Kit task comparison.
+Source: https://pi.dev/docs/latest/models.
 
-Keep in the candidate pool for long-running autonomy and model-diversity
-experiments.
+### Goose
 
-Source: https://openrouter.ai/z-ai/glm-5.1
-
-## Invoking A Variant
-
-Use the committed Pi provider id and override only the model:
+Goose is now a primary open-model harness candidate. Official docs list
+OpenRouter as a supported provider requiring `OPENROUTER_API_KEY`, and the
+local CLI exposes:
 
 ```sh
-cargo run --locked -p harness-kit-checks -- dispatch-agent --provider-target pi --model-override long_context --objective "long-context review" --input-ref "path/or/ticket" --prompt-file /tmp/prompt.md
+goose run --no-session --quiet --provider openrouter --model moonshotai/kimi-k2.7-code --text "task"
 ```
 
-`--model-override` accepts a key from `.harness-kit/agents.yaml` `model_variants`
-or a direct model id. The receipt stays attached to provider `pi` and records
-the resolved model override in its summary.
+Source: https://block.github.io/goose/docs/getting-started/providers.
+
+### OpenCode
+
+OpenCode is now a primary open-model harness candidate. OpenRouter's official
+integration docs say OpenCode supports OpenRouter as a built-in provider via
+`/connect`, `/models`, or `opencode.json`, and accepts OpenRouter model ids
+through the `openrouter/<model>` form.
+
+Source: https://openrouter.ai/docs/cookbook/coding-agents/opencode-integration.
 
 ## Operating Rules
 
-- Prefer one Pi lane with complementary model variants: one clean default, one
-  long-context model, and one non-Kimi agentic-productivity model.
-- Re-check provider model lists before each default change. Model family names
-  drift faster than harness docs.
-- A model-list hit is not enough. Required evidence is a live CLI smoke using
-  the exact roster command and at least one real Harness Kit task before promotion.
-- Record default changes in `.harness-kit/agents.yaml`, the relevant harness
-  config, local config if needed, and this note.
+- Prefer a three-surface open-model spread for peer lanes: Pi, Goose, and
+  OpenCode. The model family may be the same; the harness behavior is not.
+- Promote a default only with: live OpenRouter catalog evidence, local binary
+  probe, and at least one real Harness Kit smoke receipt.
+- Keep model facts in `skills/roster/references/model-provider-harness-index.md`.
+  Keep role-fit policy here and in shared doctrine.
+- Do not add a new provider wrapper if Pi/Goose/OpenCode plus model variants
+  cover the failure mode.

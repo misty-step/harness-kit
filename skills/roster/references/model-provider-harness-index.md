@@ -1,6 +1,6 @@
 ---
-model_reference_review_due: 2026-06-14
-last_researched: 2026-06-07
+model_reference_review_due: 2026-06-15
+last_researched: 2026-06-14
 ---
 
 # Model / Provider / Harness Index
@@ -13,7 +13,7 @@ this factual sheet.
 
 ## Freshness Contract
 
-- Review due: 2026-06-14.
+- Review due: 2026-06-15.
 - Treat model facts as stale after the review due date.
 - Verify exact model ids, availability, prices, context windows, and benchmark
   claims from live provider docs or catalogs before changing defaults.
@@ -23,13 +23,15 @@ this factual sheet.
 ## Local Harness Roster
 
 Source: `.harness-kit/agents.yaml`, probed with
-`cargo run --locked -p harness-kit-checks -- probe-agent-roster` on 2026-06-07.
+`cargo run --locked -p harness-kit-checks -- probe-agent-roster` on 2026-06-14.
 
 | Provider target | Harness / CLI | Active model id | Dispatch surface | Local probe status |
 |---|---|---|---|---|
 | `codex` | OpenAI Codex CLI | `gpt-5.5` | `codex exec --model gpt-5.5 --config model_reasoning_effort="medium"` | available |
+| `pi` | Pi coding agent via OpenRouter | `openrouter/moonshotai/kimi-k2.7-code` | `pi -p --no-extensions --provider openrouter --model moonshotai/kimi-k2.7-code --thinking xhigh` | available |
+| `goose` | Goose CLI via OpenRouter | `openrouter/moonshotai/kimi-k2.7-code` | `goose run --provider openrouter --model moonshotai/kimi-k2.7-code --text` | available |
+| `opencode` | OpenCode CLI via OpenRouter | `openrouter/moonshotai/kimi-k2.7-code` | `opencode run --model openrouter/moonshotai/kimi-k2.7-code --variant max --format json` | available |
 | `claude` | Claude Code CLI | `claude-opus-4-8` | `claude -p --model claude-opus-4-8 --effort xhigh` | available |
-| `pi` | Pi coding agent via OpenRouter | `openrouter/moonshotai/kimi-k2.6` | `pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh` | available |
 | `agy` | Antigravity CLI | `gemini-3.5-flash` | `agy --dangerously-skip-permissions --print` | available |
 | `cursor-agent` | Cursor Agent CLI | `composer-2.5` | `cursor-agent -p --model composer-2.5` | available |
 | `grok-build` | xAI Grok CLI | `grok-4.3` | `grok --model grok-4.3 --effort max --reasoning-effort xhigh -p` | available |
@@ -37,6 +39,13 @@ Source: `.harness-kit/agents.yaml`, probed with
 
 Local probe status proves only command discovery. It does not prove task
 quality, current billing, tool-call reliability, or benchmark performance.
+
+Kimi K2.7 Code sentinel dispatch receipts on 2026-06-14:
+
+- Pi: `efd464ab-bed2-465c-9a89-b644822733ae`, succeeded after roster command
+  added `--no-extensions`.
+- Goose: `4f0b6928-7abc-4080-a0cb-1b195a7dd74a`, succeeded.
+- OpenCode: `9601cf81-428f-4718-980f-15ee161b7b6e`, succeeded.
 
 ## Focused Lane Harness Projection
 
@@ -75,9 +84,9 @@ Manifest constraints:
 - `allowed_local_skills` must name existing first-party skills and cannot
   escape the repo `skills/` root.
 - `allowed_external_aliases` must resolve to pinned aliases in `registry.yaml`.
-- `fallback.on_provider_failure` is `record_and_return`; a failed Claude,
-  Pi, Codex, Antigravity, Cursor, or Grok lane should produce evidence for the
-  lead, not crash the whole composition.
+- `fallback.on_provider_failure` is `record_and_return`; a failed Codex, Pi,
+  Goose, OpenCode, Claude, Antigravity, Cursor, or Grok lane should produce
+  evidence for the lead, not crash the whole composition.
 - `fallback.replacement_policy` is `lead_explicit`; replacing a failed lane is
   a lead decision, not an automatic provider loop.
 
@@ -85,7 +94,8 @@ Runtime projection creates an ignored root under
 `.harness-kit/tmp/lane-harness/<id>/`, links the allowed skills into the
 known harness skill locations, sets child environment variables (`HOME`,
 `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `PI_HOME`, `GEMINI_CONFIG_DIR`,
-`XDG_CONFIG_HOME`), and removes the root after dispatch unless
+`GOOSE_CONFIG_DIR`, `OPENCODE_CONFIG_DIR`, `XDG_CONFIG_HOME`), and removes the
+root after dispatch unless
 `--keep-lane-root` is supplied for debugging.
 
 Receipt fields make projection auditable:
@@ -99,31 +109,32 @@ Receipt fields make projection auditable:
   `projection_failed`.
 - `output_check`: optional sentinel verdict when `--expect-output` is used.
 
-## Pi / OpenRouter Catalog Snapshot
+## Open-Model / OpenRouter Catalog Snapshot
 
-Pi can attempt OpenRouter model ids through its configured dispatch surface:
-`pi -p --provider openrouter --model <openrouter-id> ...`. The rows below are
-OpenRouter catalog facts captured with
-`curl -fsSL https://openrouter.ai/api/v1/models` on 2026-06-07. A row here
-does not mean the model has been smoke-tested through Pi, and it is not a
-recommendation. Record a delegation receipt before treating a non-roster model
-as locally proven. OpenRouter rows describe OpenRouter listings only; do not
-infer local Codex, Claude Code, Antigravity, Cursor, or Grok CLI pricing or
-limits from them. `~...latest` ids are OpenRouter catalog aliases. Detailed
-sections below carry extra source notes for selected rows; this table is the
-scannable catalog snapshot.
+Pi, Goose, and OpenCode can attempt OpenRouter model ids through their
+configured dispatch surfaces. The rows below are OpenRouter catalog facts
+captured with `curl -fsSL https://openrouter.ai/api/v1/models` on 2026-06-14.
+A row here does not mean the model has been smoke-tested through every harness,
+and it is not a recommendation. Record a delegation receipt before treating a
+non-roster model as locally proven. OpenRouter rows describe OpenRouter
+listings only; do not infer local Codex, Claude Code, Antigravity, Cursor, or
+Grok CLI pricing or limits from them. `~...latest` ids are OpenRouter catalog
+aliases. Detailed sections below carry extra source notes for selected rows;
+this table is the scannable catalog snapshot.
 
 | OpenRouter id | Created | Context | Max completion | Input | Output | Cache read | Modalities | Supported parameters excerpt |
 |---|---:|---:|---:|---:|---:|---:|---|---|
-| `~moonshotai/kimi-latest` | 2026-04-27 | 262,144 | 262,144 | `$0.684/M` | `$3.42/M` | `$0.144/M` | text+image -> text | `tools`, `tool_choice`, `parallel_tool_calls`, `structured_outputs`, `reasoning`, `reasoning_effort` |
-| `moonshotai/kimi-k2.6` | 2026-04-20 | 262,144 | 262,144 | `$0.684/M` | `$3.42/M` | `$0.144/M` | text+image -> text | `tools`, `tool_choice`, `parallel_tool_calls`, `structured_outputs`, `reasoning`, `reasoning_effort` |
+| `moonshotai/kimi-k2.7-code` | 2026-06-12 | 262,144 | 262,144 | `$0.75/M` | `$3.50/M` | `$0.16/M` | text+image -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning`, `response_format` |
+| `~moonshotai/kimi-latest` | 2026-04-27 | 262,144 | 262,142 | `$0.68/M` | `$3.41/M` | `$0.34/M` | text+image -> text | `tools`, `tool_choice`, `parallel_tool_calls`, `structured_outputs`, `reasoning`, `reasoning_effort` |
+| `moonshotai/kimi-k2.6` | 2026-04-20 | 262,144 | 262,142 | `$0.68/M` | `$3.41/M` | `$0.34/M` | text+image -> text | `tools`, `tool_choice`, `parallel_tool_calls`, `structured_outputs`, `reasoning`, `reasoning_effort` |
 | `moonshotai/kimi-k2.6:free` | 2026-04-20 | 262,144 | unknown | `$0/M` | `$0/M` | unknown | text+image -> text | `tools`, `tool_choice`, `reasoning` |
-| `moonshotai/kimi-k2.5` | 2026-01-27 | 262,144 | 262,144 | `$0.40/M` | `$1.90/M` | `$0.09/M` | text+image -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
+| `moonshotai/kimi-k2.5` | 2026-01-27 | 262,144 | unknown | `$0.375/M` | `$2.025/M` | unknown | text+image -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
 | `deepseek/deepseek-v4-pro` | 2026-04-24 | 1,048,576 | 384,000 | `$0.435/M` | `$0.87/M` | `$0.003625/M` | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
-| `deepseek/deepseek-v4-flash` | 2026-04-24 | 1,048,576 | 131,072 | `$0.0983/M` | `$0.1966/M` | `$0.0197/M` | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
+| `deepseek/deepseek-v4-flash` | 2026-04-24 | 1,048,576 | 65,536 | `$0.09/M` | `$0.18/M` | `$0.02/M` | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
 | `minimax/minimax-m3` | 2026-05-31 | 1,048,576 | 512,000 | `$0.30/M` | `$1.20/M` | `$0.06/M` | text+image+video -> text | `tools`, `tool_choice`, `reasoning` |
-| `minimax/minimax-m2.7` | 2026-03-18 | 204,800 | 196,608 | `$0.279/M` | `$1.20/M` | unknown | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
-| `qwen/qwen3.7-plus` | 2026-06-03 | 1,000,000 | 65,536 | `$0.40/M` | `$1.60/M` | `$0.08/M` | text+image -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
+| `minimax/minimax-m2.7` | 2026-03-18 | 204,800 | 131,072 | `$0.25/M` | `$1.00/M` | `$0.05/M` | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
+| `qwen/qwen3-coder-next` | 2026-02-04 | 262,144 | 262,144 | `$0.11/M` | `$0.80/M` | `$0.07/M` | text -> text | `tools`, `tool_choice`, `structured_outputs` |
+| `qwen/qwen3.7-plus` | 2026-06-03 | 1,000,000 | 65,536 | `$0.32/M` | `$1.28/M` | `$0.064/M` | text+image -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
 | `qwen/qwen3.7-max` | 2026-05-21 | 1,000,000 | 65,536 | `$1.25/M` | `$3.75/M` | `$0.25/M` | text -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
 | `qwen/qwen3.6-flash` | 2026-04-27 | 1,000,000 | 65,536 | `$0.1875/M` | `$1.125/M` | unknown | text+image+video -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
 | `qwen/qwen3.5-397b-a17b` | 2026-02-16 | 262,144 | 65,536 | `$0.39/M` | `$2.34/M` | unknown | text+image+video -> text | `tools`, `tool_choice`, `structured_outputs`, `reasoning` |
@@ -152,21 +163,40 @@ scannable catalog snapshot.
 - Source: https://www.anthropic.com/news/claude-opus-4-8 and
   https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-6.
 
+### Moonshot Kimi K2.7 Code
+
+- Active local id for Pi, Goose, and OpenCode: `openrouter/moonshotai/kimi-k2.7-code`.
+- OpenRouter id: `moonshotai/kimi-k2.7-code`.
+- OpenRouter created date: 2026-06-12.
+- OpenRouter context length: 262,144 tokens.
+- OpenRouter max completion tokens: 262,144.
+- OpenRouter API catalog pricing on 2026-06-14: input `$0.75/M`, output
+  `$3.50/M`, cache read `$0.16/M`.
+- OpenRouter model page excerpt on 2026-06-14 summarized `$0.95/M` input and
+  `$4/M` output. Treat API/page price disagreement as live provider drift and
+  verify before quoting spend.
+- OpenRouter modalities: text+image input to text output.
+- OpenRouter supported parameters include `tools`, `tool_choice`,
+  `structured_outputs`, `reasoning`, and `response_format`.
+- Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
+  `moonshotai/kimi-k2.7-code` on 2026-06-14, plus
+  https://openrouter.ai/moonshotai/kimi-k2.7-code.
+
 ### Moonshot Kimi K2.6
 
-- Active local id: `openrouter/moonshotai/kimi-k2.6`.
+- Retained local variant id: `openrouter/moonshotai/kimi-k2.6`.
 - OpenRouter id: `moonshotai/kimi-k2.6`.
 - OpenRouter created date: 2026-04-20.
 - OpenRouter context length: 262,144 tokens.
-- OpenRouter max completion tokens: 262,144.
-- OpenRouter pricing on 2026-06-07: input `$0.684/M`, output `$3.42/M`,
-  cache read `$0.144/M`.
+- OpenRouter max completion tokens: 262,142.
+- OpenRouter pricing on 2026-06-14: input `$0.68/M`, output `$3.41/M`,
+  cache read `$0.34/M`.
 - OpenRouter modalities: text+image input to text output.
 - OpenRouter supported parameters include `tools`, `tool_choice`,
   `parallel_tool_calls`, `structured_outputs`, `reasoning`, and
   `reasoning_effort`.
 - Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `moonshotai/kimi-k2.6` on 2026-06-07.
+  `moonshotai/kimi-k2.6` on 2026-06-14.
 
 ### Moonshot Kimi K2.5
 
@@ -175,12 +205,12 @@ scannable catalog snapshot.
 - OpenRouter created date: 2026-01-27.
 - OpenRouter context length: 262,144 tokens.
 - OpenRouter max completion tokens: 262,144.
-- OpenRouter pricing on 2026-06-07: input `$0.40/M`, output `$1.90/M`,
-  cache read `$0.09/M`.
+- OpenRouter pricing on 2026-06-14: input `$0.375/M`, output `$2.025/M`;
+  cache read was not listed in the API row.
 - NVIDIA forum reports provider-specific K2.5 deprecation/replacement pressure
   around K2.6. Treat provider behavior as platform-specific until verified.
 - Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `moonshotai/kimi-k2.5` on 2026-06-07, plus
+  `moonshotai/kimi-k2.5` on 2026-06-14, plus
   https://forums.developer.nvidia.com/t/kimi-k2-5-replacement/368480.
 
 ### DeepSeek V4 Pro
@@ -190,7 +220,7 @@ scannable catalog snapshot.
 - OpenRouter created date: 2026-04-24.
 - OpenRouter context length: 1,048,576 tokens.
 - OpenRouter max completion tokens: 384,000.
-- OpenRouter pricing on 2026-06-07: input `$0.435/M`, output `$0.87/M`,
+- OpenRouter pricing on 2026-06-14: input `$0.435/M`, output `$0.87/M`,
   cache read `$0.003625/M`.
 - OpenRouter modalities: text input to text output.
 - OpenRouter supported parameters include `tools`, `tool_choice`,
@@ -199,37 +229,38 @@ scannable catalog snapshot.
   prior discount notes may have changed, so verify live before quoting
   non-OpenRouter prices.
 - Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `deepseek/deepseek-v4-pro` on 2026-06-07, and
+  `deepseek/deepseek-v4-pro` on 2026-06-14, and
   https://api-docs.deepseek.com/quick_start/pricing.
 
-### MiniMax M2.7
+### MiniMax M3
 
-- Local Pi variant id: `openrouter/minimax/minimax-m2.7`.
-- OpenRouter id: `minimax/minimax-m2.7`.
-- OpenRouter created date: 2026-03-18.
-- OpenRouter context length: 204,800 tokens.
-- OpenRouter top-provider context length: 196,608 tokens.
-- OpenRouter max completion tokens: 196,608.
-- OpenRouter pricing on 2026-06-07: input `$0.279/M`, output `$1.20/M`.
-- OpenRouter modalities: text input to text output.
-- OpenRouter supported parameters include `tools`, `tool_choice`,
-  `structured_outputs`, and `reasoning`.
-- Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `minimax/minimax-m2.7` on 2026-06-07.
-
-### Qwen3.5 397B A17B
-
-- Candidate id: `openrouter/qwen/qwen3.5-397b-a17b`.
-- OpenRouter id: `qwen/qwen3.5-397b-a17b`.
-- OpenRouter created date: 2026-02-16.
-- OpenRouter context length: 262,144 tokens.
-- OpenRouter max completion tokens: 65,536.
-- OpenRouter pricing on 2026-06-07: input `$0.39/M`, output `$2.34/M`.
+- Local open-model variant id: `openrouter/minimax/minimax-m3`.
+- OpenRouter id: `minimax/minimax-m3`.
+- OpenRouter created date: 2026-05-31.
+- OpenRouter context length: 1,048,576 tokens.
+- OpenRouter max completion tokens: 512,000.
+- OpenRouter pricing on 2026-06-14: input `$0.30/M`, output `$1.20/M`,
+  cache read `$0.06/M`.
 - OpenRouter modalities: text+image+video input to text output.
 - OpenRouter supported parameters include `tools`, `tool_choice`,
   `structured_outputs`, and `reasoning`.
 - Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `qwen/qwen3.5-397b-a17b` on 2026-06-07.
+  `minimax/minimax-m3` on 2026-06-14.
+
+### Qwen3 Coder Next
+
+- Local open-model variant id: `openrouter/qwen/qwen3-coder-next`.
+- OpenRouter id: `qwen/qwen3-coder-next`.
+- OpenRouter created date: 2026-02-04.
+- OpenRouter context length: 262,144 tokens.
+- OpenRouter max completion tokens: 262,144.
+- OpenRouter pricing on 2026-06-14: input `$0.11/M`, output `$0.80/M`,
+  cache read `$0.07/M`.
+- OpenRouter modalities: text input to text output.
+- OpenRouter supported parameters include `tools`, `tool_choice`,
+  and `structured_outputs`.
+- Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
+  `qwen/qwen3-coder-next` on 2026-06-14.
 
 ### Z.ai GLM 5.1
 
@@ -237,14 +268,14 @@ scannable catalog snapshot.
 - OpenRouter id: `z-ai/glm-5.1`.
 - OpenRouter created date: 2026-04-07.
 - OpenRouter context length: 202,752 tokens.
-- OpenRouter pricing on 2026-06-07: input `$0.98/M`, output `$3.08/M`,
+- OpenRouter pricing on 2026-06-14: input `$0.98/M`, output `$3.08/M`,
   cache read `$0.182/M`.
 - OpenRouter modalities: text input to text output.
 - OpenRouter supported parameters include `tools`, `tool_choice`,
   `parallel_tool_calls`, `structured_outputs`, `reasoning`, and
   `reasoning_effort`.
 - Source: `curl -fsSL https://openrouter.ai/api/v1/models` filtered to
-  `z-ai/glm-5.1` on 2026-06-07.
+  `z-ai/glm-5.1` on 2026-06-14.
 
 ### xAI Grok 4.3
 

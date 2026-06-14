@@ -44,13 +44,14 @@ const OPTIONAL_RECEIPT_FIELDS: &[&str] = &[
 ];
 const RECEIPT_PROVIDER_IDS: &[&str] = &[
     "codex",
-    "claude",
     "pi",
+    "goose",
+    "opencode",
+    "claude",
     "agy",
     "cursor-agent",
     "grok-build",
     "manual",
-    "opencode",
 ];
 const VALID_PROVIDER_STATUS: &[&str] = &["available", "unavailable", "error", "partial", "manual"];
 const VALID_ATTEMPT_STATUS: &[&str] = &[

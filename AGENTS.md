@@ -74,8 +74,10 @@ doctrine line vs Mode B).
 
 Harness Kit architecture constraints:
 
-- Cross-harness first: Claude, Codex, Pi, Antigravity. Harness-native features are
-  optimizations, not the primary layer.
+- Open-model harnesses first for peer lanes: Pi, Goose, and OpenCode through
+  OpenRouter when smoke-tested. Codex remains a lead/implementation surface;
+  Claude, Antigravity, Cursor, and Grok are conditional tools, not the default
+  roster bias.
 - Skills are self-contained: scripts/libs/references live under the skill.
 - No claim primitives under `skills/`.
 - No semantic workflow engine around provider CLIs.

@@ -24,8 +24,10 @@ use std::os::unix::process::{CommandExt, ExitStatusExt};
 
 pub const ROSTER_PROVIDER_IDS: &[&str] = &[
     "codex",
-    "claude",
     "pi",
+    "goose",
+    "opencode",
+    "claude",
     "agy",
     "cursor-agent",
     "grok-build",
@@ -845,10 +847,7 @@ fn dispatch_command(
     }
     if let Some(model_override) = model_override {
         let model = resolve_model_override(provider, model_override);
-        let dispatch_model = model
-            .strip_prefix("openrouter/")
-            .unwrap_or(&model)
-            .to_string();
+        let dispatch_model = model_for_dispatch(provider_id, &model);
         if let Some(model_index) = command.iter().position(|part| part == "--model") {
             if model_index == command.len() - 1 {
                 bail!("dispatch command has --model without a value.");
@@ -860,6 +859,16 @@ fn dispatch_command(
     }
     command.push(prompt.to_string());
     Ok(command)
+}
+
+fn model_for_dispatch(provider_id: &str, model: &str) -> String {
+    match provider_id {
+        "pi" | "goose" => model
+            .strip_prefix("openrouter/")
+            .unwrap_or(model)
+            .to_string(),
+        _ => model.to_string(),
+    }
 }
 
 fn receipt_model_id(provider: &Mapping, model_override: Option<&str>) -> Option<String> {
@@ -1050,6 +1059,8 @@ providers:
     notes: fixture
   claude: {<<: *cli, tier: primary}
   pi: {<<: *cli, tier: primary}
+  goose: {<<: *cli, tier: primary}
+  opencode: {<<: *cli, tier: primary}
   agy: {<<: *cli, tier: conditional}
   cursor-agent: {<<: *cli, tier: conditional}
   grok-build: {<<: *cli, tier: conditional}
@@ -1467,6 +1478,68 @@ providers:
                 .unwrap()
                 .contains("model_override=openrouter/deepseek/deepseek-v4-pro")
         );
+        Ok(())
+    }
+
+    #[test]
+    fn dispatch_model_override_preserves_openrouter_prefix_for_opencode() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let bin_dir = dir.path().join("bin");
+        fs::create_dir(&bin_dir)?;
+        let argv_path = dir.path().join("argv.txt");
+        let fake = bin_dir.join("fake-opencode");
+        fs::write(
+            &fake,
+            format!(
+                "#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then exit 0; fi\nprintf '%s\\n' \"$@\" > {}\nprintf 'ok\\n'\n",
+                argv_path.display()
+            ),
+        )?;
+        make_executable(&fake)?;
+        let mut roster = fixture_roster(
+            "fake-opencode --version",
+            "fake-opencode run --model openrouter/moonshotai/kimi-k2.7-code --format json",
+        );
+        provider_mut(&mut roster, "opencode").insert(
+            YamlValue::String("model_variants".to_string()),
+            serde_yaml::from_str("qwen_coder: openrouter/qwen/qwen3-coder-next\n")?,
+        );
+        let receipt_path = dir.path().join("delegations.jsonl");
+        let transcript_dir = dir.path().join("traces");
+
+        let receipt = dispatch_provider_lane(
+            &roster,
+            "opencode",
+            "sentinel prompt",
+            DispatchRequest {
+                objective: "opencode model override fixture",
+                input_ref: "prompt.txt",
+                transcript_dir: &transcript_dir,
+                receipt_output: &receipt_path,
+                timeout_s: 1.0,
+                grace_s: 0.1,
+                lead_harness: "codex",
+                lead_provider: "codex",
+                backlog_ref: "",
+                path_env: Some(&bin_dir.display().to_string()),
+                model_override: Some("qwen_coder"),
+                lane_harness: None,
+                expect_output: None,
+                repo_root: dir.path(),
+            },
+        )?;
+
+        let transcript = fs::read_to_string(receipt["evidence_refs"][0].as_str().unwrap())?;
+        if receipt["attempt_status"] != "succeeded" {
+            panic!("{receipt:?}\n{transcript}");
+        }
+        let args: Vec<_> = fs::read_to_string(&argv_path)?
+            .lines()
+            .map(str::to_string)
+            .collect();
+        let model_index = args.iter().position(|arg| arg == "--model").unwrap();
+        assert_eq!(args[model_index + 1], "openrouter/qwen/qwen3-coder-next");
+        assert_eq!(receipt["model_id"], "openrouter/qwen/qwen3-coder-next");
         Ok(())
     }
 

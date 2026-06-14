@@ -44,7 +44,10 @@ not skills.
 - Fix root cause in the highest-leverage layer: type/test/hook/gate/skill/
   AGENTS, in that order.
 - Prefer deletion. Harness prose is context tax.
-- Cross-harness first: Claude, Codex, Pi. Filesystem + `SKILL.md` is primary.
+- Cross-harness first means filesystem + `SKILL.md` portability. Prefer
+  smoke-tested open-model peer lanes through Pi, Goose, and OpenCode on
+  OpenRouter; keep Claude, Antigravity, Cursor, and Grok conditional unless
+  their specific surface answers the task.
 - Skills stay self-contained: scripts/references under the skill; state roots
   from invoking repo.
 - Treat a skill as a folder, not a markdown file. Use scripts, references,

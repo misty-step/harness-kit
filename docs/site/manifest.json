@@ -212,7 +212,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, claude, pi, opencode, cursor-agent, grok, agy, hermes, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
+      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
       "icon": "catalog",
       "id": "skill:roster",
       "kind": "skill",
