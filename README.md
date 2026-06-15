@@ -52,6 +52,15 @@ Prompts (saved invocations, installed as slash commands): `/yeet`, `/ship`,
 backlog.d/ → /groom → /shape (when it needs shaping) → /deliver → /ship
 ```
 
+For non-trivial `/shape` packets or execution plans, render and open the local
+HTML review surface before building:
+
+```bash
+cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open
+```
+
+Headless environments can omit `--open` and report the generated HTML path.
+
 For the deeper architecture map, read [`CODEBASE.md`](CODEBASE.md).
 
 ## Static Docs Companion

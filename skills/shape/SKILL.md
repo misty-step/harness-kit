@@ -54,6 +54,13 @@ an architecture choice needs the full treatment.
   premises take the metadata block from
   `references/voice-transcript-metadata.md`; never store raw audio paths.
   This is grader-enforced (see Verification).
+- **Review surface opened.** For non-trivial or contestable packets, render
+  the plan to local HTML and open it for operator review before execution:
+  `cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open`.
+  Keep Markdown authoritative; HTML is the human review surface. Skip only
+  for trivial plans, unavailable tooling, no-GUI environments, or explicit
+  operator waiver; in headless runs, render without `--open` and report the
+  HTML path.
 
 Lock product direction with the user before technical design when the
 direction is genuinely contestable — one question at a time, with your
@@ -78,6 +85,7 @@ the block from `references/cli-design.md`.
                      rejected alternatives and why, ADR decision if any
 ## Oracle          — executable definition of done
 ## Premise Source  — sha256 + artifact, or explicit waiver
+## Review Artifact — HTML path opened for review, or explicit waiver
 ## Risks + Rollout — how it fails, how to undo it
 ```
 
@@ -127,6 +135,13 @@ cargo run --locked -p harness-kit-checks -- premise-source validate <packet>
 cargo run --locked -p harness-kit-checks -- premise-source self-test
 ```
 
-Optional reviewer-facing HTML render for visual/doc-heavy handoffs
-(`shape-render`), critiqued via `/design`; the Markdown packet stays
-authoritative.
+Reviewer-facing HTML render:
+
+```sh
+cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open
+```
+
+Use it before execution for non-trivial or contestable plans. The Markdown
+packet stays authoritative; the HTML file is the review surface and may be
+critiqued via `/design` for visual/doc-heavy handoffs. In headless runs, omit
+`--open` and report the generated HTML path.
