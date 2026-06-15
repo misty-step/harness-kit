@@ -28,9 +28,12 @@ Building without an oracle yields plausible garbage.
 For non-trivial execution, start from the HTML plan artifact when one exists;
 otherwise author a small one directly from
 `skills/shape/templates/html-plan.html`, open it, and use the rendered page to
-check clarity, sequence, risk, and proof before coding. The point is visual
-planning, not a Markdown conversion. Skip only for trivial mechanical fixes,
-no-browser environments, or explicit operator waiver.
+check clarity, sequence, risk, and proof before coding. The plan must stand
+alone for the executor: hero as the work contract, support sections for
+alternatives/tradeoffs, acceptance, verification, communication cadence, stop
+conditions, and useful adversarial review. The point is visual planning, not a
+Markdown conversion. Skip only for trivial mechanical fixes, no-browser
+environments, or explicit operator waiver.
 
 **Verification system first** (shared AGENTS.md, Layer 1): locate the
 repo's live-verification harness — the one command that exercises a change

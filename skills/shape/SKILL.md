@@ -57,10 +57,17 @@ an architecture choice needs the full treatment.
 - **HTML plan authored.** For non-trivial or contestable shapes, write the
   plan directly as a local `.html` artifact from
   `templates/html-plan.html`, open it, and inspect the rendered hierarchy
-  before execution. Use layout as thinking: comparison tables, phase lanes,
-  risk grids, diagrams, callouts, and links to repo anchors. This is not
-  Markdown exported to HTML; the HTML is the planning medium. Skip only for
-  trivial shapes, no-browser environments, or explicit operator waiver.
+  before execution. The hero is the complete work contract: target outcome,
+  chosen design, why it wins, proof surface, and stop conditions. Below it,
+  include the support needed for a stranger to execute without chat context:
+  current state, change shape, repo anchors, alternatives and tradeoffs,
+  acceptance, verification, communication cadence, risks, and adversarial
+  review focus. Use layout as thinking: comparison tables, phase lanes, risk
+  grids, diagrams, callouts, and links to repo anchors. Prefer the Misty Step
+  aesthetic kit when the artifact is visual and local review can load it; keep
+  any local CSS as thin plan-specific glue. This is not Markdown exported to
+  HTML; the HTML is the planning medium. Skip only for trivial shapes,
+  no-browser environments, or explicit operator waiver.
 
 Lock product direction with the user before technical design when the
 direction is genuinely contestable — one question at a time, with your
@@ -124,8 +131,9 @@ production failure that would embarrass us. Lens prompts live in
   still says "preferably" or "decide during implementation".
 - **50 repo anchors.** If everything is an anchor, nothing is.
 - **HTML as decoration.** A plan page that is just prose in a browser missed
-  the point. Use spatial structure to show sequence, tradeoffs, risk, and
-  proof at a glance.
+  the point. Use spatial structure to show sequence, tradeoffs, risk, proof,
+  communication, and critic focus at a glance. A plan page that needs the
+  chat transcript to be understood is not ready for execution.
 - **Editing live shape docs without ripple check.** Files marked
   `shaping: true` feed other streams; trace consequences after editing.
 
@@ -145,7 +153,10 @@ cp skills/shape/templates/html-plan.html /tmp/<slug>-plan.html
 open /tmp/<slug>-plan.html   # macOS; use xdg-open on Linux or a browser tab
 ```
 
-Fill it as HTML, open it, and revise after seeing the rendered page. In
-headless runs, still write the `.html` file and report the path. Keep source
-links, commands, and oracles exact; use the browser view to make the plan
-clearer, not less precise.
+Fill it as HTML, open it, and revise after seeing the rendered page. Inspect
+that the hero states the chosen design and proof path, the alternatives table
+names tradeoffs, the verification section names exact commands/artifacts, and
+the review section gives a useful artifact-only critic prompt. In headless
+runs, still write the `.html` file and report the path. Keep source links,
+commands, and oracles exact; use the browser view to make the plan clearer,
+not less precise.

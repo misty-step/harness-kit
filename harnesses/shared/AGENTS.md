@@ -98,10 +98,16 @@ exercised command/path, repo-fit check, and residual risk.
 
 ### Think in HTML for plans
 For non-trivial execution plans and context packets, author the plan directly
-as a local HTML artifact and open it before execution. Use layout, hierarchy,
-tables, diagrams, and callouts to make the plan easier to inspect than prose.
-The HTML is the planning medium, not a Markdown export; if the task is trivial
-or no browser is available, state the fallback before acting.
+as a local HTML artifact and open it before execution. The first viewport is
+the work contract: target outcome, chosen design, why it wins, proof surface,
+and stop conditions. Below it, include the complete support an executor or
+critic needs without chat context: current state, change shape, alternatives
+and tradeoffs, acceptance, verification, communication cadence, risks, and
+adversarial review focus. Use layout, hierarchy, tables, diagrams, and
+callouts to make the plan easier to inspect than prose; prefer the Misty Step
+aesthetic kit when the artifact is visual and local review can load it. The
+HTML is the planning medium, not a Markdown export; if the task is trivial or
+no browser is available, state the fallback before acting.
 
 ### Fresh context beats self-review
 Same-model self-critique is theater — a reviewer inheriting the author's
