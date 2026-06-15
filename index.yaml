@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-15T21:16:20Z
+# Generated: 2026-06-15T21:21:54Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -31,6 +31,10 @@ skills:
     description: "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\""
     source: first-party
     tags: [bootstrap,configs,doctrine,engineering,evals,gates,harness,improve,kit,logic]
+  - name: human-writing
+    description: "Edit, audit, or rewrite prose so it sounds like a specific human wrote it, not a generic AI draft. Removes AI tells, filler, formulaic structure, fake polish, vague claims, and detector-bait phrasing "
+    source: first-party
+    tags: [a,ai,audit,claims,detector-bait,draft,edit,fake,filler,formulaic]
   - name: qa
     description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party

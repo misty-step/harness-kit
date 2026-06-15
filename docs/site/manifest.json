@@ -192,6 +192,16 @@
       "source": "skills/harness-engineering/SKILL.md"
     },
     {
+      "description": "Edit, audit, or rewrite prose so it sounds like a specific human wrote it, not a generic AI draft. Removes AI tells, filler, formulaic structure, fake polish, vague claims, and detector-bait phrasing while preserving truth, voice, and audience fit. Use when: \"humanize this\", \"make this sound less AI\", \"remove AI slop\", \"de-slop this\", \"edit this prose\", \"make this sound natural\", \"fix the writing voice\", \"rewrite this copy\". Trigger: /human-writing, /deslop.",
+      "icon": "catalog",
+      "id": "skill:human-writing",
+      "kind": "skill",
+      "name": "human-writing",
+      "page": "reference/skills/human-writing.html",
+      "role": "Support",
+      "source": "skills/human-writing/SKILL.md"
+    },
+    {
       "description": "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA\", \"verify the feature\", \"test this\", \"check the app\", \"smoke test\", \"exploratory test\", \"capture evidence\". Trigger: /qa.",
       "icon": "verify",
       "id": "skill:qa",

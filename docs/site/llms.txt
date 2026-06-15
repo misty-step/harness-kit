@@ -11,6 +11,7 @@ Primitives:
 - skill:diagnose | skills/diagnose/SKILL.md | docs/site/reference/skills/diagnose.html
 - skill:groom | skills/groom/SKILL.md | docs/site/reference/skills/groom.html
 - skill:harness-engineering | skills/harness-engineering/SKILL.md | docs/site/reference/skills/harness-engineering.html
+- skill:human-writing | skills/human-writing/SKILL.md | docs/site/reference/skills/human-writing.html
 - skill:qa | skills/qa/SKILL.md | docs/site/reference/skills/qa.html
 - skill:refactor | skills/refactor/SKILL.md | docs/site/reference/skills/refactor.html
 - skill:research | skills/research/SKILL.md | docs/site/reference/skills/research.html
