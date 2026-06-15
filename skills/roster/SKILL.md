@@ -30,8 +30,12 @@ model family or a genuinely fresh context.
   assessment, "is this idiomatic" — where one model's taste shouldn't
   decide alone.
 - **Competing attempts** at the same bounded problem, graded blind.
-- **Wide bench** — `thinktank` fans one task across many models and
-  collates.
+- **Wide bench** — high-stakes adversarial review (a P0, a security or
+  data-loss surface, a pre-ship "be exhaustive" pass). Fan the artifact
+  across several *distinct* open-model families via Pi/OpenRouter, each
+  critic on its own lens; distinct families surface distinct real findings
+  instead of confirming each other. See **Adversarial bench** below.
+  `thinktank` collates one task across many models when installed.
 
 A native subagent is still better for exploration, scoped builds, and
 anything where harness identity doesn't matter — it shares your tools,
@@ -59,6 +63,31 @@ Current model ids, pricing, context windows, and freshness dates:
 `references/model-provider-harness-index.md`. Open-model facts rot in days —
 check the review-due date before quoting them.
 
+## Adversarial bench
+
+High-stakes review is a *model-family spread*, not one second opinion:
+distinct families each catch distinct real bugs (in one P0 pass, one family
+found a startup-bricking blocker, another a null-timestamp escape, another a
+write-path gap — no overlap).
+
+- **3–5 distinct families** (Kimi/Moonshot, DeepSeek, MiniMax, Qwen,
+  GLM/Zhipu when listed). Same-family variants don't decorrelate — a wide
+  bench of one family is waste.
+- **Discover slugs live**: `pi --provider openrouter --list-models
+  <family>`. Slugs rot in days; substitute when a family isn't listed.
+- **One distinct lens per critic** (correctness/data-loss, durability,
+  security, perf, API-shape — `harnesses/shared/references/lenses.md`).
+  Optionally load that lens or a domain skill into the critic: `pi --skill
+  <path>`.
+- **Cold, bounded, artifact-only**: inline diff + oracle + context, run `pi
+  -p --no-extensions --no-tools --provider openrouter --model <slug>
+  "<prompt>"`, background the lanes, synthesize the verdicts yourself. Add
+  one or two native critics on their own lenses (a further family), then
+  re-review the *delta* after you fix.
+
+Scale to stakes — a routine diff gets one well-aimed cross-family critic,
+not the full bench.
+
 ## Judgment
 
 - One well-aimed critic beats three vague ones. Aim it at the claim that
@@ -80,7 +109,10 @@ check the review-due date before quoting them.
 
 - Peer CLIs run cold: no conversation history, no local skills unless the
   harness loads them itself. Inline everything the lane needs.
-- Don't fan out to N providers to look thorough. Decorrelation is the
-  point; two well-chosen families usually saturate it.
+- Match the bench to the stakes (see **Adversarial bench**). A routine
+  second opinion is one well-aimed cross-family critic; fanning wide there
+  is theater. The real waste is a wide bench of the *same* family — variants
+  don't decorrelate — not a wide bench of distinct ones, which a P0 or
+  security/data-loss surface earns.
 - Auth rots independently per CLI. A lane failing instantly with an auth
   error means re-login locally, not a provider verdict.
