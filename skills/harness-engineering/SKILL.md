@@ -86,7 +86,9 @@ Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gat
 Before creating or growing anything, classify it (2026-06 audit, backlog 103):
 
 - **Prompt** — "is this just what the operator would retype to a strong
-  model?" One file, no references/, no receipts, exempt from skill machinery.
+  model, and does the target harness expose prompt files ergonomically?" One
+  file, no references/, no receipts, exempt from skill machinery. If the
+  operator expects Codex app slash or `$` discovery, use a skill instead.
 - **Skill** — "does this change what a frontier model does, for the better,
   repeatedly?" Judgment + context the model can't derive.
 - **Doctrine line** — "worth paying for in every session?" Goes in AGENTS.md,
@@ -97,7 +99,9 @@ Before creating or growing anything, classify it (2026-06 audit, backlog 103):
 
 History: slash commands were collapsed into skills when skills arrived, so
 saved prompts masqueraded as skills and the catalog tripled. Do not recreate
-that.
+that. Counter-history: Codex app discovery is skill-shaped, so high-frequency
+operator commands that must appear in the app are skills even when their body is
+lightweight.
 
 ## Quality Bar
 

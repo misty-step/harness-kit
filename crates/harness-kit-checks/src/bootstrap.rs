@@ -121,7 +121,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         skills.join(" ")
     )));
     lines.push(blue(format!(
-        "Prompts ({}): {}",
+        "Prompt files ({}): {}",
         prompts.len(),
         prompts.join(" ")
     )));
@@ -293,8 +293,9 @@ fn link_harness(
         )));
     }
 
-    // Prompts: saved invocations, lighter than skills. Claude reads
-    // commands/, Codex and Pi read prompts/. Other harnesses skip.
+    // Prompt files: lightweight saved invocations for harnesses that expose
+    // them. Codex app slash/$ discovery is skill-based; keep app-visible
+    // operator commands under skills/.
     let prompts_dest = match harness {
         "claude" => Some(harness_dir.join("commands")),
         "codex" | "pi" => Some(harness_dir.join("prompts")),

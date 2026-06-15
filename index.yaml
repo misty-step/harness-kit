@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-15T21:21:54Z
+# Generated: 2026-06-15T23:32:13Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -35,6 +35,14 @@ skills:
     description: "Edit, audit, or rewrite prose so it sounds like a specific human wrote it, not a generic AI draft. Removes AI tells, filler, formulaic structure, fake polish, vague claims, and detector-bait phrasing "
     source: first-party
     tags: [a,ai,audit,claims,detector-bait,draft,edit,fake,filler,formulaic]
+  - name: next
+    description: "Recommend the best next move from live thread and repo state. Use when: \"what's next\", \"what next\", \"now what\", \"what should I do next\", \"what should we do next\", \"anything else to do\", \"where are we "
+    source: first-party
+    tags: [anything,best,do,else,i,live,move,next,now,recommend]
+  - name: orient
+    description: "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", after compaction, after"
+    source: first-party
+    tags: [acting,after,before,catch,compaction,evidence,fast,live,local,me]
   - name: qa
     description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party
