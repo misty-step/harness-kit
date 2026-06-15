@@ -25,13 +25,12 @@ as its own commit. If the ticket has no goal or acceptance oracle, run
 `/shape` (or write the oracle yourself for small work) before building.
 Building without an oracle yields plausible garbage.
 
-For non-trivial or contestable execution plans, consume the shaped packet as a
-review surface before building: render it with
-`cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open`,
-then execute from the Markdown packet as the authoritative source. In headless
-runs, render without `--open` and report the HTML path before execution. Skip
-only for trivial mechanical fixes, unavailable tooling, or explicit operator
-waiver.
+For non-trivial execution, start from the HTML plan artifact when one exists;
+otherwise author a small one directly from
+`skills/shape/templates/html-plan.html`, open it, and use the rendered page to
+check clarity, sequence, risk, and proof before coding. The point is visual
+planning, not a Markdown conversion. Skip only for trivial mechanical fixes,
+no-browser environments, or explicit operator waiver.
 
 **Verification system first** (shared AGENTS.md, Layer 1): locate the
 repo's live-verification harness — the one command that exercises a change

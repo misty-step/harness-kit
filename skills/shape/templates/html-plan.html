@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plan Review: Replace with title</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f4ef;
+      --panel: #ffffff;
+      --ink: #171717;
+      --muted: #5f6460;
+      --line: #d9d5ca;
+      --accent: #126a5a;
+      --accent-soft: #dcece7;
+      --warn: #9b4d12;
+      --warn-soft: #f4e4d4;
+      --risk: #8f2432;
+      --risk-soft: #f0d7dc;
+      --code: #eeece4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #171816;
+        --panel: #22231f;
+        --ink: #f4f1e9;
+        --muted: #b9baaf;
+        --line: #3e4039;
+        --accent: #69c3ad;
+        --accent-soft: #1f3d37;
+        --warn: #e0a15f;
+        --warn-soft: #3c2c1d;
+        --risk: #ef8896;
+        --risk-soft: #3d2026;
+        --code: #303129;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.48 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 34px 22px 64px;
+    }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(260px, .75fr);
+      gap: 22px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(32px, 5vw, 58px);
+      line-height: 1;
+      margin-bottom: 12px;
+      letter-spacing: 0;
+    }
+    h2 {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+    h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    a { color: var(--accent); }
+    code {
+      background: var(--code);
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 760px;
+      margin-bottom: 0;
+    }
+    .meta {
+      display: grid;
+      gap: 8px;
+      justify-self: stretch;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      width: fit-content;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .callout {
+      border-left: 5px solid var(--accent);
+      background: var(--accent-soft);
+    }
+    .warn {
+      border-left-color: var(--warn);
+      background: var(--warn-soft);
+    }
+    .risk {
+      border-left-color: var(--risk);
+      background: var(--risk-soft);
+    }
+    .map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .map > div {
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: color-mix(in srgb, var(--panel) 80%, var(--bg));
+    }
+    .phase {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr) minmax(210px, .8fr);
+      gap: 14px;
+      align-items: start;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+    .phase:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+      margin-top: 0;
+    }
+    .phase strong {
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    li + li { margin-top: 6px; }
+    .review-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .review-strip div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--panel);
+    }
+
+    @media (max-width: 860px) {
+      header, .map, .phase, .review-strip {
+        grid-template-columns: 1fr;
+      }
+      .span-3, .span-4, .span-6, .span-8, .span-12 {
+        grid-column: span 12;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <section>
+      <p class="eyebrow">Plan review</p>
+      <h1>Replace with the plan title</h1>
+      <p class="lede">One or two sentences: the user outcome, the chosen direction, and why this plan is worth doing now.</p>
+    </section>
+    <aside class="meta" aria-label="Plan metadata">
+      <span class="chip">Status: draft for review</span>
+      <span class="chip">Owner: agent / operator</span>
+      <span class="chip">Updated: YYYY-MM-DD</span>
+      <span class="chip">Premise: sha256 or source link</span>
+    </aside>
+  </header>
+
+  <section class="grid" aria-label="Executive summary">
+    <article class="panel callout span-4">
+      <h2>Recommendation</h2>
+      <p>State the preferred path in one direct paragraph. Make the decision visible before the reader reaches details.</p>
+    </article>
+    <article class="panel span-4">
+      <h2>Definition Of Done</h2>
+      <ul>
+        <li>Observable behavior or artifact.</li>
+        <li>Exact command, route, screenshot, or receipt that proves it.</li>
+        <li>Clean-tree or closeout condition.</li>
+      </ul>
+    </article>
+    <article class="panel warn span-4">
+      <h2>Stop Conditions</h2>
+      <ul>
+        <li>Ambiguous product decision.</li>
+        <li>Missing credential, test harness, or external approval.</li>
+        <li>Evidence contradicts the premise.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="panel span-12" aria-label="Visual map" style="margin-top: 14px;">
+    <h2>Visual Map</h2>
+    <div class="map">
+      <div>
+        <h3>Current State</h3>
+        <p>What exists now, with links to files, screens, logs, or backlog items.</p>
+      </div>
+      <div>
+        <h3>Change Shape</h3>
+        <p>What will be added, removed, or re-routed. Use bullets, a mini diagram, or a before/after sketch.</p>
+      </div>
+      <div>
+        <h3>Proof Surface</h3>
+        <p>The live evidence loop: commands, browser path, API route, fixture, screenshot, or reviewer receipt.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid" aria-label="Scope and anchors" style="margin-top: 14px;">
+    <article class="panel span-6">
+      <h2>Scope</h2>
+      <ul>
+        <li>Goal: outcome, not mechanism.</li>
+        <li>Non-goals: tempting work that stays out.</li>
+        <li>Invariants: behavior or contracts that must survive.</li>
+      </ul>
+    </article>
+    <article class="panel span-6">
+      <h2>Repo Anchors</h2>
+      <ul>
+        <li><a href="#">path/to/file</a> - convention or contract to follow.</li>
+        <li><a href="#">path/to/test</a> - oracle or regression surface.</li>
+        <li><a href="#">path/to/doc</a> - operator-facing source of truth.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="panel" style="margin-top: 14px;">
+    <h2>Execution Plan</h2>
+    <div class="phase">
+      <strong>Phase 1</strong>
+      <div>
+        <h3>Understand and lock the shape</h3>
+        <p>Reads, product decisions, or small probes needed before touching implementation.</p>
+      </div>
+      <div>
+        <h3>Evidence</h3>
+        <p><code>command-or-artifact</code> plus the expected signal.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <strong>Phase 2</strong>
+      <div>
+        <h3>Make the smallest durable change</h3>
+        <p>Files and seams likely to change. Name deletions before additions when possible.</p>
+      </div>
+      <div>
+        <h3>Evidence</h3>
+        <p>Failing test, live probe, browser review, or generated artifact.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <strong>Phase 3</strong>
+      <div>
+        <h3>Verify and close out</h3>
+        <p>Gate, live surface, fresh critic, commit, push, status, and residual risk.</p>
+      </div>
+      <div>
+        <h3>Evidence</h3>
+        <p><code>git status</code>, gate output, screenshot/receipt links.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid" aria-label="Decision tables" style="margin-top: 14px;">
+    <article class="panel span-8">
+      <h2>Alternatives</h2>
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Why It Helps</th><th>Failure Mode</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chosen path</td><td>...</td><td>...</td><td>Choose</td></tr>
+          <tr><td>Boring/manual path</td><td>...</td><td>...</td><td>Reject / defer</td></tr>
+          <tr><td>Inverted premise</td><td>...</td><td>...</td><td>Reject / learn from it</td></tr>
+        </tbody>
+      </table>
+    </article>
+    <article class="panel risk span-4">
+      <h2>Risks</h2>
+      <table>
+        <thead>
+          <tr><th>Risk</th><th>Mitigation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Most likely breakage.</td><td>How we catch or undo it.</td></tr>
+          <tr><td>Most expensive miss.</td><td>Extra test, review, or stop condition.</td></tr>
+        </tbody>
+      </table>
+    </article>
+  </section>
+
+  <section class="panel" style="margin-top: 14px;">
+    <h2>Review Focus</h2>
+    <div class="review-strip">
+      <div>
+        <h3>Operator Question</h3>
+        <p>The one decision where human judgment would change the plan.</p>
+      </div>
+      <div>
+        <h3>Agent Self-Check</h3>
+        <p>What the agent must inspect in this rendered page before execution.</p>
+      </div>
+      <div>
+        <h3>Fresh Critic Prompt</h3>
+        <p>Artifact-only question for a reviewer: what production failure would embarrass this plan?</p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

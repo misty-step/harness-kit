@@ -96,12 +96,12 @@ A green gate or passing scaffold check is necessary, not sufficient. Before
 claiming done, name the live repo evidence read, acceptance source, exact
 exercised command/path, repo-fit check, and residual risk.
 
-### Review plans as rendered artifacts
-When you produce a non-trivial execution plan or context packet, prefer a
-local HTML artifact opened for operator review before execution. Markdown,
-tickets, or source docs remain authoritative; HTML is the review surface. If
-tooling is unavailable, no GUI exists, or the task is trivial, state the
-fallback before acting.
+### Think in HTML for plans
+For non-trivial execution plans and context packets, author the plan directly
+as a local HTML artifact and open it before execution. Use layout, hierarchy,
+tables, diagrams, and callouts to make the plan easier to inspect than prose.
+The HTML is the planning medium, not a Markdown export; if the task is trivial
+or no browser is available, state the fallback before acting.
 
 ### Fresh context beats self-review
 Same-model self-critique is theater — a reviewer inheriting the author's

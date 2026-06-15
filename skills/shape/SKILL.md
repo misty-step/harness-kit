@@ -54,13 +54,13 @@ an architecture choice needs the full treatment.
   premises take the metadata block from
   `references/voice-transcript-metadata.md`; never store raw audio paths.
   This is grader-enforced (see Verification).
-- **Review surface opened.** For non-trivial or contestable packets, render
-  the plan to local HTML and open it for operator review before execution:
-  `cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open`.
-  Keep Markdown authoritative; HTML is the human review surface. Skip only
-  for trivial plans, unavailable tooling, no-GUI environments, or explicit
-  operator waiver; in headless runs, render without `--open` and report the
-  HTML path.
+- **HTML plan authored.** For non-trivial or contestable shapes, write the
+  plan directly as a local `.html` artifact from
+  `templates/html-plan.html`, open it, and inspect the rendered hierarchy
+  before execution. Use layout as thinking: comparison tables, phase lanes,
+  risk grids, diagrams, callouts, and links to repo anchors. This is not
+  Markdown exported to HTML; the HTML is the planning medium. Skip only for
+  trivial shapes, no-browser environments, or explicit operator waiver.
 
 Lock product direction with the user before technical design when the
 direction is genuinely contestable — one question at a time, with your
@@ -85,7 +85,7 @@ the block from `references/cli-design.md`.
                      rejected alternatives and why, ADR decision if any
 ## Oracle          — executable definition of done
 ## Premise Source  — sha256 + artifact, or explicit waiver
-## Review Artifact — HTML path opened for review, or explicit waiver
+## HTML Plan       — local .html path opened for review, or explicit waiver
 ## Risks + Rollout — how it fails, how to undo it
 ```
 
@@ -123,6 +123,9 @@ production failure that would embarrass us. Lens prompts live in
 - **Ready-but-vague.** A packet is not ready while a load-bearing choice
   still says "preferably" or "decide during implementation".
 - **50 repo anchors.** If everything is an anchor, nothing is.
+- **HTML as decoration.** A plan page that is just prose in a browser missed
+  the point. Use spatial structure to show sequence, tradeoffs, risk, and
+  proof at a glance.
 - **Editing live shape docs without ripple check.** Files marked
   `shaping: true` feed other streams; trace consequences after editing.
 
@@ -135,13 +138,14 @@ cargo run --locked -p harness-kit-checks -- premise-source validate <packet>
 cargo run --locked -p harness-kit-checks -- premise-source self-test
 ```
 
-Reviewer-facing HTML render:
+HTML plan artifact:
 
 ```sh
-cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open
+cp skills/shape/templates/html-plan.html /tmp/<slug>-plan.html
+open /tmp/<slug>-plan.html   # macOS; use xdg-open on Linux or a browser tab
 ```
 
-Use it before execution for non-trivial or contestable plans. The Markdown
-packet stays authoritative; the HTML file is the review surface and may be
-critiqued via `/design` for visual/doc-heavy handoffs. In headless runs, omit
-`--open` and report the generated HTML path.
+Fill it as HTML, open it, and revise after seeing the rendered page. In
+headless runs, still write the `.html` file and report the path. Keep source
+links, commands, and oracles exact; use the browser view to make the plan
+clearer, not less precise.

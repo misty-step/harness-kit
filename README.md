@@ -52,14 +52,16 @@ Prompts (saved invocations, installed as slash commands): `/yeet`, `/ship`,
 backlog.d/ → /groom → /shape (when it needs shaping) → /deliver → /ship
 ```
 
-For non-trivial `/shape` packets or execution plans, render and open the local
-HTML review surface before building:
+For non-trivial `/shape` packets or execution plans, author and open a local
+HTML plan before building:
 
 ```bash
-cargo run --locked -p harness-kit-checks -- shape-render <packet.md> --open
+cp skills/shape/templates/html-plan.html /tmp/<slug>-plan.html
+open /tmp/<slug>-plan.html   # macOS; use xdg-open on Linux or a browser tab in other harnesses
 ```
 
-Headless environments can omit `--open` and report the generated HTML path.
+Use the rendered page for hierarchy, comparison, risk, and proof. Headless
+environments still write the `.html` artifact and report its path.
 
 For the deeper architecture map, read [`CODEBASE.md`](CODEBASE.md).
 

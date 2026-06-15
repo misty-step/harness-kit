@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use harness_kit_checks::{
     agent_roster, backlog, bootstrap, ci_check, claude_hooks, config_loader, docs_site,
     external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
-    pr_reviews, shape_render, skill_invocation_analytics, source_refs, summarize_delegations,
+    pr_reviews, skill_invocation_analytics, source_refs, summarize_delegations,
 };
 
 fn main() {
@@ -86,7 +86,6 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
             run_check_docs_site(rest);
         }
         "build-docs-site" => run_build_docs_site(rest),
-        "shape-render" => run_shape_render(rest),
         "bootstrap" => {
             let repo = parse_repo_arg(rest);
             let options = bootstrap::BootstrapOptions::from_env(Some(repo))?;
@@ -424,51 +423,6 @@ Usage:\n  harness-kit-checks build-docs-site\n  harness-kit-checks build-docs-si
             eprintln!("{error:#}");
             std::process::exit(1);
         }
-    }
-}
-
-fn run_shape_render(args: &[String]) {
-    let mut input: Option<PathBuf> = None;
-    let mut output: Option<PathBuf> = None;
-    let mut open = false;
-    let mut index = 0;
-    while index < args.len() {
-        match args[index].as_str() {
-            "--output" => {
-                index += 1;
-                output = Some(PathBuf::from(
-                    args.get(index).cloned().unwrap_or_else(|| usage()),
-                ));
-            }
-            "--open" => open = true,
-            "-h" | "--help" => {
-                println!(
-                    "Render a Markdown context packet or execution plan to local HTML.\n\n\
-Usage:\n  harness-kit-checks shape-render <packet.md>\n  harness-kit-checks shape-render <packet.md> --output /tmp/packet.html --open\n"
-                );
-                std::process::exit(0);
-            }
-            value if value.starts_with('-') => usage(),
-            value => {
-                if input.is_some() {
-                    usage();
-                }
-                input = Some(PathBuf::from(value));
-            }
-        }
-        index += 1;
-    }
-    let input = input.unwrap_or_else(|| usage());
-    let report = shape_render::render(&shape_render::RenderOptions {
-        input,
-        output,
-        open,
-    })
-    .unwrap_or_else(exit_error);
-    if report.opened {
-        println!("Rendered and opened {}", report.output.display());
-    } else {
-        println!("Rendered {}", report.output.display());
     }
 }
 
@@ -868,7 +822,6 @@ fn usage() -> ! {
   harness-kit-checks check-index-drift [--repo PATH]
   harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
   harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
-  harness-kit-checks shape-render <packet.md> [--output PATH] [--open]
   harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
   harness-kit-checks lint-external-skills [--strict]
   harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]
