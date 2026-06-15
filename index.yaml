@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-15T16:29:45Z
+# Generated: 2026-06-15T21:10:47Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -35,6 +35,10 @@ skills:
     description: "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA"
     source: first-party
     tags: [apis,browser,builds,clis,consumer,is,libraries,mcp,pass,qa]
+  - name: refactor
+    description: "Architecture refactor mode: set a concrete improvement goal, refactor until the architecture is simpler and coherent, live-test after each significant step, autoreview, commit green milestones, and tr"
+    source: first-party
+    tags: [a,after,architecture,autoreview,coherent,commit,concrete,goal,green,improvement]
   - name: research
     description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate"
     source: first-party

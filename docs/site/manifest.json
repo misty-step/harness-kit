@@ -202,6 +202,16 @@
       "source": "skills/qa/SKILL.md"
     },
     {
+      "description": "Architecture refactor mode: set a concrete improvement goal, refactor until the architecture is simpler and coherent, live-test after each significant step, autoreview, commit green milestones, and track progress in /tmp/refactor-{project}.md. Use when: \"refactor this\", \"clean up the architecture\", \"make the design better\", \"refactor until you're happy\", \"pay down design debt\", \"simplify this subsystem\". Trigger: /refactor.",
+      "icon": "repair",
+      "id": "skill:refactor",
+      "kind": "skill",
+      "name": "refactor",
+      "page": "reference/skills/refactor.html",
+      "role": "Improve",
+      "source": "skills/refactor/SKILL.md"
+    },
+    {
       "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"check readwise\", \"saved articles\", \"reading list\", \"what are people saying\", \"X search\", \"trending\", \"which model\", \"compare models\", \"best model for\", \"model selection\".",
       "icon": "catalog",
       "id": "skill:research",
