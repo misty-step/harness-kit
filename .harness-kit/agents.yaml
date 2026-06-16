@@ -125,6 +125,18 @@ providers:
     worktree: recommended
     smoke: grok --model grok-4.3 --permission-mode bypassPermissions --always-approve --effort max --reasoning-effort xhigh -p
     notes: xAI Grok CLI; local Grok Build entitlement may fail, so default to the working Grok CLI model.
+  oracle:
+    tier: conditional
+    kind: cli
+    probe: npx --version
+    dispatch: npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p
+    output: text
+    model: gpt-5.5-pro-browser
+    reasoning: ChatGPT browser Pro thinking
+    permissions: browser automation through signed-in ChatGPT session
+    worktree: recommended
+    smoke: 'npx -y @steipete/oracle --engine browser --model gpt-5.5-pro --dry-run summary -p "Harness Kit Oracle smoke: summarize README.md in one sentence." --file README.md'
+    notes: Oracle consult surface. Harness Kit uses browser mode only; API mode, provider flags, and multi-model API panels are not part of this provider target.
   manual:
     tier: manual
     kind: manual

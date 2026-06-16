@@ -13,6 +13,7 @@ Primitives:
 - skill:harness-engineering | skills/harness-engineering/SKILL.md | docs/site/reference/skills/harness-engineering.html
 - skill:human-writing | skills/human-writing/SKILL.md | docs/site/reference/skills/human-writing.html
 - skill:next | skills/next/SKILL.md | docs/site/reference/skills/next.html
+- skill:oracle | skills/oracle/SKILL.md | docs/site/reference/skills/oracle.html
 - skill:orient | skills/orient/SKILL.md | docs/site/reference/skills/orient.html
 - skill:qa | skills/qa/SKILL.md | docs/site/reference/skills/qa.html
 - skill:refactor | skills/refactor/SKILL.md | docs/site/reference/skills/refactor.html

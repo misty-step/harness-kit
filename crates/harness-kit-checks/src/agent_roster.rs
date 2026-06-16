@@ -31,6 +31,7 @@ pub const ROSTER_PROVIDER_IDS: &[&str] = &[
     "agy",
     "cursor-agent",
     "grok-build",
+    "oracle",
     "manual",
 ];
 
@@ -1064,6 +1065,7 @@ providers:
   agy: {<<: *cli, tier: conditional}
   cursor-agent: {<<: *cli, tier: conditional}
   grok-build: {<<: *cli, tier: conditional}
+  oracle: {<<: *cli, tier: conditional}
   manual:
     tier: manual
     kind: manual

@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-16T19:52:03Z
+# Generated: 2026-06-16T20:15:11Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -39,6 +39,10 @@ skills:
     description: "Recommend the best next move from live thread and repo state. Use when: \"what's next\", \"what next\", \"now what\", \"what should I do next\", \"what should we do next\", \"anything else to do\", \"where are we "
     source: first-party
     tags: [anything,best,do,else,i,live,move,next,now,recommend]
+  - name: oracle
+    description: "Browser-mode-only Oracle consults: bundle a prompt plus selected files and ask a signed-in ChatGPT GPT-5.5 Pro browser session for a second opinion. Use when stuck, debugging hard bugs, reviewing an a"
+    source: first-party
+    tags: [5,a,an,ask,browser,browser-mode-only,bugs,bundle,chatgpt,consults]
   - name: orient
     description: "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", after compaction, after"
     source: first-party
@@ -56,7 +60,7 @@ skills:
     source: first-party
     tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
   - name: roster
-    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, thinktank) and how to invoke each headlessly. A capability map, not a "
+    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank) and how to invoke each headlessly. A capability map"
     source: first-party
     tags: [a,agent,agy,ai,capability,claude,clis,codex,cursor-agent,enumerates]
   - name: shape

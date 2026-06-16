@@ -51,6 +51,7 @@ const RECEIPT_PROVIDER_IDS: &[&str] = &[
     "agy",
     "cursor-agent",
     "grok-build",
+    "oracle",
     "manual",
 ];
 const VALID_PROVIDER_STATUS: &[&str] = &["available", "unavailable", "error", "partial", "manual"];

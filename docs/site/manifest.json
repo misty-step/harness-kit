@@ -212,6 +212,16 @@
       "source": "skills/next/SKILL.md"
     },
     {
+      "description": "Browser-mode-only Oracle consults: bundle a prompt plus selected files and ask a signed-in ChatGPT GPT-5.5 Pro browser session for a second opinion. Use when stuck, debugging hard bugs, reviewing an architecture plan, or cross-checking a substantive diff with large file context. Never use Oracle API mode from Harness Kit. Trigger: /oracle, /consult.",
+      "icon": "catalog",
+      "id": "skill:oracle",
+      "kind": "skill",
+      "name": "oracle",
+      "page": "reference/skills/oracle.html",
+      "role": "Support",
+      "source": "skills/oracle/SKILL.md"
+    },
+    {
       "description": "Fast session-start repository orientation from live local evidence. Use when: \"orient yourself\", \"start of session\", \"new session\", \"where are we\", \"catch me up before acting\", after compaction, after switching worktrees, or before choosing a Harness Kit workflow. Trigger: /orient, /ground, /session-start.",
       "icon": "catalog",
       "id": "skill:orient",
@@ -252,7 +262,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
+      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
       "icon": "catalog",
       "id": "skill:roster",
       "kind": "skill",

@@ -35,10 +35,13 @@ Source: `.harness-kit/agents.yaml`, probed with
 | `agy` | Antigravity CLI | `gemini-3.5-flash` | `agy --dangerously-skip-permissions --print` | available |
 | `cursor-agent` | Cursor Agent CLI | `composer-2.5` | `cursor-agent -p --model composer-2.5` | available |
 | `grok-build` | xAI Grok CLI | `grok-4.3` | `grok --model grok-4.3 --effort max --reasoning-effort xhigh -p` | available |
+| `oracle` | Oracle browser consult | `gpt-5.5-pro-browser` | `npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p` | available via `npx`; dry-run smoke passed 2026-06-16 |
 | `manual` | Human/imported evidence | none | manual summary | manual |
 
 Local probe status proves only command discovery. It does not prove task
 quality, current billing, tool-call reliability, or benchmark performance.
+Oracle status proves only the browser-mode dry-run path; Harness Kit forbids
+Oracle API mode in its skill and roster defaults.
 
 Kimi K2.7 Code sentinel dispatch receipts on 2026-06-14:
 

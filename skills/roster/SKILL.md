@@ -2,7 +2,7 @@
 name: roster
 description: |
   Enumerates the peer AI agent CLIs installed on this machine (codex, pi,
-  goose, opencode, claude, cursor-agent, grok, agy, hermes, thinktank)
+  goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank)
   and how to invoke each headlessly. A capability map, not a quota: useful
   for fresh-context adversarial review on a different model family, second
   opinions, competing attempts, and wide benches. Use when: "ask codex",
@@ -57,6 +57,7 @@ add the prompt as the argument or via stdin.
 | `grok` | xAI Grok | `grok -p "<task>"` (`--model`, `--effort`) |
 | `agy` | Antigravity (Gemini) | `agy --print "<task>"` |
 | `hermes` | Hermes agent | `hermes -z "<task>"` (`-m <model>`) |
+| `oracle` | Oracle browser consult | `npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p "<task>" --file <paths>` |
 | `thinktank` | Multi-model bench | `thinktank review` · `thinktank run <bench> --input "<task>"` |
 
 Current model ids, pricing, context windows, and freshness dates:
@@ -97,6 +98,9 @@ not the full bench.
   it, and own the result.
 - A failed or rambling lane is a result too — report it, don't re-roll
   silently.
+- Oracle is browser-mode only in Harness Kit. Use it for high-context consults
+  through a signed-in ChatGPT session; do not use Oracle API mode or multi-model
+  API panels from the Harness Kit roster default.
 - For a bounded lane whose evidence should outlive the session,
   `harness-kit-checks dispatch-agent` wraps the invocation and writes a
   delegation receipt (`.harness-kit/traces/delegations.jsonl`). Optional
