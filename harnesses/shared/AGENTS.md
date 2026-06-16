@@ -196,6 +196,7 @@ Concrete trigger → action. When a row matches, take the action.
 | Trigger | Action |
 |---|---|
 | Integrating an external system | Read `meta/INTEGRATION_GUIDE.md` before choosing MCP, skill, CLI, or script |
+| Choosing language, host, CI, observability, release, design system, storage, or agent substrate | Start from `skills/harness-engineering/references/preferred-stack.md`, then verify current facts with `/research` before committing |
 
 ### Critic & philosophy lens
 | Trigger | Action |

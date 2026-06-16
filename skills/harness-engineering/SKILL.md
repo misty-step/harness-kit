@@ -5,7 +5,10 @@ description: |
   provider roster, harness configs, gates, evals, bootstrap, and sync logic.
   Use for "improve the harness", "harness engineering", "bootstrap is wrong",
   "AGENTS.md is stale", "skill health", "skill usage", "undertriggering skill",
-  "description tax", "eval skill", "sync primitives", "roster defaults".
+  "description tax", "eval skill", "sync primitives", "roster defaults",
+  "preferred stack", "stack defaults", "hosting defaults", "CI defaults",
+  "observability defaults", "release defaults", "design system defaults",
+  "storage defaults", "agent substrate defaults".
   Trigger: /harness-engineering, /harness, /skill.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
 ---
@@ -29,6 +32,7 @@ Engineer the harness. Keep it thin.
 | measure skill usage/health/staleness | `references/mode-audit.md` |
 | current model/provider/harness facts | the roster skill's `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
+| preferred stack / infrastructure defaults | `references/preferred-stack.md` |
 
 Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
 are written directly into that repo's `.agents/skills/` with its real

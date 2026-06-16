@@ -182,7 +182,7 @@
       "source": "skills/groom/SKILL.md"
     },
     {
-      "description": "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"skill usage\", \"undertriggering skill\", \"description tax\", \"eval skill\", \"sync primitives\", \"roster defaults\". Trigger: /harness-engineering, /harness, /skill.",
+      "description": "Harness engineering for Harness Kit primitives: skills, shared doctrine, provider roster, harness configs, gates, evals, bootstrap, and sync logic. Use for \"improve the harness\", \"harness engineering\", \"bootstrap is wrong\", \"AGENTS.md is stale\", \"skill health\", \"skill usage\", \"undertriggering skill\", \"description tax\", \"eval skill\", \"sync primitives\", \"roster defaults\", \"preferred stack\", \"stack defaults\", \"hosting defaults\", \"CI defaults\", \"observability defaults\", \"release defaults\", \"design system defaults\", \"storage defaults\", \"agent substrate defaults\". Trigger: /harness-engineering, /harness, /skill.",
       "icon": "repair",
       "id": "skill:harness-engineering",
       "kind": "skill",
