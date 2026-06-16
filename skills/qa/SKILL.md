@@ -66,6 +66,9 @@ just exception logging; stack traces don't fire when an agent confidently
 does the wrong thing. When the same agent drove the app and judges the result, have a
 fresh subagent attack the pass claim before signing off: what path would
 embarrass us in production?
+For public API, CLI, UI, performance, compatibility, migration, or operator
+workflow changes, include `harnesses/shared/references/works-critique.md` in
+that fresh pass-claim attack.
 
 ## Gotchas
 

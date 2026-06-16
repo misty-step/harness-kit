@@ -30,7 +30,9 @@ an architecture choice needs the full treatment.
 - **Alternatives genuinely explored.** Real alternatives fail differently —
   include the boring/manual path and one that inverts a load-bearing
   assumption. Same idea in three outfits is one option. Kill the losers on
-  the record and **recommend one**; a menu is not a shape.
+  the record and **recommend one**; a menu is not a shape. For automation or
+  refactor-heavy ideas, apply `harnesses/shared/references/delete-first.md`
+  before choosing the build path.
 - **Scope is fenced.** Goal (outcome, not mechanism), explicit non-goals,
   and invariants that must survive the change.
 - **Oracle is executable.** "It should work" is not an oracle; "these
@@ -48,6 +50,13 @@ an architecture choice needs the full treatment.
   for conventions, commands you actually ran, and stop conditions: the
   surprises that should halt execution and come back rather than be
   improvised around.
+- **"Works" has product dimensions.** For public API, CLI, UI, performance,
+  compatibility, migration, or operator-workflow packets, load
+  `harnesses/shared/references/works-critique.md` and include the likely
+  review focus.
+- **Loops cross the Mode A/Mode B boundary.** For recurring or unattended
+  workflow ideas, load `harnesses/shared/references/loop-readiness.md` and
+  shape a handoff instead of a Harness Kit scheduler.
 - **Premise source named.** The packet cites the artifact that explains why
   this shape exists (`Premise Source: sha256:<digest> <path-or-url>`) or
   carries an explicit waiver with residual risk. Voice/raw-transcript

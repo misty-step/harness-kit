@@ -1,37 +1,9 @@
 {
-  "backlog": [
-    {
-      "source": "backlog.d/105-exa-agent-research-lane.md",
-      "title": "Context Packet: Optional Exa Agent research lane"
-    },
-    {
-      "source": "backlog.d/106-ponytail-simplicity-skill.md",
-      "title": "Context Packet: Ponytail simplicity skill adoption"
-    },
-    {
-      "source": "backlog.d/107-agent-skill-market-scout.md",
-      "title": "Context Packet: Agent skill market scout"
-    },
-    {
-      "source": "backlog.d/108-works-definition-critique.md",
-      "title": "Context Packet: \"Works\" definition critic"
-    },
-    {
-      "source": "backlog.d/109-loop-engineering-mode-b-bridge.md",
-      "title": "Context Packet: Loop engineering Mode B bridge"
-    },
-    {
-      "source": "backlog.d/110-harnessx-evolution-eval.md",
-      "title": "Context Packet: HarnessX evolution evaluation"
-    },
-    {
-      "source": "backlog.d/111-delete-first-doctrine-lens.md",
-      "title": "Context Packet: Delete-first doctrine lens"
-    }
-  ],
+  "backlog": [],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [
+    "bun-test-research",
     "cargo-clippy",
     "cargo-fmt",
     "cargo-test",

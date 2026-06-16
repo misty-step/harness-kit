@@ -89,6 +89,19 @@ and network or filesystem effects must preserve explicit invariants.
 **Catches:** confused-deputy and trust-boundary bugs that pass happy-path tests
 because no adversarial path exercised the authority or input boundary.
 
+## works
+**Essence:** tests are not the whole definition of working — public surface,
+human workflow, performance tradeoffs, compatibility, and operations matter.
+**Looks for:** see `harnesses/shared/references/works-critique.md`.
+**Catches:** changes that pass tests while the API/CLI/UI, operator path, or
+production signal is incoherent.
+
+## delete-first
+**Essence:** question, delete, simplify, speed up, automate — in that order.
+**Looks for:** see `harnesses/shared/references/delete-first.md`.
+**Catches:** optimizing or automating a requirement, dependency, process, mode,
+or abstraction that should not exist.
+
 ## Adding a lens
 A lens is name + essence + "looks for" + "the failure it catches." Keep it to
 that shape — this is a dispatch-time rubric, not an essay. Security, perf, and

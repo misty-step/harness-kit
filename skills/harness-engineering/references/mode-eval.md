@@ -32,6 +32,10 @@ from the workers'.
 - The cheapest valid eval is live telemetry plus judgment: did the skill
   trigger when it should, and did sessions that loaded it end better?
   (`harness-kit-checks telemetry`.)
+- HarnessX-style trace evolution is review-only here: a Mode B/eval lane may
+  propose typed harness edits from sanitized traces, but no source edit ships
+  without held-out tasks, the full Harness Kit gate, fresh critic review, and
+  human approval. Candidate patches are artifacts, not self-merging workers.
 - Serious, repeated eval work (benchmarking agent compositions, model
   selection for a recurring workflow) belongs in Daedalus's arena loop, not
   ad-hoc here.

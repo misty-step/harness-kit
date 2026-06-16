@@ -6,11 +6,19 @@ import { WebSearchOrchestrator } from "./orchestrator";
 import {
   Context7Provider,
   BraveProvider,
+  ExaAgentProvider,
   ExaProvider,
   PerplexitySynthesisProvider,
   XaiProvider,
 } from "./providers";
-import type { ProviderAdapter, SearchResponse, SearchResult, WebCommand } from "./provider-adapter";
+import type {
+  AgenticEffort,
+  AgenticResearchBlock,
+  ProviderAdapter,
+  SearchResponse,
+  SearchResult,
+  WebCommand,
+} from "./provider-adapter";
 import {
   inferRecencyDays,
   isDocsLookup,
@@ -27,6 +35,7 @@ export interface CliInput {
 interface RunResearchOptions {
   env?: Record<string, string | undefined>;
   providers?: ProviderAdapter[];
+  agenticProvider?: Pick<ExaAgentProvider, "run"> | null;
   synthesizer?: Pick<PerplexitySynthesisProvider, "synthesize"> | null;
   cache?: QueryCache<SearchResult[]> | null;
   logPath?: string | null;
@@ -83,8 +92,31 @@ export async function runResearch(
   const { results, meta } = await orchestrator.searchWithMeta(request);
   const confidence = assessConfidence(request, results);
 
+  let agentic: AgenticResearchBlock | null = null;
   let synthesis: SearchResponse["synthesis"] = null;
   const degraded: string[] = [];
+  const agenticSelection = selectExaAgent(input, env);
+  if (agenticSelection.configError) {
+    degraded.push(agenticSelection.configError);
+  }
+  const agenticProvider =
+    options.agenticProvider === undefined && agenticSelection.enabled && env.EXA_API_KEY
+      ? new ExaAgentProvider(env.EXA_API_KEY)
+      : options.agenticProvider;
+  if (agenticSelection.enabled && agenticProvider && !agenticSelection.configError) {
+    try {
+      agentic = await agenticProvider.run(request, {
+        effort: agenticSelection.effort,
+        timeoutMs: boundedInt(env.EXA_AGENT_TIMEOUT_MS, 90_000, 5_000, 15 * 60_000),
+        pollIntervalMs: boundedInt(env.EXA_AGENT_POLL_INTERVAL_MS, 2_000, 250, 30_000),
+        privateContextOk: env.EXA_AGENT_PRIVATE_CONTEXT_OK === "1",
+      });
+      degraded.push(...agentic.degraded.map((item) => `agentic: ${item}`));
+    } catch (error) {
+      degraded.push(`agentic failed: ${String(error)}`);
+    }
+  }
+
   const synthesizer =
     options.synthesizer === undefined && env.PERPLEXITY_API_KEY
       ? new PerplexitySynthesisProvider(env.PERPLEXITY_API_KEY)
@@ -113,6 +145,7 @@ export async function runResearch(
       uncertainty: confidence.uncertainty,
       degraded,
     },
+    agentic,
     synthesis,
   };
 }
@@ -147,6 +180,64 @@ export function buildProviders(
     providers.push(new BraveProvider(env.BRAVE_API_KEY));
   }
   return providers;
+}
+
+export function selectExaAgent(
+  input: CliInput,
+  env: Record<string, string | undefined>
+): { enabled: boolean; effort: AgenticEffort; configError: string | null } {
+  const effort = parseAgentEffort(env.EXA_AGENT_EFFORT);
+  const expensiveEffort = effort === "high" || effort === "xhigh" || effort === "auto";
+  const configError =
+    expensiveEffort && env.EXA_AGENT_ALLOW_EXPENSIVE !== "1"
+      ? `EXA_AGENT_EFFORT=${effort} requires EXA_AGENT_ALLOW_EXPENSIVE=1`
+      : null;
+  if (input.command !== "web-deep" || !env.EXA_API_KEY) {
+    return { enabled: false, effort, configError: null };
+  }
+  if (isDocsLookup(input.query, input.command) || isSocialDiscourseQuery(input.query)) {
+    return { enabled: false, effort, configError: null };
+  }
+  const explicitlyEnabled = env.EXA_AGENT_ENABLED === "1";
+  const positiveSignal = hasAgenticResearchSignal(input.query);
+  return {
+    enabled: explicitlyEnabled || positiveSignal,
+    effort,
+    configError,
+  };
+}
+
+function hasAgenticResearchSignal(query: string): boolean {
+  return /\b(use exa agent|agentic research|build (a )?list|list prospects|enrich (these )?(entities|companies|people)|compare options across sources|prior art landscape|multi-entity|multi entity|landscape scan|market map)\b/i.test(
+    query
+  );
+}
+
+function parseAgentEffort(value: string | undefined): AgenticEffort {
+  if (
+    value === "minimal" ||
+    value === "low" ||
+    value === "medium" ||
+    value === "high" ||
+    value === "xhigh" ||
+    value === "auto"
+  ) {
+    return value;
+  }
+  return "medium";
+}
+
+function boundedInt(
+  value: string | undefined,
+  fallback: number,
+  min: number,
+  max: number
+): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(max, Math.floor(parsed)));
 }
 
 function parseArgs(args: string[]): CliInput {

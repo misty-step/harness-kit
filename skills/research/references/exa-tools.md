@@ -51,6 +51,48 @@ curl -s https://api.exa.ai/search \
   }'
 ```
 
+### Legacy Research API
+
+Do not build new Harness Kit work on Exa's legacy `/research/v1` API. Treat it
+as deprecated for new integration design; prefer the Agent API for async
+multi-step research, or Exa Search with `type: "deep"` / `"deep-reasoning"` for
+search-shaped fallback work.
+
+### Agent API
+
+Use Exa Agent only for broad `web-deep` work where flat search is structurally
+weak: multi-entity research, list-building, enrichment, prior-art landscapes,
+or comparisons across many sources. It is async, costed, and not zero-data-
+retention; do not send private repo/customer context unless the operator has
+explicitly allowed it for the run.
+
+Harness Kit routes Agent output into `response.agentic`, never into the flat
+`results[]` list.
+
+```bash
+EXA_AGENT_ENABLED=1 EXA_AGENT_EFFORT=low \
+  bun run cli.ts web-deep "prior art landscape for agent skill marketplaces"
+```
+
+Runtime controls:
+
+- `EXA_AGENT_ENABLED=1` opts in explicitly.
+- Enumerated broad-research signals can select Agent for `web-deep`; ordinary
+  queries default off.
+- `EXA_AGENT_EFFORT=minimal|low|medium|high|xhigh|auto` defaults to `medium`.
+- `high`, `xhigh`, and `auto` require `EXA_AGENT_ALLOW_EXPENSIVE=1`.
+- `EXA_AGENT_TIMEOUT_MS` and `EXA_AGENT_POLL_INTERVAL_MS` bound the async run.
+- `EXA_AGENT_PRIVATE_CONTEXT_OK=1` is required before private local/repo/
+  customer context may be included in Agent input.
+- `response.agentic.private_context_allowed` records that consent in the
+  returned artifact. Keep it false for public-web-only runs.
+
+Current official endpoint family: `https://api.exa.ai/agent/runs`, with
+separate run retrieval and event endpoints under Exa's Agent API docs.
+The docs checked for this change show create/poll/list/event/continue flows,
+but no verified cancel endpoint. Treat timeout after run creation as a residual
+cost risk until a cancel endpoint is confirmed.
+
 ### Code Context Search
 
 Find reference implementations — highest-leverage research for engineers.
@@ -123,6 +165,7 @@ curl -s https://api.exa.ai/contents \
 | "Is X still recommended?" | `auto` + `startPublishedDate` | Model currency, deprecation |
 | "Find papers on X" | `auto` | Academic/formal specs |
 | "Pages like this one" | `findSimilar` | Expand from known good source |
+| "Build/enrich/compare many entities" | Agent API | Async structured research |
 
 ## MCP Tool Names
 
@@ -137,8 +180,9 @@ When Exa MCP is configured, prefer these capability-shaped tools:
 ## Integration with Research Skill
 
 The `/research` default fanout calls Exa for retrieval, code/context examples,
-known URL fetch, and deep/structured search. Exa results include URLs — always
-cite them.
+known URL fetch, and deep/structured search. Optional Agent runs are an
+agentic acquisition lane for broad `web-deep` only. Exa results include URLs —
+always cite them.
 
 Provider chain: Exa MCP → `exa-search` / `exa-fetch` → Exa REST/curl →
 WebSearch (fallback only)

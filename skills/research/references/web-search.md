@@ -20,6 +20,8 @@ user-facing slash command.
 - Use xAI for social/real-time and grounded web with multimodal (see `xai-search.md`)
 - Fallback to Brave on provider failure
 - Optional Perplexity pass allowed only for synthesis, never source of truth
+- Optional Exa Agent pass is `web-deep` only, default-off, and recorded in
+  `agentic`; it is not part of the flat provider chain.
 - Treat Tavily/Firecrawl as extraction or site-map tools, not default broad
   search, unless the query asks for a URL/site/crawl/map.
 
@@ -54,6 +56,7 @@ Provider: Exa with start_published_date filter
 | Contains "docs", "documentation", "API reference" | Context7 first, Exa fallback |
 | Contains year, "latest", "current", "new" | Exa with recency filter |
 | Contains "paper", "formal", "specification" | Exa neural search |
+| Contains "use Exa Agent", "prior art landscape", "multi-entity", "build list", "enrich entities", "compare options across sources" | Optional Exa Agent lane for `web-deep` |
 | Contains "people saying", "sentiment", "trending", "discourse" | xAI X Search (see `xai-search.md`) |
 | Contains "X/Twitter", specific handles, social | xAI X Search |
 | Contains "crawl", "extract this page", "map this site", "sitemap" | Tavily/Firecrawl or Exa fetch (see `extraction-tools.md`) |
@@ -72,6 +75,23 @@ Provider: Exa with start_published_date filter
       "source_provider": "context7|exa|xai|brave|perplexity"
     }
   ],
+  "agentic": {
+    "provider": "exa-agent",
+    "run_id": "string|null",
+    "status": "completed|failed|timeout|...",
+    "effort": "minimal|low|medium|high|xhigh|auto",
+    "private_context_allowed": false,
+    "stop_reason": "string|null",
+    "cost": 0.0,
+    "citations": [{ "url": "https://...", "title": "string" }],
+    "structured_output": {
+      "summary": "string",
+      "findings": [],
+      "citations": [{ "url": "https://..." }],
+      "open_questions": []
+    },
+    "degraded": []
+  },
   "meta": {
     "query": "string",
     "command": "web|web-deep|web-news|web-docs",
@@ -81,7 +101,8 @@ Provider: Exa with start_published_date filter
     "time_sensitive": false,
     "recency_days": null,
     "confidence": "high|medium|low",
-    "uncertainty": "string|null"
+    "uncertainty": "string|null",
+    "degraded": []
   },
   "synthesis": {
     "summary": "string",
@@ -107,3 +128,8 @@ not the full user-facing slash command.
 - Cost controls:
   - `WEB_SEARCH_MAX_RESULTS` caps results per query
   - Cache dedupe prevents repeated provider calls for same normalized query
+  - Exa Agent is bounded by `EXA_AGENT_ENABLED`, `EXA_AGENT_EFFORT`,
+    `EXA_AGENT_ALLOW_EXPENSIVE`, `EXA_AGENT_TIMEOUT_MS`, and
+    `EXA_AGENT_PRIVATE_CONTEXT_OK`
+  - `agentic.private_context_allowed` records whether private local/repo/
+    customer context was explicitly permitted for that run.

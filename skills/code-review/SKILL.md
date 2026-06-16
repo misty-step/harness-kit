@@ -33,6 +33,10 @@ never ships on its own review — that is the one hard rule.
    is a natural fit — that scale costs tokens, so routine diffs don't get
    it. Reviewers get the diff, the acceptance oracle, and a risk lens —
    **never the author's reasoning trail.**
+   Add `harnesses/shared/references/works-critique.md` when the diff touches
+   public API, CLI, UI, performance, compatibility, migration, or operator
+   workflow. Add `harnesses/shared/references/delete-first.md` when the diff
+   adds abstraction, automation, dependencies, modes, or optimization.
 4. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as
    explicitly as what to find.

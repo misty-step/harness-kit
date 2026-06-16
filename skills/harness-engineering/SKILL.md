@@ -33,6 +33,9 @@ Engineer the harness. Keep it thin.
 | current model/provider/harness facts | the roster skill's `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
 | preferred stack / infrastructure defaults | `references/preferred-stack.md` |
+| public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
+| loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |
+| delete-first simplification lens | `../../harnesses/shared/references/delete-first.md` |
 
 Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
 are written directly into that repo's `.agents/skills/` with its real
@@ -100,6 +103,8 @@ Before creating or growing anything, classify it (2026-06 audit, backlog 103):
 - **Mode B** — event-triggered (on PR-ready, on production error, on
   schedule)? It belongs in the event plane (bitterblossom), not this harness.
   This repo is the ad-hoc operator layer plus the shared disk contracts.
+  Load `harnesses/shared/references/loop-readiness.md` before proposing any
+  unattended loop.
 
 History: slash commands were collapsed into skills when skills arrived, so
 saved prompts masqueraded as skills and the catalog tripled. Do not recreate

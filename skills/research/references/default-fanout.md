@@ -35,6 +35,7 @@ relevant; otherwise keep it in the matrix as `skipped` with the reason.
 | Codebase | live repo patterns, existing contracts, local prior art | `rg`, `git`, local files |
 | Docs | library/API docs and official references | Context7, official docs, `web-search.md` |
 | Retrieval | web, papers, reference implementations | `web-search.md`, `exa-tools.md` |
+| Agentic acquisition | optional async broad research, list building, entity enrichment | `web-search.md`, `exa-tools.md` |
 | Extraction | known URL fetch, page extraction, site maps, crawls | `exa-tools.md`, `extraction-tools.md`, `/browser` |
 | Recency / discourse | current web, X/social discourse, contradiction checks | `xai-search.md` |
 | Synthesis | concise answer over gathered evidence | Perplexity/Exa deep/lead synthesis |
@@ -65,6 +66,7 @@ at the first step in the chain.
 | Library docs or API usage | docs capability such as Context7 | official docs via web search |
 | Known URL or generated docs extraction | Exa fetch / Firecrawl scrape | browser agent |
 | Site discovery, sitemap, or crawl | Tavily/Firecrawl map/crawl | browser/manual link walk |
+| Broad multi-hop research, entity enrichment, or list building | Optional Exa Agent lane for `web-deep` | Exa deep / lead synthesis |
 | Model releases, pricing, CVEs, deprecations | recency-filtered web/xAI | Exa recency, official sources |
 | Social sentiment or public discourse | xAI X Search | web results that cite public posts |
 | Grounded answer synthesis | Perplexity/Exa deep after retrieval | lead synthesis over cited sources |
@@ -103,6 +105,7 @@ Use this shape for default fanout reports:
 | Codebase | complete/partial/failed/skipped | ... | file:line/commands |
 | Docs | complete/partial/failed/skipped | ... | URLs/artifacts |
 | Retrieval | complete/partial/failed/skipped | ... | URLs/artifacts |
+| Agentic acquisition | complete/partial/failed/skipped | ... | `response.agentic`, run id, URLs/artifacts |
 | Extraction | complete/partial/failed/skipped | ... | URLs/artifacts |
 | Recency / discourse | complete/partial/failed/skipped | ... | URLs/citations |
 | Synthesis | complete/partial/failed/skipped | ... | citation refs |

@@ -75,6 +75,8 @@ Estimate: M
 
 Add a `harness-kit-checks scout-skills` command under the external-sync area. It
 accepts a markdown/file list of GitHub URLs and emits Markdown and JSON reports.
+The default run is deterministic offline classification; `--live` is required
+to fetch GitHub metadata for evidence packets.
 For each repo:
 
 1. Resolve metadata through GitHub API or `git ls-remote`.
@@ -98,7 +100,7 @@ ten listed repos plus Ponytail, while preserving the raw list as premise.
   target added by delivery covers markdown URL extraction, registry duplicate
   detection, license classification, layout classification, and verdict
   rendering with mocked GitHub responses.
-- `cargo run --locked -p harness-kit-checks -- scout-skills --input HIT-LIST.md --format markdown`
+- `cargo run --locked -p harness-kit-checks -- scout-skills --input HIT-LIST.md --format markdown --live`
   writes `.evidence/skill-scout/hit-list-scout.md` containing one row per top
   skill repo and no registry edits.
 - `cargo run --locked -p harness-kit-checks -- check --repo .` passes.

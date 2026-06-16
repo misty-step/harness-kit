@@ -23,7 +23,11 @@ real product understanding (who uses this, what breaks if it's wrong);
 **pre-factor** — if the change lands in messy ground, clean the ground first
 as its own commit. If the ticket has no goal or acceptance oracle, run
 `/shape` (or write the oracle yourself for small work) before building.
-Building without an oracle yields plausible garbage.
+Building without an oracle yields plausible garbage. For public API, CLI, UI,
+performance, compatibility, migration, or operator workflow changes, load
+`harnesses/shared/references/works-critique.md` before pre-ship review. For
+automation, optimization, or refactor pressure, apply
+`harnesses/shared/references/delete-first.md` before adding surface.
 
 For non-trivial execution, start from the HTML plan artifact when one exists;
 otherwise author a small one directly from

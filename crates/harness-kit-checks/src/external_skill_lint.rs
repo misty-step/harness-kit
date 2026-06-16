@@ -115,10 +115,8 @@ fn violations_for_alias(external_root: &Path, alias_dir: &Path) -> Result<Vec<St
         Regex::new(r"/home/[a-z]").unwrap(),
         Regex::new(r"\$HOME/\.claude").unwrap(),
         Regex::new(r"\$HOME/\.agents").unwrap(),
-        Regex::new(r"\$HOME/\.codex").unwrap(),
         Regex::new(r"~/\.claude").unwrap(),
         Regex::new(r"~/\.agents").unwrap(),
-        Regex::new(r"~/\.codex").unwrap(),
     ];
     let escape_pattern = Regex::new(r"\.\./\.\./\.\./").unwrap();
     let mut violations = Vec::new();
@@ -230,7 +228,7 @@ mod tests {
         fs::create_dir_all(external.join("dirty/scripts")).unwrap();
         fs::write(
             external.join("dirty/SKILL.md"),
-            "Read /Users/example/private.txt\n",
+            "Read /Users/example/private.txt\nAllowed Codex log: ~/.codex/history.jsonl\n",
         )
         .unwrap();
         fs::write(
@@ -259,6 +257,7 @@ mod tests {
         assert_eq!(report.dirty[0].violations.len(), 2);
         assert!(rendered.contains("1 / 2 aliases self-contained"));
         assert!(rendered.contains("dirty -- 2 violation(s)"));
+        assert!(!rendered.contains("~/.codex/history.jsonl"));
         assert!(!rendered.contains(".sync-meta.json"));
         assert!(!rendered.contains("_checkouts"));
     }

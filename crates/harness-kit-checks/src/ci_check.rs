@@ -47,6 +47,9 @@ pub fn run(repo: &Path) -> Result<Vec<String>> {
         let _ = crate::external_sync::self_test_partial_sync()?;
         Ok(())
     })?;
+    gate(&mut lines, "bun-test-research", || {
+        run_command_in(&repo.join("skills/research"), "bun", &["test"])
+    })?;
     gate(&mut lines, "cargo-fmt", || {
         run_command(&repo, "cargo", &["fmt", "--all", "--check"])
     })?;
@@ -177,9 +180,13 @@ fn should_skip_dir(relative: &str) -> bool {
 }
 
 fn run_command(repo: &Path, command: &str, args: &[&str]) -> Result<()> {
+    run_command_in(repo, command, args)
+}
+
+fn run_command_in(cwd: &Path, command: &str, args: &[&str]) -> Result<()> {
     let output = Command::new(command)
         .args(args)
-        .current_dir(repo)
+        .current_dir(cwd)
         .output()
         .with_context(|| format!("failed to run {command} {}", args.join(" ")))?;
     if output.status.success() {

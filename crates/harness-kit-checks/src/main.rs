@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use harness_kit_checks::{
     agent_roster, backlog, bootstrap, ci_check, claude_hooks, config_loader, docs_site,
     external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
-    pr_reviews, skill_invocation_analytics, source_refs, summarize_delegations,
+    pr_reviews, scout_skills, skill_invocation_analytics, source_refs, summarize_delegations,
 };
 
 fn main() {
@@ -100,6 +100,7 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "lint-external-skills" => run_lint_external_skills(rest),
         "sync-external" => run_sync_external(rest),
         "fetch-pr-reviews" => run_fetch_pr_reviews(rest),
+        "scout-skills" => run_scout_skills(rest),
         "backlog" => run_backlog(rest),
         "claude-hook" => run_claude_hook(rest),
         "git-hook" => run_git_hook(rest),
@@ -442,6 +443,71 @@ fn run_fetch_pr_reviews(args: &[String]) {
     match pr_reviews::fetch(selector).map(|bundle| pr_reviews::render(&bundle)) {
         Ok(report) => {
             print!("{report}");
+            std::process::exit(0);
+        }
+        Err(error) => {
+            eprintln!("{error:#}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn run_scout_skills(args: &[String]) {
+    let mut options = scout_skills::ScoutOptions {
+        repo_root: repo_root(),
+        input: PathBuf::new(),
+        output: None,
+        format: scout_skills::ScoutFormat::Markdown,
+        live: false,
+    };
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--repo" => {
+                index += 1;
+                options.repo_root =
+                    PathBuf::from(args.get(index).cloned().unwrap_or_else(|| usage()));
+            }
+            "--input" => {
+                index += 1;
+                options.input = PathBuf::from(args.get(index).cloned().unwrap_or_else(|| usage()));
+            }
+            "--output" => {
+                index += 1;
+                options.output = Some(PathBuf::from(
+                    args.get(index).cloned().unwrap_or_else(|| usage()),
+                ));
+            }
+            "--format" => {
+                index += 1;
+                options.format = match args.get(index).map(String::as_str) {
+                    Some("markdown") => scout_skills::ScoutFormat::Markdown,
+                    Some("json") => scout_skills::ScoutFormat::Json,
+                    _ => usage(),
+                };
+            }
+            "--live" => options.live = true,
+            "--offline" => options.live = false,
+            "-h" | "--help" => {
+                println!(
+                    "Harness Kit Skill Scout\n\n\
+Usage:\n  harness-kit-checks scout-skills --input HIT-LIST.md --format markdown\n  harness-kit-checks scout-skills --input HIT-LIST.md --output .evidence/skill-scout/report.md\n  harness-kit-checks scout-skills --input HIT-LIST.md --format json --offline\n  harness-kit-checks scout-skills --input HIT-LIST.md --live --output .evidence/skill-scout/report.md\n"
+                );
+                std::process::exit(0);
+            }
+            _ => usage(),
+        }
+        index += 1;
+    }
+    if options.input.as_os_str().is_empty() {
+        usage();
+    }
+    if !options.input.is_absolute() {
+        options.input = options.repo_root.join(&options.input);
+    }
+    match scout_skills::run(&options) {
+        Ok(output) => {
+            print!("{output}");
             std::process::exit(0);
         }
         Err(error) => {
@@ -828,6 +894,7 @@ fn usage() -> ! {
   harness-kit-checks test-sync-external-partial
   harness-kit-checks load-config deploy|monitor [--repo PATH] [--config PATH] [--optional]
   harness-kit-checks fetch-pr-reviews [PR]
+  harness-kit-checks scout-skills --input PATH [--output PATH] [--format markdown|json] [--offline|--live]
   harness-kit-checks backlog trailer-keys|closing-keys
   harness-kit-checks backlog ids-from-commit|ids-from-range|file-for-id|archive <arg>
   harness-kit-checks claude-hook <hook-name>

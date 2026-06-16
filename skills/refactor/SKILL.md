@@ -59,7 +59,8 @@ Do not put secrets, raw credentials, or private customer data in `/tmp`.
    or name the smallest credible one first.
 2. **Choose one architectural pressure.** Examples: split ownership, shallow
    wrapper, dependency direction, duplicated data shape, feature logic hiding
-   in UI glue. Do not tidy everything.
+   in UI glue. Apply `harnesses/shared/references/delete-first.md` before
+   optimizing or automating the pressure. Do not tidy everything.
 3. **Make one significant step.** Significant means a moved boundary, deleted
    abstraction, renamed public concept, data-flow simplification, or large-file
    split. Mechanical formatting is not a milestone.

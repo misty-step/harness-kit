@@ -1,20 +1,29 @@
-import type { ProviderAdapter, SearchRequest, SearchResult } from "./provider-adapter";
+import type {
+  AgenticCitation,
+  AgenticEffort,
+  AgenticResearchBlock,
+  AgenticResearchOutput,
+  ProviderAdapter,
+  SearchRequest,
+  SearchResult,
+} from "./provider-adapter";
 import { isoTimestampDaysAgo } from "./query-utils";
 
 const DEFAULT_LIMIT = 5;
 const CONTEXT7_BASE_URL = process.env.CONTEXT7_BASE_URL ?? "https://context7.com/api/v1";
+const EXA_AGENT_BASE_URL = process.env.EXA_AGENT_BASE_URL ?? "https://api.exa.ai";
 const PERPLEXITY_MODEL = process.env.PERPLEXITY_MODEL ?? "sonar";
 const DEFAULT_PROVIDER_TIMEOUT_MS = 15_000;
 
 export type ProviderFailureKind = "timeout" | "http" | "network";
 
 export class ProviderRequestError extends Error {
-  readonly provider: ProviderAdapter["name"];
+  readonly provider: ProviderAdapter["name"] | "exa-agent";
   readonly kind: ProviderFailureKind;
   readonly status?: number;
 
   constructor(
-    provider: ProviderAdapter["name"],
+    provider: ProviderAdapter["name"] | "exa-agent",
     kind: ProviderFailureKind,
     message: string,
     options: { status?: number; cause?: unknown } = {}
@@ -36,7 +45,7 @@ export interface FetchWithTimeoutOptions extends RequestInit {
 }
 
 export async function fetchWithTimeout(
-  provider: ProviderAdapter["name"],
+  provider: ProviderAdapter["name"] | "exa-agent",
   input: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
@@ -263,6 +272,138 @@ export class ExaProvider implements ProviderAdapter {
   }
 }
 
+export interface ExaAgentRunOptions {
+  effort: AgenticEffort;
+  timeoutMs: number;
+  pollIntervalMs: number;
+  privateContextOk: boolean;
+}
+
+export class ExaAgentProvider {
+  readonly name = "exa-agent" as const;
+  private readonly apiKey: string;
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+
+  async run(request: SearchRequest, options: ExaAgentRunOptions): Promise<AgenticResearchBlock> {
+    const run = await this.createRun(request, options);
+    const runId = stringValue(run, ["id", "run_id", "runId"]) ?? null;
+    if (!runId) {
+      return this.blockFromPayload(run, request, options, "provider did not return a run id");
+    }
+
+    const terminal = isTerminalStatus(stringValue(run, ["status"]));
+    const payload = terminal ? run : await this.pollRun(runId, options);
+    return this.blockFromPayload(payload, request, options);
+  }
+
+  private async createRun(
+    request: SearchRequest,
+    options: ExaAgentRunOptions
+  ): Promise<Record<string, unknown>> {
+    const response = await fetchWithTimeout(this.name, `${EXA_AGENT_BASE_URL}/agent/runs`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": this.apiKey,
+      },
+      timeoutMs: Math.min(options.timeoutMs, providerTimeoutMs()),
+      body: JSON.stringify({
+        prompt: buildAgentPrompt(request, options.privateContextOk),
+        effort: options.effort,
+        responseSchema: {
+          type: "object",
+          properties: {
+            summary: { type: "string" },
+            findings: { type: "array" },
+            citations: { type: "array" },
+            open_questions: { type: "array" },
+            entities: { type: "array" },
+          },
+          required: ["summary", "findings", "citations", "open_questions"],
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new ProviderRequestError(this.name, "http", `exa agent create run failed: ${response.status}`, {
+        status: response.status,
+      });
+    }
+    return (await response.json()) as Record<string, unknown>;
+  }
+
+  private async pollRun(runId: string, options: ExaAgentRunOptions): Promise<Record<string, unknown>> {
+    const deadline = Date.now() + options.timeoutMs;
+    let lastPayload: Record<string, unknown> | null = null;
+    while (Date.now() < deadline) {
+      const response = await fetchWithTimeout(this.name, `${EXA_AGENT_BASE_URL}/agent/runs/${encodeURIComponent(runId)}`, {
+        method: "GET",
+        headers: {
+          "x-api-key": this.apiKey,
+        },
+        timeoutMs: Math.min(options.pollIntervalMs + 2_000, providerTimeoutMs()),
+      });
+      if (!response.ok) {
+        throw new ProviderRequestError(this.name, "http", `exa agent get run failed: ${response.status}`, {
+          status: response.status,
+        });
+      }
+      lastPayload = (await response.json()) as Record<string, unknown>;
+      if (isTerminalStatus(stringValue(lastPayload, ["status"]))) {
+        return lastPayload;
+      }
+      await sleep(Math.max(250, options.pollIntervalMs));
+    }
+    const degraded = lastPayload ?? { id: runId, status: "timeout" };
+    return { ...degraded, degraded_reason: `exa agent timed out after ${options.timeoutMs}ms` };
+  }
+
+  private blockFromPayload(
+    payload: Record<string, unknown>,
+    request: SearchRequest,
+    options: ExaAgentRunOptions,
+    forcedDegraded?: string
+  ): AgenticResearchBlock {
+    const degraded: string[] = [];
+    if (forcedDegraded) {
+      degraded.push(forcedDegraded);
+    }
+    const payloadDegraded = stringValue(payload, ["degraded_reason", "error", "message"]);
+    if (payloadDegraded) {
+      degraded.push(sanitizeProviderMessage(payloadDegraded));
+    }
+    const structuredOutput = extractAgenticOutput(payload);
+    if (!structuredOutput) {
+      degraded.push("exa agent response did not match expected structured output");
+    }
+    const status = stringValue(payload, ["status"]) ?? "unknown";
+    if (!isSuccessfulTerminalStatus(status)) {
+      degraded.push(`exa agent finished with status ${status}`);
+    }
+
+    return {
+      provider: this.name,
+      run_id: stringValue(payload, ["id", "run_id", "runId"]),
+      status,
+      effort: options.effort,
+      private_context_allowed: options.privateContextOk,
+      stop_reason: stringValue(payload, ["stop_reason", "stopReason", "reason"]),
+      cost: numberValue(payload, ["cost", "cost_usd", "costUsd", "usage.cost", "usage.cost_usd"]),
+      citations: structuredOutput?.citations ?? extractAgenticCitations(payload),
+      structured_output: structuredOutput ?? {
+        summary: stringValue(payload, ["answer", "output_text", "text", "summary"]) ?? "",
+        findings: [],
+        citations: extractAgenticCitations(payload),
+        open_questions: [`No structured output was returned for: ${request.query}`],
+      },
+      degraded,
+    };
+  }
+}
+
 export class XaiProvider implements ProviderAdapter {
   readonly name = "xai" as const;
   private readonly apiKey: string;
@@ -476,6 +617,166 @@ export class PerplexitySynthesisProvider implements ProviderAdapter {
       citations,
     };
   }
+}
+
+function buildAgentPrompt(request: SearchRequest, privateContextOk: boolean): string {
+  return [
+    `Research query: ${request.query}`,
+    `Command: ${request.command}`,
+    "Return concise grounded research as JSON with summary, findings, citations, open_questions, and optional entities.",
+    "Each citation should include a URL and any available title/snippet.",
+    privateContextOk
+      ? "Caller explicitly allowed private context in Agent input."
+      : "Do not assume access to private repo/customer context; use public web evidence only.",
+  ].join("\n");
+}
+
+function extractAgenticOutput(payload: Record<string, unknown>): AgenticResearchOutput | null {
+  const candidate =
+    objectValue(payload, ["structured_output"]) ??
+    objectValue(payload, ["structuredOutput"]) ??
+    objectValue(payload, ["output"]) ??
+    objectValue(payload, ["result"]) ??
+    objectValue(payload, ["data"]);
+
+  if (!candidate) {
+    return null;
+  }
+  const summary = stringValue(candidate, ["summary", "answer", "text", "output_text"]);
+  const citations = extractAgenticCitations(candidate);
+  if (!summary || citations.length === 0) {
+    return null;
+  }
+  return {
+    summary,
+    findings: arrayValue(candidate, ["findings"]) ?? [],
+    citations,
+    open_questions: stringArrayValue(candidate, ["open_questions", "openQuestions"]) ?? [],
+    ...(arrayValue(candidate, ["entities"]) ? { entities: arrayValue(candidate, ["entities"]) } : {}),
+  };
+}
+
+function extractAgenticCitations(payload: Record<string, unknown>): AgenticCitation[] {
+  const raw =
+    arrayValue(payload, ["citations"]) ??
+    arrayValue(payload, ["grounding", "citations"]) ??
+    arrayValue(payload, ["groundings"]) ??
+    arrayValue(payload, ["sources"]) ??
+    [];
+  return raw
+    .map((item) => {
+      if (typeof item === "string") {
+        return { url: item };
+      }
+      if (!item || typeof item !== "object") {
+        return null;
+      }
+      const record = item as Record<string, unknown>;
+      const url = stringValue(record, ["url", "source", "href"]);
+      if (!url) {
+        return null;
+      }
+      return {
+        url,
+        ...(stringValue(record, ["title"]) ? { title: stringValue(record, ["title"])! } : {}),
+        ...(stringValue(record, ["snippet", "text"]) ? { snippet: stringValue(record, ["snippet", "text"])! } : {}),
+      };
+    })
+    .filter((item): item is AgenticCitation => Boolean(item?.url));
+}
+
+function sanitizeProviderMessage(message: string): string {
+  return message.replace(
+    /(x-api-key|api[_ -]?key|authorization)[:=]\s*[^\s,;]+/gi,
+    "$1=[redacted]"
+  );
+}
+
+function isTerminalStatus(status: string | null | undefined): boolean {
+  if (!status) {
+    return false;
+  }
+  return ["completed", "succeeded", "failed", "cancelled", "canceled", "timeout"].includes(
+    status.toLowerCase()
+  );
+}
+
+function isSuccessfulTerminalStatus(status: string): boolean {
+  return ["completed", "succeeded"].includes(status.toLowerCase());
+}
+
+function stringValue(record: Record<string, unknown>, keys: string[]): string | null {
+  for (const key of keys) {
+    const value = valueAt(record, key);
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return null;
+}
+
+function numberValue(record: Record<string, unknown>, keys: string[]): number | null {
+  for (const key of keys) {
+    const value = valueAt(record, key);
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === "string" && Number.isFinite(Number(value))) {
+      return Number(value);
+    }
+  }
+  return null;
+}
+
+function objectValue(record: Record<string, unknown>, keys: string[]): Record<string, unknown> | null {
+  for (const key of keys) {
+    const value = valueAt(record, key);
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value as Record<string, unknown>;
+    }
+    if (typeof value === "string" && value.trim().startsWith("{")) {
+      try {
+        const parsed = JSON.parse(value);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          return parsed as Record<string, unknown>;
+        }
+      } catch {
+        continue;
+      }
+    }
+  }
+  return null;
+}
+
+function arrayValue(record: Record<string, unknown>, keys: string[]): unknown[] | null {
+  for (const key of keys) {
+    const value = valueAt(record, key);
+    if (Array.isArray(value)) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function stringArrayValue(record: Record<string, unknown>, keys: string[]): string[] | null {
+  const values = arrayValue(record, keys);
+  if (!values) {
+    return null;
+  }
+  return values.filter((value): value is string => typeof value === "string" && value.trim());
+}
+
+function valueAt(record: Record<string, unknown>, key: string): unknown {
+  return key.split(".").reduce<unknown>((current, part) => {
+    if (!current || typeof current !== "object" || Array.isArray(current)) {
+      return undefined;
+    }
+    return (current as Record<string, unknown>)[part];
+  }, record);
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function scoreFromRank(index: number): number {

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-ae-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harness Kit Backlog Delivery Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Geist+Mono:wght@100..900&amp;display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/misty-step/aesthetic@v2.5.1/aesthetic.css">
+  <style>
+    :root { --ae-accent: #425d51; --ae-accent-dark: #9bc3b0; }
+    .delivery .ae-bar, .delivery .ae-stage { width: min(96rem, 100% - 4rem); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(28em, .8fr); gap: 3em; align-items: start; }
+    .grid-2, .grid-3, .grid-4, .grid-7 { display: grid; gap: 1px; background: var(--ae-line); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .cell { min-width: 0; background: var(--ae-surface); padding: 1.1em 1.2em; }
+    .wash { background: var(--ae-wash); }
+    .phase { display: grid; grid-template-columns: 9em minmax(0, 1fr) minmax(18em, .75fr); gap: 1.2em; border-top: 1px solid var(--ae-line); padding-top: 1em; margin-top: 1em; }
+    .phase:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+    .card { min-height: 15em; }
+    .rule { border-top: 1px solid var(--ae-line); margin: 1.2em 0; }
+    @media (max-width: 1180px) { .grid-7 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 760px) {
+      .delivery .ae-bar, .delivery .ae-stage { width: min(100% - 2rem, 96rem); }
+      .hero, .grid-2, .grid-3, .grid-4, .grid-7, .phase { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="ae-screen delivery">
+  <header class="ae-bar">
+    <a class="ae-name" href="../../backlog.d/105-exa-agent-research-lane.md">BACKLOG 105-111 / DELIVERY</a>
+    <p class="ae-chrome">target: master, remote parity</p>
+  </header>
+
+  <main class="ae-stage ae-stage-scroll">
+    <article class="ae-view">
+      <section class="hero" aria-label="Work contract">
+        <div>
+          <p class="ae-chrome">WORK CONTRACT</p>
+          <h1 class="ae-strong">Clear every active Harness Kit backlog packet and land the result on master.</h1>
+          <p class="ae-lede">The delivery is one batch because the packets are mutually reinforcing: Exa Agent upgrades research, Ponytail gives the skill scout a known-good fixture, the scout measures future imports, and the works / loop / delete-first / HarnessX references tighten the harness primitives without growing Mode A into an event plane.</p>
+        </div>
+        <aside class="ae-panel">
+          <h2 class="ae-h">QUALITY SYSTEM</h2>
+          <p><strong>Standards:</strong> Rust-owned durable tooling, skill/reference boundaries, Mode A/Mode B separation, generated docs/index sync, no prose-only gates when a real test can exist.</p>
+          <p><strong>Proof:</strong> targeted Bun and Rust tests, sync/lint for externals, rendered HTML evidence, full Harness Kit gate, fresh critic over diff plus packet oracles, final push parity.</p>
+          <p><strong>Stop if:</strong> Exa Agent requires paid live calls for CI, scout wants auto-registry edits, references become standalone skills, or HarnessX tries to self-merge harness edits.</p>
+        </aside>
+      </section>
+
+      <section class="grid-7" style="margin-top: 2em" aria-label="Backlog packets">
+        <article class="cell card"><h2 class="ae-h">105 Exa Agent</h2><p>Optional `web-deep` agentic block, opt-in routing, cost/effort guards, mocked tests, docs.</p></article>
+        <article class="cell card"><h2 class="ae-h">106 Ponytail</h2><p>Registry import of only `ponytail` at immutable pin, sync/lint/index/docs/bootstrap proof.</p></article>
+        <article class="cell card"><h2 class="ae-h">107 Scout</h2><p>Rust `scout-skills` dry-run report over URL lists / markdown, mocked metadata, no registry mutation.</p></article>
+        <article class="cell card"><h2 class="ae-h">108 Works</h2><p>Shared works-critique reference and routes into shape, deliver, QA, and code-review.</p></article>
+        <article class="cell card"><h2 class="ae-h">109 Loops</h2><p>Shared loop-readiness reference and Mode B handoff contract; no scheduler in Harness Kit.</p></article>
+        <article class="cell card"><h2 class="ae-h">110 HarnessX</h2><p>Review-only eval artifact with trace schema, held-out tasks, no-self-merge constraints.</p></article>
+        <article class="cell card"><h2 class="ae-h">111 Delete First</h2><p>Shared delete-first lens routed into shape, refactor, and harness-engineering.</p></article>
+      </section>
+
+      <section class="grid-3" style="margin-top: 2em" aria-label="Research source matrix">
+        <article class="cell">
+          <h2 class="ae-h">CODEBASE</h2>
+          <p>Live repo read: active backlog is exactly `105-111`; source surfaces are `skills/research`, `registry.yaml`, `harness-kit-checks`, shared references, and docs generation.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">EXTERNAL SOURCES</h2>
+          <p>Current checks: Exa Agent docs, Ponytail GitHub API + tag SHA, VoltAgent awesome list metadata, HarnessX arXiv page.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">SUBAGENTS</h2>
+          <p>Use provider lanes for implementation risk, doctrine boundary critique, and pre-ship diff review. Count only lanes with receipts and usable verdicts.</p>
+        </article>
+      </section>
+
+      <section class="ae-panel" style="margin-top: 2em" aria-label="Sequence">
+        <h2 class="ae-h">EXECUTION SEQUENCE</h2>
+        <div class="phase"><strong class="ae-accent">1 runtime</strong><p>Implement `105` in `skills/research`: explicit `agentic` response block, routing/effort/private-context guards, fallback/degraded behavior, tests, and Exa docs.</p><p class="ae-dim">Proof: `bun test` in `skills/research` plus no live Exa call unless key/budget exists.</p></div>
+        <div class="phase"><strong class="ae-accent">2 external</strong><p>Deliver `106` before `107`: add Ponytail to `registry.yaml`, run partial sync, lint external skills, regenerate catalog/docs.</p><p class="ae-dim">Proof: `dietrich-ponytail` exists under generated external cache and bootstrap surfaces it.</p></div>
+        <div class="phase"><strong class="ae-accent">3 scout</strong><p>Implement `107` as a Rust report command using local files and optional `git ls-remote` / `curl` metadata, with deterministic fixtures for tests.</p><p class="ae-dim">Proof: report over `HIT-LIST.md` emits mixed verdicts and no registry edits.</p></div>
+        <div class="phase"><strong class="ae-accent">4 references</strong><p>Deliver `108`, `109`, and `111` as shared references plus narrow routing lines in relevant skills/docs.</p><p class="ae-dim">Proof: sample evidence fixtures show the lenses doing useful work.</p></div>
+        <div class="phase"><strong class="ae-accent">5 eval</strong><p>Deliver `110` as a HarnessX eval artifact. No code unless it earns a parser/checker; no self-merging edits.</p><p class="ae-dim">Proof: eval plan names trace schema, held-out tasks, scorer, safety gate, rollback.</p></div>
+        <div class="phase"><strong class="ae-accent">6 close</strong><p>Run full gate, fresh critic, archive all shipped backlog files with closure trailers, commit, push master, and verify remote parity.</p><p class="ae-dim">Proof: `git rev-list --left-right --count master...origin/master = 0 0`.</p></div>
+      </section>
+
+      <section class="grid-2" style="margin-top: 2em" aria-label="Verification">
+        <article class="cell">
+          <h2 class="ae-h">VERIFICATION SURFACES</h2>
+          <p>`bun test` in `skills/research`; focused `cargo test --locked -p harness-kit-checks scout_skills`; `sync-external`; `lint-external-skills --strict`; `generate-index`; `build-docs-site`; `bootstrap`; full `check --repo .`; live scout dry run.</p>
+        </article>
+        <article class="cell wash">
+          <h2 class="ae-h">ADVERSARIAL REVIEW FOCUS</h2>
+          <p>Attack cost/privacy defaults for Exa Agent, registry/source ownership for Ponytail, scanner scope creep, reference bloat, Mode B boundary drift, and HarnessX reward-hacking risk.</p>
+        </article>
+      </section>
+    </article>
+  </main>
+
+  <footer class="ae-foot">
+    <span>Generated for backlog delivery.</span>
+    <span>Current as of 2026-06-16.</span>
+  </footer>
+</div>
+</body>
+</html>

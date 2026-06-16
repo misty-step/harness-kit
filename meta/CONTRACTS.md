@@ -63,6 +63,10 @@ directly from briefs/PRs — never described without a path.
 A loop that can't halt is a billing incident, not automation. Before any
 Mode B loop runs unattended, it names all three hard stops:
 
+For the Mode A decision checklist that decides whether an idea is ready to
+leave ad-hoc work and become an unattended loop, see
+`harnesses/shared/references/loop-readiness.md`.
+
 - **Max iterations** — a ceiling, not a vibe.
 - **No-progress detection** — same failure twice, or no state change
   between ticks, halts and surfaces instead of retrying.

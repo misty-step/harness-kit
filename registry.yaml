@@ -112,6 +112,18 @@ sources:
     alias_prefix: "julius-"
     include: [caveman]
 
+  # DietrichGebert/ponytail — anti-overengineering skill. Core skill only:
+  # import the concrete YAGNI / stdlib / native / existing-dependency ladder;
+  # defer companion review/audit/debt/help skills until telemetry proves they
+  # add value beyond Harness Kit's existing review/refactor lanes.
+  - repo: DietrichGebert/ponytail
+    ref: adad50d9b393926b2dd5ed7225dcb1848b9df408
+    pin: adad50d9b393926b2dd5ed7225dcb1848b9df408
+    layout: flat
+    skills_path: skills
+    alias_prefix: "dietrich-"
+    include: [ponytail]
+
   # OpenAI .curated — only the GitHub workflow skills with proven usage
   # (gh-address-comments: 200+ Codex sessions). Widen by evidence, not
   # default.
