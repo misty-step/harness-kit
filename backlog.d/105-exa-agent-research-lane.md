@@ -198,10 +198,10 @@ The work is done when these executable checks pass:
   `test "$(shasum -a 256 HIT-LIST.md | awk '{print $1}')" = "ba4b4b28887bd991ea21311c4f9c0c9b38a8d0d4c5f27535b941c62dd50b8663"`.
 - `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 - With `EXA_API_KEY` available, an opt-in live smoke is run and recorded:
-  `EXA_AGENT_ENABLED=1 EXA_AGENT_EFFORT=low WEB_SEARCH_MAX_RESULTS=5 bun run <research-test-or-cli> web-deep "<broad test query>"`
-  and the output contains citations plus bounded run metadata. If no key is
-  available, the live smoke is explicitly skipped and mocked tests remain the
-  acceptance gate.
+  `EXA_AGENT_ENABLED=1 EXA_AGENT_EFFORT=low WEB_SEARCH_MAX_RESULTS=5 <research-cli-introduced-by-delivery> web-deep "<broad test query>"`
+  or the equivalent CLI flag introduced by delivery, and the output contains
+  citations plus bounded run metadata. If no key is available, the live smoke is
+  explicitly skipped and mocked tests remain the acceptance gate.
 
 ## Verification Harness
 
@@ -209,10 +209,7 @@ The repo's proof loop is:
 
 1. `bun test` in `skills/research` for runtime behavior.
 2. `test "$(shasum -a 256 HIT-LIST.md | awk '{print $1}')" = "ba4b4b28887bd991ea21311c4f9c0c9b38a8d0d4c5f27535b941c62dd50b8663"`
-   for premise provenance. The current `harness-kit-checks` binary does not
-   expose the `premise-source` subcommand named in `skills/shape/SKILL.md`, so
-   delivery should not depend on that stale command until a separate
-   housekeeping fix restores it.
+   for premise provenance.
 3. `cargo run --locked -p harness-kit-checks -- check --repo .` for the full
    Harness Kit gate.
 4. Optional live Exa smoke only when an API key and cost budget are available.
