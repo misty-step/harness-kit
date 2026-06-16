@@ -31,9 +31,11 @@ otherwise author a small one directly from
 check clarity, sequence, risk, and proof before coding. The plan must stand
 alone for the executor: hero as the work contract, support sections for
 alternatives/tradeoffs, acceptance, verification, communication cadence, stop
-conditions, and useful adversarial review. The point is visual planning, not a
-Markdown conversion. Skip only for trivial mechanical fixes, no-browser
-environments, or explicit operator waiver.
+conditions, and useful adversarial review. Include the quality system from
+`harnesses/shared/references/quality-system.md`: standards, proof methods,
+critic topology, and stop rules. The point is visual planning, not a Markdown
+conversion. Skip only for trivial mechanical fixes, no-browser environments, or
+explicit operator waiver.
 
 **Verification system first** (shared AGENTS.md, Layer 1): locate the
 repo's live-verification harness — the one command that exercises a change

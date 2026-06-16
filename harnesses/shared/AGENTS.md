@@ -123,6 +123,9 @@ receipt expectation. Lanes are outcome-shaped and big: the oracle field is
 load-bearing, scope is a boundary declaration, and the lane agent owns its
 own decomposition. Do not pre-shred work into atomic tasks; a lane that
 cannot verify itself is under-oracled, not under-decomposed.
+For substantive work, define the quality system before execution: standards,
+independent proof methods, critic topology, and stop rules
+(`harnesses/shared/references/quality-system.md`).
 **Milestone critic gate:** at each implementation milestone, a fresh
 read-only critic sees only the diff + the packet oracle + the todo and must
 return no blocking gap before work advances — prefer a different model

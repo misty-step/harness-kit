@@ -6,7 +6,7 @@
   <title>HTML Plan: Replace with title</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Geist+Mono:wght@100..900&amp;display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/misty-step/aesthetic@v2.5.1/aesthetic.css">
   <style>
     :root {
@@ -54,6 +54,10 @@
 
     .grid-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-5 {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
     .cell {
@@ -111,6 +115,7 @@
       .grid-2,
       .grid-3,
       .grid-4,
+      .grid-5,
       .phase,
       .review-grid {
         grid-template-columns: 1fr;
@@ -152,23 +157,32 @@
           <h2 class="ae-h">CHOSEN DESIGN</h2>
           <p><span class="status"><svg class="ae-icon ae-ok"><use href="#i-check"></use></svg> Replace with the recommended path.</span></p>
           <div class="rule"></div>
+          <h2 class="ae-h">QUALITY SYSTEM</h2>
+          <p>Standards: name what makes this good in this repo, not just done.</p>
+          <p>Proof: live oracle + structural gate + useful fresh critic when substantive.</p>
+          <div class="rule"></div>
           <p class="ae-dim">Premise source: <code>sha256:&lt;digest&gt; &lt;path-or-url&gt;</code></p>
           <p class="ae-dim">Plan status: opened in browser and reviewed for hierarchy before execution.</p>
         </aside>
       </section>
 
-      <section class="grid-4" aria-label="Executive contract" style="margin-top: 2em">
+      <!-- Executive grid = first-viewport contract; keep entries short and executable. -->
+      <section class="grid-5" aria-label="Executive contract" style="margin-top: 2em">
+        <article class="cell">
+          <h2 class="ae-h">STANDARDS</h2>
+          <p>The local bar for good work: architecture, UX, safety, repo fit, durability, or operator workflow.</p>
+        </article>
         <article class="cell">
           <h2 class="ae-h">ACCEPTANCE</h2>
           <p>Observable behavior, artifact, or decision that must be true when the executor finishes.</p>
         </article>
         <article class="cell">
           <h2 class="ae-h">VERIFY</h2>
-          <p>Exact command, route, browser path, screenshot, fixture, or reviewer receipt that proves the work.</p>
+          <p>Independent proof methods: live oracle, structural gate, and fresh critic when risk earns it.</p>
         </article>
         <article class="cell">
           <h2 class="ae-h">COMMUNICATE</h2>
-          <p>When the agent will report: framing, edits, rendered evidence, critic result, gate, closeout.</p>
+          <p>When the agent reports: framing, edits, rendered evidence, critic result, gate, and closeout.</p>
         </article>
         <article class="cell wash">
           <h2 class="ae-h">STOP IF</h2>
@@ -260,6 +274,23 @@
             </table>
           </div>
         </article>
+      </section>
+
+      <!-- Review topology = instrumentation; do not duplicate the executive grid. -->
+      <section class="ae-panel" aria-label="Review topology" style="margin-top: 2em">
+        <h2 class="ae-h">REVIEW TOPOLOGY</h2>
+        <div class="table-wrap">
+          <table class="ae-table">
+            <thead>
+              <tr><th>selected tier</th><th>why this tier fits</th><th>critic lenses</th><th>waiver / escalation</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="ae-item">replace with tier</td><td>Blast radius, reversibility, public risk, and observability.</td><td>Architecture, security, test strength, UX, copy, or operator workflow.</td><td>What must be approved before reducing review.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ae-dim">Tier definitions live in <code>harnesses/shared/references/quality-system.md</code>; fill the selected topology here instead of copying the reference.</p>
+        <p><strong>Ignore:</strong> name nitpicks and style preferences that should not burn review attention.</p>
       </section>
 
       <section class="review-grid" aria-label="Review and communication" style="margin-top: 2em">

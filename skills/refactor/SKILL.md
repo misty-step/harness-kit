@@ -44,6 +44,8 @@ Track:
 
 - Goal, scope, fitness tests, and stop rule.
 - Current architecture read: key modules, smells, constraints.
+- Quality system: standards, proof methods, critic topology, and stop rules
+  from `harnesses/shared/references/quality-system.md`.
 - Milestones: planned, active, done.
 - Live-test receipts after each significant step.
 - Review findings, decisions, commits, and residual risk.
@@ -65,7 +67,9 @@ Do not put secrets, raw credentials, or private customer data in `/tmp`.
    surface-specific route. Unit tests alone are insufficient for a milestone.
 5. **Autoreview the milestone.** Use fresh-context critique when substantive:
    diff + architecture goal + fitness tests only, no author reasoning. Fix
-   blockers before continuing.
+   blockers before continuing. Scale the critic topology with
+   `harnesses/shared/references/quality-system.md`; a risky boundary change
+   earns more than one lens.
 6. **Commit green milestones.** One concern per commit. The progress file stays
    in `/tmp`, not the repo, unless the operator asks for a durable plan.
 7. **Reassess stop rule.** Continue only while another high-leverage
