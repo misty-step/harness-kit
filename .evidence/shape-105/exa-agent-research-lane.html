@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en" data-ae-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML Plan: Optional Exa Agent research lane</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Geist+Mono:wght@100..900&amp;display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/misty-step/aesthetic@v2.5.1/aesthetic.css">
+  <style>
+    :root {
+      --ae-accent: #2f5a49;
+      --ae-accent-dark: #8cc6ab;
+    }
+
+    .plan-wide .ae-bar,
+    .plan-wide .ae-stage {
+      width: min(92rem, 100% - 4rem);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(25em, 0.74fr);
+      gap: 3em;
+      align-items: start;
+    }
+
+    .kicker {
+      display: block;
+      margin-bottom: 0.8em;
+    }
+
+    .rule {
+      border-top: 1px solid var(--ae-line);
+      margin: 1.5em 0;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .grid-5 {
+      display: grid;
+      gap: 1px;
+      background: var(--ae-line);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-5 {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .cell {
+      min-width: 0;
+      background: var(--ae-surface);
+      padding: 1.2em 1.35em;
+    }
+
+    .wash {
+      background: var(--ae-wash);
+    }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 8em minmax(0, 1fr) minmax(15em, 0.68fr);
+      gap: 1.3em;
+      border-top: 1px solid var(--ae-line);
+      padding-top: 1em;
+      margin-top: 1em;
+    }
+
+    .phase:first-child {
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .status {
+      display: inline-flex;
+      gap: 0.45em;
+      align-items: baseline;
+    }
+
+    .status svg {
+      transform: translateY(0.15em);
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 2em;
+    }
+
+    .mini-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--ae-line);
+      margin-top: 1em;
+    }
+
+    .mini-flow .cell {
+      min-height: 10em;
+    }
+
+    @media (max-width: 980px) {
+      .plan-wide .ae-bar,
+      .plan-wide .ae-stage {
+        width: min(100% - 2rem, 92rem);
+      }
+
+      .hero,
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .grid-5,
+      .phase,
+      .review-grid,
+      .mini-flow {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<svg aria-hidden="true" style="display: none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-check" viewBox="0 0 24 24">
+    <path d="M20 6 9 17l-5-5"></path>
+  </symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24">
+    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path>
+    <path d="M12 9v4"></path>
+    <path d="M12 17h.01"></path>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24">
+    <path d="M18 6 6 18"></path>
+    <path d="m6 6 12 12"></path>
+  </symbol>
+</svg>
+
+<div class="ae-screen plan-wide">
+  <header class="ae-bar">
+    <a class="ae-name" href="../../backlog.d/105-exa-agent-research-lane.md">PLAN / 105</a>
+    <p class="ae-chrome">Exa Agent as an optional research acquisition lane</p>
+  </header>
+
+  <main class="ae-stage ae-stage-scroll">
+    <article class="ae-view">
+      <section class="hero" aria-label="Plan contract">
+        <div>
+          <p class="ae-chrome kicker">HIT-LIST ITEM 1 / EXA AGENT</p>
+          <h1 class="ae-strong">Add Exa Agent to `/research` only as a bounded deep-research lane.</h1>
+          <p class="ae-lede">The work is not a new vendor skill. The useful shape is a cost-controlled Agent path inside `/research web-deep` for broad, multi-hop research where flat search is too shallow. Ordinary lookup, docs, news, extraction, and code-context searches stay on the existing fast provider chain.</p>
+        </div>
+        <aside class="ae-panel">
+          <h2 class="ae-h">CHOSEN DESIGN</h2>
+          <p><span class="status"><svg class="ae-icon ae-ok"><use href="#i-check"></use></svg> Optional Exa Agent acquisition branch in `/research`.</span></p>
+          <p class="ae-dim">Agent output is evidence with citations, run status, effort, and cost metadata. Lead synthesis still decides.</p>
+          <div class="rule"></div>
+          <h2 class="ae-h">WHY IT WINS</h2>
+          <p>It captures the new Exa capability without turning Harness Kit into a vendor catalog or slowing normal research.</p>
+          <div class="rule"></div>
+          <h2 class="ae-h">STOP CONDITIONS</h2>
+          <p>Stop if delivery needs deprecated `/research/v1`, cannot bound paid calls, cannot preserve citations, or would send private data to a non-ZDR provider without operator acceptance.</p>
+          <div class="rule"></div>
+          <p class="ae-dim">Premise source: <code>sha256:ba4b4b... HIT-LIST.md</code></p>
+        </aside>
+      </section>
+
+      <section class="grid-5" aria-label="Executive contract" style="margin-top: 2em">
+        <article class="cell">
+          <h2 class="ae-h">OUTCOME</h2>
+          <p>`/research web-deep` can use a stronger multi-step source gathering lane when the task warrants it.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">ACCEPTANCE</h2>
+          <p>Mocked tests prove routing, run mapping, degraded failures, citations, cost metadata, and effort caps.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">VERIFY</h2>
+          <p>`bun test` in `skills/research`, direct premise hash check, and the full Harness Kit gate.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">COMMUNICATE</h2>
+          <p>Report selected route, provider evidence, skipped live Exa smoke if no key, critic result, and tree state.</p>
+        </article>
+        <article class="cell wash">
+          <h2 class="ae-h">DO NOT</h2>
+          <p>Do not add a standalone `exa-agent` skill. Do not make live paid calls part of CI.</p>
+        </article>
+      </section>
+
+      <section class="grid-3" aria-label="Current state and proof" style="margin-top: 1px">
+        <article class="cell">
+          <h2 class="ae-h">CURRENT STATE</h2>
+          <p>`ExaProvider` posts to `/search` and returns flat links. `WebSearchOrchestrator` stops on the first nonempty provider. `/research` docs already prefer Exa for general retrieval.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">NEW FACT</h2>
+          <p>Exa Agent is async, multi-step, structured, costed, and cited. It has run lifecycle and continuation semantics that do not fit a flat search adapter.</p>
+        </article>
+        <article class="cell wash">
+          <h2 class="ae-h">PROOF SURFACE</h2>
+          <p>Deterministic mocks prove behavior. Optional live smoke proves real API integration only when `EXA_API_KEY` and budget are present.</p>
+        </article>
+      </section>
+
+      <section class="grid-2" aria-label="Scope and anchors" style="margin-top: 2em">
+        <article class="cell">
+          <h2 class="ae-h">SCOPE</h2>
+          <p><strong>Goal:</strong> broad `web-deep` research gets Agent-quality acquisition when appropriate.</p>
+          <p><strong>Non-goals:</strong> no standalone skill, no deprecated API, no default paid live calls.</p>
+          <p><strong>Invariant:</strong> `/research` routes by capability; provider output is evidence, not authority.</p>
+        </article>
+        <article class="cell">
+          <h2 class="ae-h">REPO ANCHORS</h2>
+          <p><a href="../../skills/research/SKILL.md">skills/research/SKILL.md</a> - capability routing contract.</p>
+          <p><a href="../../skills/research/provider-adapter.ts">provider-adapter.ts</a> - current flat provider boundary.</p>
+          <p><a href="../../skills/research/orchestrator.ts">orchestrator.ts</a> - provider chain and logging.</p>
+          <p><a href="../../skills/research/__tests__/runtime-hardening.test.ts">runtime tests</a> - local Bun testing style.</p>
+        </article>
+      </section>
+
+      <section class="ae-panel" aria-label="Execution plan" style="margin-top: 2em">
+        <h2 class="ae-h">EXECUTION PLAN</h2>
+        <div class="phase">
+          <strong class="ae-accent">1 route</strong>
+          <p>Add narrow routing for Exa Agent only on broad `web-deep` tasks with key, enablement, timeout, and effort cap.</p>
+          <p class="ae-dim">Evidence: tests show Agent is skipped for normal lookup/docs/news and missing credentials.</p>
+        </div>
+        <div class="phase">
+          <strong class="ae-accent">2 adapt</strong>
+          <p>Add a small agentic acquisition surface that preserves run id, status, stop reason, effort, cost, structured output, and citations.</p>
+          <p class="ae-dim">Evidence: mocked create/poll success maps to the response envelope without losing grounding.</p>
+        </div>
+        <div class="phase">
+          <strong class="ae-accent">3 degrade</strong>
+          <p>On timeout, provider failure, schema mismatch, missing citations, or budget stop, fall back to existing retrieval when possible.</p>
+          <p class="ae-dim">Evidence: degraded reasons appear in metadata and do not masquerade as successful Agent evidence.</p>
+        </div>
+        <div class="phase">
+          <strong class="ae-accent">4 document</strong>
+          <p>Update Exa docs with use cases, non-use cases, REST lifecycle, cost controls, non-ZDR caveat, and deprecated API warning.</p>
+          <p class="ae-dim">Evidence: `/research` reference pages explain when the lane is complete, skipped, partial, or failed.</p>
+        </div>
+        <div class="phase">
+          <strong class="ae-accent">5 close</strong>
+          <p>Run `bun test`, premise hash check, full Harness Kit gate, and optional live smoke if credentials exist.</p>
+          <p class="ae-dim">Evidence: command outputs and optional smoke artifact are reported in closeout.</p>
+        </div>
+      </section>
+
+      <section class="ae-panel" aria-label="Control flow" style="margin-top: 2em">
+        <h2 class="ae-h">CONTROL FLOW</h2>
+        <div class="mini-flow">
+          <article class="cell">
+            <h3 class="ae-h">1 INPUT</h3>
+            <p>`/research web-deep` query plus source matrix.</p>
+          </article>
+          <article class="cell">
+            <h3 class="ae-h">2 ROUTE</h3>
+            <p>Use Agent only for `EXA_AGENT_ENABLED=1` or enumerated positive signals, with cost guardrails.</p>
+          </article>
+          <article class="cell">
+            <h3 class="ae-h">3 RUN</h3>
+            <p>Create and poll/stream a bounded Agent run.</p>
+          </article>
+          <article class="cell">
+            <h3 class="ae-h">4 MAP</h3>
+            <p>Preserve citations, structured fields, run status, and cost in an explicit `agentic` block.</p>
+          </article>
+          <article class="cell wash">
+            <h3 class="ae-h">5 SYNTHESIZE</h3>
+            <p>Lead answer cites sources and labels degraded lanes.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="grid-2" aria-label="Alternatives and risks" style="margin-top: 2em">
+        <article class="cell">
+          <h2 class="ae-h">ALTERNATIVE DESIGNS</h2>
+          <div class="table-wrap">
+            <table class="ae-table">
+              <thead>
+                <tr><th>option</th><th>why it helps</th><th>failure</th><th>verdict</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="ae-item">do nothing</td><td>No new surface.</td><td>Misses async structured research.</td><td>reject</td></tr>
+                <tr><td class="ae-item">standalone skill</td><td>Easy to invoke.</td><td>Vendor-shaped catalog bloat.</td><td>reject</td></tr>
+                <tr><td class="ae-item">normal provider</td><td>Small code change.</td><td>Hides lifecycle and cost.</td><td>reject</td></tr>
+                <tr><td class="ae-item">optional lane</td><td>Captures capability safely.</td><td>Needs careful routing.</td><td>choose</td></tr>
+                <tr><td class="ae-item">deep search only</td><td>Lower surface.</td><td>Weaker for long-running enrichment/list work.</td><td>fallback</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+        <article class="cell wash">
+          <h2 class="ae-h">RISKS</h2>
+          <div class="table-wrap">
+            <table class="ae-table">
+              <thead>
+                <tr><th>risk</th><th>mitigation</th><th>owner</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Paid calls fire too often.</td><td>Require `web-deep`, `EXA_AGENT_ENABLED=1` or enumerated positive signal, effort cap, timeout, and tests.</td><td>agent</td></tr>
+                <tr><td>Provider output becomes authority.</td><td>Keep lead synthesis and source matrix labels.</td><td>lead</td></tr>
+                <tr><td>Deprecated API sneaks in.</td><td>Use Agent runs or Search deep-reasoning, never `/research/v1`.</td><td>agent</td></tr>
+                <tr><td>Private data sent to non-ZDR provider.</td><td>Require `EXA_AGENT_PRIVATE_CONTEXT_OK=1` and record the acknowledgment.</td><td>operator</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="ae-panel" aria-label="Review topology" style="margin-top: 2em">
+        <h2 class="ae-h">REVIEW TOPOLOGY</h2>
+        <div class="table-wrap">
+          <table class="ae-table">
+            <thead>
+              <tr><th>selected tier</th><th>why this tier fits</th><th>critic lenses</th><th>escalation</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="ae-item">substantive but reversible</td><td>Touches a core research path and paid provider routing, but can degrade to existing search.</td><td>Cost control, vendor scope, citation integrity, deprecated API risk.</td><td>Escalate if live smoke requires high/xhigh/auto effort without `EXA_AGENT_ALLOW_EXPENSIVE=1`.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Ignore:</strong> naming preference nitpicks unless the name blurs provider evidence with final synthesis.</p>
+      </section>
+
+      <section class="review-grid" aria-label="Review and communication" style="margin-top: 2em">
+        <article class="ae-plate">
+          <p class="ae-plate-cap">REVIEW - useful attacks</p>
+          <p><span class="status"><svg class="ae-icon ae-warn"><use href="#i-alert"></use></svg> Vendor drift.</span> Is this a standalone Exa workflow in disguise?</p>
+          <p><span class="status"><svg class="ae-icon ae-warn"><use href="#i-alert"></use></svg> Cost leak.</span> Can normal lookup accidentally call paid Agent runs?</p>
+          <p><span class="status"><svg class="ae-icon ae-warn"><use href="#i-alert"></use></svg> Weak evidence.</span> Do missing citations or schema mismatches still look successful?</p>
+        </article>
+        <article class="ae-plate">
+          <p class="ae-plate-cap">COMMUNICATION - executor cadence</p>
+          <p>Before edits: state routing assumptions, files, API boundary, and cost guardrails.</p>
+          <p>During edits: report provider-interface changes and test cases, not every search.</p>
+          <p>Before closeout: report Bun tests, premise hash check, full gate, optional live smoke status, critic result, and final tree state.</p>
+        </article>
+      </section>
+    </article>
+  </main>
+
+  <footer class="ae-bar">
+    <p class="ae-foot">Generated from <code>skills/shape/templates/html-plan.html</code>. Current as of 2026-06-16.</p>
+  </footer>
+</div>
+</body>
+</html>
