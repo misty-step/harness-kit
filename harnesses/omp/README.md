@@ -20,9 +20,9 @@ all repos.
 ## Model Composition
 
 OMP's role-based routing assigns different models to different work types. See
-`.omp/README.md` for the current role split and rationale. The default anchor
-is `z-ai/glm-5.2:high`; the advisor is `x-ai/grok-4.3` for decorrelated
-passive review.
+`.omp/README.md` for the current role split and rationale. The barbell strategy
+uses GLM 5.2:high for default/plan, DeepSeek V4 Pro for slow, Claude Opus 4.8
+for advisor (decorrelated passive review), and Kimi K2.7 Code for task subagents.
 
 ## What's Different from Codex / Claude Code
 

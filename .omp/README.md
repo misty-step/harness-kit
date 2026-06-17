@@ -14,15 +14,24 @@ omp -p "run the gate"     # non-interactive (print and exit)
 
 ## What's configured
 
-**Models (global — `~/.omp/agent/config.yml`).** Everything routes through
-OpenRouter (built-in; uses `OPENROUTER_API_KEY`). Default anchor is
-`z-ai/glm-5.2:high`; on quota/rate-limit it fails over through the chain
-`deepseek-v4-pro → grok-4.3 → kimi-k2.7-code → gemini-3.5-flash → minimax-m3 →
-glm-5.1`, then reverts when the primary's cooldown expires.
+**Models (global — `~/.omp/agent/config.yml`).** Barbell composition: heavy
+models at SDLC start (plan) and end (advisor), lighter models for execution.
+Everything routes through OpenRouter (uses `OPENROUTER_API_KEY`).
 
-Role split: `slow`→deepseek-v4-pro, `plan`→grok-4.3, `task`→minimax-m3,
-`smol`/`commit`→deepseek-v4-flash, `vision`→gemini-3.5-flash,
-`designer`→glm-5.2:medium, `advisor`→grok-4.3. Switch live with `/model`,
+| Role | Model | Why | Cost (in/out per 1M) |
+|---|---|---|---|
+| default | GLM 5.2:high | TB 81.0, SWE Pro 62.1, MCP 76.8 — best open-weight | $1.40 / $4.40 |
+| plan | GLM 5.2:high | "When in doubt" pick; coherent plan→execution | $1.40 / $4.40 |
+| slow | DeepSeek V4 Pro | LiveCodeBench 93.5 (#1) — strongest algorithmic | $0.435 / $0.87 |
+| advisor | Claude Opus 4.8 | MCP 82.2, SWE Pro 69.2 — heaviest review, decorrelated | $5 / $25 |
+| task | Kimi K2.7 Code | MCP Mark 81.1 (#1) — best tool use for subagents | $0.95 / $4 |
+| smol | DeepSeek V4 Flash | $0.14/$0.28 — unbeatable for text | $0.14 / $0.28 |
+| commit | DeepSeek V4 Flash | Mechanical task | $0.14 / $0.28 |
+| designer | GLM 5.2:medium | Same coding strength, lower thinking | $1.40 / $4.40 |
+| vision | Gemini 3.5 Flash | MCP 83.6 (#1), multimodal, 4x faster | $1.50 / $9 |
+
+Six model families for decorrelated failure: Z.ai (GLM), DeepSeek, Anthropic,
+Moonshot, Google, and (via fallback) Alibaba/Qwen. Switch live with `/model`,
 `Ctrl+P`, or `--slow`/`--plan`.
 
 **Context.** omp natively loads `AGENTS.md` + `CLAUDE.md` + `CODEBASE.md`.
@@ -33,9 +42,9 @@ turn so they survive long sessions. Compaction uses `snapcompact` with
 **Memory.** `mnemopi` per-project local memory: retains facts between sessions,
 recalls them on startup. No external server needed.
 
-**Advisor.** Grok 4.3 passively reviews each turn (different model family from
-the default GLM 5.2 for decorrelated judgment). Catches drift before it
-compounds.
+**Advisor.** Claude Opus 4.8 passively reviews each turn (Anthropic, different
+family from the default GLM 5.2). MCP Atlas 82.2, SWE-bench Pro 69.2 — catches
+coding mistakes with decorrelated judgment. ~$0.04/turn.
 
 **Scoped rules (`.omp/rules/`).** Fire only when you touch the matching paths:
 - `rust-core.mdc` → `crates/**` — Rust-by-default, no mixed-language seams
