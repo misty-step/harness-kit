@@ -4,8 +4,8 @@ Compact critic rubrics. The primary reads a lens here and commissions an
 **ad-hoc** critic subagent that embodies it — no static persona file is
 required (backlog 061, "subagent roles, not files"). Name the
 lens, give it scope + an evidence contract, synthesize its findings yourself.
-Used by the AGENTS.md Layer 3 "Critic & philosophy lens" routing, `/code-review`,
-`/critique`, `/groom`, `/refactor`, and `/shape`.
+Used by `harnesses/shared/references/routing.md`, `/code-review`, `/critique`,
+`/groom`, `/refactor`, and `/shape`.
 
 ## critic
 **Essence:** adversarial freshness — test the claim against the artifact and

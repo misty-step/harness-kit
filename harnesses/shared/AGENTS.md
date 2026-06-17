@@ -1,11 +1,14 @@
 # Shared Operating Doctrine
 
-The always-loaded global brain, symlinked into every harness. Read it in
-layers: **Layer 1** is universal SWE truth, **Layer 2** is what bites AI agents
-specifically, **Layer 3** is concrete trigger→action routing. After the layers
-come the standing contracts (Roster, Files, Harness, Closeout, Red Lines). When
-you add a principle, you should be able to say in ten seconds which layer it
-belongs to.
+The always-loaded global brain, symlinked into every harness. It contains only
+philosophy, fundamentals, and standing contracts that should apply in every
+session. Read it in layers: **Layer 1** is universal SWE truth, **Layer 2** is
+what bites AI agents specifically. After the layers come the standing contracts
+(Roster, Files, Harness, Closeout, Red Lines).
+
+Concrete trigger→action routing belongs in skills or on-demand references, not
+in this file. When you add a rule, you should be able to say in ten seconds why
+it is worth paying for in every session.
 
 ## Role
 
@@ -164,53 +167,6 @@ default: point them at the claim, invariant, or oracle that would
 embarrass us in production if wrong — not broad nitpicking, not
 automatic veto. The lead accepts or rejects their evidence. Prefer ad-hoc roster lanes over static named
 subagents; static project subagents are for tool/permission isolation only.
-
-## Layer 3 — Routing Tables
-
-Concrete trigger → action. When a row matches, take the action.
-
-### Subagent type
-| Trigger | Action |
-|---|---|
-| >3 exploratory tool calls, unknown scope | Explore lane with an explicit question |
-| Non-trivial architecture decision not yet shaped | `/shape`, or a plan lane with a scoped design question |
-| Shaped ticket, acceptance criteria clear | `/deliver` |
-| Fuzzy failure, root cause unknown | `/diagnose`, or an Explore lane with an explicit hypothesis |
-
-### Delegate or go solo
-| Trigger | Action |
-|---|---|
-| Exploration, scoped search, small review | Native subagent (the harness's own delegation) |
-| Milestone or pre-merge critique of your own work | Fresh-context critic, different model family preferred (`/roster`) |
-| Question a different model family answers better — second opinion, adversarial critique, competing attempt | Peer harness CLI (`/roster`) |
-| Tens-to-hundreds of parallel agents, or findings that need adversarial cross-checking at scale | The harness's own large-scale orchestration feature when it has one; otherwise parallel subagents or a sprite fleet |
-| Heavy, long-running, detached, or isolation-needing lane | Sprite lane via `/sprites` |
-| Recurring event-driven workflow | Mode B — the event plane (bitterblossom), not ad-hoc dispatch |
-| Mechanical command already chosen; emergency preservation; user forbids delegation | Direct solo |
-| Need tool/permission isolation only | Static project subagent |
-
-### Search vs research
-| Trigger | Action |
-|---|---|
-| Need current repo truth (contracts, file content, skill defs) | `grep` / read the live file first |
-| Need external ecosystem facts (libraries, CVEs, recent changes) | `/research` |
-| Need model/provider comparison | `/research` |
-
-### Integration shape
-| Trigger | Action |
-|---|---|
-| Integrating an external system | Read `meta/INTEGRATION_GUIDE.md` before choosing MCP, skill, CLI, or script |
-| Choosing language, host, CI, observability, release, design system, storage, or agent substrate | Start from `skills/harness-engineering/references/preferred-stack.md`, then verify current facts with `/research` before committing |
-
-### Critic & philosophy lens
-| Trigger | Action |
-|---|---|
-| Reviewing code you just wrote | Fresh critic lane — diff + oracle only, no author context |
-| Module-depth / information-hiding concern | ousterhout lens critique |
-| Scope / shippability concern | carmack lens |
-| Complexity / abstraction-theater concern | grug lens |
-| TDD / test-shape concern | beck or cooper lens |
-| A "done" claim that could embarrass production | Adversarial verifier — try to refute it |
 
 ## Roster
 
