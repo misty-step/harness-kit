@@ -13,6 +13,10 @@ codebase, documentation, infrastructure, operations, product, system design,
 architecture, value proposition, testing, security, and agent interface. The
 backlog diff is the durable expression of that plan.
 
+The plan starts from a project vision. If the repo has no durable vision
+artifact, a strategic groom should emit one or shape the epic that will create
+it; otherwise the sweep has no stable standard for deciding what belongs.
+
 ## Coverage Map
 
 Every strategic groom accounts for these surfaces. Mark a surface `complete`,
@@ -21,6 +25,7 @@ Every strategic groom accounts for these surfaces. Mark a surface `complete`,
 | Surface | Question |
 |---|---|
 | Product and value prop | Who is this for, why would they care, what would make it indispensable? |
+| Project vision | What durable north star guides brainstorming, backlog moves, deletions, and sequencing? |
 | Operator/user experience | Can a new or returning user achieve the core job without friction? |
 | Architecture and system design | Are the deep modules deep, the boundaries honest, and the interfaces small? |
 | Code quality and simplicity | What can be deleted, flattened, clarified, or made harder to misuse? |
@@ -43,6 +48,7 @@ map locally and label the run degraded.
 Minimum useful swarm for a normal repo:
 
 - Product/value strategist.
+- Project-vision editor.
 - Operator/user-experience critic.
 - Runtime reliability investigator.
 - Security/privacy reviewer.
@@ -88,14 +94,16 @@ Exhaustive does not mean sloppy.
 The final groom report should include:
 
 1. **Source Matrix**: every surface/lane, status, evidence, and contribution.
-2. **World-Class Target**: the best version of the project in concrete terms.
-3. **Gap Map**: what live evidence says is missing or weak by surface.
-4. **Strategy Themes**: 4-8 themes, each with recommendation first and evidence
+2. **Project Vision**: canonical artifact read or proposed; audience,
+   job-to-be-done, category, standards, non-goals, bets, and 6-12 month target.
+3. **World-Class Target**: the best version of the project in concrete terms.
+4. **Gap Map**: what live evidence says is missing or weak by surface.
+5. **Strategy Themes**: 4-8 themes, each with recommendation first and evidence
    second.
-5. **Backlog Diff**: applied ticket edits/emissions and proposed deletions.
-6. **Sequence**: now, next, later, and blocked.
-7. **Best Next Pickup**: one concrete next issue and why it outranks the rest.
-8. **Residual Risk**: skipped surfaces, failed lanes, missing credentials,
+6. **Backlog Diff**: applied ticket edits/emissions and proposed deletions.
+7. **Sequence**: now, next, later, and blocked.
+8. **Best Next Pickup**: one concrete next issue and why it outranks the rest.
+9. **Residual Risk**: skipped surfaces, failed lanes, missing credentials,
    uncertain external facts, and stale evidence.
 
 ## Emission Bar
@@ -120,6 +128,8 @@ Keep searching until the coverage map has been honestly answered.
   candidate.
 - **Vision without receipt.** A beautiful plan with no file, command, URL, or
   artifact evidence is fan fiction.
+- **Vision as wallpaper.** A vision that does not change what gets emitted,
+  deleted, sequenced, or rejected is decoration, not strategy.
 - **Swarm theater.** Many lanes with the same prompt are one lane wearing
   disguises. Compose perspectives for the repo.
 - **Issue confetti.** Many tickets without sequencing or shared themes are

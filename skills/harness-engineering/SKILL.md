@@ -36,6 +36,7 @@ Engineer the harness. Keep it thin.
 | public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
 | loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |
 | delete-first simplification lens | `../../harnesses/shared/references/delete-first.md` |
+| Ponytail anti-overengineering ladder | `../.external/dietrich-ponytail/SKILL.md` |
 
 Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
 are written directly into that repo's `.agents/skills/` with its real
@@ -51,6 +52,10 @@ not skills.
 - Fix root cause in the highest-leverage layer: type/test/hook/gate/skill/
   AGENTS, in that order.
 - Prefer deletion. Harness prose is context tax.
+- Use Ponytail before adding or expanding primitives, provider layers,
+  harness-specific accelerators, gates, wrappers, or skill prose. The lazy
+  viable path has to lose on evidence before a larger harness mechanism earns
+  its place.
 - Cross-harness first means filesystem + `SKILL.md` portability. Prefer
   smoke-tested open-model peer lanes through Pi, Goose, and OpenCode on
   OpenRouter; keep Claude, Antigravity, Cursor, and Grok conditional unless

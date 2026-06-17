@@ -24,6 +24,25 @@ explicitly scoped the run down.
 
 The backlog diff is the artifact. Prose exists to justify it.
 
+## Project Vision
+
+Every strategic groom creates, refreshes, or explicitly validates a durable
+project vision before ranking work. Vision is the north star that makes
+brainstorming and backlog movement coherent; without it, grooming collapses
+into local cleanup.
+
+- If a project already has a canonical vision or strategy artifact, read it
+  early and use it to judge every theme, deletion, emission, and next pickup.
+- If none exists, draft the smallest durable vision artifact the repo can own
+  (`docs/vision.md`, `docs/product.md`, a roadmap doc, or a clearly named
+  backlog epic) and treat creating it as a first-class groom emission.
+- Keep the vision concrete: audience, job-to-be-done, category, standards,
+  non-goals, strategic bets, and what excellent looks like in 6-12 months.
+- Revise the vision when live evidence contradicts it. Do not bury direction
+  changes in chat, issue comments, or the final report only.
+- Use the vision to backchain: themes and tickets should say which part of the
+  vision they advance, de-risk, simplify, or deliberately reject.
+
 ## Tidy (mandatory, mechanical)
 
 Tooling owns closure; consume it, don't hand-roll it:

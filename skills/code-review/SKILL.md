@@ -36,7 +36,10 @@ never ships on its own review — that is the one hard rule.
    Add `harnesses/shared/references/works-critique.md` when the diff touches
    public API, CLI, UI, performance, compatibility, migration, or operator
    workflow. Add `harnesses/shared/references/delete-first.md` when the diff
-   adds abstraction, automation, dependencies, modes, or optimization.
+   adds abstraction, automation, dependencies, modes, or optimization; pair it
+   with the synced Ponytail skill
+   (`skills/.external/dietrich-ponytail/SKILL.md`) when the main risk is bloat,
+   boilerplate, or speculative engineering.
 4. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as
    explicitly as what to find.

@@ -60,7 +60,10 @@ Do not put secrets, raw credentials, or private customer data in `/tmp`.
 2. **Choose one architectural pressure.** Examples: split ownership, shallow
    wrapper, dependency direction, duplicated data shape, feature logic hiding
    in UI glue. Apply `harnesses/shared/references/delete-first.md` before
-   optimizing or automating the pressure. Do not tidy everything.
+   optimizing or automating the pressure, and use the synced Ponytail skill
+   (`skills/.external/dietrich-ponytail/SKILL.md`) as the default
+   anti-overengineering lens before adding abstractions, files, dependencies,
+   wrappers, or automation. Do not tidy everything.
 3. **Make one significant step.** Significant means a moved boundary, deleted
    abstraction, renamed public concept, data-flow simplification, or large-file
    split. Mechanical formatting is not a milestone.

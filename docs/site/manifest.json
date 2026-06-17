@@ -1,5 +1,10 @@
 {
-  "backlog": [],
+  "backlog": [
+    {
+      "source": "backlog.d/112-harness-eval-bench.md",
+      "title": "Context Packet: Harness eval bench against raw runs and alternative primitives"
+    }
+  ],
   "copy_source": "docs/copy/site.json",
   "do_not_edit": true,
   "gates": [

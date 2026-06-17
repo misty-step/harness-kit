@@ -32,7 +32,9 @@ an architecture choice needs the full treatment.
   assumption. Same idea in three outfits is one option. Kill the losers on
   the record and **recommend one**; a menu is not a shape. For automation or
   refactor-heavy ideas, apply `harnesses/shared/references/delete-first.md`
-  before choosing the build path.
+  and the synced Ponytail skill (`skills/.external/dietrich-ponytail/SKILL.md`)
+  before choosing the build path; the lazy viable path must be a real
+  alternative, not a throwaway paragraph.
 - **Scope is fenced.** Goal (outcome, not mechanism), explicit non-goals,
   and invariants that must survive the change.
 - **Oracle is executable.** "It should work" is not an oracle; "these

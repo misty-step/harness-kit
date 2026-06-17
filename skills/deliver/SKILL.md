@@ -27,7 +27,8 @@ Building without an oracle yields plausible garbage. For public API, CLI, UI,
 performance, compatibility, migration, or operator workflow changes, load
 `harnesses/shared/references/works-critique.md` before pre-ship review. For
 automation, optimization, or refactor pressure, apply
-`harnesses/shared/references/delete-first.md` before adding surface.
+`harnesses/shared/references/delete-first.md` and the synced Ponytail skill
+(`skills/.external/dietrich-ponytail/SKILL.md`) before adding surface.
 
 For non-trivial execution, start from the HTML plan artifact when one exists;
 otherwise author a small one directly from

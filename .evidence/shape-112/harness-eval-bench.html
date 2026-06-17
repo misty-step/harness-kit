@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-ae-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harness Eval Bench Plan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/misty-step/aesthetic@v2.5.1/aesthetic.css">
+  <style>
+    :root { --ae-accent: #285a46; --ae-accent-dark: #8bd9b7; }
+    .plan .ae-bar, .plan .ae-stage { width: min(92rem, 100% - 4rem); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(24em, 0.75fr); gap: 3em; align-items: end; }
+    .grid-3, .grid-4 { display: grid; gap: 1px; background: var(--ae-line); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .cell { min-width: 0; background: var(--ae-surface); padding: 1.2em 1.35em; }
+    .wash { background: var(--ae-wash); }
+    .phase { display: grid; grid-template-columns: 9em minmax(0, 1fr) minmax(16em, 0.75fr); gap: 1.2em; border-top: 1px solid var(--ae-line); padding-top: 1em; margin-top: 1em; }
+    .phase:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 980px) {
+      .plan .ae-bar, .plan .ae-stage { width: min(100% - 2rem, 92rem); }
+      .hero, .grid-3, .grid-4, .phase { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="ae-screen plan">
+  <header class="ae-bar">
+    <a class="ae-name" href="../../backlog.d/112-harness-eval-bench.md">BACKLOG 112</a>
+    <p class="ae-chrome">harness eval bench / rendered shape</p>
+  </header>
+  <main class="ae-stage ae-stage-scroll">
+    <article class="ae-view">
+      <section class="hero">
+        <div>
+          <p class="ae-chrome">TARGET OUTCOME</p>
+          <h1 class="ae-strong">Stop assuming Harness Kit is better. Measure it.</h1>
+          <p class="ae-lede">Design and run matched evals that compare raw agent runs, current Harness Kit primitives, and credible alternative primitives on the same tasks with objective proof and blinded judgment where possible.</p>
+        </div>
+        <aside class="ae-panel">
+          <h2 class="ae-h">CHOSEN DESIGN</h2>
+          <p>Minimal eval bench: protocol plus pilot evidence first, Rust helper only if repeated runs prove the need.</p>
+          <h2 class="ae-h">PROOF</h2>
+          <p>At least one pilot under <code>.evidence/harness-evals/</code>, all three conditions compared, objective grader plus rubric judge, fresh critic with <code>BLOCKING: no</code>.</p>
+          <p class="ae-dim">Premise: <code>sha256:c231607c89cd19c04660a8f2615b3ed7f58be52a1716f7bb5103ca615451bf00</code></p>
+        </aside>
+      </section>
+
+      <section class="grid-4" style="margin-top: 2em">
+        <article class="cell"><h2 class="ae-h">RAW</h2><p>Same task, same repo context, no relevant Harness Kit skill. Establish the plain-agent baseline.</p></article>
+        <article class="cell"><h2 class="ae-h">HARNESS KIT</h2><p>Current first-party primitive: shape, refactor, review, groom, or harness-engineering.</p></article>
+        <article class="cell"><h2 class="ae-h">ALTERNATIVE</h2><p>External skill or competing primitive such as Ponytail, Superpowers, GStack, or Addy Osmani agent skills.</p></article>
+        <article class="cell wash"><h2 class="ae-h">BLIND GRADE</h2><p>Judge artifacts against oracle and rubric without condition labels when feasible.</p></article>
+      </section>
+
+      <section class="grid-3" style="margin-top: 1px">
+        <article class="cell"><h2 class="ae-h">TASK FAMILIES</h2><p>Shape, refactor, and review are the first candidates because they are high-leverage and already skill-driven.</p></article>
+        <article class="cell"><h2 class="ae-h">OUTPUT</h2><p>A decision report: keep, adapt, import, delete, needs more tasks, or graduate to Daedalus.</p></article>
+        <article class="cell wash"><h2 class="ae-h">STOP IF</h2><p>The eval only compares prose, leaks private transcripts, labels conditions to the grader, or tries to build a benchmark platform first.</p></article>
+      </section>
+
+      <section class="ae-panel" style="margin-top: 2em">
+        <h2 class="ae-h">PHASES</h2>
+        <div class="phase"><strong>1 protocol</strong><p>Codify condition schema, artifact shape, redaction rules, objective graders, rubric graders, and decision labels.</p><p class="ae-dim">Keep this close to <code>mode-eval.md</code>.</p></div>
+        <div class="phase"><strong>2 fixtures</strong><p>Create 2-3 fixtures across shape, refactor, and review. Each has prompt, context, forbidden edits, oracle, and rubric.</p><p class="ae-dim">Small fixtures beat one heroic benchmark.</p></div>
+        <div class="phase"><strong>3 pilot</strong><p>Run raw, Harness Kit, and alternative primitive on one family. Store sanitized receipts and final artifacts.</p><p class="ae-dim">No raw private logs.</p></div>
+        <div class="phase"><strong>4 verdict</strong><p>Blind-grade, synthesize, and make a keep/adapt/import/delete recommendation. Fresh critic reviews the method.</p><p class="ae-dim">Do not overclaim from one run.</p></div>
+      </section>
+
+      <section class="ae-panel" style="margin-top: 2em">
+        <h2 class="ae-h">ALTERNATIVES</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Option</th><th>Buy</th><th>Failure</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td>Telemetry only</td><td>Cheap and real</td><td>No matched comparison</td><td>Use as context</td></tr>
+              <tr><td>Human taste review</td><td>Fast</td><td>Still just judgment</td><td>Reject</td></tr>
+              <tr><td>Daedalus first</td><td>Strong arena</td><td>Too much before task families are known</td><td>Defer</td></tr>
+              <tr><td>Minimal bench</td><td>Direct evidence without platform sprawl</td><td>Needs careful fixture design</td><td>Choose</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </article>
+  </main>
+</div>
+</body>
+</html>
