@@ -91,6 +91,20 @@ alone unless they sleep most of the time or can be rewritten to Workers/D1.
   system.
 - Extend Aesthetic slowly only when repeated artifacts force a missing
   primitive. Avoid one-off CSS inventions that should become kit vocabulary.
+- **When agents author the UI, the design system must enforce itself.** A
+  rules file (`AGENTS.md`/`CLAUDE.md`) rots and loses to nearby examples, so
+  the contract is mechanical: a closed, intent-named token layer; a CI gate
+  that fails on off-system values; a small golden directory of canonical
+  implementations that run in CI and break loudly; and a machine-readable
+  token spec (DTCG) for cross-tool/agent ingestion. Aesthetic is the worked
+  example — its law gates the rendered DOM in CI.
+- **Prefer gating the rendered output** where a live surface exists: it is
+  framework-agnostic and catches the violation however it was authored. Lint
+  authored source (stylelint token-guards) where there is no surface to
+  render. Reject the authoring-time-only mechanism — a typed-prop compiler
+  with banned raw primitives (StyleX `<Box>`, no raw `<div>`) — unless a repo
+  is already React-monorepo-locked at a scale that earns it; it trades
+  portability for keystroke prevention.
 - For non-trivial plans and specs, use local HTML as the thinking medium and
   open it for review before execution when the browser can load it.
 
