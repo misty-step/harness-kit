@@ -34,6 +34,15 @@ When adding gate coverage, put durable checks in `harness-kit-checks` first.
 Do not make Dagger, Docker, GitHub Actions YAML, or provider CLIs the default
 inner-loop gate for Harness Kit.
 
+## Verification systems
+
+When a harness change affects agent behavior, runtime behavior, generated
+artifacts, or operator trust, load
+`../../../harnesses/shared/references/verification-system-first.md` and name
+the driver, grader, evidence packet, and cadence before editing. A new
+primitive without a gate, eval, benchmark, QA path, smoke path, or probe is
+unfinished.
+
 ## Hooks are the highest-leverage investment
 
 Hooks run on every tool use. CLAUDE.md is read once. A hook that blocks

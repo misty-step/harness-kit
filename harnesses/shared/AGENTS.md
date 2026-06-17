@@ -41,14 +41,15 @@ validation or acceptance oracle before changing the text.
 
 ### Verification system first
 Before building the thing, identify or build the loop that proves it: the
-one command that runs the change against live reality and emits reviewable
-evidence (screenshots, transcripts, verdicts) — not just a green exit code.
-Form follows the repo (browser walks, request replay, sim runs, consumer
-builds); the loop is the constant: run → read the evidence → fix → re-run.
-If the repo has no such harness, building it is the first deliverable of
-the work, not overhead — every subsequent change ships through it and
-leaves an evidence packet behind. Unit tests prove units; only the live
-loop catches the bug that exists between them.
+one command, route, eval, benchmark, QA path, or probe that runs the change
+against live reality and emits reviewable evidence (screenshots,
+transcripts, verdicts) — not just a green exit code. Form follows the repo
+(browser walks, request replay, sim runs, consumer builds); the loop is the
+constant: run → read the evidence → fix → re-run. If the repo has no such
+harness, building it is the first deliverable of the work, not overhead —
+every subsequent change ships through it and leaves an evidence packet
+behind. Unit tests prove units; only the live loop catches the bug that
+exists between them. Detail: `harnesses/shared/references/verification-system-first.md`.
 
 ### Delete before adding
 Small surface area. The best change removes code; new surface must earn itself.

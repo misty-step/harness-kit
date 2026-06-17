@@ -160,6 +160,14 @@ Priority: P0–P3 · Status: pending|ready|blocked|in-progress|done|shipped|aban
 ## Oracle
 - [ ] <mechanically verifiable; rough oracles are still oracles>
 
+## Verification System
+- Claim:
+- Falsifier:
+- Driver:
+- Grader:
+- Evidence packet:
+- Cadence:
+
 ## Notes
 <constraints, prior art, open questions>
 ```
@@ -171,6 +179,8 @@ and an Oracle for the whole arc; "umbrella" files with no done criteria are
 storage, not epics.
 
 Every active ticket has Goal + Oracle; fix or demote anything that doesn't.
+For M+ work or anything promoted to `Status: ready`, add the verification
+system from `harnesses/shared/references/verification-system-first.md`.
 M+ tickets promoted to `Status: ready` follow `/shape`'s
 `references/prd-ticket-quality.md`; otherwise they stay raw ideas. When
 grooming Harness Kit itself, apply the product lens in

@@ -40,6 +40,9 @@ never ships on its own review — that is the one hard rule.
    with the synced Ponytail skill
    (`skills/.external/dietrich-ponytail/SKILL.md`) when the main risk is bloat,
    boilerplate, or speculative engineering.
+   Add `harnesses/shared/references/verification-system-first.md` when the
+   diff's proof story is missing, weak, eval/benchmark-shaped, or depends on
+   QA/manual judgment.
 4. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as
    explicitly as what to find.
@@ -51,6 +54,8 @@ Plausible-but-wrong is the failure mode of model-written code:
 - Stub or specification-shaped implementations that pass tests but don't work
 - Wrong complexity (O(n²) hiding behind a clean interface)
 - Tests that never invoke the changed entrypoint (adjacent green lanes)
+- Missing verification system: no claim, falsifier, driver, grader, evidence
+  packet, or cadence for a substantive change
 - Missing invariant checks that only matter at scale or under concurrency
 - Unnecessary abstraction — wrappers, modes, layers that don't earn their keep
 - Swallowed errors, magic fallbacks, internal mocks
@@ -59,6 +64,8 @@ If the diff adds or changes an executable path (CLI, script, migration, job),
 someone must run it once or cite the gate that does — otherwise it's an
 **unverified runtime path** and blocks Ship. If the diff touches a visual or
 user-facing surface, at least one reviewer exercises it live.
+If the diff claims eval, benchmark, QA, or agent-behavior improvement, reviewers
+must inspect the driver and grader, not just the report prose.
 
 ## Synthesize and verdict
 

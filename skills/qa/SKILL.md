@@ -18,6 +18,11 @@ encodes the actual routes, commands, and golden paths. If it doesn't, that
 absence is a harness gap — run the protocol below AND flag the gap to
 `/groom` so the repo grows one.
 
+For recurring QA, unclear app shapes, eval-like agent behavior, performance
+claims, or weak pass/fail criteria, load
+`harnesses/shared/references/verification-system-first.md` and design the
+driver, grader, evidence packet, and cadence before driving the surface.
+
 ## Step 0: shape
 
 Read the signals (`package.json` bin/framework deps, `playwright.config.*`,

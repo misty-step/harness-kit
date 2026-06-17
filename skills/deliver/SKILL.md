@@ -47,7 +47,10 @@ repo's live-verification harness — the one command that exercises a change
 against the running thing and emits reviewable evidence. If none exists,
 building it is the ticket's first milestone, not a detour; every milestone
 after ships through it. The harness-before-feature session catches the
-bugs unit tests structurally cannot.
+bugs unit tests structurally cannot. For evals, benchmarks, QA paths, agent
+behavior, performance, or unclear proof loops, load
+`harnesses/shared/references/verification-system-first.md` and name the
+claim, falsifier, driver, grader, evidence packet, and cadence before edits.
 
 ## Docs → tests → code
 

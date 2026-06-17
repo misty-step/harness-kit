@@ -98,12 +98,14 @@ The final groom report should include:
    job-to-be-done, category, standards, non-goals, bets, and 6-12 month target.
 3. **World-Class Target**: the best version of the project in concrete terms.
 4. **Gap Map**: what live evidence says is missing or weak by surface.
-5. **Strategy Themes**: 4-8 themes, each with recommendation first and evidence
+5. **Verification Map**: missing or weak gates, QA paths, evals, benchmarks,
+   probes, and repo-local verification skills.
+6. **Strategy Themes**: 4-8 themes, each with recommendation first and evidence
    second.
-6. **Backlog Diff**: applied ticket edits/emissions and proposed deletions.
-7. **Sequence**: now, next, later, and blocked.
-8. **Best Next Pickup**: one concrete next issue and why it outranks the rest.
-9. **Residual Risk**: skipped surfaces, failed lanes, missing credentials,
+7. **Backlog Diff**: applied ticket edits/emissions and proposed deletions.
+8. **Sequence**: now, next, later, and blocked.
+9. **Best Next Pickup**: one concrete next issue and why it outranks the rest.
+10. **Residual Risk**: skipped surfaces, failed lanes, missing credentials,
    uncertain external facts, and stale evidence.
 
 ## Emission Bar

@@ -24,6 +24,9 @@ tracking. Do not write "refactor until happy." Write a goal with:
 - **Scope:** subsystem, files, routes, or public surface in bounds.
 - **Fitness tests:** live command, route, consumer build, or browser path that
   must keep passing after each significant step.
+- **Verification system:** when the fitness test is not already a credible
+  proof loop, load `harnesses/shared/references/verification-system-first.md`
+  and define claim, falsifier, driver, grader, evidence packet, and cadence.
 - **Stop rule:** what evidence means the architecture is good enough.
 
 Good shape:
@@ -56,7 +59,8 @@ Do not put secrets, raw credentials, or private customer data in `/tmp`.
 
 1. **Read shape before edits.** Map module ownership, public interfaces,
    invariants, and the live verification path. If no live path exists, build
-   or name the smallest credible one first.
+   or name the smallest credible one first; a refactor without a falsifiable
+   behavior-preservation loop is a rewrite in disguise.
 2. **Choose one architectural pressure.** Examples: split ownership, shallow
    wrapper, dependency direction, duplicated data shape, feature logic hiding
    in UI glue. Apply `harnesses/shared/references/delete-first.md` before

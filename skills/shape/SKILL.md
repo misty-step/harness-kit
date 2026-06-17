@@ -44,6 +44,9 @@ an architecture choice needs the full treatment.
   harness will prove the work (the repo's one-command evidence loop) — and
   when none exists, the packet's first milestone is building it
   (verification system first, shared AGENTS.md Layer 1), not the feature.
+  Load `harnesses/shared/references/verification-system-first.md` for
+  evals, benchmarks, QA paths, performance claims, agent-behavior claims, or
+  any surface whose proof loop is not already obvious.
 - **Deliverable visible up front.** Code, research, docs, or decision — a
   reader should not have to reach the implementation sequence to find out.
 - **Executable by a stranger.** The packet is consumed without your
@@ -149,6 +152,10 @@ production failure that would embarrass us. Lens prompts live in
   `shaping: true` feed other streams; trace consequences after editing.
 
 ## Verification
+
+For non-trivial packets, include the verification-system block from
+`harnesses/shared/references/verification-system-first.md`: claim, falsifier,
+driver, grader, evidence packet, cadence, and gaps/waiver.
 
 Premise-source discipline is enforced by the Rust grader:
 

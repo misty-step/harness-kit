@@ -35,6 +35,7 @@ Engineer the harness. Keep it thin.
 | preferred stack / infrastructure defaults | `references/preferred-stack.md` |
 | public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
 | loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |
+| verification system first | `../../harnesses/shared/references/verification-system-first.md` |
 | delete-first simplification lens | `../../harnesses/shared/references/delete-first.md` |
 | Ponytail anti-overengineering ladder | `../.external/dietrich-ponytail/SKILL.md` |
 
@@ -129,7 +130,8 @@ lightweight.
   script, hook, or eval, codify it there and point the skill at the artifact.
 - Ad-hoc roster lanes beat static project subagents unless tool permissions
   must be isolated.
-- New mechanisms include a gate, eval, or smoke path.
+- New mechanisms include a verification system: gate, eval, benchmark, QA
+  path, smoke path, or probe that can fail for the real error.
 - Every run ends clean: no untracked or modified files.
 
 ## Post-Sync Acceptance
@@ -161,6 +163,9 @@ valid.
   completion gates, oracle hashes, and learning-packet ceremonies get filled
   in plausibly by strong models. Verification is tests, CI, and driving the
   live surface.
+- Evals, benchmarks, and QA are verification systems only when they have a
+  driver, grader, evidence packet, and cadence. A directory, prompt, or
+  transcript with no falsifier is not proof.
 - Deterministic scaffold is the historical failure mode here: agents unsure
   of harness engineering fall back to Rust/scripts that enforce prose. Every
   gate must answer "what real failure did you catch in the last 90 days?" —

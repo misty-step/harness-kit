@@ -16,15 +16,18 @@ Every quality system names:
 - **Stop rules:** conditions that halt execution instead of improvising.
 
 Good systems are artifact-backed. Bad systems are vibes with more bullets.
+For the proof-loop contract, load
+`harnesses/shared/references/verification-system-first.md`.
 
 ## Proof Methods
 
-Prefer three independent proof families for substantive work:
+Prefer independent proof families for substantive work:
 
 | proof | answers | examples |
 |---|---|---|
 | Live oracle | Does the changed behavior work in reality? | browser walk, CLI run, request replay, migration dry run, consumer build |
 | Structural gate | Did repo-owned automation catch regressions? | tests, lint, typecheck, harness gate, generated-doc drift check |
+| Eval / benchmark | Does the agent/model/performance claim survive held-out tasks or workload pressure? | skill eval, raw-vs-harness comparison, latency/throughput benchmark |
 | Fresh critic | Did a cold reviewer refute the claim? | diff + oracle review, design critique, security lens, architecture lens |
 
 Independence matters. Three commands that exercise the same unit test boundary

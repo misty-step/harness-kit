@@ -13,7 +13,7 @@ contract.
 |---|---|
 | Skill is a folder | Prefer `references/`, `scripts/`, `examples/`, `assets/`, `templates/`, and `evals/` over long inline prose. |
 | Clean category | Each skill owns one workflow category; multi-category skills compose other skills or split. |
-| Verification skills matter | Verification behavior gets scripts, assertions, or evals before extra prose. |
+| Verification skills matter | Verification behavior gets a real system: driver, grader, evidence packet, and cadence before extra prose. |
 | Do not state the obvious | Delete generic SWE advice unless it names a Harness Kit-specific failure mode. |
 | Gotchas carry signal | Add gotchas from observed failures, receipts, audits, or failing gates; avoid speculative warnings. |
 | Progressive disclosure | `SKILL.md` routes; references hold depth; scripts and assets hold repeatable mechanics. |
@@ -35,6 +35,8 @@ contract.
 4. Move detail into references/scripts/assets/templates when it is repeatable.
 5. Tighten description triggers and aliases before changing body prose.
 6. Convert any repeated gotcha into a script, hook, eval, or gate when feasible.
+   Use `../../../harnesses/shared/references/verification-system-first.md` for
+   eval, benchmark, QA, or smoke-path design.
 7. Run `cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .`
    and the full repo gate before shipment.
 

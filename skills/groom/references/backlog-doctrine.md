@@ -4,14 +4,14 @@
 
 | Tier | Location | Purpose | Queue health |
 |------|----------|---------|-----|
-| **Shaped work** | `backlog.d/` | Ready-to-build items with goal + oracle + sequence | Evidence-backed, ordered, actively maintained |
+| **Shaped work** | `backlog.d/` | Ready-to-build items with goal + oracle + verification system + sequence | Evidence-backed, ordered, actively maintained |
 | **Icebox** | `.groom/BACKLOG.md` | Everything else worth remembering | Searchable, pruned, not a substitute for shaping |
 
 `backlog.d/` is the canonical backlog. Files are the source of truth; there is
 no parallel issue store.
 
 Ideas flow between tiers during `/groom` sessions:
-- **Shape:** raw finding → `backlog.d/` file (gets goal + oracle → ready to build)
+- **Shape:** raw finding → `backlog.d/` file (gets goal + oracle + verification system → ready to build)
 - **Promote:** BACKLOG.md → `backlog.d/` (idea becomes active)
 - **Demote:** `backlog.d/` → BACKLOG.md (item loses priority)
 - **Archive:** BACKLOG.md → strikethrough (idea is done, obsolete, or absorbed)
@@ -43,6 +43,9 @@ merge it into a broader reusable effort, or rewrite it until the downstream payo
   oracles. Consolidate because outcomes overlap, not because a counter fired.
 - Reduce while adding: consolidation and deletion proposals are part of the
   same strategic groom that emits new ambition.
+- Ready work names the proof loop, not just the desired outcome. For M+
+  tickets, use `harnesses/shared/references/verification-system-first.md` to
+  state claim, falsifier, driver, grader, evidence packet, cadence, and gaps.
 - **The backlog describes the best version of the software**, not the next
   safe increment. Rank by impact discounted by confidence; effort barely
   discounts when agents execute.
@@ -124,7 +127,7 @@ Move items down when they:
 - giant omnibus tickets with unclear done criteria
 - items that require tribal knowledge to start
 - “investigate” tickets with no decision target
-- many open items with no ordering, theme, owner, or oracle
+- many open items with no ordering, theme, owner, oracle, or verification system
 - stale items sitting open for weeks (ungroomed noise)
 - BACKLOG.md not updated in 3+ groom sessions (icebox is rotting)
 
