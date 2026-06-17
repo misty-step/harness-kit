@@ -11,92 +11,67 @@ argument-hint: "[scope|--deep]"
 
 # /orient
 
-Start a session from repo truth, not memory. Read-only. Fast by default.
+Ground the session in repo truth — not memory, not a stale summary. Read-only,
+fast.
 
-## Contract
+## What it produces
 
-Produce a short orientation report that prevents a wrong first move. Do not
-deliver, groom, debrief, assess readiness, reflect, mine transcripts, or mutate
-state.
+A short, natural read of where things stand and the one move that follows. You
+are writing to stop a wrong first step, not to fill a form. In plain prose,
+cover only what the evidence supports:
 
-Default budget: under 2 minutes, under 12 report lines. Use `--deep` only when
-the user asks for more archaeology.
+- where we are (repo, branch, clean vs dirty) and what's in flight;
+- the single best next move, why it wins, and what would make it wrong.
 
-## Sources
+Punchy beats complete. A sentence or two when the state is obvious; a short list
+only when it's genuinely tangled. No fixed template, no field-by-field rundown,
+no history dump. If the user already gave a precise command and the state is
+clear, that sentence is the whole report. `--deep` is the only license to dig.
 
-Read the smallest live set that explains the current workspace:
+Example, obvious state: *"On `master`, clean, CI green. Shaped ticket 058 is the
+only thing in flight and nothing blocks it — next is `/deliver 058`."*
 
-- scoped `AGENTS.md` and repo `AGENTS.md`
-- `project.md`, then `README.md` only if project focus is still unclear
-- `git status --short --branch --untracked-files=all`
-- current branch and recent commits
-- active `backlog.d/*.md` count and titles
-- newest relevant `backlog.d/_done/*.md` items or closure trailers
-- `.harness-kit/agents.yaml` or roster probe output when next action depends
-  on delegation
-- `.harness-kit/agent-readiness.yaml` only to name the profile state, not to
-  score the repo
+## Where the signal lives
 
-Optional when requested or obviously relevant: work ledger, delegation receipt
-summary, skill invocation analytics, review-score trends, or docs site state.
+Read the smallest set that explains the workspace; skip whatever the prompt
+already settled. Beyond the obvious (`git status`, branch, recent commits):
 
-## Report Shape
+- scoped then repo `AGENTS.md`; `project.md` for focus (`README.md` only if still unclear)
+- `backlog.d/*.md` for active work; `backlog.d/_done/*` and `Closes-backlog:` trailers for closure
+- `.harness-kit/agents.yaml` / roster probe — only when the next move is a delegation
+- `.harness-kit/agent-readiness.yaml` — only to name the profile state, never to score the repo
 
-```markdown
-**Orientation**
-- Repo / branch:
-- Workspace state:
-- Current focus:
-- Backlog signal:
-- Recent closure signal:
-- Roster state:
-- Applicable constraints:
-- Blockers / gaps:
-- Likely next skill:
-- Residual uncertainty:
-```
+## Routing
 
-Keep each line evidence-backed. Include exact paths or commands for claims that
-would change the next action.
+Recommend one next skill. If the signal is mixed, name the missing evidence
+rather than guess from vibes.
 
-## Routing Judgment
-
-| Signal | Recommend |
+| Signal | Next |
 |---|---|
-| Active shaped ticket and clean branch | `/deliver <ticket>` |
-| Dirty existing branch with intended changes | `/deliver --polish-only <branch>` |
+| Shaped ticket, clean branch | `/deliver <ticket>` |
+| Dirty branch, intended changes | `/deliver --polish-only` |
 | Empty or stale backlog | `/groom` |
-| User asks what happened or why it matters | `/orient --deep` or `/shape` by context |
-| Failure, broken gate, or unclear root cause | `/diagnose` |
-| Finished work needing closeout | `/ship`, `/yeet`, or `/reflect` by context |
-| Readiness/profile question | `/qa` or repo-specific readiness surface |
-| Skill/harness primitive change | `/harness-engineering` |
+| Failure, broken gate, unclear root cause | `/diagnose` |
+| Finished work needing closeout | `/ship`, `/yeet`, or `/reflect` |
+| Readiness or profile question | `/qa` or the repo's readiness surface |
+| "What happened / why does it matter" | `/orient --deep` or `/shape` |
+| Skill or harness primitive change | `/harness-engineering` |
 
-If the next action is unclear, say what evidence is missing instead of choosing
-a workflow from vibes.
+## Stay in lane
 
-## Gotchas
-
-- Do not turn orientation into a mandatory ceremony. If the user already gave a
-  precise command and the workspace state is obvious, keep it tiny.
-- Do not summarize all history. Name the latest useful closure signal and stop.
-- Do not store session memory. Durable state belongs in backlog, receipts,
-  traces, commits, or explicit profile files.
-- Do not call provider lanes unless scope is broad, stale, or contested.
-- Do not label the repo "ready" or "validated" from orientation. Route that to
-  the owning skill.
-- Do not replace scoped `AGENTS.md`; respect it as the governing instruction
-  source.
+Orient reads; it never acts. Don't deliver, groom, refactor, reflect, debrief,
+mine transcripts, or mutate state. Don't label the repo "ready" or "validated" —
+route that to the owning skill. Don't store session memory; durable state lives
+in backlog, commits, and receipts. Don't spin up provider lanes unless scope is
+broad, stale, or contested. Scoped `AGENTS.md` governs — respect it.
 
 ## Verification
 
-When editing this skill in the Harness Kit source repo, validate trigger/catalog
-shape with:
+Editing this skill in the Harness Kit source repo:
 
 ```sh
 cargo run --locked -p harness-kit-checks -- check-frontmatter --repo .
 ```
 
-When invoking `/orient` in another repo, this source-repo command is not
-required. Acceptance is the report's cited live evidence and useful next-skill
-recommendation.
+Invoked in another repo, that command isn't required — acceptance is the
+report's cited live evidence and a next move the operator can act on.
