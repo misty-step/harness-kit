@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.55.0",
+  "lastChangelogVersion": "16.0.5",
   "defaultProvider": "openrouter",
-  "defaultModel": "moonshotai/kimi-k2.6",
+  "defaultModel": "moonshotai/kimi-k2.7-code",
   "theme": "dark",
   "defaultThinkingLevel": "xhigh",
   "hideThinkingBlock": false,

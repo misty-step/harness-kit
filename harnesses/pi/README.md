@@ -9,8 +9,7 @@ proprietary coding-agent opinion.
 Use print mode with explicit provider/model/thinking/tool settings from the
 roster:
 
-```sh
-pi -p --provider openrouter --model moonshotai/kimi-k2.6 --thinking xhigh --tools read,bash,edit,write,grep,find,ls "Role: investigator. Objective: inspect this oracle. Output: risks and proof."
+pi -p --provider openrouter --model moonshotai/kimi-k2.7-code --thinking xhigh --tools read,bash,edit,write,grep,find,ls "Role: investigator. Objective: inspect this oracle. Output: risks and proof."
 ```
 
 The command stays a thin launch surface. `harness-kit-checks dispatch-agent`
@@ -21,13 +20,13 @@ records the receipt.
 
 Keep one Pi provider id and switch models inside Pi when the work needs another
 open-model failure mode:
-
-| Variant | Model | Use |
-|---|---|---|
-| `default` | `moonshotai/kimi-k2.6` | Current Kimi roster dispatch target, thinking + tools, 262K context. |
-| `previous_kimi` | `moonshotai/kimi-k2.5` | Previous Kimi default retained only for explicit comparison or rollback. |
+| `default` | `moonshotai/kimi-k2.7-code` | Current Kimi roster dispatch target, thinking + tools, 256K context. |
+| `previous_kimi` | `moonshotai/kimi-k2.6` | Previous Kimi default retained only for explicit comparison or rollback. |
+| `thinking_kimi` | `moonshotai/kimi-k2-thinking` | Explicit thinking variant for hard reasoning lanes. |
 | `long_context` | `deepseek/deepseek-v4-pro` | Full-codebase or large-document analysis where context length dominates. |
-| `alternate_agentic` | `minimax/minimax-m2.7` | Non-Kimi comparison for planning, debugging, and document-heavy work. |
+| `budget_long_context` | `deepseek/deepseek-v4-flash` | Ultra-cheap long-context for bulk analysis. |
+| `alternate_agentic` | `minimax/minimax-m3` | Non-Kimi comparison for planning, debugging, and document-heavy work. |
+| `qwen_coder` | `qwen/qwen3-coder-next` | Qwen coding model for additional model diversity. |
 
 Invoke variants through the same roster provider:
 
