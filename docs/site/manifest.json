@@ -3,6 +3,10 @@
     {
       "source": "backlog.d/112-harness-eval-bench.md",
       "title": "Context Packet: Harness eval bench against raw runs and alternative primitives"
+    },
+    {
+      "source": "backlog.d/113-restore-premise-source-verifier.md",
+      "title": "Context Packet: Restore premise-source verifier contract"
     }
   ],
   "copy_source": "docs/copy/site.json",
