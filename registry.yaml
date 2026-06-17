@@ -230,3 +230,23 @@ sources:
     skills_path: skills
     alias_prefix: "nutlope-"
     include: [hallmark]
+
+  # pbakaus/impeccable — design vocabulary for AI agents (Apache 2.0, 39k
+  # stars). 1 skill with 23 commands (polish, critique, audit, typeset,
+  # colorize, animate, layout, distill, harden, adapt, clarify, onboard,
+  # optimize, delight, overdrive, bolder, quieter, shape, craft, document,
+  # extract, live) and 44 deterministic detector rules. PRODUCT.md +
+  # DESIGN.md context system. Brand vs product register distinction.
+  #
+  # The /design skill already distills impeccable's anti-slop patterns into
+  # references/anti-slop.md. Vendoring the full skill makes the complete
+  # 46-pattern catalog and 23 commands available as a composed tool, not a
+  # paraphrase. The deterministic detector (`npx impeccable detect`, exit
+  # code 2 on findings) is wireable as a design completion-gate check.
+  - repo: pbakaus/impeccable
+    ref: main
+    pin: 1c897a09c86ea7ed7e5cc3affaabcbbb46a05a7d
+    layout: flat
+    skills_path: .agents/skills
+    alias_prefix: "impeccable-"
+    include: [impeccable]

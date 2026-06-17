@@ -19,7 +19,7 @@ Rows marked **installed** are vendored via `registry.yaml` into
 | `leon-taste-skill` (installed, + leon-* variants) | Design read, VARIANCE / MOTION / DENSITY dials, anti-default bias correction, banned-pattern lists | React/Tailwind-specific rules don't transfer to zero-build surfaces; treat dials as local judgment, not a persona. |
 | `vercel-web-design-guidelines` (installed) | Web interface guideline compliance review (a11y, focus, semantics) | Compliance pass, not an aesthetic direction. |
 | Rams design review | PR-style design findings with impact and concrete fix suggestions | Useful output shape; do not add a hard subjective CI score. |
-| impeccable (`impeccable.style`) | Deterministic desloppification patterns; respect-existing-tokens discipline | Not vendored; distilled into `anti-slop.md`. |
+| `impeccable-impeccable` (installed) | Desloppification: 46-pattern deterministic detector (`npx impeccable detect`), 23 discipline commands (typeset, colorize, animate, layout, distill, harden, etc.), PRODUCT.md + DESIGN.md context system, brand vs product register | Apache 2.0. The skill's PRODUCT.md/DESIGN.md are per-project; don't let them shadow repo-owned `DESIGN.md`. Run the detector as a completion-gate check, not a replacement for visual inspection. |
 | Public `DESIGN.md` spec/library practice | Root markdown design-system contract for AI agents: tokens plus rationale | Use the format pattern; repo facts must be observed, provided, or explicitly inferred. |
 
 ## Reference-Driven Work (studied DNA)

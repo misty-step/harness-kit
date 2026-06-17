@@ -4,9 +4,11 @@ Concrete, checkable rules for stripping the "AI-generated" tells out of a
 surface. Use alongside `taste-layer.md` (direction) and `design-system.md`
 (tokens). Distilled from three public design skills — credit and further
 reading:
-
-- **impeccable** (`impeccable.style`) — desloppification; a deterministic
-  41-pattern detector; respect the project's existing tokens/components.
+- **impeccable** (`impeccable.style`, installed as `impeccable-impeccable`) —
+  desloppification; a deterministic 46-pattern detector with `npx impeccable
+  detect` (exit code 2 on findings); respect the project's existing
+  tokens/components. PRODUCT.md + DESIGN.md context system. 23 commands for
+  discipline-specific work (typeset, colorize, animate, layout, distill, etc.).
 - **hallmark** (`github.com/Nutlope/hallmark`, vendored as
   `nutlope-hallmark`) — macrostructure variance, a 58-gate slop test,
   pre-emit self-critique, "two briefs should feel like different sites, not

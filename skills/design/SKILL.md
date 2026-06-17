@@ -44,14 +44,33 @@ final critique of visible UI changes.
 
 | Intent | Action |
 |---|---|
-| `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. |
-| `/design polish` | Apply the smallest coherent improvement set, then verify render. |
+| `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. For technical quality checks (a11y, performance, responsive), compose with `impeccable-impeccable`'s `/impeccable audit`. |
+| `/design polish` | Apply the smallest coherent improvement set, then verify render. For the meticulous final pass, compose with `impeccable-impeccable`'s `/impeccable polish`. |
 | `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
 | `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
 | `/design study`, or the user supplies reference sites/screenshots as inspiration | Run the studied-DNA protocol in `references/external-design-references.md` (§ Reference-Driven Work). Extract DNA, never the dress; one primary donor per surface. The full extraction protocol is the installed `nutlope-hallmark` skill's `study` verb. |
 | Greenfield page or identity generation | Compose the installed generation skills — `nutlope-hallmark` (macrostructure-first, theme rotation, slop gates) and `anthropic-frontend-design` (signature-element discipline) — then run `references/anti-slop.md`'s quick gate on the render. |
 | `/design prototype`, "show me options", new feature UI where one-shot taste risk is high | Variation fan (below): 3–5 divergent options in one HTML file, operator picks, build the winner. |
 | Iterative multi-issue prototyping: several named issues, verdict rounds, full-page compositions, viewport-dependent judgment | Lab registry (`references/lab-registry.md`): paged viewer with an adjustable viewport, one persistent section per issue, ≥6 options each, kill/mutate/seed across rounds. |
+| Typography fixes (`/design typeset`) | Compose with `impeccable-impeccable`'s `/impeccable typeset` — font choices, hierarchy, sizing. |
+| Color strategy (`/design colorize`) | Compose with `impeccable-impeccable`'s `/impeccable colorize` — strategic color without going garish. |
+| Motion (`/design animate`) | Compose with `impeccable-impeccable`'s `/impeccable animate` and `emil-emil-design-eng` — purposeful motion tied to state. |
+| Layout / spacing / rhythm (`/design layout`) | Compose with `impeccable-impeccable`'s `/impeccable layout`. |
+| Simplify / strip to essence (`/design distill`) | Compose with `impeccable-impeccable`'s `/impeccable distill` — ruthless subtraction. |
+| Production hardening (`/design harden`) | Compose with `impeccable-impeccable`'s `/impeccable harden` — edge cases, i18n, error states, overflow. |
+| Responsive adaptation (`/design adapt`) | Compose with `impeccable-impeccable`'s `/impeccable adapt` — across screens and devices. |
+| UX copy (`/design clarify`) | Compose with `impeccable-impeccable`'s `/impeccable clarify` — rewrite confusing UX copy. |
+| Onboarding / empty states (`/design onboard`) | Compose with `impeccable-impeccable`'s `/impeccable onboard`. |
+| UI performance (`/design optimize`) | Compose with `impeccable-impeccable`'s `/impeccable optimize` — LCP to bundle size. |
+| Push bold (`/design bolder`) or tone down (`/design quieter`) | Compose with `impeccable-impeccable`'s `/impeccable bolder` or `/impeccable quieter`. |
+| Delight moments (`/design delight`) | Compose with `impeccable-impeccable`'s `/impeccable delight` — small personality moments. |
+| Extraordinary effects (`/design overdrive`) | Compose with `impeccable-impeccable`'s `/impeccable overdrive` — shaders, physics, 60fps. |
+| Full shape-then-build (`/design craft`) | Compose with `impeccable-impeccable`'s `/impeccable craft` — design it then build it in one flow. |
+| Design brief before building (`/design shape`) | Compose with `impeccable-impeccable`'s `/impeccable shape` — discovery, not guesswork. |
+| Generate DESIGN.md (`/design document`) | Compose with `impeccable-impeccable`'s `/impeccable document` — Google Stitch DESIGN.md format. |
+| Extract components/tokens (`/design extract`) | Compose with `impeccable-impeccable`'s `/impeccable extract` — pull into design system. |
+| Live browser iteration (`/design live`) | Compose with `impeccable-impeccable`'s `/impeccable live` — pick element, get variants, accept into source. |
+| Slop detection before shipping | Run `npx impeccable detect src/` — deterministic, no LLM, exit code 2 on findings. Wire as completion-gate check. |
 
 Use `/qa` for behavior verification and evidence capture, and `/shape` when
 the product direction itself is unsettled.
@@ -68,7 +87,9 @@ For recurring or product-facing visual work, use the references:
 - `references/design-system.md` for token and component-system judgment.
 - `references/taste-layer.md` for aesthetic direction and anti-generic critique.
 - `references/anti-slop.md` for the checkable list of AI design tells, the
-  VARIANCE/MOTION/DENSITY dials, and the pre-emit gate.
+  VARIANCE/MOTION/DENSITY dials, and the pre-emit gate. The full 46-pattern
+  catalog and deterministic detector are in the installed `impeccable-impeccable`
+  skill; run `npx impeccable detect src/` for machine-checked slop findings.
 - `references/interface-polish.md` for micro-polish checks.
 - `references/external-design-references.md` for license-safe use of external
   design skills, DESIGN.md sources, and inspiration libraries.
@@ -162,8 +183,8 @@ core; this phase keeps design-specific local fields.
 - Typography/layout changes: specific type, spacing, density, or layout issue changed or recommended.
 - Copy provenance: visible copy inspected for product truth versus agent process leakage.
 - Distinctive decision: the intentional design choice that prevents template sameness.
+- Slop detector: `npx impeccable detect` result on changed files (clean, findings listed, or not applicable with reason).
 - Residual risk: remaining design, a11y, or QA risk after inspection.
-```
 
 ## Gotchas
 
