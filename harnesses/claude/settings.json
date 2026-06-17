@@ -37,7 +37,8 @@
       "Bash(tree:*)",
       "Bash(topydo:*)",
       "Bash(thinktank:*)",
-      "Bash(gemini:*)",
+      "Bash(agy:*)",
+      "Bash(omp:*)",
       "Bash(curl -s https://api.x.ai/:*)",
       "Bash(curl -s https://api.exa.ai/:*)"
     ],
