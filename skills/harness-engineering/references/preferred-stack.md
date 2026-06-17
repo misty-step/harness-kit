@@ -80,9 +80,10 @@ alone unless they sleep most of the time or can be rewritten to Workers/D1.
   peer lanes, and local evidence loops.
 - **Fly Sprites for heavy or isolated lanes**: remote sandboxes, golden
   checkpoints, long-running or parallel work.
-- **Pi/Goose/OpenCode on OpenRouter for open-model breadth** when smoke-tested;
-  use Claude, Codex, Cursor, Antigravity, or Grok when their particular surface
-  answers a distinct question.
+- **Pi/Goose/OpenCode/omp on OpenRouter for open-model breadth** when
+  smoke-tested; use Claude, Codex, Cursor, Antigravity, or Grok when their
+  particular surface answers a distinct question. (Gemini CLI is retired —
+  use Antigravity/`agy` for a Google-family lane.)
 
 ## Design And Artifact Surfaces
 

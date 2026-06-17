@@ -181,11 +181,12 @@ stacks; work with that grain, not against it.
   fresh-context critic on a different model family has decorrelated failure
   modes. Give critics ONLY the artifact (diff + oracle); never the author's
   reasoning trail.
-- **Peer harness CLIs are available** — codex, pi, goose, opencode,
+- **Peer harness CLIs are available** — codex, pi, goose, opencode, omp,
   cursor-agent, grok, agy, hermes, thinktank, and claude itself. Prefer
-  well-designed open-model lanes through Pi/Goose/OpenCode on OpenRouter when
-  they are smoke-tested for the task; use Claude, Antigravity, Cursor, or Grok
-  only when their specific surface answers a distinct question.
+  well-designed open-model lanes through Pi/Goose/OpenCode/omp on OpenRouter
+  when they are smoke-tested for the task; use Claude, Antigravity, Cursor, or
+  Grok only when their specific surface answers a distinct question. (Gemini
+  CLI is retired — superseded by Antigravity/`agy`; do not reach for it.)
 - **Sprites are substrate, not providers.** Route heavy, long-running,
   detached, or isolation-needing lanes to `/sprites` regardless of which
   model runs them.
