@@ -7,6 +7,14 @@
     {
       "source": "backlog.d/113-restore-premise-source-verifier.md",
       "title": "Context Packet: Restore premise-source verifier contract"
+    },
+    {
+      "source": "backlog.d/114-bootstrap-no-worktree-symlinks.md",
+      "title": "Context Packet: Bootstrap must not leave symlinks into disposable worktrees"
+    },
+    {
+      "source": "backlog.d/115-live-diff-refactor-verification.md",
+      "title": "Context Packet: Document the \"live-diff\" verification pattern for behavior-preserving refactors"
     }
   ],
   "copy_source": "docs/copy/site.json",

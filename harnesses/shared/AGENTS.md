@@ -100,6 +100,21 @@ A green gate or passing scaffold check is necessary, not sufficient. Before
 claiming done, name the live repo evidence read, acceptance source, exact
 exercised command/path, repo-fit check, and residual risk.
 
+### A blocker needs proof as much as a "done" does
+"I can't — it's operator-gated / I lack the credentials / it needs access I
+don't have" is a claim, and a claim with no evidence is as wrong as a false
+"done". A false wall is worse than a false green: it stalls the user on work
+you could have finished. Before declaring any blocker, exhaust the local
+affordances and say which you checked: project `.env`/`.env.*`, `~/.secrets`,
+and CLI/cloud auth already on the machine (`gh auth token`, `fly auth`,
+sprite/sprites config, `~/.aws`, kube context, `op`/keychain). Production infra
+you assume is "operator-only" — sprite reprovision, Fly deploys, secret reads —
+is usually runnable from the local checkout because the tokens are on disk
+(found live 2026-06: `SPRITES_TOKEN`/`FLY_API_TOKEN`/`GITHUB_PAT` sat in
+`orchestrator/.env` while a multi-hour "credential wall" was narrated). Try the
+action and report the actual failure; never narrate a wall you have not hit.
+Read secrets to use them via env refs — never print their values.
+
 ### Think in HTML for plans
 For non-trivial execution plans and context packets, author the plan directly
 as a local HTML artifact and open it before execution. The first viewport is
