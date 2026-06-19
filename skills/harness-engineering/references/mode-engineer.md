@@ -34,6 +34,21 @@ When adding gate coverage, put durable checks in `harness-kit-checks` first.
 Do not make Dagger, Docker, GitHub Actions YAML, or provider CLIs the default
 inner-loop gate for Harness Kit.
 
+## Consumer repo gate velocity
+
+When engineering CI defaults for other repos, encode a two-tier loop:
+
+- **Inner loop:** local hooks run fast deterministic checks agents will actually
+  tolerate during amend/push cycles.
+- **Outer loop:** full Dagger/Docker/browser/network/live-readiness gates remain
+  required before merge, main deploy, or an explicit ship command.
+
+Slow pre-push gates are a harness defect when CI repeats the same expensive
+proof. Fix by splitting `check-fast` from `ship-check`, adding stale-PR
+concurrency cancellation, or giving Dagger a persistent/cloud engine cache.
+Do not simply path-skip the only required workflow; skipped required GitHub
+checks can leave a PR pending.
+
 ## Verification systems
 
 When a harness change affects agent behavior, runtime behavior, generated
