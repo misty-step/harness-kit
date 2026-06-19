@@ -17,10 +17,13 @@ disk; do not restate obvious filesystem facts.
 - `index.yaml` is generated. Never edit it by hand.
 - `harnesses/claude/settings.json` is copied by bootstrap; changes require
   re-bootstrap.
-- Durable tooling is Rust in `crates/harness-kit-checks`. The only allowed
-  non-Rust implementation surface is `bootstrap.sh` as the curl-compatible
-  Rust launcher. Every gate must name a real failure it catches; gates that
-  enforce prose structure are the historical failure mode here.
+- Skill scripts/libs/references live under the skill they serve. Code outside a
+  skill must serve only this source repo's maintenance, generated artifacts,
+  bootstrap/install, or harness configuration.
+- Durable repo/install tooling is Rust in `crates/harness-kit-checks`. The only
+  allowed non-Rust implementation surface is `bootstrap.sh` as the
+  curl-compatible Rust launcher. Every gate must name a real failure it catches;
+  gates that enforce prose structure are the historical failure mode here.
 - Harness Kit source skills live only in `skills/`. Do not commit source-repo
   `.agents/skills/`, `.codex/skills/`, `.claude/skills/`, `.pi/skills/`, or
   `.antigravitycli/skills/` bridges; those duplicate the global install here.
