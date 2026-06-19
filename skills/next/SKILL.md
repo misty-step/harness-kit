@@ -32,12 +32,19 @@ Read the smallest useful surface for the scope:
 - `git status --short --branch --untracked-files=all` when in a repo
 - active branch, upstream, dirty/unpushed state, and recent commits
 - open `backlog.d/*.md` titles when backlog priority is in scope
+- live tracker queues across delivery states when an external tracker is in
+  scope: at minimum `ready_for_dev`, `verification`, `in_progress`, and
+  `blocked`/prerequisite-bearing items
 - current plan, goal, PR, issue, or acceptance oracle when present
 - recent closeout signal: shipped commit, archived backlog, PR status, or
   blocker note
 
 Prefer live files and commands over remembered thread state. If external facts
 would determine the next move, say which fact is missing rather than guessing.
+Do not treat one empty scoped filter as absence of work. If a module/repo
+filter returns nothing but the operator asked for that product area, broaden by
+status, prefix, module id/name, open PRs, and verification/residual items before
+recommending work outside that area.
 
 ## Report Shape
 
@@ -63,6 +70,7 @@ Keep it compact. The default answer should fit on one screen.
 | Clean feature branch, work complete | `/ship` or PR closeout |
 | Unshaped idea, unclear acceptance | `/shape` |
 | Open prioritized backlog, no active branch | `/groom` summary, then one pickup |
+| Item already in verification | `/qa` or closeout before new delivery |
 | Broken gate, failing app, unclear root cause | `/diagnose` |
 | Running surface needs proof | `/qa` |
 | User asks "what do I need to do?" | Separate user external action from agent action |
@@ -76,6 +84,12 @@ Keep it compact. The default answer should fit on one screen.
   an agent task unless the tool can actually do it.
 - Do not redefine success around what is easy to do locally. Name the real
   acceptance or blocker.
+- Do not recommend a new repo just because the active repo has no
+  `ready_for_dev` items. Check verification, in-progress, recently shipped PRs,
+  and blocked/prerequisite items first; finishing or proving existing work
+  usually beats starting a new ticket.
+- Treat title/description blockers as real even when status says ready. Name the
+  prerequisite instead of presenting the item as immediately deliverable.
 - Do not start a delivery workflow unless the user asked you to act or passed
   `--act-if-safe` and the first step is reversible.
 - Do not answer from stale memory when a live repo/status read is cheap.
