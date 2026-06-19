@@ -61,8 +61,11 @@ not skills.
   smoke-tested open-model peer lanes through Pi, Goose, and OpenCode on
   OpenRouter; keep Claude, Antigravity, Cursor, and Grok conditional unless
   their specific surface answers the task.
-- Skills stay self-contained: scripts/references under the skill; state roots
-  from invoking repo.
+- Skills stay self-contained: scripts/libs/references under the skill; state
+  roots from invoking repo.
+- Code outside a skill serves only Harness Kit source-repo maintenance,
+  generated artifacts, bootstrap/install, or harness configuration. It is not a
+  place for skill behavior.
 - Treat a skill as a folder, not a markdown file. Use scripts, references,
   examples, templates, assets, evals, or append-only data when prose would
   make the agent reconstruct repeatable work.
