@@ -18,7 +18,7 @@ is mechanically enforced, not optional. No branch can land without a verdict.
 
 ## Multi-Provider Default
 
-The recent multi-provider review (thinktank + codex + gemini) should be the
+The recent multi-provider review (retired-bench + codex + gemini) should be the
 default path, not single-model review. This gives diverse perspectives and
 catches model-specific blind spots.
 

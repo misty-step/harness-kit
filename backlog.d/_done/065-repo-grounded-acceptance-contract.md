@@ -57,7 +57,7 @@ generic, stale, or untested against the changed executable path.
 
 ### Why this belongs in Harness Kit
 
-This is not a Curb, Canary, ThinkTank, or Brandt rule. It is the repeated
+This is not a Curb, Canary, retired bench, or Brandt rule. It is the repeated
 failure mode of the harness layer itself: the agent knows how to produce a
 plausible artifact, but the operator has to ask again for live repo evidence,
 actual command paths, authenticated QA, or a before/after harness diff.

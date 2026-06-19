@@ -133,9 +133,9 @@ branch/bookmark divergence, hook semantics, less mature IDE/tooling support,
 and the need to keep Dagger's container overhead from becoming a universal
 bootstrap blocker.
 
-### Thinktank (complete)
+### retired bench (complete)
 
-Thinktank `research/quick` completed at `/tmp/hk-jj-thinktank` with `systems`
+retired bench `research/quick` completed at `/tmp/hk-jj-bench` with `systems`
 and `verification` agents. Accepted findings:
 
 - Harness Kit is already meaningfully Dagger-first; this ticket should not
@@ -247,7 +247,7 @@ compatibility infrastructure.
   - `agy`, product premise critic, receipt
     `d4e044df-bc1b-4cec-860b-53b4cdd2f76a`, transcript
     `.harness-kit/traces/provider-lanes/20260603T181342.637505Z-agy-f4027527.txt`.
-- Thinktank used: `research/quick`, output `/tmp/hk-jj-thinktank`, `systems`
+- retired bench used: `research/quick`, output `/tmp/hk-jj-bench`, `systems`
   and `verification` complete.
 - Accepted evidence: start with colocated jj, move verdict enforcement toward
   Dagger, add dual-view closeout, preserve Git plumbing for verdict/backlog
@@ -255,7 +255,7 @@ compatibility infrastructure.
 - Rejected evidence: jj-only migration, Dagger-everything, Justfile replacing
   Dagger as Harness Kit's canonical gate, and universal command substitution.
 - Waivers: native named Ousterhout/Carmack/Grug/Beck subagent bench was not
-  separately launched because roster lanes plus Thinktank covered architecture,
+  separately launched because roster lanes plus retired bench covered architecture,
   premise, implementation risk, and verification lenses in this shaping pass.
 
 ## Exemplar Techniques

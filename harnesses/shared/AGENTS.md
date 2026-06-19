@@ -197,7 +197,7 @@ stacks; work with that grain, not against it.
   modes. Give critics ONLY the artifact (diff + oracle); never the author's
   reasoning trail.
 - **Peer harness CLIs are available** — codex, pi, goose, opencode, omp,
-  cursor-agent, grok, agy, hermes, thinktank, and claude itself. Prefer
+  cursor-agent, grok, agy, hermes, and claude itself. Prefer
   well-designed open-model lanes through Pi/Goose/OpenCode/omp on OpenRouter
   when they are smoke-tested for the task; use Claude, Antigravity, Cursor, or
   Grok only when their specific surface answers a distinct question. (Gemini

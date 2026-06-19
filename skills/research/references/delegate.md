@@ -87,4 +87,3 @@ For each sub-agent finding:
 
 - `/harness-engineering` — Harness engineering and context lifecycle
 - `/code-review` — Multi-agent review implementation
-- `/research thinktank` — Multi-model synthesis

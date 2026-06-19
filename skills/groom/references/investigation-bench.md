@@ -201,7 +201,7 @@ Every investigator returns this exact shape:
 > You are the **External Scout**. Your job is to find what the outside world
 > knows that this codebase doesn't.
 >
-> For the target system, invoke `/research thinktank` with a focused question
+> For the target system, invoke `/research delegate` with a focused question
 > about the architecture. Also search for:
 > - **Reference implementations**: how do similar open-source projects solve this?
 > - **Exemplar implementations**: invoke `/research exemplars` for the target system's domain — what best-in-class implementations should the team study?

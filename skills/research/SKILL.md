@@ -2,13 +2,13 @@
 name: research
 description: |
   Web research, multi-AI delegation, and multi-perspective validation.
-  /research [query], /research delegate [task], /research thinktank [topic].
+  /research [query], /research delegate [task].
   Use when: "search for", "look up", "research", "delegate",
   "get perspectives", "web search", "find out", "investigate",
   "introspect", "check readwise", "saved articles", "reading list",
   "what are people saying", "X search", "trending", "which model",
   "compare models", "best model for", "model selection".
-argument-hint: "[query] or [web-search|web-deep|web-news|web-docs|delegate|thinktank|introspect|readwise|xai|exemplars] [args]"
+argument-hint: "[query] or [web-search|web-deep|web-news|web-docs|delegate|introspect|readwise|xai|exemplars] [args]"
 ---
 
 # Research
@@ -31,7 +31,6 @@ verification, and synthesis.
 | Exa search/fetch/deep/MCP/code context | `references/exa-tools.md` |
 | extraction, site maps, crawls | `references/extraction-tools.md` |
 | `delegate` | `references/delegate.md` |
-| `thinktank` | `references/thinktank.md` |
 | `introspect` | `references/introspect.md` |
 | `readwise` | `references/readwise.md` |
 | `xai` | `references/xai-search.md` |
@@ -55,7 +54,7 @@ dates on every claim.
 - Keep provider CLIs and web tools thin: launch, bound, record.
 - Prefer acquisition surfaces in this order when available: MCP tool first,
   local CLI wrapper second, direct REST/API call third, built-in WebSearch last.
-- Treat web search, extraction, X/social search, Thinktank, provider lanes, and
+- Treat web search, extraction, X/social search, provider lanes, and
   local grep as evidence inputs, not substitutes for lead synthesis.
 - Do not let synthesis stand in for retrieval. A grounded answer may summarize
   sources, but the source URLs/artifacts remain the proof.
@@ -71,7 +70,7 @@ by default; add cross-model critics, roster providers, or sprite lanes
 (`/sprites`) only when they answer a distinct question. See
 `harnesses/shared/AGENTS.md` (Roster).
 
-Local lane guidance: Use lanes with distinct sources, methods, or model families; web search, Thinktank, and provider CLIs are evidence inputs, not substitutes for lead synthesis.
+Local lane guidance: Use lanes with distinct sources, methods, or model families; web search and provider CLIs are evidence inputs, not substitutes for lead synthesis.
 
 ## Completion Evidence
 
@@ -86,5 +85,3 @@ Local lane guidance: Use lanes with distinct sources, methods, or model families
 - A single WebSearch is a lookup, not substantive research.
 - Mandatory source structure belongs in `references/default-fanout.md`; keep
   vendor command recipes in tool references.
-- Do not claim a Thinktank run is complete while it is still running; report the
-  output directory and only the artifacts that exist.

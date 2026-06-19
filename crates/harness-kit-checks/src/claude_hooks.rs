@@ -698,7 +698,7 @@ pub fn disk_space_guard(input: &str, free_gb: Option<f64>) -> DiskSpaceDecision 
 pub fn exa_research_reminder() -> Value {
     json!({
         "decision": "warn",
-        "reason": "STOP — WebSearch alone is not research. Use /research (no sub-command) which fans out to Exa + thinktank + xAI in parallel. WebSearch is a fallback, not a primary tool. If you're inside /research already, you MUST also launch thinktank and Exa in parallel — a single WebSearch does not satisfy the fanout requirement.",
+        "reason": "STOP — WebSearch alone is not research. Use /research (no sub-command) which fans out to Exa, xAI, and delegated critique when relevant. WebSearch is a fallback, not a primary tool. If you're inside /research already, you MUST also launch a second evidence lane such as Exa, xAI, or a delegated critic — a single WebSearch does not satisfy the fanout requirement.",
     })
 }
 

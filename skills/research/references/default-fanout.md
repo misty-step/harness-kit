@@ -39,7 +39,7 @@ relevant; otherwise keep it in the matrix as `skipped` with the reason.
 | Extraction | known URL fetch, page extraction, site maps, crawls | `exa-tools.md`, `extraction-tools.md`, `/browser` |
 | Recency / discourse | current web, X/social discourse, contradiction checks | `xai-search.md` |
 | Synthesis | concise answer over gathered evidence | Perplexity/Exa deep/lead synthesis |
-| Repo-aware critique | local fit, architecture tradeoffs, second opinion | `thinktank.md`, `delegate.md` |
+| Repo-aware critique | local fit, architecture tradeoffs, second opinion | `delegate.md` |
 
 If a lane fails, times out, lacks credentials, or is intentionally skipped by
 scope, keep its section and label the status. Do not silently collapse failed
@@ -70,26 +70,13 @@ at the first step in the chain.
 | Model releases, pricing, CVEs, deprecations | recency-filtered web/xAI | Exa recency, official sources |
 | Social sentiment or public discourse | xAI X Search | web results that cite public posts |
 | Grounded answer synthesis | Perplexity/Exa deep after retrieval | lead synthesis over cited sources |
-| Repo architecture or local tradeoffs | Thinktank / roster lanes | scoped grep plus lead analysis |
+| Repo architecture or local tradeoffs | roster lanes | scoped grep plus lead analysis |
 | Saved user reading/highlights | Readwise | local notes or explicit web search |
 
 Route by capability. Vendor names are implementation details; if a named
 provider is unavailable, use the closest source and report the substitution.
 Do not add a vendor to the prose unless a script, command recipe, or explicit
 manual fallback can actually invoke it.
-
-## Thinktank State
-
-Thinktank is an in-flight bench, not an instant lookup. Before waiting, record:
-
-- Mode: `quick` or `deep`.
-- Output directory.
-- Time budget.
-- Starting paths or repo root.
-
-If incomplete, report `Thinktank (partial)` with the output directory and only
-the artifacts that exist, such as `manifest.json`, `trace/events.jsonl`,
-`task.md`, `prompts/`, or completed `agents/` reports.
 
 ## Report Shape
 

@@ -169,7 +169,7 @@ Add `scripts/analyze-skill-invocations.py` with:
     and reflect surfaces plus missing cross-repo analytics.
   - default architecture critic recommended a normalized append-only local
     event/report layer and warned against dashboards/daemons.
-- Thinktank:
+- retired bench:
   - `research/quick`, systems and verification agents complete; accepted
     finding that existing streams lack a join key and that
     review-score/skill-usage loops are starved.

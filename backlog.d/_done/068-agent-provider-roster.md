@@ -98,16 +98,16 @@ Current primary candidates:
 | Cursor | `cursor-agent` | public CLI and headless docs, not currently on `PATH` | conditional/manual |
 | Grok Build | likely `grok` / `grok-build` | official beta CLI, subscriber-gated | conditional/manual |
 | Gemini CLI | `gemini` | still present locally; Antigravity migration is current | fallback |
-| Thinktank | `thinktank` | useful multi-agent bench wrapper over Pi | bench, not base roster |
+| retired bench | `retired-bench` | useful multi-agent bench wrapper over Pi | bench, not base roster |
 
 Current local probe during shaping found `codex`, `claude`, `agy`, `pi`,
-`thinktank`, and `gemini` on `PATH`; `cursor` was absent.
+`retired-bench`, and `gemini` on `PATH`; `cursor` was absent.
 
-### Thinktank
+### retired bench
 
-Thinktank `research/quick` was launched against this ticket with systems
+retired bench `research/quick` was launched against this ticket with systems
 and verification lanes. It reinforced that local CLI probes are feasible,
-that Thinktank itself needs async dispatch/collect treatment because runs
+that retired bench itself needs async dispatch/collect treatment because runs
 can take minutes, and that receipts should be local-first and append-only.
 The rejected suggestion was a separate `.harness-kit/provider-receipts/`
 store, because that would fork trace/ledger ownership.
@@ -331,7 +331,7 @@ truth.
 Pi behavior: use `pi -p` / `--mode json` when available; Pi skills/globs
 may expose helper commands, but receipts remain the same JSONL shape.
 
-Anti-Gravity, Cursor, Grok, Gemini, and Thinktank are conditional roster
+Anti-Gravity, Cursor, Grok, Gemini, and retired bench are conditional roster
 entries. Missing binaries produce `unavailable` rows, not harness failure.
 
 ## Oracle

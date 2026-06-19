@@ -263,7 +263,7 @@ For non-trivial production issues, create `INCIDENT-{timestamp}.md`:
 - **Git**: bisect, blame, recent deploys
 - **Observability**: platform logs, incident tracker signals, monitoring dashboards
 - **Sub-agents**: Parallel hypothesis investigation (see above)
-- **/research thinktank**: Multi-model hypothesis validation
+- **/research delegate**: Multi-model hypothesis validation
 
 ## Output
 

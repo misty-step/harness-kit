@@ -48,7 +48,7 @@ For direct one-off use, keep the same Pi shape and swap only `--model`.
   the current `harnesses/pi/settings.json` default.
 - Use the prompt shape `Role: ... Objective: ... Scope: ... Output: ...`.
 - Run from the target workspace. Paths orient the lane; cwd is the workspace.
-- Use Thinktank for multi-model Pi benches instead of hand-rolling parallel Pi
-  commands.
+- Use roster lanes for multi-model Pi benches instead of hand-rolling parallel
+  Pi commands.
 - The lead verifies Pi output against files, commands, tests, and receipts
   before accepting it.

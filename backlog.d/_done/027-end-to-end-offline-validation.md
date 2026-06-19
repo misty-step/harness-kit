@@ -24,7 +24,7 @@ any network access. Run the full cycle in airplane mode:
 ## Why
 
 Individual pieces may work offline, but the integrated workflow hasn't been
-validated. Docker images need to be pre-pulled. thinktank needs network for
+validated. Docker images need to be pre-pulled. retired-bench needs network for
 external providers. What's the actual offline boundary?
 
 ## Oracle

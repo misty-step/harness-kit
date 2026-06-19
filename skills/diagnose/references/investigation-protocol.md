@@ -16,7 +16,7 @@ Absorbed from the `investigate` skill.
 - **Observability**: incident tracker context, npx convex, vercel
 - **Git**: Recent deploys, changes, bisect
 - **/research**: Web-grounded research, hypothesis generation
-- **/research thinktank**: Multi-model validation on hypotheses
+- **/research delegate**: Multi-model validation on hypotheses
 
 ### Multi-Hypothesis Mode (Agent Teams)
 

@@ -27,16 +27,16 @@ fallback always wins.
 
 ## Evidence
 
-Scaffolded `/qa` and `/demo` for thinktank (misty-step/thinktank#286):
-- Wrote `.claude/skills/qa/SKILL.md` (name: `thinktank-qa`)
-- Wrote `.claude/skills/demo/SKILL.md` (name: `thinktank-demo`)
-- Invoked `/qa` and `/demo` from the thinktank project directory
+Scaffolded `/qa` and `/demo` for retired-bench (retired bench repo#286):
+- Wrote `.claude/skills/qa/SKILL.md` (name: `retired-bench-qa`)
+- Wrote `.claude/skills/demo/SKILL.md` (name: `retired-bench-demo`)
+- Invoked `/qa` and `/demo` from the retired-bench project directory
 - Both resolved to the global `~/.claude/skills/qa/` and `~/.claude/skills/demo/`
   fallback stubs instead of the project-local versions
 
 ## Hypotheses
 
-1. **Name mismatch:** Global skill is `name: qa`, project-local is `name: thinktank-qa`.
+1. **Name mismatch:** Global skill is `name: qa`, project-local is `name: retired-bench-qa`.
    Resolution may key on the `name` field, not the directory name. Fix: use `name: qa`
    in the project-local skill.
 2. **Directory not searched:** Claude Code may not search `.claude/skills/` at project
@@ -46,8 +46,8 @@ Scaffolded `/qa` and `/demo` for thinktank (misty-step/thinktank#286):
 
 ## Oracle
 
-- [ ] `/qa` invoked from thinktank root resolves to `.claude/skills/qa/SKILL.md`
-- [ ] `/demo` invoked from thinktank root resolves to `.claude/skills/demo/SKILL.md`
+- [ ] `/qa` invoked from retired-bench root resolves to `.claude/skills/qa/SKILL.md`
+- [ ] `/demo` invoked from retired-bench root resolves to `.claude/skills/demo/SKILL.md`
 - [ ] Global fallback still fires in projects without a scaffolded skill
 
 ## Non-Goals

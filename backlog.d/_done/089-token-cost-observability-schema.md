@@ -24,7 +24,7 @@ effective enough to justify their cost. Today:
 - `meta/config-schemas/flywheel.schema.yaml` already has `budget_tokens`, but
   there is no measured token feed to compare against.
 
-Thinktank's own run envelope already reports model, token counts, and USD cost
+retired bench's own run envelope already reports model, token counts, and USD cost
 by model. Harness Kit should capture analogous optional fields for its own
 provider lanes and skill events.
 
@@ -139,8 +139,8 @@ Extend reports:
     missing token/cost fields in receipt/ledger schemas.
   - `codex`, receipt `004cb27a-ff40-4918-9ed7-40478b196a7f`, challenged
     build/buy/hybrid options.
-- Native/Thinktank evidence:
-  - Repo mapper and Thinktank both found that receipt and ledger streams have
+- Native/retired bench evidence:
+  - Repo mapper and retired bench both found that receipt and ledger streams have
     useful accountability fields but no cost/timing/token data.
 - External evidence:
   - Langfuse usage/cost docs support prioritizing ingested usage over inferred.

@@ -12,7 +12,7 @@ Produce a concrete removal plan for each dependency.
 
 ## Why
 
-Thinktank research revealed disagreement about how much GitHub coupling remains.
+retired bench research revealed disagreement about how much GitHub coupling remains.
 The `ci/` module may still reference `GITHUB_ACTIONS` and `GITHUB_STEP_SUMMARY`
 env vars. Skills like `/settle` and `/demo` may still call `gh` for PR checks
 and evidence upload. Until we know the full surface, we can't plan the removal.

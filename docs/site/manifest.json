@@ -270,7 +270,7 @@
       "source": "skills/refactor/SKILL.md"
     },
     {
-      "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"check readwise\", \"saved articles\", \"reading list\", \"what are people saying\", \"X search\", \"trending\", \"which model\", \"compare models\", \"best model for\", \"model selection\".",
+      "description": "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task]. Use when: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web search\", \"find out\", \"investigate\", \"introspect\", \"check readwise\", \"saved articles\", \"reading list\", \"what are people saying\", \"X search\", \"trending\", \"which model\", \"compare models\", \"best model for\", \"model selection\".",
       "icon": "catalog",
       "id": "skill:research",
       "kind": "skill",
@@ -280,7 +280,7 @@
       "source": "skills/research/SKILL.md"
     },
     {
-      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
+      "description": "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle) and how to invoke each headlessly. A capability map, not a quota: useful for fresh-context adversarial review on a different model family, second opinions, competing attempts, and wide benches. Use when: \"ask codex\", \"ask another model\", \"second opinion\", \"cross-model review\", \"what AI tools do I have\", \"other agents\", \"different model family\", \"adversarial critique from another provider\". Trigger: /roster.",
       "icon": "catalog",
       "id": "skill:roster",
       "kind": "skill",

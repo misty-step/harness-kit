@@ -196,6 +196,6 @@ The grader should verify that the candidate:
 ## Roster / Research Receipt
 
 This item was shaped from a `/research` + `/harness` run on 2026-05-27.
-Evidence included Exa, xAI/Grok web search, Thinktank, Codex, Claude, Pi, web
+Evidence included Exa, xAI/Grok web search, retired bench, Codex, Claude, Pi, web
 search, and live codebase inspection. Provider output was treated as evidence,
 not authority.

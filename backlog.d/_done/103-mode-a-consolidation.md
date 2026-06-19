@@ -56,7 +56,7 @@ Disposition table (judgment, revisit per item during execution):
   completion gate dies); groom (slim, less prescriptive; absorbs
   agent-readiness as harness-gap auditing: missing per-repo verification
   skill / runbook / weak CI → tickets); research (keystone
-  capability-awareness: Exa, Firecrawl, context7, thinktank — beats hardcoded
+  capability-awareness: Exa, Firecrawl, context7, retired-bench — beats hardcoded
   library-reference skills); qa/verify (absorbs browser + demo evidence +
   hardening judgment; expects per-repo verification skill, files gap via
   groom); sprites (keep as-is — new, well-shaped, Mode B substrate too);

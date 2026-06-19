@@ -2,7 +2,7 @@
 name: roster
 description: |
   Enumerates the peer AI agent CLIs installed on this machine (codex, pi,
-  goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank)
+  goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle)
   and how to invoke each headlessly. A capability map, not a quota: useful
   for fresh-context adversarial review on a different model family, second
   opinions, competing attempts, and wide benches. Use when: "ask codex",
@@ -35,7 +35,6 @@ model family or a genuinely fresh context.
   across several *distinct* open-model families via Pi/OpenRouter, each
   critic on its own lens; distinct families surface distinct real findings
   instead of confirming each other. See **Adversarial bench** below.
-  `thinktank` collates one task across many models when installed.
 
 A native subagent is still better for exploration, scoped builds, and
 anything where harness identity doesn't matter — it shares your tools,
@@ -58,8 +57,6 @@ add the prompt as the argument or via stdin.
 | `agy` | Antigravity (Gemini) | `agy --print "<task>"` |
 | `hermes` | Hermes agent | `hermes -z "<task>"` (`-m <model>`) |
 | `oracle` | Oracle browser consult | `npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p "<task>" --file <paths>` |
-| `thinktank` | Multi-model bench | `thinktank review` · `thinktank run <bench> --input "<task>"` |
-
 Current model ids, pricing, context windows, and freshness dates:
 `references/model-provider-harness-index.md`. Open-model facts rot in days —
 check the review-due date before quoting them.

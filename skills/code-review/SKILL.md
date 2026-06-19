@@ -26,8 +26,7 @@ never ships on its own review — that is the one hard rule.
 3. **Fan out in parallel, decorrelated.** Native subagents for focused
    lenses (pick 2–4 that fit the diff: correctness, security, simplicity,
    tests); peer harness CLIs (`/roster`) for cross-model judgment — a
-   different model family has decorrelated failure modes; `thinktank
-   review` when installed for a wide bench. If the harness can run a
+   different model family has decorrelated failure modes. If the harness can run a
    large-scale background orchestration where reviewers adversarially
    cross-check each other's findings before reporting, a substantive diff
    is a natural fit — that scale costs tokens, so routine diffs don't get

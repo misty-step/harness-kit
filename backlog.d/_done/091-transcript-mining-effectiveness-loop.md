@@ -144,9 +144,9 @@ Add a script or skill reference, likely under `/research introspect` or
     chat-log mining as recipe-only and not durable.
   - `codex`, receipt `004cb27a-ff40-4918-9ed7-40478b196a7f`, recommended a
     hybrid local-first approach and privacy boundaries.
-- Native/Thinktank evidence:
+- Native/retired bench evidence:
   - Architecture critic warned to make chat mining opt-in and artifact-backed.
-  - Thinktank found current reflect/review-score loops are designed but starved.
+  - retired bench found current reflect/review-score loops are designed but starved.
 - External evidence:
   - Langfuse/Phoenix/Tessl all support trace/eval/search ideas, but none
     removes the need for Harness Kit's local privacy boundary.

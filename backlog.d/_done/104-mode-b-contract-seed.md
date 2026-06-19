@@ -48,7 +48,7 @@ PRs/wk, humans gate merges. Their devboxes ≈ our sprites.
    GitHub-compatible, not GitHub-dependent).
 2. **First workload:** resurrect Cerberus's mission as a bitterblossom
    workload spec — coordinator + specialized reviewers with the Cloudflare
-   economics above. Reuse thinktank where it fits (thin Pi bench launcher,
+   economics above. Reuse retired-bench where it fits (thin Pi bench launcher,
    parallel agents, artifacts — already the right shape for the reviewer
    fan-out layer).
 3. **Migration hooks:** when (2) is live, Harness Kit's code-review skill
@@ -65,7 +65,7 @@ Each repo holds exactly one slot; two repos in one slot → merge:
 | Event-driven control plane (runtime) | bitterblossom |
 | Eval-driven agent design lab | daedalus |
 | Workload specs (review, incident, …) | bitterblossom workloads (Cerberus mission absorbed) |
-| Parallel-bench launcher library | thinktank |
+| Parallel-bench launcher library | retired-bench |
 
 Open research before building: why Cloudflare chose OpenCode (open source,
 SDK for programmatic sessions, internal familiarity) and Stripe chose Goose —

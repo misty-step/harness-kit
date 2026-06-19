@@ -122,8 +122,8 @@ Implementation sequence:
     Claude-only tracker blind spot.
   - `codex`, receipt `004cb27a-ff40-4918-9ed7-40478b196a7f`, warned against a
     central wrapper or hosted telemetry prerequisite.
-- Native/Thinktank evidence:
-  - Repo mapper and Thinktank both found cross-harness observability as a
+- Native/retired bench evidence:
+  - Repo mapper and retired bench both found cross-harness observability as a
     structural correctness gap.
 - Rejected evidence:
   - Any adapter without a real hook/event surface and smoke path.

@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-19T19:57:59Z
+# Generated: 2026-06-19T20:43:22Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -56,11 +56,11 @@ skills:
     source: first-party
     tags: [a,after,architecture,autoreview,coherent,commit,concrete,goal,green,improvement]
   - name: research
-    description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task], /research thinktank [topic]. Use when: \"search for\", \"look up\", \"research\", \"delegate"
+    description: "Web research, multi-AI delegation, and multi-perspective validation. /research [query], /research delegate [task]. Use when: \"search for\", \"look up\", \"research\", \"delegate\", \"get perspectives\", \"web s"
     source: first-party
-    tags: [delegate,delegation,look,multi-ai,multi-perspective,query,research,search,task,thinktank]
+    tags: [delegate,delegation,get,look,multi-ai,multi-perspective,perspectives,query,research,s]
   - name: roster
-    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle, thinktank) and how to invoke each headlessly. A capability map"
+    description: "Enumerates the peer AI agent CLIs installed on this machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle) and how to invoke each headlessly. A capability map, not a quo"
     source: first-party
     tags: [a,agent,agy,ai,capability,claude,clis,codex,cursor-agent,enumerates]
   - name: shape
