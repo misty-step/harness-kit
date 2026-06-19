@@ -140,7 +140,7 @@
   },
   "primitives": [
     {
-      "description": "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --repo .`. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\". Trigger: /ci, /gates.",
+      "description": "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --repo .`. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\", \"feedback loop is slow\", \"run gates less often\". Trigger: /ci, /gates.",
       "icon": "verify",
       "id": "skill:ci",
       "kind": "skill",

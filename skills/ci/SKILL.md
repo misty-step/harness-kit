@@ -7,7 +7,8 @@ description: |
   on mechanical fixes and never returns red without structured diagnosis. Use
   when: "run ci", "check ci", "fix ci", "audit ci", "is ci passing", "run the
   gates", "why is ci failing", "strengthen ci", "tighten ci", "ci is red",
-  "gates failing". Trigger: /ci, /gates.
+  "gates failing", "feedback loop is slow", "run gates less often".
+  Trigger: /ci, /gates.
 argument-hint: "[--audit-only|--run-only]"
 ---
 
@@ -31,6 +32,22 @@ installed there. Read that repo's root instructions, package manifests, CI
 workflows, hook config, and shipped scripts, then strengthen the repo-owned
 gate. Harness Kit can supply reusable checks, but the acceptance question is
 whether that repo has an active gate an agent will actually hit.
+
+Consumer repos should have a two-tier gate unless live evidence proves one
+loop is both strong and fast:
+
+- **Fast local gate:** pre-commit/pre-push should run deterministic checks an
+  agent will tolerate during amend/push cycles: formatting, changed-path lint,
+  typecheck, focused or changed tests, shell syntax, no-local-ticket/backlog
+  bans, and cheap secret scans when available.
+- **Full ship gate:** expensive Docker, Dagger, browser, network, mutation,
+  provider, full-coverage, and live-readiness checks stay required at PR/main,
+  deploy, or explicit `ship-check` time.
+
+Moving work out of pre-push is only valid when the same invariant remains
+required before merge or deploy. If a required GitHub check is path-filtered,
+add a sentinel/split-check design; skipped required workflows can leave PRs
+stuck pending.
 
 ## Modes
 
@@ -89,6 +106,15 @@ Check the live gate surface:
 
 For non-Harness Kit repos, replace the Harness Kit-specific bullets above with
 that repo's equivalent gate contract, then apply the same security floor.
+Also check:
+
+- Local hooks run the fast gate, not the full ship gate, unless the full gate is
+  proven fast enough for repeated pushes.
+- The full ship gate is still required in CI/merge/deploy protection.
+- There is an explicit command for humans/agents to run the full gate locally
+  before marking a PR ready or merging.
+- CI cancels stale PR runs where safe, but deploy/main runs do not get
+  interrupted mid-release.
 
 ## Run
 
