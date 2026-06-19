@@ -26,6 +26,12 @@ The gate is implemented in Rust at
 experimental runner, but it is not the default local gate, not required for
 pre-push, and not the source of truth for shipping this repo.
 
+When `/ci` runs in a consumer repo, do not assume Harness Kit's Rust gate is
+installed there. Read that repo's root instructions, package manifests, CI
+workflows, hook config, and shipped scripts, then strengthen the repo-owned
+gate. Harness Kit can supply reusable checks, but the acceptance question is
+whether that repo has an active gate an agent will actually hit.
+
 ## Modes
 
 - Default: audit the gate surface, fix mechanical gaps, then run the Rust gate.
@@ -49,6 +55,11 @@ pre-push, and not the source of truth for shipping this repo.
 5. **Fix-until-green on self-healable failures.** Formatting drift, stale
    generated docs/index, and trivial lints get fixed. Logic failures get a
    precise diagnosis.
+6. **Security floor is part of CI.** A credible repo gate prevents or fails on
+   secret leaks in source files, generated artifacts, logs, and Git/PR
+   metadata. Commit subjects/bodies, PR titles/bodies, release notes, and
+   agent-generated summaries are in scope. Prefer server-side push protection
+   or pre-receive hooks when available; otherwise require repo hooks plus CI.
 
 ## Delegation Judgment
 
@@ -72,6 +83,12 @@ Check the live gate surface:
 - `ci_check.rs` contains the default lane list.
 - Generated docs/index are current after skill/docs/backlog changes.
 - Dagger references are legacy/optional only, never mandatory local closeout.
+- Secret scanning covers both committed content and metadata that never appears
+  in the working tree: commit message file, outbound commit range, PR title/body,
+  and release/changelog text. The report must redact matched values.
+
+For non-Harness Kit repos, replace the Harness Kit-specific bullets above with
+that repo's equivalent gate contract, then apply the same security floor.
 
 ## Run
 
