@@ -48,7 +48,13 @@ providers:
     permissions: full read bash edit write grep find ls tool list
     worktree: recommended
     smoke: pi -p --no-extensions --provider openrouter --model moonshotai/kimi-k2.7-code --thinking xhigh --tools read,bash,edit,write,grep,find,ls
-    notes: Pi coding agent through OpenRouter. Primary open-model lane; default to Kimi K2.7 Code and use variants for Kimi rollback, DeepSeek, MiniMax, and Qwen comparisons. Dispatch disables extensions so personal Pi extensions cannot fail harness receipts after model output.
+    notes: >-
+      Pi coding agent through OpenRouter. Smallest primary open-model peer lane;
+      default to Kimi K2.7 Code and use variants for Kimi rollback, DeepSeek,
+      MiniMax, and Qwen comparisons. Dispatch disables extensions so personal Pi
+      extensions cannot fail harness receipts after model output. Do not treat
+      Pi as a durable production control plane without an external sandbox and
+      queue.
   goose:
     tier: primary
     kind: cli
@@ -68,7 +74,10 @@ providers:
     permissions: goose configured tool permissions
     worktree: recommended
     smoke: goose run --no-session --quiet --provider openrouter --model moonshotai/kimi-k2.7-code --text
-    notes: Goose on-machine agent through OpenRouter; primary bespoke open-model harness when its local provider credentials and tool permissions are configured.
+    notes: >-
+      Goose on-machine agent through OpenRouter; primary open-model harness for
+      MCP-heavy workflows that span code plus trackers, docs, browsers, chat, or
+      internal tools.
   opencode:
     tier: primary
     kind: cli
@@ -88,7 +97,11 @@ providers:
     permissions: opencode configured permissions
     worktree: recommended
     smoke: opencode run --model openrouter/moonshotai/kimi-k2.7-code --variant max --format json
-    notes: OpenCode CLI through OpenRouter; primary bespoke open-model harness with JSON event output and independent tool/runtime behavior from Pi and Goose.
+    notes: >-
+      OpenCode CLI through OpenRouter; preferred open candidate for code-centric
+      review runner experiments because of its session/service shape and JSON
+      event output. Still only a per-job kernel: durable queue, sandbox, policy,
+      publisher, and eval storage stay outside the CLI.
   agy:
     tier: conditional
     kind: cli

@@ -80,10 +80,25 @@ alone unless they sleep most of the time or can be rewritten to Workers/D1.
   peer lanes, and local evidence loops.
 - **Fly Sprites for heavy or isolated lanes**: remote sandboxes, golden
   checkpoints, long-running or parallel work.
-- **Pi/Goose/OpenCode/omp on OpenRouter for open-model breadth** when
-  smoke-tested; use Claude, Codex, Cursor, Antigravity, or Grok when their
-  particular surface answers a distinct question. (Gemini CLI is retired —
-  use Antigravity/`agy` for a Google-family lane.)
+- **OpenCode as the first open candidate for code-centric review runners** when
+  we are building an owned reviewer or review-eval lane: its server/session
+  shape, SDK surface, JSON/event output, and provider neutrality fit
+  coordinator/specialist designs better than terminal scraping. Keep the
+  durable queue, sandbox, policy, model gateway, publisher, and eval warehouse
+  outside OpenCode.
+- **Goose for MCP-heavy cross-system workflows** where the agent's job spans
+  code plus trackers, docs, browsers, chat, and internal tools. Do not choose it
+  over OpenCode for review-first work unless MCP side effects are central.
+- **Pi/OMP for local hackability and peer lanes**, not as a shared production
+  control plane. Use Pi through OpenRouter when a small decorrelated lane is
+  enough; use OMP as an expert local environment when its LSP/debugger/worktree
+  surface matters.
+- **Buy before building commodity review**: if automated PR review is not a
+  differentiated capability, run a bake-off against managed reviewers before
+  adding harness machinery.
+- Use Claude, Codex, Cursor, Antigravity, or Grok when their particular surface
+  answers a distinct question. (Gemini CLI is retired — use
+  Antigravity/`agy` for a Google-family lane.)
 
 ## Design And Artifact Surfaces
 

@@ -15,6 +15,10 @@
     {
       "source": "backlog.d/115-live-diff-refactor-verification.md",
       "title": "Context Packet: Document the \"live-diff\" verification pattern for behavior-preserving refactors"
+    },
+    {
+      "source": "backlog.d/116-opencode-review-runner-bakeoff.md",
+      "title": "Context Packet: Evaluate OpenCode as the code-review runner substrate"
     }
   ],
   "copy_source": "docs/copy/site.json",

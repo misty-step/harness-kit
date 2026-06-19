@@ -1,6 +1,8 @@
 ---
 model_reference_review_due: 2026-06-15
 last_researched: 2026-06-14
+substrate_reference_review_due: 2026-06-26
+substrate_reference_last_researched: 2026-06-19
 ---
 
 # Model / Provider / Harness Index
@@ -42,6 +44,44 @@ Local probe status proves only command discovery. It does not prove task
 quality, current billing, tool-call reliability, or benchmark performance.
 Oracle status proves only the browser-mode dry-run path; Harness Kit forbids
 Oracle API mode in its skill and roster defaults.
+
+## Substrate Assessment Addendum
+
+Source: user-provided research report, "Modern coding-agent systems as
+execution substrates", current through 2026-06-19.
+
+Factual substrate distinctions to preserve in composition design:
+
+- OpenCode is server/session-shaped: clients sit on top of a service with
+  programmatic sessions, SDK/API access, plugins, tools, permissions, MCP, and
+  structured event output. It is the strongest open candidate for custom
+  code-centric review runners, but it is not a durable queue, sandbox, policy
+  service, publisher, model gateway, or eval warehouse by itself.
+- Goose is a portable MCP-driven workflow runtime with CLI/headless operation,
+  recipes, subagents, broad provider support, and a large MCP extension
+  surface. Prefer it when a lane spans code plus trackers, docs, browsers,
+  chat, or internal tools.
+- Pi is a minimal coding-agent harness with CLI/RPC/SDK, tree sessions,
+  provider adapters, extensions, and skills. It is valuable for local
+  hackability and peer lanes, but its default process permissions and lack of a
+  built-in permission system mean unattended production use needs an external
+  sandbox and control plane.
+- OMP is a heavier local engineering environment built around Pi-style
+  workflows, with LSP/debugger/worktree/subagent affordances. Treat it as an
+  expert local surface, not the organization-wide production control plane.
+- OpenHands is the heavier open self-hosted platform option for remote
+  workspaces and issue-to-PR work; use it when operating a multi-user agent
+  platform is the point, not for a lightweight review-only lane.
+- Continue's official repository was reported read-only / no longer actively
+  maintained; do not make it a new strategic dependency without fresh contrary
+  evidence.
+- Managed review products such as Cursor Bugbot, Greptile, CodeRabbit, Codex
+  review, and Copilot are bake-off comparators before building commodity review
+  machinery.
+
+The security boundary is external to every row above: do not put model-provider
+keys or GitHub write credentials inside a sandbox that can execute
+repository-controlled code.
 
 Kimi K2.7 Code sentinel dispatch receipts on 2026-06-14:
 
