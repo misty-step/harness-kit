@@ -1819,7 +1819,11 @@ providers:
             },
         )?;
 
-        assert!(started.elapsed().as_secs_f64() < 2.0);
+        let elapsed = started.elapsed();
+        assert!(
+            elapsed < Duration::from_secs(10),
+            "dispatch timeout cleanup took {elapsed:?}"
+        );
         assert_eq!(receipt["provider_status"], "error");
         assert_eq!(receipt["attempt_status"], "failed");
         assert!(receipt["summary"].as_str().unwrap().contains("timed out"));

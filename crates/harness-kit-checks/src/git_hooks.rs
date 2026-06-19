@@ -96,15 +96,15 @@ pub fn run_pre_push(repo: &Path, pre_push_input: &str) -> Result<String> {
 
     let changes = changed_paths_for_push(repo, pre_push_input)?;
     log_push_classification(&mut lines, &changes);
-    if changes.paths.is_empty() {
-        lines.push("pre-push: no pushed file changes detected; skipping local gates".to_string());
-        return Ok(lines.join("\n"));
-    }
-
-    if !changes.force_full && push_allows_fast_gate(&changes.paths) {
-        run_fast_pre_push_gate(repo, &mut lines, &changes.paths)?;
-    } else {
-        run_full_pre_push_gate(repo, &mut lines)?;
+    match pre_push_gate_decision(&changes) {
+        PrePushGateDecision::Skip => {
+            lines.push(
+                "pre-push: no pushed file changes detected; skipping local gates".to_string(),
+            );
+            return Ok(lines.join("\n"));
+        }
+        PrePushGateDecision::Fast => run_fast_pre_push_gate(repo, &mut lines, &changes.paths)?,
+        PrePushGateDecision::Full => run_full_pre_push_gate(repo, &mut lines)?,
     }
     Ok(lines.join("\n"))
 }
@@ -136,6 +136,27 @@ struct PushChangeSet {
     paths: Vec<String>,
     source: String,
     force_full: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum PrePushGateDecision {
+    Skip,
+    Fast,
+    Full,
+}
+
+fn pre_push_gate_decision(changes: &PushChangeSet) -> PrePushGateDecision {
+    if changes.force_full {
+        return PrePushGateDecision::Full;
+    }
+    if changes.paths.is_empty() {
+        return PrePushGateDecision::Skip;
+    }
+    if push_allows_fast_gate(&changes.paths) {
+        PrePushGateDecision::Fast
+    } else {
+        PrePushGateDecision::Full
+    }
 }
 
 fn changed_paths_for_push(repo: &Path, pre_push_input: &str) -> Result<PushChangeSet> {
@@ -617,6 +638,26 @@ mod tests {
                 .iter()
                 .any(|line| line.contains("decision full local gate"))
         );
+    }
+
+    #[test]
+    fn conservative_pre_push_classification_runs_full_gate_even_without_paths() {
+        let changes = PushChangeSet {
+            paths: Vec::new(),
+            source: "new refs/heads/topic".to_string(),
+            force_full: true,
+        };
+        assert_eq!(pre_push_gate_decision(&changes), PrePushGateDecision::Full);
+    }
+
+    #[test]
+    fn empty_non_conservative_pre_push_classification_skips() {
+        let changes = PushChangeSet {
+            paths: Vec::new(),
+            source: "fallback diff origin/master..HEAD".to_string(),
+            force_full: false,
+        };
+        assert_eq!(pre_push_gate_decision(&changes), PrePushGateDecision::Skip);
     }
 
     #[test]

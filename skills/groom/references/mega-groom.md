@@ -30,9 +30,9 @@ Every strategic groom accounts for these surfaces. Mark a surface `complete`,
 | Architecture and system design | Are the deep modules deep, the boundaries honest, and the interfaces small? |
 | Code quality and simplicity | What can be deleted, flattened, clarified, or made harder to misuse? |
 | Runtime reliability | What fails under load, restart, queue pressure, retries, or partial outages? |
-| Security and privacy | Where can secrets, tokens, user data, or authority leak or overreach? |
+| Security and privacy | Where can secrets, tokens, user data, metadata, logs, or authority leak or overreach? |
 | Observability and ops | Can an operator see state, cost, queue pressure, incidents, and recovery actions? |
-| Tests and verification | Do gates prove the live behavior that matters, not just units? |
+| Tests and verification | Do gates prove the live behavior that matters, not just units, and do they fail the likely security mistakes before publication? |
 | Documentation and onboarding | Can a cold agent or human understand, run, extend, and debug the project? |
 | Agent readiness | Are skills, AGENTS, lane cards, receipts, and CLI JSON surfaces first-class? |
 | Infrastructure and delivery | Are deploys, rollbacks, backups, hosted checks, and local dev boring? |
@@ -99,7 +99,10 @@ The final groom report should include:
 3. **World-Class Target**: the best version of the project in concrete terms.
 4. **Gap Map**: what live evidence says is missing or weak by surface.
 5. **Verification Map**: missing or weak gates, QA paths, evals, benchmarks,
-   probes, and repo-local verification skills.
+   probes, repo-local verification skills, and secret/content/metadata leak
+   checks. Treat missing commit-message, outbound-range, PR-body, log, and
+   generated-artifact scanning as agent-readiness gaps unless the repo has a
+   stronger server-side control.
 6. **Strategy Themes**: 4-8 themes, each with recommendation first and evidence
    second.
 7. **Backlog Diff**: applied ticket edits/emissions and proposed deletions.
