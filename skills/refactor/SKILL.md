@@ -96,6 +96,13 @@ Useful lanes:
 - Critic lane: attack the architecture goal or a milestone diff.
 - QA lane: exercise the live surface if the lead cannot drive it cheaply.
 
+Default harsh critic: load the synced
+`thermo-nuclear-code-quality-review` skill
+(`skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`) for
+milestone diffs that add abstractions, split modules, cross file-size
+thresholds, or claim "cleaner architecture." Use `julius-caveman` to compress
+progress-file summaries only when they get noisy.
+
 ## Stop Conditions
 
 Stop and report instead of improvising when:

@@ -1,9 +1,9 @@
 # Harness Kit
 
 The ad-hoc operator harness for AI-assisted software development. One repo,
-all harnesses (Claude Code, Codex, Pi, Antigravity): judgment skills, a
-small legacy prompt layer, vendored external skills at pinned versions, and
-per-harness configs, installed system-wide by a Rust bootstrap.
+all harnesses (Claude Code, Codex, Pi, Antigravity): judgment skills,
+vendored external skills at pinned versions, shared doctrine, and per-harness
+configs, installed system-wide by a Rust bootstrap.
 
 Event-driven automation (CI-native code review, incident response, outer
 loops) is a separate plane — see [`meta/CONTRACTS.md`](meta/CONTRACTS.md)
@@ -16,8 +16,8 @@ or procurement.
 
 ```bash
 # Bootstrap (one-time per machine)
-# Installs skills, prompt files where supported, vendored externals, configs, and the provider
-# roster system-wide; symlinks when a local checkout exists.
+# Installs skills, vendored externals, configs, and the provider roster
+# system-wide; symlinks when a local checkout exists.
 curl -sL https://raw.githubusercontent.com/misty-step/harness-kit/master/bootstrap.sh | bash
 ```
 
@@ -41,13 +41,9 @@ worktree.
 | `/showcase` | Demoability, product polish, marketing assets, and evidence-backed consulting proof |
 | `/research` | Multi-source research, delegation, model selection |
 | `/sprites` | Run lane cards on Fly Sprites for heavy/parallel/isolated work |
-| `/harness-engineering` | Engineer this harness: skills, prompts, gates, sync, telemetry |
+| `/harness-engineering` | Engineer this harness: skills, doctrine, gates, sync, telemetry |
 | `/orient` | Fast read-only repo/session orientation from live evidence |
 | `/next` | Recommend the best next move, with user-vs-agent action split |
-
-Prompt files are still linked for harnesses that expose them, but Codex app
-slash and `$` discovery is skill-based. Do not rely on `prompts/*.md` for a
-Codex app-visible command.
 
 ## Workflow
 
@@ -83,7 +79,6 @@ regenerates, CI fails on drift, and master deploys to GitHub Pages.
 harness-kit/
 ├── skills/         # Judgment skills
 │   └── .external/  # Vendored third-party skills (pins in registry.yaml)
-├── prompts/        # Lightweight/legacy saved invocations where a harness supports them
 ├── harnesses/      # Per-harness configs + shared AGENTS.md doctrine
 ├── meta/           # Cross-repo contracts
 ├── registry.yaml   # External source provenance (repo, pin, license)
@@ -94,11 +89,11 @@ harness-kit/
 ## Adding a Primitive
 
 1. Run the primitive test (`skills/harness-engineering/SKILL.md`): most
-   ideas are prompts or doctrine lines, not skills, unless invocation reality
-   requires app-visible skill discovery.
+   ideas are local task prompts or doctrine lines, not skills, unless
+   invocation reality requires app-visible skill discovery.
 2. Skills: `skills/{name}/SKILL.md`, < 500 lines, judgment not procedure.
-   Prompts: one file in `prompts/`, only for harnesses that expose prompt
-   files ergonomically.
+   One-off prompts stay outside the source repo unless repeated use earns a
+   skill, reference, or template.
 3. Check telemetry before and after: `harness-kit-checks telemetry`.
 4. Re-bootstrap; discovery is filesystem-based.
 

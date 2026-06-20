@@ -52,7 +52,7 @@ evidence rather than taste or repo ownership.
 ## Repo Anchors
 
 - `skills/harness-engineering/references/mode-eval.md` - current eval protocol.
-- `.evidence/skill-scout/hit-list-scout.md` - external primitive candidates.
+- `registry.yaml` - current external primitive source ledger.
 - `crates/harness-kit-checks/src/scout_skills.rs` - current candidate scanner,
   not an outcome eval.
 - `skills/shape/SKILL.md` - candidate task family for shaping comparisons.

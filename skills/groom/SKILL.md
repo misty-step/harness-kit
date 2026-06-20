@@ -23,6 +23,11 @@ prioritizes, or emits a tiny handful of issues is incomplete unless the user
 explicitly scoped the run down.
 
 The backlog diff is the artifact. Prose exists to justify it.
+If the operator brings a raw idea, ambition, or uneasy plan instead of a
+backlog item, start with the synced `grill-me` skill
+(`skills/.external/petekp-grill-me/SKILL.md`) until the hidden decisions are
+visible. If the groom produces a giant synthesis, use `julius-caveman`
+compression for interim summaries, not for the committed backlog text.
 
 ## Project Vision
 

@@ -1,7 +1,7 @@
 # Harness Kit Registry — external skill sources, pinned.
 #
-# Skills and prompts are discovered from the filesystem (skills/*/SKILL.md,
-# prompts/*.md). This file is the provenance ledger for third-party skills:
+# Skills are discovered from the filesystem (skills/*/SKILL.md). This file is
+# the provenance ledger for third-party skills:
 # `harness-kit-checks sync-external` installs each source into
 # skills/.external/<alias>/ at its pinned sha. Small, actually-loaded sets
 # are committed (vendored) for reviewable diffs; sync is the update path.
@@ -111,6 +111,34 @@ sources:
     skills_path: skills
     alias_prefix: "julius-"
     include: [caveman]
+
+  # petekp/claude-code-setup grill-me — standalone pressure-test interview.
+  # We intentionally import this complete SKILL.md rather than the current
+  # mattpocock/skills grill-me wrapper, which delegates to a separate
+  # `/grilling` skill/command chain. This source gives Harness Kit the named
+  # `grill-me` primitive wholecloth without importing extra slash-command
+  # machinery.
+  - repo: petekp/claude-code-setup
+    ref: main
+    pin: 8355490ec50d174573cbd4cc0663a72a178e55e0
+    layout: flat
+    skills_path: skills
+    alias_prefix: "petekp-"
+    include: [grill-me]
+
+  # cursor/plugins team kit thermo-nuclear-code-quality-review — unusually
+  # strict maintainability and abstraction-quality review. Upstream is the
+  # Cursor team-kit skill; SkillsMP and other mirrors point back to this.
+  #
+  # LICENSE CAVEAT: no LICENSE file declared upstream as of pin sha. Same
+  # reasoning as other no-license externals above — local sync cache only.
+  - repo: cursor/plugins
+    ref: main
+    pin: e46364b8be46000b7df0f260550cd712afbb8d36
+    layout: flat
+    skills_path: cursor-team-kit/skills
+    alias_prefix: "cursor-"
+    include: [thermo-nuclear-code-quality-review]
 
   # DietrichGebert/ponytail — anti-overengineering skill. Core skill only:
   # import the concrete YAGNI / stdlib / native / existing-dependency ladder;

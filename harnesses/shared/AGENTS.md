@@ -70,6 +70,14 @@ prevents.
 ### Root-cause remediation
 Fix the cause in the highest-leverage layer, not the symptom.
 
+### Match the implementation to the product premise
+When the user outcome depends on semantic, realtime, speech, vision, or agentic
+model capability, verify current model/provider surfaces and make the model
+boundary explicit before coding. Deterministic code owns policy, persistence,
+approval, sandboxing, and evals; it must not silently replace the product brain
+with keyword heuristics unless the ticket explicitly scopes a fallback. Detail:
+`harnesses/shared/references/model-native-product-primitives.md`.
+
 ### Do not lower gates
 Never disable a test, loosen a lint rule, or weaken a threshold to get green.
 That is debt with compound interest.

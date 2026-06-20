@@ -39,6 +39,11 @@ never ships on its own review — that is the one hard rule.
    with the synced Ponytail skill
    (`skills/.external/dietrich-ponytail/SKILL.md`) when the main risk is bloat,
    boilerplate, or speculative engineering.
+   Add the synced Thermo-Nuclear skill
+   (`skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`)
+   whenever the diff changes meaningful implementation structure, grows large
+   files, adds wrappers, or risks spaghetti branching; this is the default
+   harsh maintainability lens, not a last resort.
    Add `harnesses/shared/references/verification-system-first.md` when the
    diff's proof story is missing, weak, eval/benchmark-shaped, or depends on
    QA/manual judgment.
@@ -74,6 +79,9 @@ runtime path) > **important** (architecture, test strength) > **advisory**
 full pass, not a spot-check. Max 3 fix-review iterations, then escalate to
 the operator with the open findings. Ship / Don't-ship is the lead's call on
 the reviewers' evidence; advisory findings never block.
+When the receipt pile is large, use `julius-caveman` compression for the
+synthesis only. Findings must stay precise; PR comments and code suggestions
+stay normal English unless the operator explicitly asks otherwise.
 
 ## Gotchas
 

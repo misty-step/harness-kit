@@ -1072,7 +1072,7 @@ mod tests {
                 "summary": "projection failed before dispatch",
                 "lead_verdict": "rejected",
                 "redactions_applied": [],
-                "lane_harness_ref": ".harness-kit/examples/lane-harness.yaml",
+                "lane_harness_ref": "crates/harness-kit-checks/tests/fixtures/lane-harness.yaml",
                 "lane_harness_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "projection_status": "failed",
                 "failure_kind": "projection_failed"
@@ -1086,7 +1086,7 @@ mod tests {
         assert_eq!(
             summary
                 .lane_harnesses
-                .get(".harness-kit/examples/lane-harness.yaml"),
+                .get("crates/harness-kit-checks/tests/fixtures/lane-harness.yaml"),
             Some(&1)
         );
         assert_eq!(summary.projection_statuses.get("failed"), Some(&1));

@@ -491,7 +491,7 @@ fn run_scout_skills(args: &[String]) {
             "-h" | "--help" => {
                 println!(
                     "Harness Kit Skill Scout\n\n\
-Usage:\n  harness-kit-checks scout-skills --input HIT-LIST.md --format markdown\n  harness-kit-checks scout-skills --input HIT-LIST.md --output .evidence/skill-scout/report.md\n  harness-kit-checks scout-skills --input HIT-LIST.md --format json --offline\n  harness-kit-checks scout-skills --input HIT-LIST.md --live --output .evidence/skill-scout/report.md\n"
+Usage:\n  harness-kit-checks scout-skills --input candidates.md --format markdown\n  harness-kit-checks scout-skills --input candidates.md --output /tmp/skill-scout-report.md\n  harness-kit-checks scout-skills --input candidates.md --format json --offline\n  harness-kit-checks scout-skills --input candidates.md --live --output /tmp/skill-scout-report.md\n"
                 );
                 std::process::exit(0);
             }

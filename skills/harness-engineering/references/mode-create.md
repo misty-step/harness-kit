@@ -5,7 +5,7 @@ Create a new Harness Kit source skill or agent from scratch.
 For a project-local skill in a consumer repo (bespoke QA drivers, persona
 probes), write it directly into the repo's `.agents/skills/<name>/` with the
 repo's real routes and commands — same craft, local facts. This mode is for
-first-party catalog primitives under `skills/` and `prompts/`.
+first-party catalog primitives under `skills/`.
 
 ## The description field is everything
 
@@ -51,8 +51,8 @@ that's not a skill, that's a task description.
   No daemon, no ceremony.
 - `skills/diagnose/SKILL.md` — judgment encoded as a routing table plus
   phase protocol with concrete stop conditions.
-- `prompts/yeet.md` — what a saved invocation looks like when it is NOT a
-  skill: pure judgment compression, no machinery.
+- `skills/next/SKILL.md` — tiny reusable trigger where app-visible discovery
+  earns the primitive.
 
 **External exemplars (installed under `skills/.external/`):**
 - `anthropic-skill-creator` — the "theory of mind" framing:
@@ -91,6 +91,11 @@ Useful source patterns:
 
 - JuliusBrussee/caveman: token compression and terse agent dialect.
   https://github.com/JuliusBrussee/caveman
+- petekp/claude-code-setup `grill-me`: a tiny, standalone interrogation skill
+  that forces one question at a time with a recommended answer.
+- cursor/plugins `thermo-nuclear-code-quality-review`: harsh maintainability
+  review focused on structural simplification, file-size pressure, and
+  spaghetti-growth blockers.
 - Anthropic skill authoring: description selection and progressive disclosure.
   https://anthropic.mintlify.app/en/docs/agents-and-tools/agent-skills/best-practices
 - Vercel Agent Skills: concise `SKILL.md`, reusable versioned context, and

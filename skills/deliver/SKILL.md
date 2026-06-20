@@ -23,6 +23,9 @@ real product understanding (who uses this, what breaks if it's wrong);
 **pre-factor** — if the change lands in messy ground, clean the ground first
 as its own commit. If the ticket has no goal or acceptance oracle, run
 `/shape` (or write the oracle yourself for small work) before building.
+If the goal is still in the user's head, use the synced `grill-me` skill
+(`skills/.external/petekp-grill-me/SKILL.md`) before shaping; one good
+question beats a guessed plan.
 Building without an oracle yields plausible garbage. For public API, CLI, UI,
 performance, compatibility, migration, or operator workflow changes, load
 `harnesses/shared/references/works-critique.md` before pre-ship review. For
@@ -85,6 +88,13 @@ With working code in hand, ask at each level — and act on what you find:
 3. **The backlog.** Does what you learned change what the product should do
    next? File tickets for the bigger moves; don't smuggle them into this
    branch.
+
+For non-trivial code, add the synced
+`thermo-nuclear-code-quality-review` skill
+(`skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`) as
+the harsh maintainability pass before declaring the diff clean. Use
+`julius-caveman` for compressed progress/review synthesis when the evidence
+is long; keep code, commits, PR text, and irreversible warnings normal.
 
 ## Land it
 

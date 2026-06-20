@@ -3,6 +3,8 @@ model_reference_review_due: 2026-06-15
 last_researched: 2026-06-14
 substrate_reference_review_due: 2026-06-26
 substrate_reference_last_researched: 2026-06-19
+speech_reference_review_due: 2026-06-27
+speech_reference_last_researched: 2026-06-20
 ---
 
 # Model / Provider / Harness Index
@@ -44,6 +46,59 @@ Local probe status proves only command discovery. It does not prove task
 quality, current billing, tool-call reliability, or benchmark performance.
 Oracle status proves only the browser-mode dry-run path; Harness Kit forbids
 Oracle API mode in its skill and roster defaults.
+
+## Realtime And Speech Substrate Snapshot
+
+Source: primary provider docs checked on 2026-06-20. This section is factual
+input for product boundary decisions; it is not a default-provider policy.
+
+OpenAI:
+
+- Realtime guide positions `gpt-realtime-2` for low-latency voice agents and
+  `gpt-realtime-whisper` for streaming transcription.
+- Realtime conversations support function calling and out-of-band responses
+  (`conversation: "none"`), which fits side-channel classification/proposal
+  work that should not speak into the main conversation.
+- `gpt-4o-transcribe-diarize` supports `diarized_json` speaker-aware segments
+  through `/v1/audio/transcriptions`; OpenAI docs state it is not yet supported
+  in the Realtime API.
+- Sources:
+  <https://developers.openai.com/api/docs/guides/realtime>,
+  <https://developers.openai.com/api/docs/guides/realtime-conversations>,
+  <https://developers.openai.com/api/docs/guides/speech-to-text#speaker-diarization>.
+
+Google Gemini:
+
+- Gemini Live API supports low-latency realtime voice/vision interactions,
+  tool use, audio transcriptions, and proactive audio controls.
+- Gemini model docs list Gemini 3.1 Flash Live Preview for high-quality
+  low-latency audio-to-audio dialogue and Gemini 2.5 Flash Live Preview for
+  low-latency bidirectional voice/video agents with native audio reasoning.
+- Sources:
+  <https://ai.google.dev/gemini-api/docs/live-api>,
+  <https://ai.google.dev/gemini-api/docs/models>.
+
+Deepgram:
+
+- Flux is positioned as conversational speech recognition for voice agents with
+  model-integrated end-of-turn detection, configurable turn-taking dynamics, and
+  ultra-low latency.
+- Source: <https://developers.deepgram.com/docs/models-languages-overview>.
+
+ElevenLabs:
+
+- Scribe v2 supports speech recognition across 90+ languages, word timestamps,
+  dynamic audio tagging, and speaker diarization up to 32 speakers.
+- Scribe v2 Realtime is documented for realtime low-latency transcription and
+  word-level timestamps; verify current diarization support separately before
+  relying on realtime speaker labels.
+- Source: <https://elevenlabs.io/docs/overview/capabilities/speech-to-text>.
+
+Design implication for AI-first meeting products: deterministic code should
+own approval, policy, event logs, sandboxing, schemas, and evals; semantic
+proposal generation, speech understanding, and diarization should be shaped
+against a model/provider capability surface first, with deterministic
+heuristics only as explicit fallback or fixture paths.
 
 ## Substrate Assessment Addendum
 
@@ -107,7 +162,7 @@ Minimum operating path:
 
 ```sh
 cargo run --locked -p harness-kit-checks -- materialize-lane-harness \
-  --manifest .harness-kit/examples/lane-harness.yaml
+  --manifest crates/harness-kit-checks/tests/fixtures/lane-harness.yaml
 
 cargo run --locked -p harness-kit-checks -- dispatch-agent \
   --provider-target codex \
@@ -115,7 +170,7 @@ cargo run --locked -p harness-kit-checks -- dispatch-agent \
   --input-ref "path/or/ticket" \
   --prompt-file /tmp/lane.md \
   --repo . \
-  --lane-harness .harness-kit/examples/lane-harness.yaml
+  --lane-harness crates/harness-kit-checks/tests/fixtures/lane-harness.yaml
 ```
 
 Manifest constraints:

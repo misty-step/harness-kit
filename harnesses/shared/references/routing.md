@@ -35,6 +35,7 @@ judgment in the skill.
 | Need current repo truth: contracts, file content, skill definitions | `rg` / read the live file first |
 | Need external ecosystem facts: libraries, CVEs, recent changes | `/research` |
 | Need model/provider comparison | `/research` |
+| Product premise depends on realtime, speech, vision, semantic intent, or model-native agents | Read `model-native-product-primitives.md`, verify current provider docs, then `/shape` the model boundary before implementation |
 
 ## Integration Shape
 

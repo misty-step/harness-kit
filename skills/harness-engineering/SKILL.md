@@ -34,6 +34,7 @@ Engineer the harness. Keep it thin.
 | open-model defaults | `references/open-model-roster.md` |
 | preferred stack / infrastructure defaults | `references/preferred-stack.md` |
 | public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
+| model-native product boundary | `../../harnesses/shared/references/model-native-product-primitives.md` |
 | loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |
 | verification system first | `../../harnesses/shared/references/verification-system-first.md` |
 | delete-first simplification lens | `../../harnesses/shared/references/delete-first.md` |
@@ -101,9 +102,9 @@ Local lane guidance: Use lanes for doctrine critique, runtime compatibility, gat
 
 Before creating or growing anything, classify it (2026-06 audit, backlog 103):
 
-- **Prompt** — "is this just what the operator would retype to a strong
-  model, and does the target harness expose prompt files ergonomically?" One
-  file, no references/, no receipts, exempt from skill machinery. If the
+- **Local prompt** — "is this just what the operator would retype to a strong
+  model?" Keep it in chat, local scratch, or a skill template only when a skill
+  truly needs reusable wording. Do not add a repo-level prompt layer. If the
   operator expects Codex app slash or `$` discovery, use a skill instead.
 - **Skill** — "does this change what a frontier model does, for the better,
   repeatedly?" Judgment + context the model can't derive.
@@ -203,5 +204,5 @@ valid.
 
 Run `cargo run --locked -p harness-kit-checks -- check --repo .` after
 changing harness primitives, gates, roster, bootstrap, or sync logic. For
-bootstrap changes, also re-run the bootstrap and confirm the installed
-symlinks (skills, prompts, configs) match the source tree.
+bootstrap changes, also re-run bootstrap and confirm installed skills/configs
+match the source tree and retired prompt/example links are pruned.

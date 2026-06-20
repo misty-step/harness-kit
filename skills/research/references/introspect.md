@@ -50,7 +50,7 @@ For opt-in effectiveness mining, use the repo command instead of a one-off
 ```bash
 cargo run --quiet --locked -p harness-kit-checks -- mine-transcript-effectiveness \
   --transcript /path/to/session.jsonl \
-  --skill-log .harness-kit/examples/skill-invocations.jsonl \
+  --skill-log crates/harness-kit-checks/tests/fixtures/skill-invocations.jsonl \
   --format markdown
 ```
 

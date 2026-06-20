@@ -11,24 +11,23 @@ through `task` subagents or the `dispatch-agent` receipt system.
 compaction, memory, advisor. The global config is user-owned and shared across
 all repos.
 
-**Repo-local (`.omp/`).** Harness Kit's repo-local OMP config:
-- `RULES.md` — critical-few invariants, re-injected every turn (survive
-  compaction via `snapcompact.systemPrompt: agents-md`)
-- `commands/` — `/gate`, `/backlog`, `/bootstrap` slash commands
-- `rules/` — scoped TTSR rules for `crates/`, `skills/`, `backlog.d/`
+**Harness Kit source (`harnesses/omp/`).** Keep OMP-specific notes and future
+bootstrap inputs here. Harness Kit does not commit a source-root `.omp/`
+projection; operator-local `.omp/` files are user-owned unless a shaped ticket
+proves bootstrap support is worth adding.
 
 ## Model Composition
 
-OMP's role-based routing assigns different models to different work types. See
-`.omp/README.md` for the current role split and rationale. The barbell strategy
-uses GLM 5.2:high for default/plan, DeepSeek V4 Pro for slow, Claude Opus 4.8
-for advisor (decorrelated passive review), and Kimi K2.7 Code for task subagents.
+OMP's role-based routing assigns different models to different work types in
+the user's global config. Keep repo source limited to portable doctrine and
+bootstrap inputs; model rosters live in Harness Kit's roster files.
 
 ## What's Different from Codex / Claude Code
 
 - **TTSR rules** — regex-matched invariants injected mid-stream; survive
-  compaction. The `.omp/rules/` scoped rules and `.omp/RULES.md` are the
-  mechanical guardrails that AGENTS.md prose alone cannot enforce.
+  compaction. If Harness Kit needs source-controlled OMP rules later, they
+  should be generated from shared doctrine or shaped as explicit bootstrap
+  inputs, not committed as root `.omp/` drift.
 - **Hashline edits** — content-hash anchored; rejects stale patches before
   corrupting files. No string-not-found loops.
 - **In-process search** — ripgrep, glob, find linked into the binary. No
@@ -42,7 +41,6 @@ for advisor (decorrelated passive review), and Kimi K2.7 Code for task subagents
 
 ## Harness-Agnostic Principle
 
-The `.omp/` directory is OMP-specific, parallel to `.claude/` and `.codex/`
-for their harnesses. The shared doctrine (`AGENTS.md`,
-`harnesses/shared/AGENTS.md`, `skills/`) is harness-agnostic and portable
-across all harnesses. OMP-specific config does not leak into shared doctrine.
+The shared doctrine (`AGENTS.md`, `harnesses/shared/AGENTS.md`, `skills/`) is
+harness-agnostic and portable across all harnesses. OMP-specific config does
+not leak into shared doctrine.

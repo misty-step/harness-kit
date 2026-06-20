@@ -2,12 +2,12 @@
 
 ## What This Repo Is
 
-**Harness Kit** — the ad-hoc operator harness: judgment skills, lightweight
-prompt files, vendored external skills, and harness configs, installed to
-every harness (~/.claude, ~/.codex, ~/.pi, antigravity) by the Rust
-bootstrap. Event-driven automation (CI-native review, incident response,
-outer loops) is Mode B and lives in bitterblossom, not here; the boundary
-contract is `meta/CONTRACTS.md`.
+**Harness Kit** — the ad-hoc operator harness: judgment skills, vendored
+external skills, shared doctrine, and harness configs, installed to every
+harness (~/.claude, ~/.codex, ~/.pi, antigravity) by the Rust bootstrap.
+Event-driven automation (CI-native review, incident response, outer loops) is
+Mode B and lives in bitterblossom, not here; the boundary contract is
+`meta/CONTRACTS.md`.
 
 ## Structure
 
@@ -15,7 +15,6 @@ contract is `meta/CONTRACTS.md`.
 harness-kit/
 ├── skills/         # Judgment skills (deliver, groom, qa, code-review, …)
 │   └── .external/  # Vendored third-party skills, pinned via registry.yaml
-├── prompts/        # Lightweight saved invocations where a harness exposes them
 ├── harnesses/      # Per-harness configs, hooks, shared AGENTS.md doctrine
 ├── meta/           # Cross-repo contracts (Mode B boundary, trailers)
 ├── registry.yaml   # External source provenance: repo, pin, license notes
@@ -24,7 +23,7 @@ harness-kit/
 ```
 
 Primitive test (full version in `skills/harness-engineering/SKILL.md`):
-prompt = "what I'd retype and the target harness exposes ergonomically";
+local prompt = "what I'd retype and does not deserve repo source";
 skill = "changes what a frontier model does or must be app-discoverable";
 doctrine line = "worth paying for every session"; event-triggered = Mode B,
 not here.
@@ -64,8 +63,8 @@ See `harnesses/shared/AGENTS.md` — one file, symlinked to every harness.
 ## Gotchas for Contributing to This Repo
 
 - Run the primitive test before adding anything. Most "new skills" are
-  prompts or doctrine lines, but Codex app-visible reusable invocations need
-  to be skills.
+  task prompts or doctrine lines, but Codex app-visible reusable invocations
+  need to be skills.
 - Skills encode judgment, not procedures. If the model already knows how,
   delete it.
 - The pre-commit hook regenerates `index.yaml` and `docs/site` — never edit

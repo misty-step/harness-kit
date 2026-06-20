@@ -19,6 +19,10 @@
     {
       "source": "backlog.d/116-opencode-review-runner-bakeoff.md",
       "title": "Context Packet: Evaluate OpenCode as the code-review runner substrate"
+    },
+    {
+      "source": "backlog.d/117-research-semantic-provider-intent-routing.md",
+      "title": "Add semantic provider-intent routing to research"
     }
   ],
   "copy_source": "docs/copy/site.json",

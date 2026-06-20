@@ -20,6 +20,13 @@ const RETIRED_GLOBAL_AGENTS: &[&str] = &[
     "ousterhout",
     "planner",
 ];
+const RETIRED_PROMPTS: &[&str] = &[
+    "critique.md",
+    "orient.md",
+    "reflect.md",
+    "ship.md",
+    "yeet.md",
+];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BootstrapOptions {
@@ -57,7 +64,6 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
 
     let skills = discover_skills(&repo)?;
     let agents = discover_agents(&repo)?;
-    let prompts = discover_prompts(&repo)?;
     if skills.is_empty() {
         bail!("No skills found");
     }
@@ -86,15 +92,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         }
         fs::create_dir_all(&harness_dir)?;
         lines.push(blue(format!("Detected: {harness}")));
-        link_harness(
-            &repo,
-            harness,
-            &harness_dir,
-            &skills,
-            &agents,
-            &prompts,
-            &mut lines,
-        )?;
+        link_harness(&repo, harness, &harness_dir, &skills, &agents, &mut lines)?;
         installed += 1;
         lines.push(String::new());
     }
@@ -104,9 +102,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         lines.push(yellow("Installing to ~/.claude/ as default."));
         let claude = options.home.join(".claude");
         fs::create_dir_all(&claude)?;
-        link_harness(
-            &repo, "claude", &claude, &skills, &agents, &prompts, &mut lines,
-        )?;
+        link_harness(&repo, "claude", &claude, &skills, &agents, &mut lines)?;
         installed = 1;
     }
 
@@ -119,11 +115,6 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         "Skills ({}): {}",
         skills.len(),
         skills.join(" ")
-    )));
-    lines.push(blue(format!(
-        "Prompt files ({}): {}",
-        prompts.len(),
-        prompts.join(" ")
     )));
     if !agents.is_empty() {
         lines.push(blue(format!(
@@ -190,22 +181,6 @@ fn discover_external_skills(repo: &Path) -> Result<Vec<String>> {
     Ok(skills.into_iter().collect())
 }
 
-fn discover_prompts(repo: &Path) -> Result<Vec<String>> {
-    let prompts_dir = repo.join("prompts");
-    let mut prompts = BTreeSet::new();
-    if prompts_dir.is_dir() {
-        for entry in fs::read_dir(&prompts_dir)? {
-            let path = entry?.path();
-            if path.extension().and_then(|ext| ext.to_str()) == Some("md")
-                && let Some(name) = path.file_stem().and_then(|name| name.to_str())
-            {
-                prompts.insert(name.to_string());
-            }
-        }
-    }
-    Ok(prompts.into_iter().collect())
-}
-
 #[cfg(unix)]
 fn install_system_roster(repo: &Path, home: &Path, lines: &mut Vec<String>) -> Result<()> {
     lines.push(blue("Installing system roster..."));
@@ -219,12 +194,30 @@ fn install_system_roster(repo: &Path, home: &Path, lines: &mut Vec<String>) -> R
         &home.join(".spellbook/agents.yaml"),
     )?;
     lines.push(green("    legacy agents.yaml"));
-    link_or_replace(
-        &repo.join(".harness-kit/examples"),
-        &home.join(".harness-kit/examples"),
-    )?;
-    lines.push(green("    examples/"));
+    cleanup_retired_system_examples(repo, home, lines)?;
     lines.push(String::new());
+    Ok(())
+}
+
+#[cfg(unix)]
+fn cleanup_retired_system_examples(
+    repo: &Path,
+    home: &Path,
+    lines: &mut Vec<String>,
+) -> Result<()> {
+    let path = home.join(".harness-kit/examples");
+    if !is_symlink(&path) {
+        return Ok(());
+    }
+    let target = fs::read_link(&path).unwrap_or_default();
+    let retired_source = repo.join(".harness-kit/examples");
+    let owned = target.starts_with(&retired_source)
+        || !path.exists()
+        || points_into_harness_kit_checkout(&target);
+    if owned {
+        fs::remove_file(&path)?;
+        lines.push(green("    removed retired examples/"));
+    }
     Ok(())
 }
 
@@ -266,7 +259,6 @@ fn link_harness(
     harness_dir: &Path,
     skills: &[String],
     agents: &[String],
-    prompts: &[String],
     lines: &mut Vec<String>,
 ) -> Result<()> {
     let skills_dir = harness_dir.join("skills");
@@ -293,30 +285,7 @@ fn link_harness(
         )));
     }
 
-    // Prompt files: lightweight saved invocations for harnesses that expose
-    // them. Codex app slash/$ discovery is skill-based; keep app-visible
-    // operator commands under skills/.
-    let prompts_dest = match harness {
-        "claude" => Some(harness_dir.join("commands")),
-        "codex" | "pi" => Some(harness_dir.join("prompts")),
-        _ => None,
-    };
-    if let Some(prompts_dir) = prompts_dest {
-        fs::create_dir_all(&prompts_dir)?;
-        lines.push(blue("  Linking prompts..."));
-        let expected = prompts
-            .iter()
-            .map(|prompt| format!("{prompt}.md"))
-            .collect::<Vec<_>>();
-        cleanup_symlinks_under_prefix(&prompts_dir, &repo.join("prompts"), &expected, lines)?;
-        for prompt in prompts {
-            link_or_replace(
-                &repo.join("prompts").join(format!("{prompt}.md")),
-                &prompts_dir.join(format!("{prompt}.md")),
-            )?;
-            lines.push(green(format!("    {prompt}")));
-        }
-    }
+    cleanup_retired_prompt_links(repo, harness, harness_dir, lines)?;
 
     let agents_dir = harness_dir.join("agents");
     lines.push(blue("  Linking agents..."));
@@ -395,6 +364,47 @@ fn link_harness(
             )?;
         }
         _ => {}
+    }
+    Ok(())
+}
+
+#[cfg(unix)]
+fn cleanup_retired_prompt_links(
+    repo: &Path,
+    harness: &str,
+    harness_dir: &Path,
+    lines: &mut Vec<String>,
+) -> Result<()> {
+    let Some(prompts_dir) = (match harness {
+        "claude" => Some(harness_dir.join("commands")),
+        "codex" | "pi" => Some(harness_dir.join("prompts")),
+        _ => None,
+    }) else {
+        return Ok(());
+    };
+    if !prompts_dir.is_dir() {
+        return Ok(());
+    }
+
+    let retired_source = repo.join("prompts");
+    let mut printed_header = false;
+    for prompt in RETIRED_PROMPTS {
+        let path = prompts_dir.join(prompt);
+        if !is_symlink(&path) {
+            continue;
+        }
+        let target = fs::read_link(&path).unwrap_or_default();
+        let owned = target.starts_with(&retired_source)
+            || !path.exists()
+            || points_into_harness_kit_checkout(&target);
+        if owned {
+            if !printed_header {
+                lines.push(blue("  Pruning retired prompt links..."));
+                printed_header = true;
+            }
+            fs::remove_file(&path)?;
+            lines.push(green(format!("    removed retired {prompt}")));
+        }
     }
     Ok(())
 }
@@ -487,7 +497,8 @@ fn cleanup_symlinks_under_prefix(
 
 #[cfg(unix)]
 fn points_into_harness_kit_checkout(target: &Path) -> bool {
-    // Managed link targets look like <checkout>/{skills,prompts,agents}/…
+    // Managed link targets look like <checkout>/{skills,agents}/…; prompt
+    // targets are recognized here only so bootstrap can prune retired links.
     // Walk ancestors and look for the checkout markers.
     target.ancestors().skip(1).any(|ancestor| {
         ancestor.join("harnesses").is_dir()

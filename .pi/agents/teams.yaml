@@ -1,9 +1,0 @@
-foundation:
-  - planner
-  - worker
-  - reviewer
-
-delivery:
-  - planner
-  - worker
-  - reviewer

@@ -13,4 +13,4 @@ Output shape: <=600 words: blocking findings, evidence, verdict.
 Do not touch: no edits, no broad repo audit, no provider replacement policy.
 Receipt expectation: record receipt id, accepted/rejected findings, and any
 projection failure.
-Lane harness: `.harness-kit/examples/lane-harness.yaml`
+Lane harness: `crates/harness-kit-checks/tests/fixtures/lane-harness.yaml`
