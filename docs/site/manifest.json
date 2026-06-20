@@ -326,6 +326,16 @@
       "page": "reference/skills/sprites.html",
       "role": "Support",
       "source": "skills/sprites/SKILL.md"
+    },
+    {
+      "description": "Create or update root VISION.md as a first-class project north-star artifact. Conversational project interrogation, repo/workspace research, competitive or exemplar scan, lifespan clarification, philosophy distillation, and wiring repo-local harness primitives to read it. Use when: \"vision\", \"vision.md\", \"project vision\", \"north star\", \"what is this project\", \"clarify product direction\", \"write/update VISION.md\", \"project philosophy\", \"why does this repo exist\". Trigger: /vision, /north-star.",
+      "icon": "catalog",
+      "id": "skill:vision",
+      "kind": "skill",
+      "name": "vision",
+      "page": "reference/skills/vision.html",
+      "role": "Support",
+      "source": "skills/vision/SKILL.md"
     }
   ],
   "workflows": [

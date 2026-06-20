@@ -23,6 +23,9 @@ real product understanding (who uses this, what breaks if it's wrong);
 **pre-factor** — if the change lands in messy ground, clean the ground first
 as its own commit. If the ticket has no goal or acceptance oracle, run
 `/shape` (or write the oracle yourself for small work) before building.
+For product direction, positioning, long-lived workflow, or project-identity
+changes, read root `VISION.md` when present; if direction matters and the repo
+has no credible north star, route to `/vision` before building.
 If the goal is still in the user's head, use the synced `grill-me` skill
 (`skills/.external/petekp-grill-me/SKILL.md`) before shaping; one good
 question beats a guessed plan.

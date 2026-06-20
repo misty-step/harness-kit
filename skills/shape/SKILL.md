@@ -27,6 +27,10 @@ an architecture choice needs the full treatment.
 - **Grounded in live repo evidence.** You read the load-bearing source files,
   tests, and ADRs yourself. Subagent summaries add coverage; they do not
   replace direct reads of what the builder must understand.
+- **Vision-aware when strategic.** For product direction, positioning,
+  long-lived workflow, or project-identity choices, read root `VISION.md` when
+  present. If the shape depends on a missing or stale north star, route to
+  `/vision` or carry an explicit waiver.
 - **Alternatives genuinely explored.** Real alternatives fail differently —
   include the boring/manual path and one that inverts a load-bearing
   assumption. Same idea in three outfits is one option. Kill the losers on

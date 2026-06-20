@@ -38,9 +38,13 @@ into local cleanup.
 
 - If a project already has a canonical vision or strategy artifact, read it
   early and use it to judge every theme, deletion, emission, and next pickup.
-- If none exists, draft the smallest durable vision artifact the repo can own
-  (`docs/vision.md`, `docs/product.md`, a roadmap doc, or a clearly named
-  backlog epic) and treat creating it as a first-class groom emission.
+- If none exists, draft the smallest durable vision artifact the repo can own.
+  Prefer root `VISION.md` as a first-class repository artifact; use
+  `docs/product.md`, a roadmap doc, or a clearly named backlog epic only when
+  repo evidence says root vision is the wrong fit. Treat creating it as a
+  first-class groom emission.
+- Use `/vision` when creating or materially revising root `VISION.md`; groom
+  consumes the north star instead of hand-rolling a parallel strategy doc.
 - Keep the vision concrete: audience, job-to-be-done, category, standards,
   non-goals, strategic bets, and what excellent looks like in 6-12 months.
 - Revise the vision when live evidence contradicts it. Do not bury direction

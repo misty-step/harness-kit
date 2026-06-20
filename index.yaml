@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-20T15:29:14Z
+# Generated: 2026-06-20T22:59:26Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -75,6 +75,10 @@ skills:
     description: "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use w"
     source: first-party
     tags: [a,agent,cards,fly,golden-checkpoint,heavy,isolated,lane,lanes,on]
+  - name: vision
+    description: "Create or update root VISION.md as a first-class project north-star artifact. Conversational project interrogation, repo/workspace research, competitive or exemplar scan, lifespan clarification, philo"
+    source: first-party
+    tags: [a,artifact,as,clarification,competitive,conversational,create,exemplar,first-class,interrogation]
 
 agents:
   []

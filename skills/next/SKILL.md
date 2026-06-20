@@ -32,6 +32,8 @@ Read the smallest useful surface for the scope:
 - `git status --short --branch --untracked-files=all` when in a repo
 - active branch, upstream, dirty/unpushed state, and recent commits
 - open `backlog.d/*.md` titles when backlog priority is in scope
+- root `VISION.md` when the next move depends on product direction,
+  positioning, project identity, or long-term sequencing
 - live tracker queues across delivery states when an external tracker is in
   scope: at minimum `ready_for_dev`, `verification`, `in_progress`, and
   `blocked`/prerequisite-bearing items
