@@ -5,6 +5,9 @@ all harnesses (Claude Code, Codex, Pi, Antigravity): judgment skills,
 vendored external skills at pinned versions, shared doctrine, and per-harness
 configs, installed system-wide by a Rust bootstrap.
 
+For the project north star - what Harness Kit is trying to become and what it
+should refuse - read [`VISION.md`](VISION.md).
+
 Event-driven automation (CI-native code review, incident response, outer
 loops) is a separate plane — see [`meta/CONTRACTS.md`](meta/CONTRACTS.md)
 for the boundary. Harness Kit is operator-facing implementation substrate,

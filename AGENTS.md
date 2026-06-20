@@ -6,6 +6,9 @@ disk; do not restate obvious filesystem facts.
 
 ## Non-Negotiables
 
+- Project direction lives in `VISION.md`. Read it before changing strategy,
+  primitive scope, provider defaults, or the Mode A/Mode B boundary; do not
+  duplicate its prose here.
 - Base branch: `master`.
 - Gate: `cargo run --locked -p harness-kit-checks -- check --repo .`. Green
   means the Rust-owned local gate passed; `/ci` owns the exact lane list in

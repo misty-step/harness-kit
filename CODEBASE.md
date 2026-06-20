@@ -23,6 +23,7 @@ cargo run --locked -p harness-kit-checks -- check --repo .  guards the catalog
 
 | Surface | Path | Owns |
 |---|---|---|
+| Vision | `VISION.md` | Project north star, strategic bets, non-goals, and what Harness Kit should become |
 | Skills | `skills/<name>/SKILL.md` (+ optional `references/`, `scripts/`, `templates/`) | Judgment and context a frontier model can't derive |
 | Externals | `skills/.external/<alias>/` | Vendored third-party skills at the pins in `registry.yaml` |
 | Doctrine | `harnesses/shared/AGENTS.md` | Always-loaded operating rules, symlinked into every harness |
