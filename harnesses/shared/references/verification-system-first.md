@@ -62,6 +62,46 @@ probes catch failures at runtime, judgment, scale, or integration boundaries.
 - **Do not weaken gates.** If the current system is too slow, split fast and
   heavyweight lanes; do not delete the only proof that catches the failure.
 
+## Eval & Benchmark Rigor
+
+The grader is half the system; the *numbers* mislead unless you size and read
+them honestly. A strong model will report "3.8 → 4.1, improved" off twelve
+samples — don't.
+
+**Statistical honesty.**
+- No score without a confidence interval. For a rate, `SE = sqrt(p*(1-p)/n)`,
+  95% CI `±1.96*SE`. A paired delta whose CI includes 0 is noise, not a result.
+  (Miller, "Adding Error Bars to Evals", arXiv 2411.00640)
+- Right-size n. Detecting a ~3% absolute change at 80% power needs ~1000 items;
+  a ~12-item suite catches only large regressions — read small deltas as noise
+  and say so. (Miller)
+- Compare versions paired on identical items (McNemar / paired bootstrap), not
+  as two independent rates; pairing is free variance reduction. (Miller)
+- Cluster the SE by source when many graded items share one document — naive
+  independence understated uncertainty >3x on real benchmarks. (Miller)
+- Average K samples per item for nondeterministic graders (K=2 cuts variance
+  ~1/3); never lower temperature to fake stability — that trades variance for
+  bias. (Miller)
+
+**Judge validity (model graders).**
+- Validate the judge against human labels before trusting it: target Cohen's
+  κ ≈ 0.80; report TPR/TNR (not raw % agreement) under class imbalance, then
+  bias-correct the rate. (Hamel Husain, evals-faq; "Judge's Verdict", arXiv
+  2510.09738)
+- Binary pass/fail per atomic criterion, not a 1–5 Likert — Likert doesn't
+  track expert judgment and isn't actionable. Have the judge write its rationale
+  before the verdict. (Hamel Husain, llm-judge; G-Eval, arXiv 2303.16634)
+- Judge model ≠ generator family (self-enhancement is +10–25% win rate);
+  reference-guide objective items; one judge per dimension; give an
+  "insufficient info" escape hatch. (Zheng et al., MT-Bench, arXiv 2306.05685;
+  Anthropic, Demystifying Evals)
+- A ~100% pass rate means the eval is too weak; aim where it bites (~70%).
+
+**Anti-Goodhart.** A judge or threshold, once optimized against, stops
+measuring. Keep a hidden held-out split and select by it (≈60/40); diversify and
+rotate sources; n-gram-screen new fixtures for contamination; turn every shipped
+defect into a permanent fixture-backed case so it cannot silently regress.
+
 ## Minimum Artifact
 
 Every substantial plan or closeout should include:

@@ -52,7 +52,9 @@ constant: run → read the evidence → fix → re-run. If the repo has no such
 harness, building it is the first deliverable of the work, not overhead —
 every subsequent change ships through it and leaves an evidence packet
 behind. Unit tests prove units; only the live loop catches the bug that
-exists between them. Detail: `harnesses/shared/references/verification-system-first.md`.
+exists between them. An eval or benchmark delta inside its noise floor is not a
+result: size the sample to the effect, report a confidence interval, and compare
+paired against a baseline. Detail: `harnesses/shared/references/verification-system-first.md`.
 
 ### Delete before adding
 Small surface area. The best change removes code; new surface must earn itself.
