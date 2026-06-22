@@ -23,6 +23,10 @@
     {
       "source": "backlog.d/117-research-semantic-provider-intent-routing.md",
       "title": "Add semantic provider-intent routing to research"
+    },
+    {
+      "source": "backlog.d/118-quality-gate-coverage-mutation.md",
+      "title": "Add diff-coverage, mutation, and advisory gates to the quality floor"
     }
   ],
   "copy_source": "docs/copy/site.json",
@@ -36,10 +40,13 @@
     "check-docs-site",
     "check-exclusions",
     "check-frontmatter",
+    "check-godfiles",
     "check-harness-install-paths",
     "check-index-drift",
     "check-no-claims",
     "check-portable-paths",
+    "check-source-markers",
+    "check-supply-chain",
     "check-vendored-copies",
     "lint-shell",
     "lint-yaml",

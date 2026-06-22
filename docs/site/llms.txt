@@ -36,10 +36,13 @@ CI gates:
 - check-docs-site
 - check-exclusions
 - check-frontmatter
+- check-godfiles
 - check-harness-install-paths
 - check-index-drift
 - check-no-claims
 - check-portable-paths
+- check-source-markers
+- check-supply-chain
 - check-vendored-copies
 - lint-shell
 - lint-yaml

@@ -119,6 +119,10 @@ Stop and report instead of improvising when:
   live proof, and review signal.
 - **Architecture theater.** Renames, folders, and wrappers do not count unless
   they reduce coupling, clarify ownership, or delete a real failure mode.
+- **Unfenced win.** A god-file split, a killed dependency, or a corrected
+  dependency direction with no gate to stop it regrowing comes back. Ratchet the
+  structural win into a standing gate — a fitness function, a god-file baseline —
+  per `harnesses/shared/references/quality-gates.md`.
 - **Big-bang rewrite.** If you cannot test and commit the step independently,
   the step is too large.
 - **Test-only proof.** Refactors break integration seams; run the live surface

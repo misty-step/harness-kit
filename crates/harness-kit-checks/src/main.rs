@@ -5,7 +5,8 @@ use std::path::{Path, PathBuf};
 use harness_kit_checks::{
     agent_roster, backlog, bootstrap, ci_check, claude_hooks, config_loader, docs_site,
     external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
-    pr_reviews, scout_skills, skill_invocation_analytics, source_refs, summarize_delegations,
+    pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
+    summarize_delegations,
 };
 
 fn main() {
@@ -122,6 +123,20 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "check-harness-install-paths" => print_gate_report(
             lint_gates::check_harness_install_paths(&parse_repo_arg(rest))?,
         )?,
+        "check-godfiles" => {
+            let (repo, write) = parse_godfile_args(rest);
+            if write {
+                println!("{}", quality_gates::write_godfile_baseline(&repo)?);
+            } else {
+                print_gate_report(quality_gates::check_godfiles(&repo)?)?;
+            }
+        }
+        "check-source-markers" => {
+            print_gate_report(quality_gates::check_source_markers(&parse_repo_arg(rest))?)?
+        }
+        "check-supply-chain" => {
+            print_gate_report(quality_gates::check_supply_chain(&parse_repo_arg(rest))?)?
+        }
         "telemetry" | "skill-invocation-analytics" => run_skill_invocation_analytics(rest),
         _ => usage(),
     }
@@ -321,6 +336,26 @@ fn parse_repo_arg(args: &[String]) -> PathBuf {
         [flag, path] if flag == "--repo" => PathBuf::from(path),
         _ => usage(),
     }
+}
+
+fn parse_godfile_args(args: &[String]) -> (PathBuf, bool) {
+    let mut repo = PathBuf::from(".");
+    let mut write = false;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--write-baseline" => write = true,
+            "--repo" => {
+                if let Some(path) = args.get(index + 1) {
+                    repo = PathBuf::from(path);
+                    index += 1;
+                }
+            }
+            _ => {}
+        }
+        index += 1;
+    }
+    (repo, write)
 }
 
 fn run_check_docs_site(args: &[String]) {
@@ -889,6 +924,7 @@ fn usage() -> ! {
   harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
   harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
   harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
+  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain [--repo PATH]
   harness-kit-checks lint-external-skills [--strict]
   harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]
   harness-kit-checks test-sync-external-partial

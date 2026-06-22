@@ -44,6 +44,14 @@ loop is both strong and fast:
   provider, full-coverage, and live-readiness checks stay required at PR/main,
   deploy, or explicit `ship-check` time.
 
+What to gate on — not just where each gate runs — follows the standing quality
+floor in `harnesses/shared/references/quality-gates.md`: gate the diff not the
+legacy baseline, hard-block the Goodhart-resistant behavioral set (tests,
+diff-coverage, mutation, supply-chain, secrets), ratchet structural debt
+(god-files, duplication, dead code) so legacy only improves, and keep gameable
+metrics as reports. Every gate names the real failure it catches; default to
+free/OSS or a homebrew tripwire, never a paid SaaS forced on a consumer.
+
 Moving work out of pre-push is only valid when the same invariant remains
 required before merge or deploy. If a required GitHub check is path-filtered,
 add a sentinel/split-check design; skipped required workflows can leave PRs

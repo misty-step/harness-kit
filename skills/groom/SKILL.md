@@ -146,9 +146,12 @@ decorrelate judgment, not to fill a roster.
   routes/commands (the highest-impact skill category)? Verified build/test/
   lint commands and conventions an agent can discover cold? Runbooks for
   its deployed surfaces? A CI gate that would catch the likely failure?
-  Security gates that catch secret leaks in files and Git/PR metadata before
-  publication? Stale AGENTS/CLAUDE prose? Product context a cold agent would
-  need? Each gap is a ticket like any other.
+  A meaningful, enforced quality floor that gates the diff and ratchets legacy
+  debt, or only advisory, arbitrary gates
+  (`harnesses/shared/references/quality-gates.md`)? Security gates that catch
+  secret leaks in files and Git/PR metadata before publication? Stale
+  AGENTS/CLAUDE prose? Product context a cold agent would need? Each gap is a
+  ticket like any other.
 - **Vet findings before presenting them.** Re-check each claim against the
   live repo — open the file, run the command. A plausible finding that
   doesn't survive a second look is noise that erodes trust in the whole

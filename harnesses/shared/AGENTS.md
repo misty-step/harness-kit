@@ -82,7 +82,12 @@ with keyword heuristics unless the ticket explicitly scopes a fallback. Detail:
 
 ### Do not lower gates
 Never disable a test, loosen a lint rule, or weaken a threshold to get green.
-That is debt with compound interest.
+That is debt with compound interest. An agent that both writes the code and runs
+the check optimizes the check, not the quality — so standing gates must be
+tamper-evident, externally enforced, and ratcheted, never self-attested. The
+repo's standing quality floor — the three tiers, the gate-the-diff model, and
+the meaningful-not-arbitrary forms — lives in
+`harnesses/shared/references/quality-gates.md`.
 
 ## Layer 2 — Agent-Specific Gotchas
 

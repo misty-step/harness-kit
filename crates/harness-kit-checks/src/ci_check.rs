@@ -4,7 +4,7 @@ use std::process::Command;
 
 use anyhow::{Context, Result, bail};
 
-use crate::{docs_site, frontmatter, generate_index, lint_gates};
+use crate::{docs_site, frontmatter, generate_index, lint_gates, quality_gates};
 
 pub fn run(repo: &Path) -> Result<Vec<String>> {
     let repo = repo.canonicalize().unwrap_or_else(|_| repo.to_path_buf());
@@ -42,6 +42,15 @@ pub fn run(repo: &Path) -> Result<Vec<String>> {
     })?;
     gate_report(&mut lines, "check-no-claims", || {
         lint_gates::check_no_claims(&repo)
+    })?;
+    gate_report(&mut lines, "check-godfiles", || {
+        quality_gates::check_godfiles(&repo)
+    })?;
+    gate_report(&mut lines, "check-source-markers", || {
+        quality_gates::check_source_markers(&repo)
+    })?;
+    gate_report(&mut lines, "check-supply-chain", || {
+        quality_gates::check_supply_chain(&repo)
     })?;
     gate(&mut lines, "test-sync-external-partial", || {
         let _ = crate::external_sync::self_test_partial_sync()?;
