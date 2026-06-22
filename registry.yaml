@@ -183,29 +183,31 @@ sources:
     alias_prefix: "jakub-"
     include: [make-interfaces-feel-better]
 
-  # emilkowalski/skill — Emil Kowalski's "Agents with Taste" skill. Decision
-  # flowcharts for easing selection, lookup tables for animation durations by
-  # element type, typography / component rules drawn from Sonner and his
-  # design-engineering articles. Complements jakubkrehel/make-interfaces-
-  # feel-better: Jakub names specific techniques, Emil supplies the
-  # when-to-use-which flowcharts. Both together form the motion-design
-  # judgment layer.
+  # emilkowalski/skill — Emil Kowalski's "Agents with Taste" design-engineering
+  # skills. emil-design-eng: decision flowcharts for easing selection, duration
+  # lookup tables by element type, typography / component rules drawn from Sonner
+  # and his articles. review-animations: a DMI motion-code reviewer against the
+  # same craft bar (ten non-negotiable standards + escalation triggers, with a
+  # STANDARDS.md catalog). Build with one, review with the other. Complements
+  # jakubkrehel/make-interfaces-feel-better: Jakub names techniques, Emil
+  # supplies the when-to-use-which flowcharts. Together they form the
+  # motion-design judgment layer.
   #
-  # LICENSE CAVEAT: no LICENSE file declared upstream as of pin sha. Same
-  # reasoning as jakubkrehel/make-interfaces-feel-better — local cache is
-  # gitignored, not redistributed.
+  # LICENSE: MIT — LICENSE.txt added upstream at this pin (copyright Matt Pocock,
+  # via the `skills` packaging tool). Redistributable with attribution; the prior
+  # no-license caveat is resolved.
   #
-  # NAMING NOTE: the single skill in this repo is named "emil-design-eng"
-  # upstream, so the synced alias is `emil-emil-design-eng` (doubled "emil"
-  # is cosmetic; keeping alias_prefix consistent with other author-scoped
-  # sources is more important than visual tidiness).
+  # NAMING NOTE: upstream skills are "emil-design-eng" and "review-animations";
+  # the alias_prefix yields `emil-emil-design-eng` and `emil-review-animations`
+  # (the doubled "emil" is cosmetic; prefix consistency across author-scoped
+  # sources wins over visual tidiness).
   - repo: emilkowalski/skill
     ref: main
-    pin: ecf66bbd1fb33c25332b6b0e454d08049978284c
+    pin: ea2cd0ddb235abbe85cdbc03f26686cd465df897
     layout: flat
     skills_path: skills
     alias_prefix: "emil-"
-    include: [emil-design-eng]
+    include: [emil-design-eng, review-animations]
 
   # Leonxlnx/taste-skill — high-agency frontend design family. We keep the
   # output-enforcement helper out of the default sync because it is orthogonal
