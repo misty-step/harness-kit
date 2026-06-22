@@ -87,14 +87,16 @@ an architecture choice needs the full treatment.
   HTML; the HTML is the planning medium. Skip only for trivial shapes,
   no-browser environments, or explicit operator waiver.
 
-Lock product direction with the user before technical design when the
-direction is genuinely contestable — one question at a time, with your
-recommended answer and what breaks if it's wrong. Don't manufacture
-questions for shapes the evidence already locks.
-When the user's idea still has hidden product/architecture decisions, use the
-synced `grill-me` skill at `skills/.external/petekp-grill-me/SKILL.md`
-instead of batching questions; it is the default interrogation mode before a
-substantial shape.
+Interrogate before you design, and lock product direction before technical
+design. For any substantial or contestable shape the default is a
+`grill-me`-style interview: load
+`harnesses/shared/references/interrogate-first.md` and walk the operator down
+the decision tree one question at a time, each with your recommended answer and
+what breaks if it's wrong, until the load-bearing product and architecture
+choices are pinned. Explore the repo, vision, and commands to resolve what you
+can; only the operator settles genuine product direction. The guard cuts both
+ways: don't manufacture questions for a shape the evidence already locks — that
+is railroading, not rigor.
 
 ## Packet Skeleton
 

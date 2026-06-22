@@ -23,10 +23,13 @@ prioritizes, or emits a tiny handful of issues is incomplete unless the user
 explicitly scoped the run down.
 
 The backlog diff is the artifact. Prose exists to justify it.
-If the operator brings a raw idea, ambition, or uneasy plan instead of a
-backlog item, start with the synced `grill-me` skill
-(`skills/.external/petekp-grill-me/SKILL.md`) until the hidden decisions are
-visible. If the groom produces a giant synthesis, use `julius-caveman`
+Groom is a conversation at the seams where the operator's judgment is the scarce
+input. At intake, interrogate the operator on ambition, vision deltas, and
+hidden priors so the sweep aims true — the `grill-me`-style posture in
+`harnesses/shared/references/interrogate-first.md` is the default here, not a
+fallback gated on whether they arrived with a backlog item. The investigation
+sweep itself stays autonomous — explore the codebase for what it can answer;
+reserve interrogation for the operator's judgment, not for facts you can read. If the groom produces a giant synthesis, use `julius-caveman`
 compression for interim summaries, not for the committed backlog text.
 
 ## Project Vision
@@ -153,7 +156,10 @@ decorrelate judgment, not to fill a roster.
 - **Theme, then recommend.** Group findings by shared root cause, rank by
   impact discounted by confidence — effort barely discounts now that agents
   execute — and argue for one concrete action per theme. Synthesis stays on
-  the lead.
+  the lead; when the plan is contestable, land it with the operator the same
+  `grill-me` way — walk the decision tree (sequencing, deletions, the next
+  pickup) one branch at a time, recommending each — instead of dropping the
+  full plan for a rubber-stamp.
 
 ## Ticket Standard
 

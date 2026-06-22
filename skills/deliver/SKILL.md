@@ -26,9 +26,9 @@ as its own commit. If the ticket has no goal or acceptance oracle, run
 For product direction, positioning, long-lived workflow, or project-identity
 changes, read root `VISION.md` when present; if direction matters and the repo
 has no credible north star, route to `/vision` before building.
-If the goal is still in the user's head, use the synced `grill-me` skill
-(`skills/.external/petekp-grill-me/SKILL.md`) before shaping; one good
-question beats a guessed plan.
+If the goal is still in the user's head, interrogate before shaping with the
+interrogate-first lens (`harnesses/shared/references/interrogate-first.md`); one
+good question beats a guessed plan.
 Building without an oracle yields plausible garbage. For public API, CLI, UI,
 performance, compatibility, migration, or operator workflow changes, load
 `harnesses/shared/references/works-critique.md` before pre-ship review. For

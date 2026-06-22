@@ -22,8 +22,8 @@ Conversational first. Artifact always.
 ## Contract
 
 - Ask the operator what the deal is unless the request already contains enough
-  project intent. One good question at a time; use the synced `grill-me` skill
-  (`skills/.external/petekp-grill-me/SKILL.md`) when hidden decisions matter.
+  project intent. One good question at a time; use the interrogate-first lens
+  (`harnesses/shared/references/interrogate-first.md`) when hidden decisions matter.
 - Read the live repo before drafting: existing `VISION.md`, `AGENTS.md`,
   `README*`, positioning/product docs, roadmap/backlog, manifests, examples,
   demos, tests, screenshots, and repo-local skills or prompts that encode
