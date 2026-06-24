@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-22T19:30:48Z
+# Generated: 2026-06-24T15:30:47Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -16,9 +16,9 @@ skills:
     source: first-party
     tags: [ad,altitudes,asked,at,code,commits,context-first,diverse-provider,docs,idea]
   - name: design
-    description: "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit "
+    description: "Artifact-backed interface design: critique, polish, redesign, generate, and a repo-owned design contract. One front door over a bench of design specialists — routes to exactly one primary per role; "
     source: first-party
-    tags: [artifact,artifact-backed,brand,content,critique,density,explicit,feel,fit,hierarchy]
+    tags: [a,artifact-backed,bench,contract,critique,design,door,exactly,front,generate]
   - name: diagnose
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis"
     source: first-party
