@@ -27,6 +27,18 @@
     {
       "source": "backlog.d/118-quality-gate-coverage-mutation.md",
       "title": "Add diff-coverage, mutation, and advisory gates to the quality floor"
+    },
+    {
+      "source": "backlog.d/119-design-spine.md",
+      "title": "Design-spine: compose /design into a router-with-thesis + a self-enforcing DESIGN.md contract"
+    },
+    {
+      "source": "backlog.d/120-herdr-agent-skill.md",
+      "title": "Add Herdr agent skill as external source"
+    },
+    {
+      "source": "backlog.d/121-portable-substrate-doctrine.md",
+      "title": "Encourage portable, reversible system design in the shared doctrine"
     }
   ],
   "copy_source": "docs/copy/site.json",
@@ -185,7 +197,7 @@
       "source": "skills/deliver/SKILL.md"
     },
     {
-      "description": "Artifact-backed interface critique and polish for hierarchy, typography, layout, density, IA, interaction feel, content, brand fit, and taste. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: \"make this look better\", \"improve the design\", \"polish the UI\", \"critique this screen\", \"design pass\", \"art direction\", \"scaffold design\", \"prototype this\", \"show me a few options\", \"mock up variations\", docs layout, report polish, generated diagrams/images, screenshots, decks, dashboards, charts, or any product-facing visual artifact. Trigger: /design, /prototype.",
+      "description": "Artifact-backed interface design: critique, polish, redesign, generate, and a repo-owned design contract. One front door over a bench of design specialists — routes to exactly one primary per role; you pick the aesthetic. Requires screenshot, URL, rendered artifact, or explicit file plus intent. Use when: \"make this look better\", \"improve the design\", \"polish the UI\", \"critique this screen\", \"design pass\", \"art direction\", \"make it premium\", \"make it brutalist/minimalist\", \"deslop this\", \"scaffold design\", \"DESIGN.md\", \"design system\", \"prototype this\", \"show me a few options\", \"mock up variations\", \"is this accessible\", docs layout, report polish, generated diagrams/images, dashboards, charts, or any product-facing visual artifact. Trigger: /design, /prototype.",
       "icon": "catalog",
       "id": "skill:design",
       "kind": "skill",

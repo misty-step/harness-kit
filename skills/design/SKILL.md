@@ -1,105 +1,127 @@
 ---
 name: design
 description: |
-  Artifact-backed interface critique and polish for hierarchy, typography,
-  layout, density, IA, interaction feel, content, brand fit, and taste.
+  Artifact-backed interface design: critique, polish, redesign, generate, and a
+  repo-owned design contract. One front door over a bench of design specialists —
+  routes to exactly one primary per role; you pick the aesthetic.
   Requires screenshot, URL, rendered artifact, or explicit file plus intent.
   Use when: "make this look better", "improve the design", "polish the UI",
-  "critique this screen", "design pass", "art direction", "scaffold design",
-  "prototype this", "show me a few options", "mock up variations",
-  docs layout, report polish, generated diagrams/images, screenshots, decks,
-  dashboards, charts, or any product-facing visual artifact.
+  "critique this screen", "design pass", "art direction", "make it premium",
+  "make it brutalist/minimalist", "deslop this", "scaffold design", "DESIGN.md",
+  "design system", "prototype this", "show me a few options", "mock up
+  variations", "is this accessible", docs layout, report polish, generated
+  diagrams/images, dashboards, charts, or any product-facing visual artifact.
   Trigger: /design, /prototype.
-argument-hint: "[audit|redesign|polish|critique|scaffold|prototype] <artifact-or-surface>"
+argument-hint: "[audit|polish|redesign|scaffold|prototype|<preset>|<verb>] <artifact-or-surface>"
 ---
 
 # /design
 
-Critique and improve a rendered artifact against its intent. The core contract
-is evidence, not generic advice:
+Critique and improve a rendered artifact against its intent — and route the
+specifics to the right specialist. `/design` is one front door over a bench of
+design skills: it owns the contract and the taste call and dispatches each job
+to exactly one primary per role. It is a **menu, not a pipeline** — every route
+below stands alone; none waits on another's output.
 
-1. Name the artifact: screenshot, URL, rendered file, route, or concrete source
-   file that produces the surface.
-2. Name the intent in one sentence: audience, job, and desired feel.
+## The core contract (every route)
+
+These six are the method *within* a single design pass — how one route executes,
+not a sequence across routes. Pick the route that fits the job and run this once.
+
+1. Name the artifact: screenshot, URL, rendered file, route, or the source file
+   that produces the surface.
+2. Name the intent in one sentence: audience, job, desired feel.
 3. Inspect the rendered result when possible.
 4. State the design read: surface kind, audience, desired feel, constraints.
-5. Set VARIANCE / MOTION / DENSITY for the surface before building.
-6. Return ranked, specific design moves or implement a bounded polish pass.
+5. Set the dials (below) for the surface.
+6. Return ranked, specific moves — or implement a bounded change — then verify
+   the render.
 
 Refuse to make a final design judgment from code alone when a rendered surface
 can be inspected. If rendering is impossible, mark the design unverified.
 
-## Delegation Judgment
+## Set two dials first (choices, not steps)
 
-delegate on judgment per the shared Roster contract: native subagents
-by default; add cross-model critics, roster providers, or sprite lanes
-(`/sprites`) only when they answer a distinct question. See
-`harnesses/shared/AGENTS.md` (Roster).
+**Aesthetic preset** — pick the vibe. Each is a distinct, vendored direction,
+not a restyle of one template:
 
-Local lane guidance: Use one lane for proposed direction or implementation and
-another for cold review of substantive redesign, external-facing polish, or
-final critique of visible UI changes.
+| Preset | Feel | Primary |
+|---|---|---|
+| default | neutral premium — Zinc/Slate, restrained | `leon-taste-skill` |
+| soft | glossy, luxe, agency-tier | `leon-soft-skill` |
+| minimalist | flat editorial (Notion/Linear), no gradient/shadow | `leon-minimalist-skill` |
+| brutalist | raw industrial-terminal, `border-radius:0`, hazard accent | `leon-brutalist-skill` |
 
-## Routing
+For greenfield generation, `nutlope-hallmark`'s genres (editorial / modern-
+minimal / atmospheric / playful) are a parallel preset axis — pick one there.
 
-| Intent | Action |
-|---|---|
-| `/design audit` or `/design critique` | Read intent, inspect artifact, return ranked findings. For technical quality checks (a11y, performance, responsive), compose with `impeccable-impeccable`'s `/impeccable audit`. |
-| `/design polish` | Apply the smallest coherent improvement set, then verify render. For the meticulous final pass, compose with `impeccable-impeccable`'s `/impeccable polish`. |
-| `/design redesign` | Propose 2-3 structurally different directions, get convergence, then implement. |
-| `/design scaffold` | Read `references/scaffold.md` and generate or update project-local `DESIGN.md` and `design-contract.md` when recurring or product-facing visual work earns them. |
-| `/design study`, or the user supplies reference sites/screenshots as inspiration | Run the studied-DNA protocol in `references/external-design-references.md` (§ Reference-Driven Work). Extract DNA, never the dress; one primary donor per surface. The full extraction protocol is the installed `nutlope-hallmark` skill's `study` verb. |
-| Greenfield page or identity generation | Compose the installed generation skills — `nutlope-hallmark` (macrostructure-first, theme rotation, slop gates) and `anthropic-frontend-design` (signature-element discipline) — then run `references/anti-slop.md`'s quick gate on the render. |
-| `/design prototype`, "show me options", new feature UI where one-shot taste risk is high | Variation fan (below): 3–5 divergent options in one HTML file, operator picks, build the winner. |
-| Iterative multi-issue prototyping: several named issues, verdict rounds, full-page compositions, viewport-dependent judgment | Lab registry (`references/lab-registry.md`): paged viewer with an adjustable viewport, one persistent section per issue, ≥6 options each, kill/mutate/seed across rounds. |
-| Typography fixes (`/design typeset`) | Compose with `impeccable-impeccable`'s `/impeccable typeset` — font choices, hierarchy, sizing. |
-| Color strategy (`/design colorize`) | Compose with `impeccable-impeccable`'s `/impeccable colorize` — strategic color without going garish. |
-| Motion (`/design animate`) | Compose with `impeccable-impeccable`'s `/impeccable animate` and `emil-emil-design-eng` — purposeful motion tied to state. |
-| Layout / spacing / rhythm (`/design layout`) | Compose with `impeccable-impeccable`'s `/impeccable layout`. |
-| Simplify / strip to essence (`/design distill`) | Compose with `impeccable-impeccable`'s `/impeccable distill` — ruthless subtraction. |
-| Production hardening (`/design harden`) | Compose with `impeccable-impeccable`'s `/impeccable harden` — edge cases, i18n, error states, overflow. |
-| Responsive adaptation (`/design adapt`) | Compose with `impeccable-impeccable`'s `/impeccable adapt` — across screens and devices. |
-| UX copy (`/design clarify`) | Compose with `impeccable-impeccable`'s `/impeccable clarify` — rewrite confusing UX copy. |
-| Onboarding / empty states (`/design onboard`) | Compose with `impeccable-impeccable`'s `/impeccable onboard`. |
-| UI performance (`/design optimize`) | Compose with `impeccable-impeccable`'s `/impeccable optimize` — LCP to bundle size. |
-| Push bold (`/design bolder`) or tone down (`/design quieter`) | Compose with `impeccable-impeccable`'s `/impeccable bolder` or `/impeccable quieter`. |
-| Delight moments (`/design delight`) | Compose with `impeccable-impeccable`'s `/impeccable delight` — small personality moments. |
-| Extraordinary effects (`/design overdrive`) | Compose with `impeccable-impeccable`'s `/impeccable overdrive` — shaders, physics, 60fps. |
-| Full shape-then-build (`/design craft`) | Compose with `impeccable-impeccable`'s `/impeccable craft` — design it then build it in one flow. |
-| Design brief before building (`/design shape`) | Compose with `impeccable-impeccable`'s `/impeccable shape` — discovery, not guesswork. |
-| Generate DESIGN.md (`/design document`) | Compose with `impeccable-impeccable`'s `/impeccable document` — Google Stitch DESIGN.md format. |
-| Extract components/tokens (`/design extract`) | Compose with `impeccable-impeccable`'s `/impeccable extract` — pull into design system. |
-| Live browser iteration (`/design live`) | Compose with `impeccable-impeccable`'s `/impeccable live` — pick element, get variants, accept into source. |
-| Slop detection before shipping | Run `npx impeccable detect src/` — deterministic, no LLM, exit code 2 on findings. Wire as completion-gate check. |
+**Variance / Motion / Density** — set per `references/anti-slop.md` before
+building. A dashboard and a landing page sit at opposite ends; state the target.
 
-Use `/qa` for behavior verification and evidence capture, and `/shape` when
-the product direction itself is unsettled.
+## Route to one primary per role
 
-Accessibility is part of the design pass, not a separate ceremony: keyboard
-reachability and focus order on interactive changes, visible focus states,
-contrast (WCAG AA), labels/alt on controls and images, reduced-motion
+Each row is an independent entry point. Invoke the one that matches the job; do
+not chain them into a sequence.
+
+| Need | `/design` verb | Primary |
+|---|---|---|
+| Critique / audit a rendered surface | `audit` | inspect + `impeccable audit` |
+| Final meticulous polish pass | `polish` | `jakub-make-interfaces-feel-better` (exact values) + `impeccable polish` |
+| Redesign an existing site, keep the stack | `redesign` | `impeccable audit`+`critique`; fold `leon-redesign-skill`'s a11y/SEO omissions checklist |
+| Generate a page / identity from scratch | — | `nutlope-hallmark` (+ `leon-gpt-tasteskill` for GSAP/AIDA generation) |
+| Build UI to match a design image | — | `leon-images-taste-skill` (needs an image-gen runtime) |
+| Motion — author it | `animate` | `emil-emil-design-eng` |
+| Motion — review it | — | `emil-review-animations` |
+| Accessibility / web-interface guidelines | — | `vercel-web-design-guidelines` |
+| Page / route transitions (React) | — | `vercel-react-view-transitions` |
+| Component architecture / prop API | — | `vercel-composition-patterns` |
+| Repo design contract + tokens | `scaffold` / `document` | `@google/design.md` (`lint` / `export dtcg`) via `references/scaffold.md`; `leon-stitch-skill` for Stitch format |
+| Typography / color / layout / distill / harden / adapt / clarify / onboard / optimize / delight / overdrive / live | `typeset` … | the matching `impeccable <verb>` |
+| Slop detection before shipping | — | `references/anti-slop.md`; superset gate `nutlope` slop-test; deterministic `npx impeccable detect src/` (exit 2) |
+
+The dial and role axes are orthogonal, so a request never matches two rows
+ambiguously: an **aesthetic preset** wins when the request names a *vibe*
+(brutalist, luxe, minimalist); a **role** wins when it names a *surface to
+improve or a job to do* (audit this, polish these, redesign that).
+
+Use `/qa` for behavior verification and evidence capture, and `/shape` when the
+product direction itself is unsettled.
+
+## Anti-slop ban-core (one source)
+
+`references/anti-slop.md` is HK's single ban-list: the slop tells, the
+VARIANCE/MOTION/DENSITY dials, and the pre-emit quick gate. Do not re-derive it
+per surface and do not paste the vendored skills' copies in — route to them and
+let each carry its own. `nutlope`'s 58-gate slop-test is the superset oracle;
+`npx impeccable detect` is the deterministic, no-LLM check.
+
+## Accessibility is part of the pass, not a ceremony
+
+Keyboard reachability and focus order on interactive changes, visible focus
+states, contrast (WCAG AA), labels/alt on controls and images, reduced-motion
 respect. Run axe or equivalent on web surfaces; a11y findings are design
 findings and get fixed with the same minimal-change discipline.
-For recurring or product-facing visual work, use the references:
 
-- `references/scaffold.md` for repo-owned `DESIGN.md` and
-  `design-contract.md` provenance scaffolds.
-- `references/design-system.md` for token and component-system judgment.
-- `references/taste-layer.md` for aesthetic direction and anti-generic critique.
-- `references/anti-slop.md` for the checkable list of AI design tells, the
-  VARIANCE/MOTION/DENSITY dials, and the pre-emit gate. The full 46-pattern
-  catalog and deterministic detector are in the installed `impeccable-impeccable`
-  skill; run `npx impeccable detect src/` for machine-checked slop findings.
-- `references/interface-polish.md` for micro-polish checks.
-- `references/external-design-references.md` for license-safe use of external
-  design skills, DESIGN.md sources, and inspiration libraries.
-- `references/ui-surface-routing.md` for workflow composition.
+## Review gate — earned approval, default-deny
 
-If a repo already has `DESIGN.md`, read it before any visual change and update
-it when the change alters durable tokens, visual language, component grammar,
-layout density, content voice, accessibility rules, or golden examples. If
-recurring or product-facing visual work lacks `DESIGN.md`, scaffold it or record
-an explicit one-off/internal waiver in the completion gate.
+Substantive or external-facing visual changes pass a gate before "done", not a
+rubber stamp. Run two fresh-context lanes — a heuristic design-director read and
+a deterministic scan (`npx impeccable detect` + the anti-slop quick gate) — and
+**synthesize** them; do not just concatenate. Approval is earned. These are
+presumptive blockers the author must justify, not nits:
+
+- An off-system value (color / spacing / radius / type) not in the repo's tokens.
+- A surviving slop tell from `references/anti-slop.md`.
+- Contrast below WCAG AA, or an interactive control unreachable by keyboard.
+- No distinctive decision — the surface is template-clean but anonymous.
+- Meta-copy: UI that explains the agent's process instead of naming the thing.
+
+## Delegation Judgment
+
+Delegate per the shared Roster contract: native subagents by default; one lane
+for the proposed direction/implementation and a separate fresh-context lane for
+cold review of substantive redesign, external-facing polish, or final critique.
+Add cross-model critics or `/sprites` only when they answer a distinct question.
 
 ## Critique Shape
 
@@ -120,82 +142,82 @@ issue is only preference, say so; if it blocks comprehension or trust, say that.
 
 ## Redesign Directions
 
-Directions must differ structurally, not just by palette:
-
-- Minimal polish: preserve structure, improve hierarchy and rhythm.
-- Editorial/narrative: guide attention through a story.
-- Operational/workbench: increase density and repeated-use affordances.
-- Brand-forward: make the product, client, or object unmistakable.
-- Inversion: challenge the current organizing metaphor.
-
-For each direction, name what it sacrifices. Recommend one.
+Directions must differ structurally, not by palette. Recommend one, and name
+what each sacrifices: **minimal polish** (preserve structure, fix hierarchy and
+rhythm), **editorial** (guide attention through a story), **workbench** (more
+density, repeated-use affordances), **brand-forward** (make it unmistakable),
+**inversion** (challenge the organizing metaphor).
 
 ## Variation Fan (prototype)
 
-For new feature UI or any surface where one-shot taste risk is high, don't
-one-shot: build 3–5 variations in **one self-contained HTML file** (inline
-CSS/JS, no build step), labeled side-by-side, and let the operator pick.
-
-- Variations must differ structurally — use the Redesign Directions axes
-  above as divergence prompts. Five palette swaps of one layout is one
-  variation.
-- Each variation uses real content from the product, not lorem ipsum;
-  fake content hides hierarchy failures.
-- The fan is a sketch, not the implementation. After the pick, build the
-  winner properly in the real stack with the generation skills and the
-  anti-slop gate; never ship the prototype file.
-- The fan is for one decision. When the work is several named issues
-  iterated over verdict rounds — or judgment depends on viewport size —
-  graduate to the lab registry (`references/lab-registry.md`).
-- When the field is big and the operator doesn't want to judge it all, a
-  harness with large-scale orchestration can run a tournament against a
-  rubric to pre-filter — but the final pick stays human.
+When one-shot taste risk is high, don't one-shot: build 3–5 **structurally**
+different variations in one self-contained HTML file (inline CSS/JS, real product
+content, no lorem ipsum), labeled side-by-side, and let the operator pick. Five
+palette swaps of one layout is one variation. The fan is a sketch — build the
+winner properly with the chosen preset and the anti-slop gate; never ship the
+prototype file. For several named issues over verdict rounds, or viewport-
+dependent judgment, graduate to the lab registry (`references/lab-registry.md`).
 
 ## Implementation Guardrails
 
-- Change the fewest surfaces that can create a coherent improvement.
-- Do not add a framework, animation system, or design token layer for a one-off
-  surface.
-- Scaffold a project-local design skill before enforcing tokens or component
-  grammar across recurring UI surfaces.
-- Prefer clearer hierarchy and better content structure over decoration.
-- Preserve domain truth; design polish must not launder weak claims.
-- Keep process out of the UI. Visible copy must not explain internal
-  implementation notes, source uncertainty, artifact review/publication status,
-  future work, or design rationale. Put that in docs or handoff; write the
-  screen as the finished surface.
+- Change the fewest surfaces that make a coherent improvement; prefer hierarchy
+  and content structure over decoration.
+- No framework, animation system, or token layer for a one-off surface. Scaffold
+  a project-local contract before enforcing tokens across recurring UI.
+- Preserve domain truth; polish must not launder weak claims. Keep process out
+  of the UI — copy reads as the finished surface, not internal notes.
 - After visible changes, verify desktop and mobile render and report evidence.
+- If a repo has `DESIGN.md`, read it before any visual change and update it when
+  durable facts change; else scaffold it (`references/scaffold.md`) or waive as
+  one-off in the completion gate.
+
+## References
+
+- `references/scaffold.md` — repo-owned `DESIGN.md` in the `@google/design.md`
+  format (`lint` + DTCG export) and `design-contract.md` provenance.
+- `references/design-system.md` — token and component-system judgment.
+- `references/taste-layer.md` — aesthetic direction and anti-generic critique.
+- `references/anti-slop.md` — the single ban-core: slop tells, dials, quick gate.
+- `references/interface-polish.md` — micro-polish checks.
+- `references/external-design-references.md` — license-safe use of the vendored
+  design skills and inspiration libraries.
+- `references/ui-surface-routing.md` — composing `/design` + `/qa` + `/code-review`.
+- `references/lab-registry.md` — paged adjustable-viewport prototyping viewer.
+- `evals/routing-eval.md` — the routing oracle (this skill's verification system).
 
 ## Completion Gate
 
-See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared evidence
-core; this phase keeps design-specific local fields.
+See `harnesses/shared/AGENTS.md` (Completion Evidence) for the shared core; this
+phase keeps design-specific fields.
 
 ```markdown
 ## Completion Gate
-- Direction chosen: critique, polish, redesign, or scaffold decision applied.
+- Direction chosen: critique, polish, redesign, generate, or scaffold applied.
+- Route taken: which preset and which role-primary were invoked.
 - Design read: surface kind, audience, desired feel, constraints.
 - Dials: VARIANCE / MOTION / DENSITY values chosen for this surface.
 - Evidence that proves it: screenshot, render, artifact, or visual diff inspected.
-- Exact command/path/route exercised: URL, screenshot path, render command, or artifact path inspected.
-- DESIGN.md status: read, created, updated, not present with waiver, or not applicable with reason.
-- Hierarchy/content changes: specific hierarchy or content issue changed or recommended.
-- Typography/layout changes: specific type, spacing, density, or layout issue changed or recommended.
-- Copy provenance: visible copy inspected for product truth versus agent process leakage.
-- Distinctive decision: the intentional design choice that prevents template sameness.
-- Slop detector: `npx impeccable detect` result on changed files (clean, findings listed, or not applicable with reason).
+- Exact command/path/route exercised: URL, screenshot path, render command, or artifact path.
+- DESIGN.md status: read, created, updated, not present with waiver, or n/a with reason.
+- Hierarchy/content + type/layout changes: the specific issues changed or recommended.
+- Copy provenance: visible copy inspected for product truth vs. agent-process leakage.
+- Distinctive decision: the intentional choice that prevents template sameness.
+- Slop detector: `npx impeccable detect` result on changed files (clean, listed, or n/a).
 - Residual risk: remaining design, a11y, or QA risk after inspection.
+```
 
 ## Gotchas
 
 - Design critique without an inspected artifact is speculation.
+- The routes are a flat menu: never sequence them into a phase pipeline. No
+  route depends on another route's output — that drift is the workflow engine
+  VISION.md forbids.
 - Aesthetic preference is not blocking unless it hurts comprehension, trust,
   conversion, accessibility, or domain fit.
-- Generic "modernize" moves are slop when they ignore the audience, density
-  needs, or existing system.
+- Generic "modernize" moves are slop when they ignore audience, density, or the
+  existing system.
 - Never hide UI defects behind feature explanations. Point to the visible
   artifact and the concrete change.
-- Meta-copy in UI is a design defect: headings like "if published, should be
-  rounded and opt-in" describe the agent's caution, not the user's page. Real
-  product policy, privacy notices, draft-state badges, or compliance disclosures
-  are fine when the user is meant to see them.
+- Meta-copy in UI is a design defect: real product policy, privacy, draft-state,
+  or compliance copy is fine when the user is meant to see it; leaking the
+  agent's caution is not.
