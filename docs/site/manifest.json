@@ -31,6 +31,10 @@
     {
       "source": "backlog.d/119-design-spine.md",
       "title": "Design-spine: compose /design into a router-with-thesis + a self-enforcing DESIGN.md contract"
+    },
+    {
+      "source": "backlog.d/120-herdr-agent-skill.md",
+      "title": "Add Herdr agent skill as external source"
     }
   ],
   "copy_source": "docs/copy/site.json",

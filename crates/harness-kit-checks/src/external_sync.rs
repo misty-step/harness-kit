@@ -36,6 +36,10 @@ pub struct SourceEntry {
     pub ref_name: String,
     pub pin: Option<String>,
     pub skills_path: String,
+    /// When set, the `skills_path` dir holds `SKILL.md` at its root (not in a
+    /// subdir). Install it directly as this single named skill; skip directory
+    /// discovery. For upstreams that ship a root-level `SKILL.md`.
+    pub skill_name: Option<String>,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
     pub alias_prefix: Option<String>,
@@ -55,6 +59,7 @@ struct RawSource {
     rev: Option<String>,
     pin: Option<String>,
     skills_path: Option<String>,
+    skill_name: Option<String>,
     include: Option<StringOrList>,
     exclude: Option<StringOrList>,
     alias_prefix: Option<String>,
@@ -168,6 +173,7 @@ pub fn parse_registry(text: &str) -> Result<Vec<SourceEntry>> {
                 .unwrap_or_else(|| "main".to_string()),
             pin: raw.pin.filter(|pin| !pin.trim().is_empty()),
             skills_path: raw.skills_path.unwrap_or_else(|| ".".to_string()),
+            skill_name: raw.skill_name.filter(|name| !name.trim().is_empty()),
             include: raw.include.map(StringOrList::into_vec).unwrap_or_default(),
             exclude: raw.exclude.map(StringOrList::into_vec).unwrap_or_default(),
             alias_prefix: raw.alias_prefix.filter(|prefix| !prefix.is_empty()),
@@ -402,6 +408,39 @@ fn sync_source(
     } else {
         checkout_dir.join(&source.skills_path)
     };
+
+    // Root-level SKILL.md: the skills_path dir itself is the skill (no subdir to
+    // discover). Stage only the skill's artifacts -- never the surrounding repo
+    // -- and install directly under the prefixed name.
+    if let Some(skill_name) = source.skill_name.as_deref() {
+        if !skill_root.join("SKILL.md").is_file() {
+            bail!(
+                "skill_name '{skill_name}' set for {} but no SKILL.md at {}/{}",
+                source.repo,
+                source.repo,
+                source.skills_path
+            );
+        }
+        let staging = tempfile::tempdir()?;
+        let staged = staging.path().join(skill_name);
+        stage_root_skill(&skill_root, &staged)?;
+        let alias = format!(
+            "{}{}",
+            source.alias_prefix.as_deref().unwrap_or(""),
+            skill_name
+        );
+        install_alias(
+            &alias,
+            &staged,
+            &source.repo,
+            &sha,
+            external_root,
+            options.mode,
+            state,
+        )?;
+        return Ok(());
+    }
+
     let discovered = discover_skills(&skill_root)?;
     if discovered.is_empty() {
         bail!(
@@ -687,6 +726,33 @@ fn copy_dir(src: &Path, dest: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Stage a root-level skill (a `SKILL.md` living at `skill_root` rather than in a
+/// subdir) into `dest`. A root-level skill shares its directory with the upstream
+/// app, so sibling dirs (`src/`, `assets/`, `scripts/`, ...) belong to the app,
+/// NOT the skill -- vendor only `SKILL.md` and the upstream license, never the
+/// surrounding repository. Carrying the license matters for copyleft upstreams:
+/// the notice travels with the vendored work. (A root skill that genuinely needs
+/// companion files would require an explicit include list; none does today.)
+fn stage_root_skill(skill_root: &Path, dest: &Path) -> Result<()> {
+    fs::create_dir_all(dest)?;
+    fs::copy(skill_root.join("SKILL.md"), dest.join("SKILL.md"))
+        .with_context(|| format!("staging SKILL.md from {}", skill_root.display()))?;
+    for license in [
+        "LICENSE",
+        "LICENSE.md",
+        "LICENSE.txt",
+        "COPYING",
+        "COPYING.md",
+    ] {
+        let src = skill_root.join(license);
+        if src.is_file() {
+            fs::copy(&src, dest.join(license))?;
+            break;
+        }
+    }
+    Ok(())
+}
+
 fn sorted_dirs(root: &Path) -> Result<Vec<PathBuf>> {
     let mut dirs = Vec::new();
     for entry in fs::read_dir(root)? {
@@ -727,124 +793,5 @@ fn mode_name(mode: SyncMode) -> &'static str {
 }
 
 #[cfg(test)]
-mod tests {
-    use std::fs;
-
-    use tempfile::TempDir;
-
-    use super::*;
-
-    #[test]
-    fn parses_registry_like_shell_and_skips_default_inactive_sources() {
-        let entries = parse_registry(
-            r#"
-sources:
-  - repo: local/repo
-    default: true
-  - repo: inactive/repo
-    active: false
-  - repo: upstream/skills
-    ref: main
-    skills_path: skills
-    include: [one, two]
-    exclude: skip
-    alias_prefix: "up-"
-    allow_floating: true
-"#,
-        )
-        .unwrap();
-
-        assert_eq!(entries.len(), 1);
-        assert_eq!(entries[0].repo, "upstream/skills");
-        assert_eq!(entries[0].ref_name, "main");
-        assert_eq!(entries[0].skills_path, "skills");
-        assert_eq!(entries[0].include, vec!["one", "two"]);
-        assert_eq!(entries[0].exclude, vec!["skip"]);
-        assert_eq!(entries[0].alias_prefix.as_deref(), Some("up-"));
-        assert!(entries[0].allow_floating);
-    }
-
-    #[test]
-    fn immutable_ref_contract_matches_shell_rules() {
-        assert!(is_immutable_ref("0123456789abcdef0123456789abcdef01234567"));
-        assert!(is_immutable_ref("v1.2.3"));
-        assert!(is_immutable_ref("1.2"));
-        assert!(is_immutable_ref("release-candidate"));
-        assert!(!is_immutable_ref("main"));
-        assert!(!is_immutable_ref("HEAD"));
-        assert!(!is_immutable_ref("trunk"));
-    }
-
-    #[test]
-    fn discovers_skills_and_copies_hidden_files_without_git_metadata() {
-        let temp = TempDir::new().unwrap();
-        let source = temp.path().join("checkout/skills/demo");
-        fs::create_dir_all(source.join(".git")).unwrap();
-        fs::create_dir_all(source.join("references")).unwrap();
-        fs::write(source.join("SKILL.md"), "demo\n").unwrap();
-        fs::write(source.join(".hidden"), "hidden\n").unwrap();
-        fs::write(source.join(".git/HEAD"), "ignored\n").unwrap();
-        fs::write(source.join("references/a.md"), "a\n").unwrap();
-
-        assert_eq!(
-            discover_skills(&temp.path().join("checkout/skills")).unwrap(),
-            vec!["demo"]
-        );
-
-        let dest = temp.path().join("external/demo");
-        fs::create_dir_all(&dest).unwrap();
-        copy_dir(&source, &dest).unwrap();
-
-        assert!(dest.join("SKILL.md").is_file());
-        assert!(dest.join(".hidden").is_file());
-        assert!(dest.join("references/a.md").is_file());
-        assert!(!dest.join(".git/HEAD").exists());
-    }
-
-    #[test]
-    fn install_alias_check_mode_reports_drift_without_writing() {
-        let temp = TempDir::new().unwrap();
-        let src = temp.path().join("src/demo");
-        fs::create_dir_all(&src).unwrap();
-        fs::write(src.join("SKILL.md"), "demo\n").unwrap();
-        let external = temp.path().join("skills/.external");
-        fs::create_dir_all(&external).unwrap();
-        let mut state = SyncState::default();
-
-        install_alias(
-            "demo",
-            &src,
-            "org/repo",
-            "0123456789abcdef0123456789abcdef01234567",
-            &external,
-            SyncMode::Check,
-            &mut state,
-        )
-        .unwrap();
-
-        assert!(state.changed);
-        assert_eq!(state.aliases, vec!["demo"]);
-        assert!(!external.join("demo/SKILL.md").exists());
-        assert!(state.lines[0].contains("would install/update: demo (org/repo @ 0123456)"));
-    }
-
-    #[test]
-    fn cleanup_orphans_removes_undeclared_aliases_and_keeps_checkouts() {
-        let temp = TempDir::new().unwrap();
-        let external = temp.path().join("skills/.external");
-        fs::create_dir_all(external.join("declared")).unwrap();
-        fs::create_dir_all(external.join("orphan")).unwrap();
-        fs::create_dir_all(external.join("_checkouts/still-here")).unwrap();
-        let mut state = SyncState {
-            aliases: vec!["declared".to_string()],
-            ..SyncState::default()
-        };
-
-        cleanup_orphans(&external, SyncMode::Sync, &mut state).unwrap();
-
-        assert!(external.join("declared").is_dir());
-        assert!(!external.join("orphan").exists());
-        assert!(external.join("_checkouts/still-here").is_dir());
-        assert!(state.changed);
-    }
-}
+#[path = "external_sync_tests.rs"]
+mod tests;

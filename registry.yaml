@@ -280,3 +280,29 @@ sources:
     skills_path: .agents/skills
     alias_prefix: "impeccable-"
     include: [impeccable]
+
+  # ogulcancelik/herdr — herdr's own control SKILL.md. Herdr is an agent
+  # multiplexer (the terminal workflow we run agents inside, replacing zellij);
+  # the skill teaches an agent to drive the running herdr instance over its unix
+  # socket — split panes, spawn and coordinate sibling agents, wait on output or
+  # agent status. It self-gates on HERDR_ENV=1, so it only activates inside a
+  # herdr pane (zero trigger pollution elsewhere). Herdr promotes installing it:
+  # "install that file as a skill named herdr" (herdr.dev/docs/agent-skill).
+  #
+  # Root-level SKILL.md: herdr ships SKILL.md at the repo root, not under a
+  # skills/ subdir, so this uses skill_name to install the root skill directly
+  # (alias herdr-herdr). Only the skill's own artifacts are vendored — SKILL.md
+  # and the upstream LICENSE — never the herdr app source.
+  #
+  # LICENSE: AGPL-3.0-or-later (dual-licensed; commercial available via
+  # hey@herdr.dev). This is the kit's FIRST copyleft external — every other
+  # source is MIT/Apache. Vendored verbatim at the pin with herdr's LICENSE
+  # carried alongside; never edited. The MIT kit stays MIT; the vendored skill
+  # stays AGPL.
+  - repo: ogulcancelik/herdr
+    ref: master
+    pin: 642c6ab9eac3531c04992d2b10a7a09be6d2e06b
+    layout: flat
+    skills_path: "."
+    skill_name: herdr
+    alias_prefix: "herdr-"
