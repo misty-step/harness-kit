@@ -33,8 +33,8 @@
       "title": "Design-spine: compose /design into a router-with-thesis + a self-enforcing DESIGN.md contract"
     },
     {
-      "source": "backlog.d/120-herdr-agent-skill.md",
-      "title": "Add Herdr agent skill as external source"
+      "source": "backlog.d/122-root-skill-vendoring-followups.md",
+      "title": "Root-skill vendoring follow-ups (from the herdr cross-model review)"
     }
   ],
   "copy_source": "docs/copy/site.json",
