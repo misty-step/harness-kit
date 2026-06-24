@@ -31,6 +31,14 @@
     {
       "source": "backlog.d/119-design-spine.md",
       "title": "Design-spine: compose /design into a router-with-thesis + a self-enforcing DESIGN.md contract"
+    },
+    {
+      "source": "backlog.d/120-herdr-agent-skill.md",
+      "title": "Add Herdr agent skill as external source"
+    },
+    {
+      "source": "backlog.d/121-portable-substrate-doctrine.md",
+      "title": "Encourage portable, reversible system design in the shared doctrine"
     }
   ],
   "copy_source": "docs/copy/site.json",
