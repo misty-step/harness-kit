@@ -37,6 +37,38 @@ Deterministic code must not silently replace the product's semantic brain with:
 Those shortcuts are acceptable only when the ticket explicitly scopes a
 fallback, fixture, seed path, or safety guard.
 
+## Structure Is a Cost — Especially on Model-Facing Interfaces
+
+The bitter lesson cuts both ways. The Boundary Rule says deterministic code
+*may* own typed contracts — but "may" is not "must," and reaching for rigid
+structure by reflex is its own failure mode. When the consumer of a value is an
+LLM agent, it reads fuzzy, unstructured, natural-language context directly. It
+needs the *information*, not a schema. A required field, fixed taxonomy, or enum
+engineered so "the next system can parse it" is cost without payoff when the next
+system is a model: it constrains what can be expressed, rots when reality shifts,
+and buys nothing the model needed.
+
+Default to the simplest representation that carries the needed information.
+Impose structure only where deterministic code must actually branch on the value:
+
+- a value a gate, policy, budget, or release check compares against
+- a persistence / idempotency / dedupe / replay key
+- an eval grader's expected field
+- a contract two deterministic components parse across a boundary
+- a field a UI renders in a fixed slot
+
+If the only downstream consumer is a model — a remediation agent, a summarizer,
+a planner, a judge, the next step in an agent loop — prefer rich prose or
+loosely-shaped data over a tight schema. Carry the facts; let the model do the
+interpreting.
+
+This is a recurring failure mode when building products that are AI-powered or
+sit upstream of one: falling back on deterministic heuristics and
+over-constrained structure where a model's general capability already handles
+the fuzziness. Sometimes structure still earns its place (the bullets above);
+often it is more trouble than it is worth. Ask which it is before adding it —
+the default is less.
+
 ## Realtime / Speech Bias
 
 For realtime voice or meeting products, verify current primary docs before

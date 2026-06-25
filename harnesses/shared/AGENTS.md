@@ -77,7 +77,12 @@ When the user outcome depends on semantic, realtime, speech, vision, or agentic
 model capability, verify current model/provider surfaces and make the model
 boundary explicit before coding. Deterministic code owns policy, persistence,
 approval, sandboxing, and evals; it must not silently replace the product brain
-with keyword heuristics unless the ticket explicitly scopes a fallback. Detail:
+with keyword heuristics unless the ticket explicitly scopes a fallback.
+Conversely, do not over-structure interfaces a model will consume: when the
+downstream reader is an LLM, carry the information as rich or fuzzy context and
+add rigid schema, required fields, or fixed taxonomies only where deterministic
+code must branch on the value. Reflexive structure around AI-adjacent seams is a
+recurring failure mode — the model needs the information, not the schema. Detail:
 `harnesses/shared/references/model-native-product-primitives.md`.
 
 ### Do not lower gates
