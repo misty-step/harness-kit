@@ -75,6 +75,13 @@ shared history). Default `cli` is `opencode` (`opencode run --model
 openrouter/<slug>`); `pi` is the lighter no-tools alternative. See `/roster` for
 the exact headless forms.
 
+Timeout judgment is part of composition. The script default is 1200s per lane
+because strong reasoning models often need real wall time for cold, tool-using
+architecture questions. Use shorter caps only for smoke checks, slug probes, or
+cheap quick-divergence runs. For load-bearing design calls, keep the default or
+raise `--timeout` to 1800s; if a lane hits the cap, report it as caller-capped
+and rerun or exclude it before drawing model-quality conclusions.
+
 ## Synthesize as chair (the other half of the judgment)
 
 Reading the lanes is the work — don't just paste them.
@@ -101,8 +108,11 @@ Reading the lanes is the work — don't just paste them.
 - **Brainstorm ≠ converge in one shot.** Use the council to widen; then you (or
   a focused follow-up) narrow. Don't ask the bench to also pick the winner —
   that's the chair's job.
-- **Cost is real.** Bound the bench to the stakes; `--timeout` caps runaway
-  lanes. The OpenRouter MCP `credits-get` shows remaining balance.
+- **Timeouts are caller evidence.** A reasoning lane that hits `--timeout` was
+  capped by the chair. Use short caps only intentionally, and don't blame the
+  model for a cap chosen too low for the task.
+- **Cost is real.** Bound the bench to the stakes; `--timeout` is still the
+  runaway guard. The OpenRouter MCP `credits-get` shows remaining balance.
 
 ## Composes with
 

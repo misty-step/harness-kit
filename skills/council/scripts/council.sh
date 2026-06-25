@@ -8,6 +8,10 @@
 # Usage:
 #   council.sh --task <task-file> --members <members.tsv> [--outdir DIR] [--timeout SEC]
 #
+# Default timeout is intentionally generous for strong reasoning lanes. Use a
+# short cap only for smoke/slug checks; a timed-out lane is caller-capped
+# evidence, not a model-quality verdict.
+#
 # members.tsv — tab-separated, one council member per line, '#' comments ok:
 #   label <TAB> cli <TAB> model <TAB> persona
 #     label   short slug for the output file (e.g. contrarian)
@@ -21,7 +25,8 @@
 # Exit 0 if >=1 lane succeeded, 1 if all failed, 2 on bad arguments.
 set -uo pipefail
 
-TASK_FILE="" MEMBERS_FILE="" OUTDIR="" TIMEOUT=180
+DEFAULT_TIMEOUT="${COUNCIL_TIMEOUT_SEC:-1200}"
+TASK_FILE="" MEMBERS_FILE="" OUTDIR="" TIMEOUT="$DEFAULT_TIMEOUT"
 
 die() { printf 'council.sh: %s\n' "$1" >&2; exit 2; }
 
@@ -38,18 +43,39 @@ done
 
 [ -n "$TASK_FILE" ] && [ -f "$TASK_FILE" ] || die "missing/unreadable --task file"
 [ -n "$MEMBERS_FILE" ] && [ -f "$MEMBERS_FILE" ] || die "missing/unreadable --members file"
+[ "$TIMEOUT" -eq "$TIMEOUT" ] 2>/dev/null && [ "$TIMEOUT" -gt 0 ] || die "--timeout must be a positive integer"
 [ -n "$OUTDIR" ] || OUTDIR="$(dirname "$MEMBERS_FILE")/council-out"
 mkdir -p "$OUTDIR" || die "cannot create outdir: $OUTDIR"
 
 TASK="$(cat "$TASK_FILE")"
 
+if [ "$TIMEOUT" -lt 600 ]; then
+  printf 'council.sh: warning: %ss cap is for smoke/cheap lanes; timed-out reasoning lanes are caller-capped.\n' "$TIMEOUT" >&2
+fi
+
 # Portable per-lane timeout: run cmd in bg, kill it if it overruns.
 run_capped() {
   local secs="$1"; shift
+  local timeout_marker
+  timeout_marker="$(mktemp "${TMPDIR:-/tmp}/council-timeout.XXXXXX")" || return 2
+  rm -f "$timeout_marker"
   "$@" & local pid=$!
-  ( sleep "$secs"; kill -TERM "$pid" 2>/dev/null ) & local guard=$!
+  (
+    sleep "$secs"
+    if kill -0 "$pid" 2>/dev/null; then
+      printf 'timeout\n' >"$timeout_marker"
+      kill -TERM "$pid" 2>/dev/null
+      sleep 5
+      kill -KILL "$pid" 2>/dev/null
+    fi
+  ) & local guard=$!
   wait "$pid" 2>/dev/null; local rc=$?
   kill -TERM "$guard" 2>/dev/null; wait "$guard" 2>/dev/null
+  if [ -s "$timeout_marker" ]; then
+    rm -f "$timeout_marker"
+    return 124
+  fi
+  rm -f "$timeout_marker"
   return "$rc"
 }
 
@@ -102,7 +128,14 @@ for s in "$OUTDIR"/*.status; do
   [ -f "$s" ] || continue
   IFS=$'\t' read -r label status out <"$s"
   if [ "$status" = "0" ]; then ok=$((ok+1)); printf '  ✓ %-18s %s\n' "$label" "$out";
-  else fail=$((fail+1)); printf '  ✗ %-18s (status %s) %s\n' "$label" "$status" "$out"; fi
+  else
+    fail=$((fail+1))
+    if [ "$status" = "124" ]; then
+      printf '  ✗ %-18s (timeout after %ss; caller cap) %s\n' "$label" "$TIMEOUT" "$out"
+    else
+      printf '  ✗ %-18s (status %s) %s\n' "$label" "$status" "$out"
+    fi
+  fi
 done
 printf '%s ok, %s failed. Read the .out files; synthesize as chair (see SKILL.md).\n' "$ok" "$fail"
 [ "$ok" -gt 0 ]
