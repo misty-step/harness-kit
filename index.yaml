@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-25T16:08:13Z
+# Generated: 2026-06-25T17:12:24Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -11,6 +11,10 @@ skills:
     description: "Dispatch-shaped code review: fan the diff out to fresh-context reviewers across diverse providers and model families, synthesize, fix blockers, re-review until clean. Use when: \"review this\", \"code re"
     source: first-party
     tags: [across,blockers,clean,code,diff,dispatch-shaped,diverse,families,fan,fix]
+  - name: council
+    description: "Convene a council/thinktank: fan one question out to several DISTINCT high-quality OpenRouter model families (via opencode/pi), each carrying a different generative persona/perspective, then synthesiz"
+    source: first-party
+    tags: [a,carrying,convene,council,different,distinct,families,fan,generative,high-quality]
   - name: deliver
     description: "Take one ticket or idea from raw intent to merge-ready (or shipped, when asked): context-first, docs→tests→code, live QA, refactor at three altitudes, semantic commits, diverse-provider review, ad"
     source: first-party

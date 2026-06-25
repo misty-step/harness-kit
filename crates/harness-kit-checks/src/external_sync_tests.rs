@@ -75,6 +75,33 @@ fn discovers_skills_and_copies_hidden_files_without_git_metadata() {
 }
 
 #[test]
+fn carry_license_pulls_root_license_when_skill_lacks_one() {
+    let temp = TempDir::new().unwrap();
+    let root = temp.path();
+    fs::write(root.join("LICENSE"), "MIT root notice\n").unwrap();
+
+    // Skill subtree with no license of its own -> root LICENSE is carried in.
+    let dest = root.join("dest");
+    fs::create_dir_all(&dest).unwrap();
+    carry_license(&dest, root).unwrap();
+    assert_eq!(
+        fs::read_to_string(dest.join("LICENSE")).unwrap(),
+        "MIT root notice\n"
+    );
+
+    // Skill that already carries its own license is never overwritten.
+    let owned = root.join("owned");
+    fs::create_dir_all(&owned).unwrap();
+    fs::write(owned.join("LICENSE.txt"), "skill's own\n").unwrap();
+    carry_license(&owned, root).unwrap();
+    assert!(!owned.join("LICENSE").exists());
+    assert_eq!(
+        fs::read_to_string(owned.join("LICENSE.txt")).unwrap(),
+        "skill's own\n"
+    );
+}
+
+#[test]
 fn install_alias_check_mode_reports_drift_without_writing() {
     let temp = TempDir::new().unwrap();
     let src = temp.path().join("src/demo");

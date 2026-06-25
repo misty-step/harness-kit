@@ -24,6 +24,24 @@ this factual sheet.
 - Record local smoke evidence in delegation receipts; this file may point at
   receipts, but receipts remain the proof that a local harness invocation ran.
 
+## Live model facts: the OpenRouter MCP
+
+The OpenRouter MCP is the live source for everything in this file that rots.
+It is a remote HTTP server, user-scoped so it is available in every repo:
+
+```sh
+claude mcp add --scope user --transport http openrouter https://mcp.openrouter.ai/mcp
+claude mcp login openrouter   # one-time OAuth (browser); issues a 7-day, $10-cap key
+```
+
+Tools: `models-list` / `model-get` / `model-endpoints` (catalog, providers,
+live pricing), `benchmarks` (third-party quality scores), `rankings-daily`,
+`credits-get` (balance), `generation-get` (per-call cost/tokens), `chat-send`
+(billable test inference), `docs-search`, `ping`. Use it to verify slugs,
+prices, and context windows before changing defaults, and to compose a
+`/council` bench from current top diverse families. Quote prices at dispatch
+time; never hardcode them into gates.
+
 ## Local Harness Roster
 
 Source: `.harness-kit/agents.yaml`, probed with

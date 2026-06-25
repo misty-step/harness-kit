@@ -403,6 +403,9 @@ fn sync_source(
     let want_ref = source.pin.as_deref().unwrap_or(&source.ref_name);
     let sha = resolve_ref_to_sha(&checkout_dir, want_ref)?;
     checkout_sha(&checkout_dir, &sha)?;
+    // Repo root of the checkout — the license fallback for subdir skills whose
+    // upstream keeps a single LICENSE at the root rather than in each skill dir.
+    let license_root = checkout_dir.clone();
     let skill_root = if source.skills_path == "." || source.skills_path.is_empty() {
         checkout_dir
     } else {
@@ -466,6 +469,11 @@ fn sync_source(
             options.mode,
             state,
         )?;
+        // A subdir skill inherits the repo-root license when its own subtree
+        // carries none. Sync mode only -- Check never materializes the dest.
+        if options.mode == SyncMode::Sync {
+            carry_license(&external_root.join(&alias), &license_root)?;
+        }
     }
     Ok(())
 }
@@ -726,6 +734,34 @@ fn copy_dir(src: &Path, dest: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Upstream license filenames we recognize, in priority order.
+const LICENSE_NAMES: [&str; 5] = [
+    "LICENSE",
+    "LICENSE.md",
+    "LICENSE.txt",
+    "COPYING",
+    "COPYING.md",
+];
+
+/// Carry an upstream license into `dest` when the vendored skill subtree did not
+/// already include one. Many repos keep a single LICENSE at the repo root rather
+/// than inside each skill dir; without this fallback an MIT/Apache (or copyleft)
+/// notice would be silently dropped when we vendor a subdir skill. Never
+/// overwrites a license the skill carries itself.
+fn carry_license(dest: &Path, fallback_root: &Path) -> Result<()> {
+    if LICENSE_NAMES.iter().any(|name| dest.join(name).is_file()) {
+        return Ok(());
+    }
+    for name in LICENSE_NAMES {
+        let src = fallback_root.join(name);
+        if src.is_file() {
+            fs::copy(&src, dest.join(name))?;
+            break;
+        }
+    }
+    Ok(())
+}
+
 /// Stage a root-level skill (a `SKILL.md` living at `skill_root` rather than in a
 /// subdir) into `dest`. A root-level skill shares its directory with the upstream
 /// app, so sibling dirs (`src/`, `assets/`, `scripts/`, ...) belong to the app,
@@ -737,19 +773,7 @@ fn stage_root_skill(skill_root: &Path, dest: &Path) -> Result<()> {
     fs::create_dir_all(dest)?;
     fs::copy(skill_root.join("SKILL.md"), dest.join("SKILL.md"))
         .with_context(|| format!("staging SKILL.md from {}", skill_root.display()))?;
-    for license in [
-        "LICENSE",
-        "LICENSE.md",
-        "LICENSE.txt",
-        "COPYING",
-        "COPYING.md",
-    ] {
-        let src = skill_root.join(license);
-        if src.is_file() {
-            fs::copy(&src, dest.join(license))?;
-            break;
-        }
-    }
+    carry_license(dest, skill_root)?;
     Ok(())
 }
 

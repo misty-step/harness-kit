@@ -33,7 +33,10 @@ an architecture choice needs the full treatment.
   `/vision` or carry an explicit waiver.
 - **Alternatives genuinely explored.** Real alternatives fail differently —
   include the boring/manual path and one that inverts a load-bearing
-  assumption. Same idea in three outfits is one option. Kill the losers on
+  assumption. Same idea in three outfits is one option. To break out of that,
+  `nous-creative-ideation` is a routed library of named methods (TRIZ for
+  parameter conflicts, premortem-and-inversion, first-principles) that
+  generate options which actually fail differently. Kill the losers on
   the record and **recommend one**; a menu is not a shape. For automation or
   refactor-heavy ideas, apply `harnesses/shared/references/delete-first.md`
   and the synced Ponytail skill (`skills/.external/dietrich-ponytail/SKILL.md`)

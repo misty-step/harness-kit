@@ -306,3 +306,24 @@ sources:
     skills_path: "."
     skill_name: herdr
     alias_prefix: "herdr-"
+
+  # NousResearch/hermes-agent — SHL0MS's `creative-ideation` skill: a routed
+  # library of 22 named ideation methods (OuLiPo, TRIZ, Oblique Strategies,
+  # biomimicry, jobs-to-be-done, lateral provocations, …). Reads the user's
+  # phase / domain / specificity, routes to the matching method, and refuses
+  # the first-N "slop" ideas. Ships a references/ subtree (method catalog,
+  # anti-slop rules, full prompt library, 22 method files) — vendored whole.
+  #
+  # FIT NOTE: creative / open-ended generation, distinct from /groom's backlog
+  # brainstorm and /shape's product framing. Optional creative lane; revisit if
+  # it over-triggers against grooming.
+  #
+  # LICENSE: MIT — repo and skill frontmatter both declare MIT; the upstream
+  # LICENSE is carried alongside the vendored skill.
+  - repo: NousResearch/hermes-agent
+    ref: main
+    pin: a6a28ce3e2174c0be494f553ab5fd79b7039190f
+    layout: flat
+    skills_path: optional-skills/creative
+    alias_prefix: "nous-"
+    include: [creative-ideation]

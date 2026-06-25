@@ -6,6 +6,7 @@ Copy source: docs/copy/site.json
 Primitives:
 - skill:ci | skills/ci/SKILL.md | docs/site/reference/skills/ci.html
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html
+- skill:council | skills/council/SKILL.md | docs/site/reference/skills/council.html
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:design | skills/design/SKILL.md | docs/site/reference/skills/design.html
 - skill:diagnose | skills/diagnose/SKILL.md | docs/site/reference/skills/diagnose.html
