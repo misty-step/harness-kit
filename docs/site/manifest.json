@@ -213,6 +213,16 @@
       "source": "skills/diagnose/SKILL.md"
     },
     {
+      "description": "Generate world-class, source-verified reference documentation for a codebase: a multi-agent loop that surveys the repo, plans the information architecture, writes facet-scoped pages, and adversarially verifies every claim against live source before committing markdown + HTML + diagrams to docs/. Always runs the full verify loop; scope is incremental by provenance. Use when: \"document this codebase\", \"generate the docs\", \"build a codebase wiki\", \"write architecture docs\", \"onboarding docs\", \"documentation site\", \"keep the docs in sync\", \"world-class docs\". Trigger: /document, /docs, /wiki.",
+      "icon": "catalog",
+      "id": "skill:document",
+      "kind": "skill",
+      "name": "document",
+      "page": "reference/skills/document.html",
+      "role": "Support",
+      "source": "skills/document/SKILL.md"
+    },
+    {
       "description": "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a mega-sweep: swarm investigation, external research, critique, synthesis, and backlog shaping across product, codebase, docs, infrastructure, ops, architecture, system design, value prop, and agent readiness. Use when: \"groom\", \"what should we build\", \"rethink this\", \"biggest opportunity\", \"backlog\", \"prioritize\", \"backlog session\", \"audit skills\", \"skill quality audit\". Trigger: /groom, /groom audit, /backlog, /rethink, /moonshot, /scaffold.",
       "icon": "plan",
       "id": "skill:groom",
@@ -341,6 +351,16 @@
       "page": "reference/skills/sprites.html",
       "role": "Support",
       "source": "skills/sprites/SKILL.md"
+    },
+    {
+      "description": "Manage the operator's Todoist as the system of record for tasks, reminders, and follow-ups — capture, triage, complete, and organize. Agent-native via the Todoist MCP; scriptable via the `td` CLI. Use when: \"add this to my todoist\", \"add a task\", \"remind me to\", \"capture this\", \"what's on my todoist\", \"what's due today\", \"what's in my inbox\", \"mark this done\", \"create a project/label\", \"log a follow-up\". Trigger: /todoist, /task, /todo.",
+      "icon": "catalog",
+      "id": "skill:todoist",
+      "kind": "skill",
+      "name": "todoist",
+      "page": "reference/skills/todoist.html",
+      "role": "Support",
+      "source": "skills/todoist/SKILL.md"
     },
     {
       "description": "Create or update root VISION.md as a first-class project north-star artifact. Conversational project interrogation, repo/workspace research, competitive or exemplar scan, lifespan clarification, philosophy distillation, and wiring repo-local harness primitives to read it. Use when: \"vision\", \"vision.md\", \"project vision\", \"north star\", \"what is this project\", \"clarify product direction\", \"write/update VISION.md\", \"project philosophy\", \"why does this repo exist\". Trigger: /vision, /north-star.",

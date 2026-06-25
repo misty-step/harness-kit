@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-06-24T19:12:44Z
+# Generated: 2026-06-25T16:08:13Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -23,6 +23,10 @@ skills:
     description: "Investigate, audit, triage, and fix. Systematic debugging, incident lifecycle, domain auditing, and issue logging. Feedback-loop-first protocol: reproduce or replay before root cause, pattern analysis"
     source: first-party
     tags: [analysis,audit,auditing,before,cause,debugging,domain,feedback-loop-first,fix,incident]
+  - name: document
+    description: "Generate world-class, source-verified reference documentation for a codebase: a multi-agent loop that surveys the repo, plans the information architecture, writes facet-scoped pages, and adversarially"
+    source: first-party
+    tags: [a,adversarially,architecture,codebase,documentation,facet-scoped,generate,information,loop,multi-agent]
   - name: groom
     description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a mega-sweep: swa"
     source: first-party
@@ -75,6 +79,10 @@ skills:
     description: "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use w"
     source: first-party
     tags: [a,agent,cards,fly,golden-checkpoint,heavy,isolated,lane,lanes,on]
+  - name: todoist
+    description: "Manage the operator's Todoist as the system of record for tasks, reminders, and follow-ups — capture, triage, complete, and organize. Agent-native via the Todoist MCP; scriptable via the `td` CLI. U"
+    source: first-party
+    tags: [agent-native,as,capture,cli,complete,follow-ups,manage,mcp,of,operator]
   - name: vision
     description: "Create or update root VISION.md as a first-class project north-star artifact. Conversational project interrogation, repo/workspace research, competitive or exemplar scan, lifespan clarification, philo"
     source: first-party

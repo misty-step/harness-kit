@@ -9,6 +9,7 @@ Primitives:
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:design | skills/design/SKILL.md | docs/site/reference/skills/design.html
 - skill:diagnose | skills/diagnose/SKILL.md | docs/site/reference/skills/diagnose.html
+- skill:document | skills/document/SKILL.md | docs/site/reference/skills/document.html
 - skill:groom | skills/groom/SKILL.md | docs/site/reference/skills/groom.html
 - skill:harness-engineering | skills/harness-engineering/SKILL.md | docs/site/reference/skills/harness-engineering.html
 - skill:human-writing | skills/human-writing/SKILL.md | docs/site/reference/skills/human-writing.html
@@ -22,6 +23,7 @@ Primitives:
 - skill:shape | skills/shape/SKILL.md | docs/site/reference/skills/shape.html
 - skill:showcase | skills/showcase/SKILL.md | docs/site/reference/skills/showcase.html
 - skill:sprites | skills/sprites/SKILL.md | docs/site/reference/skills/sprites.html
+- skill:todoist | skills/todoist/SKILL.md | docs/site/reference/skills/todoist.html
 - skill:vision | skills/vision/SKILL.md | docs/site/reference/skills/vision.html
 
 Docs figures:
