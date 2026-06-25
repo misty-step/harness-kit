@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>sploot // 12,408 memes. zero folders.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#f3ecd9;
+    --ink:#16130f;
+    --red:#e23b2e;
+    --blue:#2c52d8;
+    --yellow:#f4c531;
+    --teal:#1ba98c;
+    --pink:#ec6fa6;
+    --line:4px solid var(--ink);
+    --line-thin:3px solid var(--ink);
+    --ease:cubic-bezier(.2,.9,.3,1);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--cream);color:var(--ink);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--yellow)}
+  a{color:inherit}
+  :focus-visible{outline:4px solid var(--blue);outline-offset:3px}
+
+  /* terrazzo: hard-edged chips scattered as a real background texture, not blobs */
+  .terrazzo{position:fixed;inset:0;z-index:0;opacity:.9;pointer-events:none}
+
+  .frame{
+    position:relative;z-index:1;
+    max-width:1180px;margin:0 auto;padding:22px clamp(16px,4vw,40px) 60px;
+  }
+
+  /* ===== STRUCTURAL GRID: shapes ARE the cells ===== */
+  .bar{
+    display:flex;align-items:stretch;gap:0;
+    border:var(--line);background:var(--cream);
+    box-shadow:10px 10px 0 var(--ink);
+    margin-bottom:26px;
+  }
+  .bar .logo{
+    background:var(--ink);color:var(--cream);
+    font-family:"Archivo Black",sans-serif;font-size:26px;letter-spacing:-.02em;
+    padding:16px 24px;display:flex;align-items:center;text-transform:lowercase;
+  }
+  .bar .logo b{color:var(--yellow)}
+  .bar .tag{
+    flex:1;border-left:var(--line);padding:0 22px;display:flex;align-items:center;
+    font-weight:500;font-size:13px;letter-spacing:.02em;text-transform:lowercase;
+  }
+  .bar .signin{
+    border-left:var(--line);background:var(--red);color:var(--cream);
+    font-family:"Archivo Black",sans-serif;font-size:14px;text-transform:lowercase;
+    padding:0 26px;display:flex;align-items:center;text-decoration:none;
+    transition:background .15s var(--ease);
+  }
+  .bar .signin:hover{background:var(--blue)}
+
+  /* hero: 3-column hard grid. left shape stack, middle headline, right shape stack */
+  .hero{
+    display:grid;
+    grid-template-columns:120px 1fr 120px;
+    gap:0;
+    border:var(--line);
+    box-shadow:14px 14px 0 var(--ink);
+    background:var(--cream);
+    margin-bottom:26px;
+  }
+  .railL,.railR{display:flex;flex-direction:column}
+  .railL > *,.railR > *{flex:1;min-height:84px;border-bottom:var(--line)}
+  .railL > *:last-child,.railR > *:last-child{border-bottom:0}
+  .railR{border-left:var(--line)}
+  .railL{border-right:var(--line)}
+  .cell{position:relative;overflow:hidden;display:grid;place-items:center}
+  .c-red{background:var(--red)}
+  .c-blue{background:var(--blue)}
+  .c-yellow{background:var(--yellow)}
+  .c-teal{background:var(--teal)}
+  .c-pink{background:var(--pink)}
+  .cell svg{width:62%;height:62%;display:block}
+
+  .headline{padding:clamp(26px,5vw,54px);display:flex;flex-direction:column;justify-content:center}
+  .kicker{
+    align-self:flex-start;background:var(--ink);color:var(--cream);
+    font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    padding:7px 12px;margin-bottom:20px;
+  }
+  h1{
+    font-family:"Archivo Black",sans-serif;
+    font-size:clamp(38px,8.2vw,92px);
+    line-height:.92;letter-spacing:-.025em;margin:0;text-transform:lowercase;
+  }
+  h1 .y{color:var(--red)}
+  h1 .b{color:var(--blue)}
+  h1 .stripe{
+    display:inline-block;background:var(--yellow);
+    box-shadow:0 6px 0 var(--ink);padding:0 8px;transform:rotate(-1.5deg);
+  }
+  .lede{
+    max-width:46ch;margin:22px 0 0;font-size:16px;font-weight:500;line-height:1.45;
+  }
+
+  /* ===== SEARCH: a hard-framed control strip ===== */
+  .searchwrap{
+    border:var(--line);box-shadow:12px 12px 0 var(--ink);background:var(--yellow);
+    margin-bottom:26px;
+  }
+  .searchwrap .lbl{
+    font-family:"Archivo Black",sans-serif;font-size:14px;text-transform:lowercase;
+    padding:12px 18px;border-bottom:var(--line);background:var(--ink);color:var(--yellow);
+  }
+  form{display:flex;gap:0}
+  .qcell{flex:1;display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--cream)}
+  .qcell svg{flex:none}
+  label.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  input[type=search]{
+    flex:1;border:0;background:transparent;outline:none;min-width:0;
+    font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:18px;color:var(--ink);
+    padding:20px 0;
+  }
+  input[type=search]::placeholder{color:#6f6657}
+  input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
+  .go{
+    flex:none;border:0;border-left:var(--line);cursor:pointer;
+    background:var(--red);color:var(--cream);
+    font-family:"Archivo Black",sans-serif;font-size:17px;text-transform:lowercase;
+    padding:0 34px;transition:background .12s var(--ease),transform .08s var(--ease);
+  }
+  .go:hover{background:var(--blue)}
+  .go:active{transform:translate(2px,2px)}
+
+  .chips{display:flex;gap:0;border-top:var(--line);flex-wrap:wrap}
+  .chips button{
+    flex:1 1 auto;border:0;border-right:var(--line-thin);background:var(--cream);
+    font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:12.5px;
+    text-transform:lowercase;padding:12px 14px;cursor:pointer;color:var(--ink);
+    transition:background .12s var(--ease),color .12s var(--ease);
+  }
+  .chips button:last-child{border-right:0}
+  .chips button:hover{background:var(--ink);color:var(--cream)}
+
+  /* ===== RESULT STAGE: result drops into a hard geometric frame ===== */
+  .stage{
+    display:grid;grid-template-columns:1fr 240px;gap:0;
+    border:var(--line);box-shadow:14px 14px 0 var(--ink);background:var(--cream);
+    min-height:300px;
+  }
+  .resultpane{position:relative;display:grid;place-items:center;padding:30px;overflow:hidden}
+  .scanlabel{
+    position:absolute;top:14px;left:14px;
+    font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;background:var(--ink);color:var(--cream);padding:5px 9px;
+  }
+
+  /* idle: empty geometric frame waiting */
+  .idle{text-align:center;color:#8a8170;font-weight:700;text-transform:lowercase;font-size:15px;max-width:30ch}
+  .idle .shape{
+    width:84px;height:84px;margin:0 auto 18px;border:var(--line-thin);
+    display:grid;place-items:center;transform:rotate(45deg);background:var(--cream);
+  }
+  .idle .shape span{transform:rotate(-45deg);font-family:"Archivo Black",sans-serif;font-size:28px;color:var(--ink)}
+
+  /* the found card: a hard-edged framed specimen */
+  .found{
+    width:min(100%,320px);
+    border:var(--line);background:var(--cream);box-shadow:10px 10px 0 var(--ink);
+    opacity:0;transform:translateY(22px) rotate(-2deg);
+    transition:opacity .5s var(--ease),transform .5s var(--ease);
+  }
+  .found.shown{opacity:1;transform:rotate(-1.4deg)}
+  .found .pic{aspect-ratio:1/1;border-bottom:var(--line);overflow:hidden;background:var(--yellow)}
+  .found .pic svg{width:100%;height:100%;display:block}
+  .found .cap{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;gap:10px}
+  .found .cap .t{font-family:"Archivo Black",sans-serif;font-size:14px;text-transform:lowercase;line-height:1}
+  .found .cap .pin{flex:none;background:var(--red);color:var(--cream);font-weight:700;font-size:11px;padding:5px 9px;text-transform:uppercase;letter-spacing:.06em}
+
+  /* right meta column built from stacked colored cells */
+  .metacol{display:flex;flex-direction:column;border-left:var(--line)}
+  .metacol > div{flex:1;border-bottom:var(--line);padding:16px;display:flex;flex-direction:column;justify-content:center}
+  .metacol > div:last-child{border-bottom:0}
+  .metacol .big{font-family:"Archivo Black",sans-serif;font-size:30px;line-height:1}
+  .metacol .sm{font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
+  .m-yellow{background:var(--yellow)}
+  .m-teal{background:var(--teal);color:var(--cream)}
+  .m-pink{background:var(--pink)}
+
+  footer{
+    margin-top:26px;border:var(--line);box-shadow:8px 8px 0 var(--ink);
+    display:flex;align-items:stretch;background:var(--cream);
+  }
+  footer .fc{padding:16px 20px;font-weight:700;font-size:13px;text-transform:lowercase;border-right:var(--line);display:flex;align-items:center}
+  footer .grow{flex:1}
+  footer .cta{
+    background:var(--blue);color:var(--cream);text-decoration:none;
+    font-family:"Archivo Black",sans-serif;font-size:15px;text-transform:lowercase;
+    padding:0 28px;display:flex;align-items:center;transition:background .12s var(--ease);
+  }
+  footer .cta:hover{background:var(--red)}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:64px 1fr 64px}
+    .cell svg{width:70%;height:70%}
+    .stage{grid-template-columns:1fr}
+    .metacol{flex-direction:row;border-left:0;border-top:var(--line)}
+    .metacol > div{border-bottom:0;border-right:var(--line)}
+    .metacol > div:last-child{border-right:0}
+    .chips button{flex:1 1 100%}
+  }
+  @media (max-width:520px){
+    .bar{flex-wrap:wrap}
+    .bar .tag{border-left:0;border-top:var(--line-thin);flex-basis:100%;padding:12px 22px}
+    .go{padding:0 20px}
+    footer{flex-wrap:wrap}
+    footer .grow{flex-basis:100%}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    .found{opacity:1;transform:rotate(-1.4deg)}
+  }
+</style>
+</head>
+<body>
+  <!-- terrazzo background: hard chips, generated, license-safe -->
+  <svg class="terrazzo" id="terrazzo" aria-hidden="true" preserveAspectRatio="xMidYMid slice"></svg>
+
+  <div class="frame">
+    <!-- masthead bar -->
+    <div class="bar">
+      <div class="logo">splo<b>o</b>t</div>
+      <div class="tag">a private meme library you search by what is in the picture</div>
+      <a class="signin" href="#signup">sign in</a>
+    </div>
+
+    <!-- HERO: shapes build the grid -->
+    <div class="hero">
+      <div class="railL" aria-hidden="true">
+        <div class="cell c-red"><svg viewBox="0 0 100 100"><polygon points="50,8 92,92 8,92" fill="#f3ecd9" stroke="#16130f" stroke-width="6"/></svg></div>
+        <div class="cell c-blue"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#f4c531" stroke="#16130f" stroke-width="6"/></svg></div>
+        <div class="cell c-yellow"><svg viewBox="0 0 100 100"><path d="M10 70 L30 30 L50 70 L70 30 L90 70" fill="none" stroke="#16130f" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="headline">
+        <span class="kicker">text in &rarr; image out</span>
+        <h1>what's <span class="y">that</span><br>one <span class="stripe">meme</span><br><span class="b">again</span></h1>
+        <p class="lede">you saved the perfect reaction two years ago. it is in there, buried in twelve thousand screenshots. type what is happening in it. sploot pulls it out.</p>
+      </div>
+
+      <div class="railR" aria-hidden="true">
+        <div class="cell c-teal"><svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="#ec6fa6" stroke="#16130f" stroke-width="6" transform="rotate(15 50 50)"/></svg></div>
+        <div class="cell c-pink"><svg viewBox="0 0 100 100"><path d="M8 50 Q29 18 50 50 T92 50" fill="none" stroke="#16130f" stroke-width="8" stroke-linecap="round"/></svg></div>
+        <div class="cell c-yellow"><svg viewBox="0 0 100 100"><polygon points="50,10 61,40 92,40 67,60 76,90 50,72 24,90 33,60 8,40 39,40" fill="#2c52d8" stroke="#16130f" stroke-width="5"/></svg></div>
+      </div>
+    </div>
+
+    <!-- SEARCH control strip -->
+    <div class="searchwrap">
+      <div class="lbl">find it &rarr;</div>
+      <form id="finder" autocomplete="off">
+        <div class="qcell">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16130f" stroke-width="3" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <label class="vh" for="q">describe the meme you are looking for</label>
+          <input id="q" name="q" type="search" placeholder="two cats arguing at a dinner table" />
+        </div>
+        <button class="go" type="submit">find it</button>
+      </form>
+      <div class="chips" aria-label="example searches">
+        <button type="button" data-q="two cats arguing at a dinner table">two cats arguing</button>
+        <button type="button" data-q="man squinting confused at math floating around his head">confused math guy</button>
+        <button type="button" data-q="dog drinking coffee in a room on fire">this is fine</button>
+        <button type="button" data-q="skeleton waiting forever on a bench">still waiting</button>
+      </div>
+    </div>
+
+    <!-- RESULT STAGE -->
+    <div class="stage">
+      <div class="resultpane">
+        <span class="scanlabel" id="scanlabel">awaiting query</span>
+
+        <div class="idle" id="idle">
+          <div class="shape"><span>?</span></div>
+          12,408 memes. zero folders. type a moment, get the exact one back.
+        </div>
+
+        <article class="found" id="found" aria-live="polite" hidden>
+          <div class="pic" id="pic"></div>
+          <div class="cap">
+            <div class="t" id="ttitle">two cats, one table</div>
+            <div class="pin">found</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="metacol" aria-hidden="true">
+        <div class="m-yellow"><div class="big" id="mScore">98%</div><div class="sm">match</div></div>
+        <div class="m-teal"><div class="big" id="mPos">#1</div><div class="sm">of 12,408</div></div>
+        <div class="m-pink"><div class="big" id="mTime">0.2s</div><div class="sm">no folders</div></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="fc">12,408 memes</div>
+      <div class="fc">zero folders</div>
+      <div class="fc grow">one search bar</div>
+      <a class="cta" href="#signup" id="signup">build your library</a>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  /* ---- terrazzo: hard-edged chips painted as background texture (not blobs) ---- */
+  (function buildTerrazzo(){
+    var svg = document.getElementById('terrazzo');
+    var W=1200, H=900;
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    var colors=['#e23b2e','#2c52d8','#f4c531','#1ba98c','#ec6fa6','#16130f'];
+    var parts=[];
+    function r(a,b){return a+Math.random()*(b-a);}
+    for(var i=0;i<120;i++){
+      var c=colors[(Math.random()*colors.length)|0];
+      var x=r(0,W), y=r(0,H), s=r(7,20), k=(Math.random()*4)|0, rot=r(0,360);
+      if(k===0){ // square
+        parts.push('<rect x="'+(x)+'" y="'+(y)+'" width="'+s+'" height="'+s+'" fill="'+c+'" transform="rotate('+rot+' '+(x+s/2)+' '+(y+s/2)+')"/>');
+      }else if(k===1){ // triangle
+        parts.push('<polygon points="'+x+','+(y+s)+' '+(x+s/2)+','+y+' '+(x+s)+','+(y+s)+'" fill="'+c+'"/>');
+      }else if(k===2){ // circle
+        parts.push('<circle cx="'+x+'" cy="'+y+'" r="'+(s/2)+'" fill="'+c+'"/>');
+      }else{ // thin bar
+        parts.push('<rect x="'+x+'" y="'+y+'" width="'+(s*1.8)+'" height="'+(s*0.34)+'" fill="'+c+'" transform="rotate('+rot+' '+x+' '+y+')"/>');
+      }
+    }
+    svg.innerHTML = '<rect width="'+W+'" height="'+H+'" fill="#f3ecd9"/>' + parts.join('');
+  })();
+
+  /* ---- specimens: hard-edged geometric meme glyphs, license-safe ---- */
+  function frame(inner){
+    return '<svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="geometric meme specimen">'
+      +'<rect width="200" height="200" fill="#f4c531"/>'+inner+'</svg>';
+  }
+  var SET={
+    cats:{title:'two cats, one table', svg:frame(
+      '<rect x="24" y="120" width="152" height="14" fill="#16130f"/>'
+      +'<polygon points="58,120 40,72 76,72" fill="#e23b2e" stroke="#16130f" stroke-width="5"/>'   /* cat L body */
+      +'<circle cx="58" cy="58" r="18" fill="#f3ecd9" stroke="#16130f" stroke-width="5"/>'
+      +'<polygon points="44,46 50,30 56,46" fill="#16130f"/><polygon points="60,46 66,30 72,46" fill="#16130f"/>'
+      +'<circle cx="52" cy="58" r="2.6" fill="#16130f"/><circle cx="64" cy="58" r="2.6" fill="#16130f"/>'
+      +'<polygon points="142,120 124,72 160,72" fill="#2c52d8" stroke="#16130f" stroke-width="5"/>'  /* cat R */
+      +'<circle cx="142" cy="58" r="18" fill="#f3ecd9" stroke="#16130f" stroke-width="5"/>'
+      +'<polygon points="128,46 134,30 140,46" fill="#16130f"/><polygon points="144,46 150,30 156,46" fill="#16130f"/>'
+      +'<circle cx="136" cy="58" r="2.6" fill="#16130f"/><circle cx="148" cy="58" r="2.6" fill="#16130f"/>'
+      +'<text x="100" y="100" font-family="Archivo Black,sans-serif" font-size="30" fill="#16130f" text-anchor="middle">!</text>')},
+    math:{title:'confused math guy', svg:frame(
+      '<circle cx="100" cy="104" r="44" fill="#ec6fa6" stroke="#16130f" stroke-width="5"/>'
+      +'<rect x="78" y="92" width="14" height="6" fill="#16130f"/><rect x="108" y="92" width="14" height="6" fill="#16130f"/>'
+      +'<path d="M86 122 q14 -10 28 0" fill="none" stroke="#16130f" stroke-width="5"/>'
+      +'<text x="40" y="44" font-family="Archivo Black,sans-serif" font-size="20" fill="#2c52d8">x&#178;</text>'
+      +'<text x="140" y="50" font-family="Archivo Black,sans-serif" font-size="20" fill="#e23b2e">&#960;</text>'
+      +'<text x="150" y="150" font-family="Archivo Black,sans-serif" font-size="20" fill="#1ba98c">&#8730;</text>'
+      +'<line x1="60" y1="60" x2="80" y2="78" stroke="#16130f" stroke-width="3"/>'
+      +'<line x1="138" y1="64" x2="120" y2="80" stroke="#16130f" stroke-width="3"/>')},
+    fine:{title:'this is fine', svg:frame(
+      '<path d="M0 150 L20 120 L40 150 L60 120 L80 150 L100 120 L120 150 L140 120 L160 150 L180 120 L200 150 L200 200 L0 200Z" fill="#e23b2e"/>'
+      +'<circle cx="100" cy="92" r="36" fill="#2c52d8" stroke="#16130f" stroke-width="5"/>'  /* dog head */
+      +'<polygon points="68,70 56,52 80,60" fill="#16130f"/><polygon points="132,70 144,52 120,60" fill="#16130f"/>'
+      +'<circle cx="88" cy="86" r="3" fill="#f3ecd9"/><circle cx="112" cy="86" r="3" fill="#f3ecd9"/>'
+      +'<rect x="86" y="104" width="28" height="6" fill="#f3ecd9"/>'
+      +'<text x="100" y="40" font-family="Archivo Black,sans-serif" font-size="14" fill="#16130f" text-anchor="middle">ok.</text>')},
+    wait:{title:'still waiting', svg:frame(
+      '<rect x="40" y="120" width="120" height="10" fill="#16130f"/>'             /* bench */
+      +'<rect x="48" y="130" width="8" height="40" fill="#16130f"/><rect x="144" y="130" width="8" height="40" fill="#16130f"/>'
+      +'<circle cx="100" cy="70" r="22" fill="#f3ecd9" stroke="#16130f" stroke-width="5"/>'  /* skull */
+      +'<circle cx="92" cy="68" r="4" fill="#16130f"/><circle cx="108" cy="68" r="4" fill="#16130f"/>'
+      +'<rect x="94" y="80" width="12" height="6" fill="#16130f"/>'
+      +'<rect x="86" y="92" width="28" height="28" fill="#1ba98c" stroke="#16130f" stroke-width="5"/>'
+      +'<text x="150" y="50" font-family="Archivo Black,sans-serif" font-size="20" fill="#e23b2e">z</text>'
+      +'<text x="162" y="38" font-family="Archivo Black,sans-serif" font-size="14" fill="#2c52d8">z</text>')}
+  };
+
+  function pick(q){
+    q=(q||'').toLowerCase();
+    if(/cat|argu|table|dinner|yell|woman/.test(q)) return SET.cats;
+    if(/math|squint|confus|number|equation|floating|x/.test(q)) return SET.math;
+    if(/fine|fire|burn|dog|coffee|room|ok/.test(q)) return SET.fine;
+    if(/wait|skelet|forever|bench|still|bone/.test(q)) return SET.wait;
+    return SET.cats;
+  }
+
+  var form=document.getElementById('finder');
+  var input=document.getElementById('q');
+  var idle=document.getElementById('idle');
+  var found=document.getElementById('found');
+  var pic=document.getElementById('pic');
+  var ttitle=document.getElementById('ttitle');
+  var scan=document.getElementById('scanlabel');
+  var mScore=document.getElementById('mScore');
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  function reveal(q){
+    var hit=pick(q);
+    pic.innerHTML=hit.svg;
+    ttitle.textContent=hit.title;
+    idle.hidden=true;
+    found.hidden=false;
+    scan.textContent='located';
+    var pct=96+((Math.random()*3)|0);
+    if(reduce){ mScore.textContent=pct+'%'; found.classList.add('shown'); return; }
+    found.classList.remove('shown');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){found.classList.add('shown');});});
+    var n=80;(function step(){ n+=Math.max(1,Math.round((pct-n)/4)); if(n>=pct){mScore.textContent=pct+'%';return;} mScore.textContent=n+'%'; setTimeout(step,32); })();
+  }
+
+  form.addEventListener('submit',function(e){e.preventDefault();reveal(input.value||input.placeholder);});
+  Array.prototype.forEach.call(document.querySelectorAll('.chips button'),function(b){
+    b.addEventListener('click',function(){input.value=b.getAttribute('data-q');reveal(input.value);input.focus();});
+  });
+})();
+</script>
+</body>
+</html>

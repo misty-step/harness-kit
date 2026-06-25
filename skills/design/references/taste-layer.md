@@ -61,3 +61,8 @@ Bad references are vague:
 
 Use references as lenses. Do not copy their brand, component library, or visual
 language wholesale.
+
+For operator-endorsed starting points, see `aesthetic-library.md`: six vetted
+aesthetic directions (neo-brutalist, terminal-TUI, soft-luxe, memphis, web-1.0,
+instrument-panel), each with its DNA and a runnable HTML example. Pull from one
+when a request matches the vibe — as a lens to build bespoke, not a template.

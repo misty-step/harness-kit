@@ -115,6 +115,9 @@ presumptive blockers the author must justify, not nits:
 - Contrast below WCAG AA, or an interactive control unreachable by keyboard.
 - No distinctive decision — the surface is template-clean but anonymous.
 - Meta-copy: UI that explains the agent's process instead of naming the thing.
+- A generative/redesign request answered with a single option when the operator
+  wanted to explore — or "variants" that are palette/font swaps of one layout
+  rather than structurally distinct directions within the named constraints.
 
 ## Delegation Judgment
 
@@ -148,15 +151,32 @@ rhythm), **editorial** (guide attention through a story), **workbench** (more
 density, repeated-use affordances), **brand-forward** (make it unmistakable),
 **inversion** (challenge the organizing metaphor).
 
-## Variation Fan (prototype)
+## Divergence first (the standing stance for any generative work)
 
-When one-shot taste risk is high, don't one-shot: build 3–5 **structurally**
-different variations in one self-contained HTML file (inline CSS/JS, real product
-content, no lorem ipsum), labeled side-by-side, and let the operator pick. Five
-palette swaps of one layout is one variation. The fan is a sketch — build the
-winner properly with the chosen preset and the anti-slop gate; never ship the
-prototype file. For several named issues over verdict rounds, or viewport-
-dependent judgment, graduate to the lab registry (`references/lab-registry.md`).
+Models are strong at generating options and weak at choosing between them — so
+use them that way. For any route that *creates or redesigns* a surface (generate,
+redesign, prototype, scaffold a system, shape a flow), the default is to
+**diverge, then let the operator decide** — never one-shot a single answer, never
+auto-pick the aesthetic. The decision is the operator's; the spread is yours.
+
+Step zero is naming the **constraint set** — what is FIXED for this job (the
+repo's `DESIGN.md` tokens, brand, platform, a11y floor, the product premise).
+Wide creative distinction *within* those constraints is the goal; differentiation
+that breaks them is noise, and five palette swaps of one layout is one variation,
+not five. What varies vs. what stays fixed differs by design mode — system,
+component/page, UX flow, motion, copy — and `references/divergence.md` maps the
+axes and the right navigable artifact for each.
+
+Present the spread as a **navigable artifact**, not prose: a one-shot fan
+(several structurally distinct options in one self-contained HTML file, real
+content, labeled, switchable) for "pick one of these"; the paged
+`references/lab-registry.md` viewer (≥6 options, full-viewport pages, arrow-key
+nav, adjustable viewport — the operator's confirmed default for almost all
+prototyping) for rounds or viewport-dependent calls. Generate genuinely distinct
+directions by routing the ideation through `nous-creative-ideation`'s named
+methods (SCAMPER, lateral provocations, analogy) rather than reskinning one idea.
+Then **converge**: build the chosen direction properly with the preset and the
+anti-slop gate; never ship the prototype file.
 
 ## Implementation Guardrails
 
@@ -177,6 +197,12 @@ dependent judgment, graduate to the lab registry (`references/lab-registry.md`).
   format (`lint` + DTCG export) and `design-contract.md` provenance.
 - `references/design-system.md` — token and component-system judgment.
 - `references/taste-layer.md` — aesthetic direction and anti-generic critique.
+- `references/aesthetic-library.md` — six operator-endorsed aesthetic
+  directions (neo-brutalist, terminal-TUI, soft-luxe, memphis, web-1.0,
+  instrument-panel), each with DNA + a runnable HTML example to pull from.
+- `references/divergence.md` — the divergence-first method: per-mode variation
+  axes (system / component / UX flow / motion / copy), constraint-naming,
+  navigable artifacts, fan width, and the converge handoff.
 - `references/anti-slop.md` — the single ban-core: slop tells, dials, quick gate.
 - `references/interface-polish.md` — micro-polish checks.
 - `references/external-design-references.md` — license-safe use of the vendored

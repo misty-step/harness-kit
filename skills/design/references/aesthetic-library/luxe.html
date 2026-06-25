@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>sploot · you saved it. now find it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* gallery-grade neutrals: warm paper + ink, one quiet accent */
+    --paper:#f4f1ea;
+    --paper-deep:#ebe6dc;
+    --ink:#1b1a17;
+    --ink-soft:#54514a;
+    --line:#d8d2c5;
+    --accent:#7a5230;        /* aged bronze, used once */
+    --spec:#fbfaf7;          /* the specimen card */
+    --focus:#1b1a17;
+    --shadow:18px 30px 60px -28px rgba(40,33,22,.30);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    margin:0;
+    background:
+      radial-gradient(120% 90% at 50% -10%, var(--paper) 0%, var(--paper-deep) 100%);
+    color:var(--ink);
+    font-family:"Geist",system-ui,sans-serif;
+    font-weight:400;
+    line-height:1.5;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  a{color:inherit}
+  ::selection{background:rgba(122,82,48,.18)}
+
+  /* ---- frame ---- */
+  .masthead{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:34px clamp(24px,6vw,90px) 0;
+  }
+  .wordmark{
+    font-family:"Fraunces",serif;
+    font-weight:400;
+    font-size:21px;
+    letter-spacing:.16em;
+    text-transform:lowercase;
+  }
+  .wordmark b{font-weight:400;font-style:italic}
+  .signin{
+    font-size:13px;letter-spacing:.04em;color:var(--ink-soft);
+    text-decoration:none;border-bottom:1px solid transparent;
+    padding-bottom:2px;transition:border-color .3s var(--ease),color .3s var(--ease);
+  }
+  .signin:hover,.signin:focus-visible{color:var(--ink);border-color:var(--ink)}
+
+  main{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(40px,7vh,96px) clamp(24px,6vw,90px);
+    width:100%;
+  }
+  .stage{width:100%;max-width:760px;text-align:center}
+
+  .eyebrow{
+    font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 26px;
+  }
+  h1{
+    font-family:"Fraunces",serif;
+    font-weight:300;
+    font-size:clamp(40px,7vw,76px);
+    line-height:1.02;
+    letter-spacing:-.012em;
+    margin:0 0 18px;
+  }
+  h1 em{font-style:italic;font-weight:400}
+  .sub{
+    max-width:42ch;margin:0 auto 46px;
+    color:var(--ink-soft);font-size:16px;line-height:1.6;
+    font-weight:300;
+  }
+
+  /* ---- search ---- */
+  form{margin:0 auto;max-width:560px;width:100%}
+  .field{
+    display:flex;align-items:center;gap:14px;
+    background:var(--spec);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:7px 8px 7px 26px;
+    box-shadow:var(--shadow);
+    transition:border-color .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease);
+  }
+  .field:focus-within{
+    border-color:var(--ink);
+    box-shadow:22px 36px 70px -30px rgba(40,33,22,.36);
+    transform:translateY(-2px);
+  }
+  .field svg{flex:none;color:var(--ink-soft)}
+  label.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  input[type=search]{
+    flex:1;border:0;background:transparent;outline:none;
+    font-family:"Geist",sans-serif;font-size:16.5px;color:var(--ink);
+    font-weight:400;padding:13px 0;letter-spacing:.005em;min-width:0;
+  }
+  input[type=search]::placeholder{color:#a39c8d;font-weight:300}
+  input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
+  .go{
+    flex:none;border:0;cursor:pointer;
+    background:var(--ink);color:var(--paper);
+    font-family:"Geist",sans-serif;font-size:14px;font-weight:400;letter-spacing:.02em;
+    padding:0 26px;height:48px;border-radius:999px;
+    transition:background .3s var(--ease), transform .25s var(--ease);
+  }
+  .go:hover{background:#000}
+  .go:active{transform:scale(.97)}
+  :focus-visible{outline:2.5px solid var(--focus);outline-offset:3px}
+
+  .prompts{
+    margin:22px 0 0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+    font-size:12.5px;color:var(--ink-soft);
+  }
+  .prompts button{
+    background:transparent;border:1px solid var(--line);border-radius:999px;
+    padding:7px 15px;font:inherit;color:var(--ink-soft);cursor:pointer;
+    transition:color .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease);
+  }
+  .prompts button:hover{color:var(--ink);border-color:var(--ink-soft);background:var(--spec)}
+
+  /* ---- specimen ---- */
+  .specimen{
+    margin:64px auto 0;
+    max-width:392px;width:100%;
+    opacity:0;transform:translateY(26px) scale(.985);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+    pointer-events:none;
+  }
+  .specimen.shown{opacity:1;transform:none;pointer-events:auto}
+  .plate{
+    background:var(--spec);
+    border:1px solid var(--line);
+    border-radius:6px;
+    box-shadow:var(--shadow);
+    padding:22px 22px 18px;
+    text-align:left;
+    position:relative;
+  }
+  .plate::before{
+    /* hairline inner mat, gallery framing */
+    content:"";position:absolute;inset:13px;border:1px solid var(--line);
+    border-radius:3px;pointer-events:none;
+  }
+  .art{
+    position:relative;z-index:1;
+    aspect-ratio:4/5;border-radius:3px;overflow:hidden;
+    background:#efe9dd;
+    display:grid;place-items:center;
+  }
+  .art svg{width:100%;height:100%;display:block}
+  .placard{
+    position:relative;z-index:1;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    padding:18px 6px 4px;
+  }
+  .placard .meta{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);line-height:1.7}
+  .placard .title{font-family:"Fraunces",serif;font-style:italic;font-weight:400;font-size:19px;color:var(--ink);margin-top:3px;letter-spacing:.005em}
+  .match{
+    flex:none;text-align:right;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  }
+  .match b{display:block;font-family:"Fraunces",serif;font-style:normal;font-weight:400;font-size:26px;letter-spacing:0;color:var(--ink);margin-top:2px}
+
+  .foundline{
+    text-align:center;margin:26px 0 0;font-size:13px;color:var(--ink-soft);
+    font-weight:300;letter-spacing:.01em;
+  }
+  .foundline strong{color:var(--ink);font-weight:400}
+
+  /* idle hint occupies the specimen slot before search */
+  .hint{
+    margin:64px auto 0;color:#a39c8d;font-size:12.5px;letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+  .hint.gone{display:none}
+
+  footer{
+    padding:30px clamp(24px,6vw,90px) 40px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line);
+    margin:0 clamp(24px,6vw,90px);
+    font-size:12px;color:var(--ink-soft);letter-spacing:.03em;
+  }
+  footer .count{font-variant-numeric:tabular-nums}
+  .cta{
+    text-decoration:none;color:var(--ink);font-size:13px;letter-spacing:.02em;
+    border-bottom:1px solid var(--ink);padding-bottom:2px;
+    transition:opacity .3s var(--ease);
+  }
+  .cta:hover{opacity:.6}
+
+  @media (max-width:560px){
+    .go{padding:0 18px}
+    footer{margin:0;border-radius:0}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none!important;animation:none!important}
+    .specimen{opacity:1;transform:none}
+    .field:focus-within{transform:none}
+  }
+</style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wordmark"><b>sploot</b></div>
+    <a class="signin" href="#signup">sign in</a>
+  </header>
+
+  <main>
+    <section class="stage">
+      <p class="eyebrow">a private library, indexed by memory</p>
+      <h1>you saved it.<br><em>now find it.</em></h1>
+      <p class="sub">your years of screenshots, searchable by what is inside them. type the moment. the one you meant appears.</p>
+
+      <form id="finder" autocomplete="off">
+        <div class="field">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <label class="vh" for="q">describe the meme you are looking for</label>
+          <input id="q" name="q" type="search" placeholder="two cats arguing at a dinner table" />
+          <button class="go" type="submit">find it</button>
+        </div>
+      </form>
+
+      <div class="prompts" aria-label="example searches">
+        <button type="button" data-q="two cats arguing at a dinner table">two cats arguing</button>
+        <button type="button" data-q="man squinting at a tiny piece of paper">man squinting at paper</button>
+        <button type="button" data-q="dog sitting calmly in a burning room">this is fine</button>
+      </div>
+
+      <p class="hint" id="hint">one query. one specimen.</p>
+
+      <article class="specimen" id="specimen" aria-live="polite">
+        <div class="plate">
+          <div class="art" id="art"></div>
+          <div class="placard">
+            <div>
+              <div class="meta" id="prov">specimen no. 04 408 · saved oct 2021</div>
+              <div class="title" id="ttitle">“i had a meme for this”</div>
+            </div>
+            <div class="match">match<b id="score">··</b></div>
+          </div>
+        </div>
+        <p class="foundline">located in <strong id="found-from">12,408</strong> saved memes. <strong>zero folders.</strong></p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span class="count">12,408 memes · 0 folders · 1 search bar</span>
+    <a class="cta" href="#signup" id="signup">start your library</a>
+  </footer>
+
+<script>
+(function(){
+  var form = document.getElementById('finder');
+  var input = document.getElementById('q');
+  var spec = document.getElementById('specimen');
+  var hint = document.getElementById('hint');
+  var art = document.getElementById('art');
+  var ttitle = document.getElementById('ttitle');
+  var prov = document.getElementById('prov');
+  var score = document.getElementById('score');
+
+  // license-safe "specimens": each is a hand-drawn SVG vignette, no real images.
+  // muted gallery palette, drawn as a quiet line-and-fill plate.
+  function plate(inner){
+    return '<svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="hand-drawn meme specimen">'
+      + '<rect width="320" height="400" fill="#efe9dd"/>'
+      + '<rect x="0" y="0" width="320" height="400" fill="url(#g)"/>'
+      + '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">'
+      + '<stop offset="0" stop-color="#f3eee3"/><stop offset="1" stop-color="#e7e0d1"/></linearGradient></defs>'
+      + inner + '</svg>';
+  }
+  var SET = {
+    cats: { title:'“two cats, one table”', prov:'specimen no. 04 408 · saved oct 2021',
+      svg: plate(
+        '<g stroke="#54514a" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+        +'<rect x="40" y="250" width="240" height="14" fill="#d8c9ad" stroke="#7a5230"/>'   /* table */
+        +'<path d="M70 250 q-6 -56 22 -64 q14 -28 30 -2 q26 4 22 66" fill="#cdbfa6"/>'      /* cat L */
+        +'<circle cx="92" cy="196" r="3.4" fill="#1b1a17" stroke="none"/>'
+        +'<circle cx="116" cy="196" r="3.4" fill="#1b1a17" stroke="none"/>'
+        +'<path d="M210 250 q-4 -52 22 -62 q14 -26 28 -2 q26 6 22 64" fill="#bfa98a"/>'     /* cat R */
+        +'<circle cx="226" cy="200" r="3.4" fill="#1b1a17" stroke="none"/>'
+        +'<circle cx="250" cy="200" r="3.4" fill="#1b1a17" stroke="none"/>'
+        +'<path d="M150 150 q14 -10 28 0" />'                                                /* tension */
+        +'<rect x="146" y="120" width="36" height="26" rx="5" fill="#fbfaf7"/>'
+        +'<path d="M158 146 l6 8 l4 -8"/>'
+        +'<text x="164" y="138" font-family="serif" font-size="16" fill="#1b1a17" text-anchor="middle" stroke="none">!?</text>'
+        +'</g>')
+    },
+    squint: { title:'“man, paper, doubt”', prov:'specimen no. 02 117 · saved mar 2020',
+      svg: plate(
+        '<g stroke="#54514a" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+        +'<circle cx="160" cy="150" r="62" fill="#d8c9ad"/>'
+        +'<path d="M132 142 q12 -8 24 0"/><path d="M168 142 q12 -8 24 0"/>'   /* squint brows */
+        +'<path d="M134 150 h18"/><path d="M174 150 h18"/>'                   /* squint eyes */
+        +'<path d="M146 178 q14 10 28 0"/>'
+        +'<rect x="120" y="244" width="80" height="56" rx="3" fill="#fbfaf7" transform="rotate(-6 160 272)"/>'
+        +'<path d="M132 262 h54 M132 274 h40" transform="rotate(-6 160 272)"/>'
+        +'</g>')
+    },
+    fine: { title:'“this is fine”', prov:'specimen no. 11 902 · saved jul 2019',
+      svg: plate(
+        '<g stroke="#54514a" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+        +'<path d="M0 300 q40 -22 80 0 t80 0 t80 0 t80 0" stroke="#7a5230" stroke-width="3"/>'  /* flames */
+        +'<path d="M0 320 q40 -26 80 0 t80 0 t80 0 t80 0" stroke="#7a5230" stroke-width="2" opacity=".55"/>'
+        +'<circle cx="160" cy="190" r="52" fill="#cdbfa6"/>'   /* dog head */
+        +'<circle cx="142" cy="182" r="3.6" fill="#1b1a17" stroke="none"/>'
+        +'<circle cx="178" cy="182" r="3.6" fill="#1b1a17" stroke="none"/>'
+        +'<path d="M148 206 q12 8 24 0"/>'
+        +'<path d="M108 160 l-16 -20 M212 160 l16 -20"/>'   /* ears */
+        +'<rect x="118" y="118" width="40" height="24" rx="5" fill="#fbfaf7"/>'
+        +'<text x="138" y="135" font-family="serif" font-size="13" fill="#1b1a17" text-anchor="middle" stroke="none">ok</text>'
+        +'</g>')
+    }
+  };
+
+  function pick(q){
+    q = (q||'').toLowerCase();
+    if(/cat|argu|table|dinner|woman|yell/.test(q)) return SET.cats;
+    if(/squint|paper|tiny|read|small|doubt|math/.test(q)) return SET.squint;
+    if(/fine|fire|burn|dog|room|calm|ok|everything/.test(q)) return SET.fine;
+    // default: the flagship specimen
+    return SET.cats;
+  }
+
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  function reveal(q){
+    var hit = pick(q);
+    art.innerHTML = hit.svg;
+    ttitle.textContent = hit.title;
+    prov.textContent = hit.prov;
+    hint.classList.add('gone');
+
+    // a confident, settled match score (not a fake-precise float)
+    var pct = 96 + Math.floor(Math.random()*3); // 96–98
+    if(reduce){
+      score.textContent = pct + '%';
+      spec.classList.add('shown');
+      return;
+    }
+    spec.classList.remove('shown');
+    // settle in, then count the score up — micro-motion on interaction only
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        spec.classList.add('shown');
+      });
+    });
+    var n=82, step=function(){
+      n += Math.max(1, Math.round((pct-n)/4));
+      if(n>=pct){ n=pct; score.textContent=n+'%'; return; }
+      score.textContent=n+'%';
+      setTimeout(step, 34);
+    };
+    setTimeout(step, 380);
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    reveal(input.value || input.placeholder);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.prompts button'), function(b){
+    b.addEventListener('click', function(){
+      input.value = b.getAttribute('data-q');
+      reveal(input.value);
+      input.focus();
+    });
+  });
+})();
+</script>
+</body>
+</html>

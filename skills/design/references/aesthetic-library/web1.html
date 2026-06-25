@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>~sploot~ :: my meme collection (UNDER CONSTRUCTION)</title>
+<style>
+  /* ============================================================
+     SPLOOT // WEB 1.0 GEOCITIES UNIVERSE
+     everything is gloriously 1999. except the search.
+     the search is the one modern thing in the building.
+     ============================================================ */
+
+  /* tiled background drawn entirely in CSS — no gifs, no external assets */
+  html {
+    background-color: #008080; /* the teal. you know the teal. */
+    background-image:
+      repeating-linear-gradient(45deg,
+        rgba(255,255,255,0.04) 0 8px,
+        rgba(0,0,0,0.04) 8px 16px);
+  }
+
+  body {
+    margin: 0;
+    padding: 12px;
+    font-family: "Times New Roman", Times, serif;
+    color: #000080;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  /* the table-layout container. centered. fixed width. as god intended. */
+  .page {
+    width: 760px;
+    max-width: 96vw;
+    margin: 0 auto;
+    background: #c0c0c0;
+    border: 4px ridge #dfdfdf;
+    padding: 0;
+  }
+
+  /* ---- the loud header band ---- */
+  .topband {
+    background: #000080;
+    color: #ffff00;
+    text-align: center;
+    padding: 10px 6px 6px;
+    border-bottom: 4px ridge #dfdfdf;
+  }
+  .topband h1 {
+    margin: 0;
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive, sans-serif;
+    font-size: 40px;
+    letter-spacing: 2px;
+    color: #ff00ff;
+    text-shadow: 2px 2px 0 #00ffff, -1px -1px 0 #000080;
+    text-transform: lowercase;
+  }
+  .topband .sub {
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* the self-aware marquee */
+  .marquee-wrap {
+    background: #000;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 2px solid #404040;
+    padding: 3px 0;
+  }
+  .marquee-track {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scrollleft 22s linear infinite;
+  }
+  @keyframes scrollleft {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+
+  /* the two-column table layout */
+  .layout {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .col {
+    display: table-cell;
+    vertical-align: top;
+    padding: 12px;
+  }
+  .col.sidebar {
+    width: 180px;
+    background: #d8d8d8;
+    border-right: 3px groove #fff;
+    font-size: 13px;
+  }
+  .col.main { background: #e8e8e8; }
+
+  /* sidebar webring + nav chrome */
+  .sidebar h3 {
+    background: #800080;
+    color: #fff;
+    margin: 0 0 6px;
+    padding: 3px 5px;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .sidebar ul { list-style: none; margin: 0 0 16px; padding: 0; }
+  .sidebar li { margin: 2px 0; }
+
+  a { color: #0000ee; }
+  a:visited { color: #551a8b; }
+  a:hover { color: #ee0000; background: #ffff99; }
+  a:focus-visible { outline: 3px solid #ff00ff; outline-offset: 1px; }
+
+  /* the webring box */
+  .webring {
+    border: 2px inset #999;
+    background: #fff;
+    padding: 6px;
+    text-align: center;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    color: #000;
+    margin-bottom: 16px;
+  }
+  .webring .ringname { color: #008000; font-weight: bold; display: block; margin-bottom: 4px; }
+  .webring .ringnav a { font-weight: bold; text-decoration: none; }
+
+  /* the visitor counter — odometer style, drawn in CSS */
+  .counter-box {
+    border: 2px inset #999;
+    background: #fff;
+    padding: 6px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .counter-box .label {
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    color: #000;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .odometer {
+    display: inline-block;
+    background: #000;
+    padding: 3px;
+    border: 1px solid #444;
+  }
+  .odometer .digit {
+    display: inline-block;
+    width: 16px;
+    background: #111;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid #003300;
+    box-shadow: inset 0 0 4px #000;
+  }
+
+  /* "under construction" — built in CSS, no animated gif */
+  .construction {
+    margin: 14px 0;
+    border: 3px solid #ffcc00;
+    background:
+      repeating-linear-gradient(45deg,
+        #ffcc00 0 14px,
+        #000 14px 28px);
+    padding: 4px;
+  }
+  .construction .inner {
+    background: #fffbe6;
+    text-align: center;
+    padding: 6px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-weight: bold;
+    color: #aa6600;
+    font-size: 13px;
+  }
+  .construction .barber { /* tiny blinking pylon dot, motion-gated below */
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: #ff6600;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 0 4px;
+  }
+
+  /* ===========================================================
+     THE SEARCH. the one good thing. it does NOT look like 1999.
+     clean, modern, calm. deliberate aesthetic break.
+     =========================================================== */
+  .search-zone {
+    margin: 4px 0 18px;
+    background: #ffffff;
+    border: 1px solid #d8dde3;
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(16,24,40,0.12), 0 1px 2px rgba(16,24,40,0.06);
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+  }
+  .search-zone .kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin: 0 0 4px;
+  }
+  .search-zone .pitch {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    color: #111827;
+    line-height: 1.3;
+  }
+  .search-row { display: flex; gap: 8px; }
+  .search-zone label.sr {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+  }
+  .search-zone input[type="search"] {
+    flex: 1;
+    font-size: 16px;
+    padding: 12px 14px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    color: #111827;
+    background: #fff;
+    font-family: inherit;
+  }
+  .search-zone input[type="search"]::placeholder { color: #9aa3af; }
+  .search-zone input[type="search"]:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 1px;
+    border-color: #2563eb;
+  }
+  .search-zone button.go {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #111827;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .search-zone button.go:hover { background: #2563eb; }
+  .search-zone button.go:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  .search-hint { font-size: 12.5px; color: #6b7280; margin: 10px 0 0; }
+  .search-hint button.chip {
+    font: inherit; font-size: 12px;
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    color: #334155; border-radius: 999px; padding: 3px 10px;
+    cursor: pointer; margin: 2px 3px 0 0;
+  }
+  .search-hint button.chip:hover { background: #e2e8f0; }
+  .search-hint button.chip:focus-visible { outline: 2px solid #2563eb; outline-offset: 1px; }
+
+  /* the results grid — modern cards, the "found meme" stand-ins */
+  .results { margin-top: 16px; }
+  .results-status {
+    font-size: 13px; color: #374151; margin: 0 0 10px; font-weight: 600;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .memecard {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    text-align: left;
+  }
+  .memecard .thumb {
+    aspect-ratio: 1 / 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    color: #fff;
+    /* asset language: ascii-glyph "memes", no real images */
+  }
+  .memecard .cap {
+    font-size: 11px; color: #4b5563; padding: 7px 9px; line-height: 1.3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .memecard.hit {
+    outline: 3px solid #16a34a;
+    outline-offset: -3px;
+    box-shadow: 0 0 0 4px rgba(22,163,74,0.18);
+  }
+  .memecard .badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: #dcfce7; color: #166534; padding: 1px 6px; border-radius: 999px;
+    margin-bottom: 3px;
+  }
+
+  /* the loud sign-up cta band, back in 1999 style */
+  .cta {
+    background: #ffff00;
+    border: 4px ridge #ff9900;
+    text-align: center;
+    padding: 14px;
+    margin: 18px 12px;
+  }
+  .cta p {
+    margin: 0 0 10px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .bevel-btn {
+    display: inline-block;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #000080;
+    text-decoration: none;
+    background: #c0c0c0;
+    border: 3px outset #fff;
+    padding: 6px 22px;
+    cursor: pointer;
+  }
+  .bevel-btn:hover { background: #d4d4d4; }
+  .bevel-btn:active { border-style: inset; }
+  .bevel-btn:focus-visible { outline: 3px solid #ff00ff; outline-offset: 2px; }
+
+  /* footer with badges + last-updated */
+  .footer {
+    border-top: 4px ridge #dfdfdf;
+    background: #000080;
+    color: #c0c0c0;
+    text-align: center;
+    padding: 10px;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+  }
+  .footer a { color: #00ffff; }
+  .footer .badges { margin: 8px 0; }
+  .footer .badge88 {
+    display: inline-block;
+    width: 88px; height: 31px;
+    line-height: 31px;
+    font-size: 9px; font-weight: bold;
+    border: 1px solid #000;
+    margin: 2px;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  .bestviewed {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    color: #555;
+    text-align: center;
+    margin: 10px 0 0;
+  }
+
+  /* the blink, used once, knowingly, on a NEW! tag */
+  .blink { color: #ff0000; font-weight: bold; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .blink { animation: blinker 1s steps(2,start) infinite; }
+    .construction .barber { animation: blinker 0.8s steps(2,start) infinite; }
+  }
+  @keyframes blinker { to { visibility: hidden; } }
+
+  /* reduced motion: marquee stops scrolling, becomes static line */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; padding-left: 8px; white-space: normal; }
+  }
+
+  @media (max-width: 680px) {
+    .col, .col.sidebar, .col.main { display: block; width: auto; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .topband h1 { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- LOUD HEADER -->
+  <div class="topband">
+    <h1>~sploot~</h1>
+    <div class="sub">::: my personal meme collection ::: 12,408 of them ::: zero (0) folders :::</div>
+  </div>
+
+  <!-- SELF-AWARE MARQUEE -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee-track">
+      &#9733; welcome 2 my homepage &#9733; you saved it. now find it. &#9733; yes the marquee is on purpose &#9733; everything here is from 1999 EXCEPT the search box &#9733; the search box is from the future &#9733; please do not adjust your monitor &#9733; i had a meme for this &#9733;
+    </div>
+  </div>
+
+  <!-- TWO-COLUMN TABLE LAYOUT -->
+  <div class="layout">
+
+    <!-- SIDEBAR: webring + counter + nav -->
+    <div class="col sidebar">
+      <h3>navigation</h3>
+      <ul>
+        <li><a href="#search">&raquo; the search</a></li>
+        <li><a href="#about">&raquo; about this site</a></li>
+        <li><a href="#join">&raquo; sign my guestbook</a></li>
+        <li><a href="#join">&raquo; get an account <span class="blink">NEW!</span></a></li>
+      </ul>
+
+      <div class="webring">
+        <span class="ringname">~ the reaction-pic webring ~</span>
+        <div class="ringnav">
+          <a href="#" onclick="return ringHop('prev')" title="previous site">[&lt;&lt; prev]</a>
+          <a href="#" onclick="return ringHop('rand')" title="random site">[?]</a>
+          <a href="#" onclick="return ringHop('next')" title="next site">[next &gt;&gt;]</a>
+        </div>
+        <div id="ring-status" style="margin-top:5px;color:#444;">site 4 of 28</div>
+      </div>
+
+      <div class="counter-box">
+        <span class="label">you are visitor #</span>
+        <span class="odometer" id="odometer" aria-label="visitor counter">
+          <span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span>
+        </span>
+      </div>
+
+      <h3>my badges</h3>
+      <ul>
+        <li>&#9733; 100% hand-coded</li>
+        <li>&#9733; no folders here</li>
+        <li>&#9733; netscape ready</li>
+      </ul>
+    </div>
+
+    <!-- MAIN COLUMN -->
+    <div class="col main">
+
+      <!-- UNDER CONSTRUCTION (CSS only) -->
+      <div class="construction">
+        <div class="inner">
+          <span class="barber"></span> this whole page is under construction. the search is not. it works. <span class="barber"></span>
+        </div>
+      </div>
+
+      <!-- ============ THE SEARCH (the one modern thing) ============ -->
+      <div class="search-zone" id="search">
+        <p class="kicker">semantic search // the only modern thing here</p>
+        <p class="pitch">type what is IN the picture. not the filename. not a folder. the actual contents.</p>
+        <form id="searchForm" autocomplete="off">
+          <div class="search-row">
+            <label class="sr" for="q">describe the meme you are looking for</label>
+            <input type="search" id="q" name="q"
+                   placeholder="two cats arguing at a table"
+                   aria-describedby="searchhint">
+            <button type="submit" class="go">find it</button>
+          </div>
+        </form>
+        <p class="search-hint" id="searchhint">
+          try:
+          <button type="button" class="chip" data-q="two cats arguing at a table">two cats arguing at a table</button>
+          <button type="button" class="chip" data-q="guy looking back at another girl">guy looking back</button>
+          <button type="button" class="chip" data-q="this is fine dog in fire">this is fine</button>
+          <button type="button" class="chip" data-q="skeleton waiting on a bench">waiting skeleton</button>
+        </p>
+
+        <div class="results" id="results" aria-live="polite"></div>
+      </div>
+      <!-- ============ /SEARCH ============ -->
+
+      <h3 id="about" style="font-family:'Comic Sans MS',cursive;color:#800080;margin:0 0 6px;">about this site</h3>
+      <p style="font-size:14px;">
+        hi. i saved every reaction pic since the napster era. 12,408 of them. they are not
+        in folders because i am not a coward. i used to scroll for ten minutes to find the
+        right one. now i type what is in the picture and it shows up. that box up there is
+        the only part of this website built after the year 2000.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- SIGN-UP CTA -->
+  <div class="cta" id="join">
+    <p>&#9758; stop scrolling. start finding. &#9756;</p>
+    <a href="#" class="bevel-btn" onclick="return signUp()">[ get your own sploot &raquo; ]</a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="badges">
+      <span class="badge88" style="background:#003366;">BEST VIEWED<br>IN ANY BROWSER</span>
+      <span class="badge88" style="background:#660000;">MADE WITH<br>A KEYBOARD</span>
+      <span class="badge88" style="background:#225522;">SEMANTIC<br>SEARCH INSIDE</span>
+    </div>
+    <div>last updated: 06/25/2026 &nbsp;|&nbsp; <a href="#search">jump to search</a></div>
+    <div class="bestviewed">&copy; sploot. no folders were harmed in the making of this website.</div>
+  </div>
+
+</div>
+
+<script>
+  /* ---- LIVE VISITOR COUNTER (persists in localStorage; real increment) ---- */
+  (function(){
+    var KEY = "sploot_web1_hits";
+    var n = parseInt(localStorage.getItem(KEY) || "", 10);
+    if (isNaN(n)) { n = 48211; } // seed so it looks lived-in
+    n += 1;
+    localStorage.setItem(KEY, String(n));
+    var s = String(n).padStart(6, "0").slice(-6);
+    var box = document.getElementById("odometer");
+    var digits = box.querySelectorAll(".digit");
+    for (var i = 0; i < digits.length; i++) { digits[i].textContent = s[i]; }
+    box.setAttribute("aria-label", "you are visitor number " + n);
+  })();
+
+  /* ---- WEBRING (ironic, but the chrome behaves) ---- */
+  var ringPos = 4, ringTotal = 28;
+  function ringHop(dir){
+    if (dir === "prev") ringPos = ringPos <= 1 ? ringTotal : ringPos - 1;
+    else if (dir === "next") ringPos = ringPos >= ringTotal ? 1 : ringPos + 1;
+    else ringPos = Math.floor(Math.random() * ringTotal) + 1;
+    document.getElementById("ring-status").textContent = "site " + ringPos + " of " + ringTotal;
+    return false;
+  }
+
+  /* ---- THE CORPUS: license-safe ascii-glyph meme stand-ins ---- */
+  /* each "meme" is a glyph + a swatch + searchable text. no real images. */
+  var CORPUS = [
+    { g:"=^..^=  =^..^=", bg:"#7c3aed", cap:"two cats arguing at a table", kw:"cats arguing table fight dinner woman pointing" },
+    { g:"( o_o)>  (•_•)", bg:"#0ea5e9", cap:"guy looking back at someone else", kw:"guy looking back boyfriend distracted girl jealous" },
+    { g:"~( =^o^= )~",   bg:"#ef4444", cap:"this is fine, dog in a burning room", kw:"this is fine dog fire room burning coffee everything okay" },
+    { g:"[._.]___",      bg:"#475569", cap:"skeleton waiting on a bench", kw:"skeleton waiting bench still here forever patience" },
+    { g:"\\(°□°)/",      bg:"#f59e0b", cap:"guy yelling at a calm cat", kw:"yelling woman cat dinner table white cat confused" },
+    { g:"(づ｡◕‿‿◕｡)づ",   bg:"#16a34a", cap:"offering a hug, slightly too much", kw:"hug offering wholesome arms reach affection" },
+    { g:"щ(ﾟДﾟщ)",       bg:"#db2777", cap:"why would they do this", kw:"despair why panic dramatic disbelief shock" },
+    { g:"ಠ_ಠ",           bg:"#1f2937", cap:"deeply unimpressed stare", kw:"unimpressed stare judgment disapproval skeptical look of disgust" },
+    { g:"┬─┬ノ(°-°ノ)",   bg:"#0891b2", cap:"calmly putting the table back", kw:"calm restoring order table flip back peace zen" }
+  ];
+
+  /* tiny keyword overlap scorer — stand-in for the real embedding search */
+  function score(query, item){
+    var q = query.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+    var hay = (item.kw + " " + item.cap).toLowerCase();
+    var s = 0;
+    q.forEach(function(t){ if (t.length > 2 && hay.indexOf(t) !== -1) s += 1; });
+    return s;
+  }
+
+  function renderResults(query){
+    var out = document.getElementById("results");
+    var q = (query || "").trim();
+    if (!q) { out.innerHTML = ""; return; }
+
+    var ranked = CORPUS.map(function(it){ return { it: it, s: score(q, it) }; })
+                       .sort(function(a,b){ return b.s - a.s; });
+
+    var topScore = ranked[0].s;
+    var hasHit = topScore > 0;
+
+    /* if nothing matched the keywords, still show a "closest" first so the
+       interaction never dead-ends — deadpan honest about confidence */
+    var html = "";
+    html += '<p class="results-status">' +
+      (hasHit
+        ? 'found it. searched 12,408 memes in 41ms.'
+        : 'closest matches in 12,408 memes (you typed something weird, here is my best guess):') +
+      '</p>';
+    html += '<div class="grid">';
+    ranked.forEach(function(r, i){
+      var isHit = hasHit && i === 0;
+      html += '<div class="memecard' + (isHit ? ' hit' : '') + '">';
+      html += '<div class="thumb" style="background:' + r.it.bg + '">' + escapeHtml(r.it.g) + '</div>';
+      html += '<div class="cap">' + (isHit ? '<span class="badge">TOP MATCH</span><br>' : '') + escapeHtml(r.it.cap) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    out.innerHTML = html;
+  }
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, function(c){
+      return ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c];
+    });
+  }
+
+  document.getElementById("searchForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    renderResults(document.getElementById("q").value);
+    document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+
+  /* example chips fill + run */
+  Array.prototype.forEach.call(document.querySelectorAll(".chip"), function(btn){
+    btn.addEventListener("click", function(){
+      var q = btn.getAttribute("data-q");
+      document.getElementById("q").value = q;
+      renderResults(q);
+    });
+  });
+
+  function signUp(){
+    alert("welcome to sploot. (this is the demo. the real sign-up lives on the modern part of the internet.)");
+    return false;
+  }
+</script>
+</body>
+</html>

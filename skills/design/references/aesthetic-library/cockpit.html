@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sploot // signal acquisition console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     SPLOOT // INSTRUMENT PANEL — DARK CONTROL-PANEL VARIANT
+     justification for dark (not blueprint): the metaphor is a LIVE
+     signal-acquisition console at night — phosphor on black reads as
+     "powered instrument", carries the green CRT lock-glow, and gives
+     the highest legibility for dense changing numerics. blueprint is
+     a static spec drawing; this panel is alive.
+     search = acquiring a signal lock on the matching meme.
+     ============================================================ */
+
+  :root{
+    --bg:#070b0d;
+    --panel:#0d1417;
+    --panel-2:#10191d;
+    --line:#1c2c30;
+    --line-hot:#2a4248;
+    --ink:#cfe8e4;
+    --ink-dim:#6f8c8a;
+    --phos:#3ef0a0;      /* phosphor green — lock / live */
+    --phos-dim:#1f8a5e;
+    --amber:#ffb454;     /* caution / standby */
+    --cyan:#46d6ff;      /* secondary trace */
+    --red:#ff5d5d;       /* no-lock / warning */
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    background:
+      radial-gradient(120% 90% at 50% -10%, #0c181a 0%, var(--bg) 60%);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    min-height:100vh;
+    padding:18px;
+  }
+  /* faint horizontal scanlines across the whole console */
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;
+  }
+
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  .console{
+    max-width:1080px; margin:0 auto;
+    border:1px solid var(--line-hot);
+    background:linear-gradient(180deg, var(--panel) 0%, #0a1113 100%);
+    border-radius:6px;
+    box-shadow:0 0 0 1px #000 inset, 0 24px 60px rgba(0,0,0,0.6);
+    overflow:hidden;
+  }
+
+  /* ---------- TOP STATUS BAR ---------- */
+  .topbar{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel-2);
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+  }
+  .brand{ font-weight:700; letter-spacing:0.22em; color:var(--phos); font-size:14px; }
+  .brand .unit{ color:var(--ink-dim); font-weight:500; }
+  .topbar .spacer{ flex:1; }
+  .stat{ color:var(--ink-dim); white-space:nowrap; }
+  .stat b{ color:var(--ink); font-weight:600; }
+  .led{ display:inline-block; width:8px; height:8px; border-radius:50%; vertical-align:middle; margin-right:5px; }
+  .led.ok{ background:var(--phos); box-shadow:0 0 8px var(--phos); }
+  .led.idle{ background:var(--amber); box-shadow:0 0 6px var(--amber); }
+
+  /* ---------- HERO READOUT ---------- */
+  .hero{ display:grid; grid-template-columns:1.25fr 1fr; gap:0; }
+  @media (max-width:820px){ .hero{ grid-template-columns:1fr; } }
+
+  .hero-left{ padding:30px 28px 26px; border-right:1px solid var(--line); }
+  .hero-left .desig{
+    font-family:"IBM Plex Mono", monospace; font-size:12px; letter-spacing:0.18em;
+    color:var(--phos-dim); text-transform:uppercase; margin-bottom:14px;
+  }
+  h1{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:clamp(30px, 4.6vw, 52px);
+    line-height:1.02; margin:0 0 16px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink);
+  }
+  h1 .lo{ color:var(--phos); }
+  .lede{ color:var(--ink-dim); font-size:15.5px; max-width:46ch; margin:0 0 22px; }
+  .lede b{ color:var(--ink); font-weight:600; }
+
+  /* hairline spec table — pure technical linework */
+  .spec{
+    width:100%; border-collapse:collapse;
+    font-family:"IBM Plex Mono", monospace; font-size:12px;
+  }
+  .spec td{ padding:6px 0; border-bottom:1px dashed var(--line); color:var(--ink-dim); }
+  .spec td:last-child{ text-align:right; color:var(--ink); }
+
+  /* ---------- THE SCOPE (right) ---------- */
+  .hero-right{ padding:22px; background:#080f11; position:relative; }
+  .scope-frame{
+    border:1px solid var(--line-hot);
+    border-radius:4px;
+    background:
+      linear-gradient(0deg, rgba(62,240,160,0.03), rgba(62,240,160,0.03)),
+      #050a0b;
+    position:relative; overflow:hidden;
+    aspect-ratio:1.35 / 1;
+  }
+  /* graticule grid drawn in CSS */
+  .scope-frame::before{
+    content:""; position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(0deg, rgba(62,240,160,0.10) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, rgba(62,240,160,0.10) 0 1px, transparent 1px 26px);
+  }
+  /* center crosshair */
+  .scope-frame::after{
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(0deg, transparent calc(50% - 1px), rgba(62,240,160,0.35) 50%, transparent calc(50% + 1px)),
+      linear-gradient(90deg, transparent calc(50% - 1px), rgba(62,240,160,0.35) 50%, transparent calc(50% + 1px));
+  }
+  .scope-label{
+    position:absolute; top:8px; left:10px; z-index:3;
+    font-family:"IBM Plex Mono", monospace; font-size:10.5px; letter-spacing:0.12em;
+    color:var(--phos-dim); text-transform:uppercase;
+  }
+  .scope-mode{
+    position:absolute; top:8px; right:10px; z-index:3;
+    font-family:"IBM Plex Mono", monospace; font-size:10.5px; letter-spacing:0.12em;
+  }
+  .scope-mode .m-idle{ color:var(--amber); }
+  .scope-mode .m-scan{ color:var(--cyan); }
+  .scope-mode .m-lock{ color:var(--phos); }
+
+  /* blips: meme stand-ins as signal points on the scope */
+  .blip{
+    position:absolute; width:10px; height:10px; border-radius:50%;
+    transform:translate(-50%,-50%); z-index:2;
+    background:var(--cyan); box-shadow:0 0 6px var(--cyan);
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease, opacity .25s;
+    opacity:0.55;
+  }
+  .blip.locked{
+    background:var(--phos); box-shadow:0 0 14px var(--phos), 0 0 28px var(--phos);
+    opacity:1; width:13px; height:13px;
+  }
+  /* lock reticle that snaps onto the locked blip */
+  .reticle{
+    position:absolute; z-index:3; width:54px; height:54px;
+    transform:translate(-50%,-50%); pointer-events:none;
+    border:1px solid var(--phos); border-radius:2px;
+    opacity:0; transition:left .45s cubic-bezier(.2,.8,.2,1), top .45s cubic-bezier(.2,.8,.2,1), opacity .2s;
+  }
+  .reticle::before, .reticle::after{
+    content:""; position:absolute; background:var(--phos);
+  }
+  .reticle::before{ left:50%; top:-7px; width:1px; height:14px; transform:translateX(-50%); }
+  .reticle::after{ top:50%; left:-7px; height:1px; width:14px; transform:translateY(-50%); }
+  .reticle .corner{ position:absolute; width:8px; height:8px; border:1px solid var(--phos); }
+  .reticle .corner.tl{ left:-1px; top:-1px; border-right:0; border-bottom:0; }
+  .reticle .corner.tr{ right:-1px; top:-1px; border-left:0; border-bottom:0; }
+  .reticle .corner.bl{ left:-1px; bottom:-1px; border-right:0; border-top:0; }
+  .reticle .corner.br{ right:-1px; bottom:-1px; border-left:0; border-top:0; }
+  .reticle.on{ opacity:1; }
+
+  /* sweep line */
+  .sweep{
+    position:absolute; left:50%; top:50%; width:50%; height:1px; z-index:1;
+    transform-origin:left center;
+    background:linear-gradient(90deg, rgba(62,240,160,0.0), rgba(62,240,160,0.55));
+    opacity:0;
+  }
+
+  /* ---------- ACQUISITION FORM ---------- */
+  .acq{
+    padding:22px 28px 26px;
+    border-top:1px solid var(--line);
+    background:var(--panel-2);
+  }
+  .acq-head{
+    display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;
+    margin-bottom:12px;
+  }
+  .acq-head .t{ font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:0.16em; color:var(--phos-dim); text-transform:uppercase; }
+  .acq-head .h{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-dim); }
+
+  form.acq-form{ display:flex; gap:10px; align-items:stretch; }
+  @media (max-width:560px){ form.acq-form{ flex-direction:column; } }
+
+  .field{ flex:1; position:relative; }
+  label.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+  .field .pre{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--phos-dim);
+    pointer-events:none;
+  }
+  input[type="search"]{
+    width:100%;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:16px; color:var(--ink);
+    background:#050a0b;
+    border:1px solid var(--line-hot);
+    border-radius:4px;
+    padding:14px 14px 14px 84px;
+    caret-color:var(--phos);
+  }
+  input[type="search"]::placeholder{ color:#52706c; }
+  input[type="search"]:focus-visible{
+    outline:2px solid var(--phos); outline-offset:1px; border-color:var(--phos);
+  }
+  button.acquire{
+    font-family:"IBM Plex Mono", monospace; font-weight:700;
+    font-size:14px; letter-spacing:0.08em;
+    color:#04140d; background:var(--phos);
+    border:1px solid var(--phos); border-radius:4px;
+    padding:0 26px; cursor:pointer; white-space:nowrap;
+    text-transform:uppercase;
+  }
+  button.acquire:hover{ background:#5cffba; }
+  button.acquire:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+  button.acquire:disabled{ opacity:0.55; cursor:progress; }
+
+  .presets{ margin-top:12px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-dim); }
+  .presets button{
+    font:inherit; color:var(--cyan); background:transparent;
+    border:1px solid var(--line-hot); border-radius:3px;
+    padding:3px 9px; margin:3px 5px 0 0; cursor:pointer;
+  }
+  .presets button:hover{ border-color:var(--cyan); color:#9ee9ff; }
+  .presets button:focus-visible{ outline:2px solid var(--cyan); outline-offset:1px; }
+
+  /* ---------- TELEMETRY READOUT STRIP ---------- */
+  .telemetry{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:#070d0f;
+  }
+  @media (max-width:560px){ .telemetry{ grid-template-columns:repeat(2,1fr); } }
+  .tcell{ padding:14px 16px; border-right:1px solid var(--line); }
+  .tcell:last-child{ border-right:0; }
+  .tcell .k{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:0.12em; color:var(--ink-dim); text-transform:uppercase; }
+  .tcell .v{
+    font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:600;
+    color:var(--ink); margin-top:3px; font-variant-numeric:tabular-nums;
+  }
+  .tcell .v.lock{ color:var(--phos); }
+  .tcell .v.warn{ color:var(--amber); }
+  .tcell .u{ font-size:12px; color:var(--ink-dim); font-weight:400; }
+
+  /* ---------- TARGET LOG ---------- */
+  .targetlog{ padding:8px 0 6px; }
+  .log-row{
+    display:grid;
+    grid-template-columns:54px 1fr 84px 96px 70px;
+    align-items:center;
+    gap:12px;
+    padding:11px 20px;
+    border-bottom:1px solid var(--line);
+    font-family:"IBM Plex Mono", monospace; font-size:13px;
+    color:var(--ink-dim);
+  }
+  .log-row.head{ color:var(--phos-dim); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid var(--line-hot); }
+  .log-row .glyph{
+    width:40px; height:40px; border-radius:3px; display:flex; align-items:center; justify-content:center;
+    font-size:18px; color:#04140d; border:1px solid rgba(0,0,0,0.4);
+  }
+  .log-row .desc{ color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .log-row .num{ text-align:right; font-variant-numeric:tabular-nums; }
+  .log-row .pct.hi{ color:var(--phos); }
+  .log-row .tag{
+    justify-self:start; font-size:10px; letter-spacing:0.08em;
+    padding:2px 7px; border-radius:3px; border:1px solid var(--line-hot); color:var(--ink-dim);
+  }
+  .log-row.locked{ background:rgba(62,240,160,0.06); }
+  .log-row.locked .tag{ color:var(--phos); border-color:var(--phos); }
+  @media (max-width:680px){
+    .log-row{ grid-template-columns:40px 1fr 64px; }
+    .log-row .col-dist, .log-row .col-tag{ display:none; }
+  }
+
+  /* ---------- CTA FOOTER ---------- */
+  .footer{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+    padding:24px 28px;
+    background:var(--panel-2);
+  }
+  .footer .pitch{ font-family:"IBM Plex Mono",monospace; }
+  .footer .pitch .big{ font-size:18px; color:var(--ink); }
+  .footer .pitch .sm{ font-size:12px; color:var(--ink-dim); margin-top:3px; }
+  a.signup{
+    font-family:"IBM Plex Mono",monospace; font-weight:700; letter-spacing:0.06em;
+    font-size:14px; text-transform:uppercase; text-decoration:none;
+    color:#04140d; background:var(--phos);
+    border:1px solid var(--phos); border-radius:4px; padding:13px 26px;
+    display:inline-block;
+  }
+  a.signup:hover{ background:#5cffba; }
+  a.signup:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+
+  .bottombar{
+    border-top:1px solid var(--line);
+    padding:9px 16px;
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:0.08em;
+    color:var(--ink-dim);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  /* animation gating */
+  @media (prefers-reduced-motion: no-preference){
+    .led.ok{ animation:pulse 2.4s ease-in-out infinite; }
+    .sweep.run{ animation:sweep 0.9s linear; }
+    .blip.drift{ animation:drift 6s ease-in-out infinite alternate; }
+  }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+  @keyframes sweep{ from{ transform:rotate(0deg); opacity:0.8; } to{ transform:rotate(360deg); opacity:0; } }
+  @keyframes drift{ from{ margin-left:-2px; } to{ margin-left:2px; } }
+</style>
+</head>
+<body>
+<main class="console" aria-label="sploot signal acquisition console">
+
+  <!-- STATUS BAR -->
+  <div class="topbar">
+    <span class="brand">SPLOOT <span class="unit">// ACQ-1</span></span>
+    <span class="spacer"></span>
+    <span class="stat"><span class="led idle" id="led"></span><b id="sysmode">STANDBY</b></span>
+    <span class="stat">CORPUS <b>12,408</b></span>
+    <span class="stat">INDEX <b>siglip-v2</b></span>
+    <span class="stat mono">DIM <b>1152</b></span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="desig">// semantic acquisition console</div>
+      <h1>you saved it.<br>now <span class="lo">lock onto it</span>.</h1>
+      <p class="lede">
+        twelve thousand reaction pics. zero folders. describe what is
+        <b>in the image</b> and the console acquires a lock on it. no filenames,
+        no tags, no scrolling. <b>i had a meme for this.</b>
+      </p>
+      <table class="spec" aria-label="system specifications">
+        <tr><td>search modality</td><td>text &rarr; image vector</td></tr>
+        <tr><td>match metric</td><td>cosine distance</td></tr>
+        <tr><td>nominal latency</td><td>&lt; 60 ms</td></tr>
+        <tr><td>storage class</td><td>private / single operator</td></tr>
+      </table>
+    </div>
+
+    <!-- THE SCOPE -->
+    <div class="hero-right">
+      <div class="scope-frame" id="scope">
+        <span class="scope-label">SCOPE // SECTOR-VEC</span>
+        <span class="scope-mode mono" id="scopeMode"><span class="m-idle">[ IDLE ]</span></span>
+        <div class="sweep" id="sweep"></div>
+        <div class="reticle" id="reticle">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+        </div>
+        <!-- blips injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ACQUISITION FORM -->
+  <div class="acq">
+    <div class="acq-head">
+      <span class="t">// acquisition input</span>
+      <span class="h" id="acqHint">enter target description &middot; press ACQUIRE to attempt lock</span>
+    </div>
+    <form class="acq-form" id="acqForm" autocomplete="off">
+      <div class="field">
+        <label class="sr" for="q">describe the meme to acquire</label>
+        <span class="pre mono">TGT&gt;</span>
+        <input type="search" id="q" name="q" placeholder="two cats arguing at a table">
+      </div>
+      <button type="submit" class="acquire" id="acqBtn">acquire</button>
+    </form>
+    <div class="presets" aria-label="preset target descriptions">
+      presets:
+      <button type="button" data-q="two cats arguing at a table">two cats arguing</button>
+      <button type="button" data-q="guy looking back at another person">guy looking back</button>
+      <button type="button" data-q="this is fine dog in a burning room">this is fine</button>
+      <button type="button" data-q="skeleton waiting forever on a bench">waiting skeleton</button>
+    </div>
+  </div>
+
+  <!-- TELEMETRY READOUT -->
+  <div class="telemetry" aria-live="polite">
+    <div class="tcell">
+      <div class="k">match confidence</div>
+      <div class="v" id="tMatch">--<span class="u">%</span></div>
+    </div>
+    <div class="tcell">
+      <div class="k">acq latency</div>
+      <div class="v" id="tLat">--<span class="u">ms</span></div>
+    </div>
+    <div class="tcell">
+      <div class="k">vector distance</div>
+      <div class="v" id="tDist">--<span class="u">cos</span></div>
+    </div>
+    <div class="tcell">
+      <div class="k">lock status</div>
+      <div class="v warn" id="tLock">NO LOCK</div>
+    </div>
+  </div>
+
+  <!-- TARGET LOG -->
+  <div class="targetlog" id="targetLog">
+    <div class="log-row head">
+      <span>SIG</span>
+      <span>DESCRIPTION</span>
+      <span class="num">MATCH</span>
+      <span class="num col-dist">DIST</span>
+      <span class="col-tag">STATUS</span>
+    </div>
+    <!-- rows injected by JS -->
+  </div>
+
+  <!-- CTA -->
+  <div class="footer">
+    <div class="pitch">
+      <div class="big">stop scrolling. start acquiring.</div>
+      <div class="sm">// 12,408 memes. one lock at a time.</div>
+    </div>
+    <a class="signup" href="#" id="signup">request operator access &rsaquo;</a>
+  </div>
+
+  <div class="bottombar">
+    <span>SPLOOT ACQ-1 // BUILD 06.25.2026</span>
+    <span id="uptime">UPLINK NOMINAL // SESSION 00:00:00</span>
+  </div>
+
+</main>
+
+<script>
+  /* ---------- CORPUS: license-safe ascii-glyph meme stand-ins ----------
+     each entry carries scope coords (x,y in %), a swatch color, and
+     searchable keywords. no real images anywhere. */
+  var CORPUS = [
+    { id:"S-01", g:"=^=", c:"#3ef0a0", x:30, y:34, cap:"two cats arguing at a table", kw:"two cats arguing table fight dinner woman pointing white cat" },
+    { id:"S-02", g:"o_o", c:"#46d6ff", x:68, y:28, cap:"guy looking back at another person", kw:"guy looking back boyfriend distracted girl jealous walking" },
+    { id:"S-03", g:"x_x", c:"#ffb454", x:46, y:62, cap:"this is fine, dog in a burning room", kw:"this is fine dog fire room burning coffee everything okay calm" },
+    { id:"S-04", g:"._.", c:"#9b8cff", x:22, y:72, cap:"skeleton waiting forever on a bench", kw:"skeleton waiting bench forever still here patience timeout" },
+    { id:"S-05", g:"O_O", c:"#ff5d5d", x:76, y:66, cap:"shocked face, dramatic zoom", kw:"shocked dramatic zoom surprise gasp reaction disbelief" },
+    { id:"S-06", g:"-_-", c:"#5fd0b0", x:58, y:46, cap:"deeply unimpressed flat stare", kw:"unimpressed flat stare judgment disapproval skeptical disgust" },
+    { id:"S-07", g:"^_^", c:"#7fe0ff", x:40, y:20, cap:"too-wholesome offering a hug", kw:"hug wholesome offering arms affection soft happy" },
+    { id:"S-08", g:"@_@", c:"#ffd27f", x:84, y:44, cap:"overwhelmed, spinning eyes", kw:"overwhelmed dizzy spinning confused too much stress panic" }
+  ];
+
+  var scope = document.getElementById("scope");
+  var reticle = document.getElementById("reticle");
+  var sweep = document.getElementById("sweep");
+  var scopeMode = document.getElementById("scopeMode");
+  var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* plot all blips onto the scope at load */
+  CORPUS.forEach(function(item){
+    var b = document.createElement("div");
+    b.className = "blip" + (prefersReduced ? "" : " drift");
+    b.id = "blip-" + item.id;
+    b.style.left = item.x + "%";
+    b.style.top = item.y + "%";
+    b.style.background = item.c;
+    b.style.boxShadow = "0 0 6px " + item.c;
+    b.title = item.cap;
+    scope.appendChild(b);
+  });
+
+  /* keyword overlap scorer — stand-in for the real embedding match.
+     returns a 0..1 confidence used to drive the telemetry. */
+  function scoreAll(query){
+    var q = query.toLowerCase().split(/[^a-z]+/).filter(function(t){ return t.length > 2; });
+    return CORPUS.map(function(it){
+      var hay = (it.kw + " " + it.cap).toLowerCase();
+      var hits = 0;
+      q.forEach(function(t){ if (hay.indexOf(t) !== -1) hits++; });
+      var conf = q.length ? hits / q.length : 0;
+      return { it: it, conf: conf, hits: hits };
+    }).sort(function(a,b){ return b.conf - a.conf || b.hits - a.hits; });
+  }
+
+  function fmtPct(c){ return Math.round(c * 100); }
+  function confToDist(c){
+    /* cosine distance: high confidence => low distance. plausible numerics. */
+    var d = 0.04 + (1 - c) * 0.42;
+    return d.toFixed(3);
+  }
+
+  function setMode(state){
+    if (state === "scan"){
+      scopeMode.innerHTML = '<span class="m-scan">[ SCAN ]</span>';
+      document.getElementById("sysmode").textContent = "ACQUIRING";
+    } else if (state === "lock"){
+      scopeMode.innerHTML = '<span class="m-lock">[ LOCK ]</span>';
+      document.getElementById("sysmode").textContent = "LOCKED";
+      document.getElementById("led").className = "led ok";
+    } else if (state === "nolock"){
+      scopeMode.innerHTML = '<span class="m-idle">[ NO LOCK ]</span>';
+      document.getElementById("sysmode").textContent = "NO LOCK";
+    } else {
+      scopeMode.innerHTML = '<span class="m-idle">[ IDLE ]</span>';
+    }
+  }
+
+  function clearLock(){
+    reticle.classList.remove("on");
+    Array.prototype.forEach.call(scope.querySelectorAll(".blip"), function(b){
+      b.classList.remove("locked");
+    });
+  }
+
+  function renderLog(ranked, lockedId){
+    var log = document.getElementById("targetLog");
+    /* keep header, rebuild rows */
+    var head = log.querySelector(".log-row.head");
+    log.innerHTML = "";
+    log.appendChild(head);
+    ranked.forEach(function(r){
+      var locked = r.it.id === lockedId;
+      var row = document.createElement("div");
+      row.className = "log-row" + (locked ? " locked" : "");
+      var pct = fmtPct(r.conf);
+      row.innerHTML =
+        '<span class="glyph mono" style="background:' + r.it.c + '">' + escapeHtml(r.it.g) + '</span>' +
+        '<span class="desc">' + escapeHtml(r.it.cap) + '</span>' +
+        '<span class="num pct ' + (locked ? 'hi' : '') + '">' + pct + '%</span>' +
+        '<span class="num col-dist">' + confToDist(r.conf) + '</span>' +
+        '<span class="col-tag tag">' + (locked ? 'LOCKED' : (pct > 0 ? 'TRACK' : 'IDLE')) + '</span>';
+      log.appendChild(row);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c];
+    });
+  }
+
+  function attemptLock(query){
+    query = (query || "").trim();
+    if (!query) return;
+
+    var ranked = scoreAll(query);
+    var best = ranked[0];
+    var hasLock = best.conf > 0;
+    var btn = document.getElementById("acqBtn");
+
+    clearLock();
+
+    /* --- reduced motion: jump straight to the resolved state --- */
+    if (prefersReduced){
+      finishLock(ranked, best, hasLock);
+      return;
+    }
+
+    /* --- animated acquisition sequence --- */
+    btn.disabled = true;
+    setMode("scan");
+    sweep.classList.remove("run"); void sweep.offsetWidth; sweep.classList.add("run");
+    document.getElementById("acqHint").textContent = "scanning vector sector // " + CORPUS.length + " signatures...";
+
+    /* count latency up while scanning for live-instrument feel */
+    var latEl = document.getElementById("tLat");
+    var matchEl = document.getElementById("tMatch");
+    var t0 = performance.now();
+    var ticker = setInterval(function(){
+      var ms = Math.round(performance.now() - t0);
+      latEl.innerHTML = ms + '<span class="u">ms</span>';
+      matchEl.innerHTML = Math.round(Math.random()*100) + '<span class="u">%</span>';
+    }, 40);
+
+    setTimeout(function(){
+      clearInterval(ticker);
+      btn.disabled = false;
+      finishLock(ranked, best, hasLock);
+    }, 900);
+  }
+
+  function finishLock(ranked, best, hasLock){
+    /* realistic-but-stable latency: ~38-58ms */
+    var latency = (38 + Math.floor(Math.random() * 21));
+    var conf = best.conf;
+
+    document.getElementById("tLat").innerHTML = latency + '<span class="u">ms</span>';
+    document.getElementById("tDist").innerHTML = confToDist(conf) + '<span class="u">cos</span>';
+
+    var matchEl = document.getElementById("tMatch");
+    var lockEl = document.getElementById("tLock");
+
+    if (hasLock){
+      matchEl.innerHTML = fmtPct(conf) + '<span class="u">%</span>';
+      matchEl.className = "v lock";
+      lockEl.textContent = "LOCKED";
+      lockEl.className = "v lock";
+      setMode("lock");
+
+      /* snap reticle onto winning blip; light it up */
+      reticle.style.left = best.it.x + "%";
+      reticle.style.top = best.it.y + "%";
+      reticle.classList.add("on");
+      var blip = document.getElementById("blip-" + best.it.id);
+      if (blip) blip.classList.add("locked");
+
+      document.getElementById("acqHint").textContent =
+        "lock acquired // signature " + best.it.id + " // “" + best.it.cap + "”";
+    } else {
+      matchEl.innerHTML = '0<span class="u">%</span>';
+      matchEl.className = "v warn";
+      lockEl.textContent = "NO LOCK";
+      lockEl.className = "v warn";
+      setMode("nolock");
+      document.getElementById("acqHint").textContent =
+        "no signature above threshold // showing nearest tracks";
+    }
+
+    renderLog(ranked, hasLock ? best.it.id : null);
+  }
+
+  /* wire up form + presets */
+  document.getElementById("acqForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    attemptLock(document.getElementById("q").value);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".presets button"), function(btn){
+    btn.addEventListener("click", function(){
+      var q = btn.getAttribute("data-q");
+      document.getElementById("q").value = q;
+      attemptLock(q);
+    });
+  });
+  document.getElementById("signup").addEventListener("click", function(e){
+    e.preventDefault();
+    alert("operator access request received. (demo console. the real uplink lives on sploot.app)");
+  });
+
+  /* session uptime clock — live numerics in the bottom bar */
+  (function(){
+    var start = Date.now();
+    function pad(n){ return String(n).padStart(2, "0"); }
+    setInterval(function(){
+      var s = Math.floor((Date.now() - start) / 1000);
+      var hh = pad(Math.floor(s/3600)), mm = pad(Math.floor((s%3600)/60)), ss = pad(s%60);
+      document.getElementById("uptime").textContent = "UPLINK NOMINAL // SESSION " + hh + ":" + mm + ":" + ss;
+    }, 1000);
+  })();
+
+  /* initial idle log so the panel is never empty */
+  renderLog(CORPUS.map(function(it){ return { it: it, conf: 0, hits: 0 }; }), null);
+</script>
+</body>
+</html>

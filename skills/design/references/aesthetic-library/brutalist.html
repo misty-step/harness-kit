@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>sploot // private meme library + semantic search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --paper:#f3efe4;        /* unbleached documentation paper */
+    --blue:#1f4cff;         /* electric blue */
+    --magenta:#ff2d9b;      /* hot magenta */
+    --yellow:#ffe600;       /* acid yellow */
+    --orange:#ff5a1f;       /* blood orange */
+    --lime:#9cff2e;         /* lime */
+    --cyan:#00e5d4;
+    --shadow:8px 8px 0 var(--ink);
+    --shadow-sm:5px 5px 0 var(--ink);
+    --bd:4px solid var(--ink);
+    --bd-thick:6px solid var(--ink);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    /* faint engineering grid on the substrate */
+    background-image:
+      linear-gradient(0deg, rgba(10,10,10,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,10,10,0.05) 1px, transparent 1px);
+    background-size:32px 32px;
+  }
+
+  /* ---------- ACCESSIBILITY: focus ring ---------- */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible{
+    outline:5px solid var(--magenta);
+    outline-offset:3px;
+  }
+
+  .skip{
+    position:absolute;left:-999px;top:0;z-index:200;
+    background:var(--yellow);color:var(--ink);
+    border:var(--bd);padding:.6rem 1rem;font-family:"Space Mono",monospace;
+    font-weight:700;text-transform:uppercase;
+  }
+  .skip:focus{left:8px;top:8px;}
+
+  /* ---------- shared bits ---------- */
+  .mono{font-family:"Space Mono",monospace;text-transform:uppercase;letter-spacing:.06em;}
+  .tag{
+    display:inline-block;font-family:"Space Mono",monospace;font-size:.66rem;
+    text-transform:uppercase;letter-spacing:.1em;font-weight:700;
+    border:3px solid var(--ink);padding:.18rem .5rem;background:var(--paper);
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 20px;}
+  hr.rule{border:none;border-top:var(--bd);margin:0;}
+
+  .display{
+    font-family:"Archivo Black",sans-serif;
+    text-transform:uppercase;
+    line-height:.86;
+    letter-spacing:-.02em;
+  }
+
+  /* ---------- top alert strip ---------- */
+  .ticker{
+    background:var(--ink);color:var(--lime);
+    font-family:"Space Mono",monospace;font-size:.72rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.18em;
+    border-bottom:var(--bd-thick);
+    overflow:hidden;white-space:nowrap;
+  }
+  .ticker__track{display:inline-block;padding:.5rem 0;animation:scroll 26s linear infinite;}
+  .ticker__track span{padding:0 1.5rem;}
+  .ticker__track span::before{content:"///";color:var(--magenta);padding-right:.6rem;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ---------- header ---------- */
+  header.site{
+    border-bottom:var(--bd-thick);
+    background:var(--paper);
+    position:sticky;top:0;z-index:100;
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;padding:14px 20px;max-width:1200px;margin:0 auto;
+  }
+  .brand{
+    font-family:"Archivo Black",sans-serif;text-transform:uppercase;
+    font-size:1.7rem;letter-spacing:-.03em;display:flex;align-items:center;gap:.5rem;
+    text-decoration:none;color:var(--ink);
+  }
+  .brand .reg{
+    font-family:"Space Mono",monospace;font-size:.7rem;border:3px solid var(--ink);
+    padding:.1rem .3rem;background:var(--yellow);align-self:flex-start;letter-spacing:0;
+  }
+  .nav__right{display:flex;gap:.5rem;align-items:center;}
+  .nav__tag{display:none;background:var(--paper);}
+  @media(min-width:760px){.nav__tag{display:inline-block;}}
+  .btn{
+    font-family:"Space Mono",monospace;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;font-size:.82rem;
+    border:var(--bd);background:var(--blue);color:#fff;
+    padding:.7rem 1.1rem;box-shadow:var(--shadow-sm);cursor:pointer;
+    text-decoration:none;display:inline-block;
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);}
+  .btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);}
+  .btn--yellow{background:var(--yellow);color:var(--ink);}
+  .btn--magenta{background:var(--magenta);color:#fff;}
+  .btn--ink{background:var(--ink);color:var(--lime);}
+
+  /* ---------- hero ---------- */
+  .hero{border-bottom:var(--bd-thick);}
+  .hero__grid{
+    display:grid;grid-template-columns:1fr;gap:0;
+  }
+  @media(min-width:960px){.hero__grid{grid-template-columns:1.35fr .65fr;}}
+  .hero__main{padding:48px 20px 40px;border-bottom:var(--bd-thick);}
+  @media(min-width:960px){.hero__main{border-bottom:none;border-right:var(--bd-thick);padding:64px 48px;}}
+  .hero h1{
+    font-family:"Archivo Black",sans-serif;text-transform:uppercase;
+    font-size:clamp(3.1rem,11vw,8.2rem);line-height:.82;letter-spacing:-.03em;
+    margin:.2rem 0 .4rem;
+  }
+  .hero h1 .hit{
+    background:var(--magenta);color:#fff;padding:0 .12em;
+    box-decoration-break:clone;-webkit-box-decoration-break:clone;
+  }
+  .hero h1 .hit2{background:var(--blue);color:#fff;padding:0 .12em;}
+  .hero__sub{
+    font-size:1.18rem;max-width:48ch;margin:1.2rem 0 1.6rem;line-height:1.4;
+  }
+  .hero__cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
+  .hero__cta .note{font-family:"Space Mono",monospace;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;}
+
+  .hero__side{
+    padding:28px 20px;background:var(--yellow);
+    display:flex;flex-direction:column;gap:14px;justify-content:center;
+  }
+  @media(min-width:960px){.hero__side{padding:40px 32px;}}
+  .stat{
+    border:var(--bd);background:var(--paper);box-shadow:var(--shadow-sm);
+    padding:14px 16px;
+  }
+  .stat .k{font-family:"Space Mono",monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;display:block;}
+  .stat .v{font-family:"Archivo Black",sans-serif;font-size:2.1rem;line-height:1;letter-spacing:-.02em;}
+  .stat--mag{background:var(--magenta);color:#fff;}
+  .stat--blue{background:var(--blue);color:#fff;}
+
+  /* ---------- system status strip ---------- */
+  .status{
+    background:var(--ink);color:var(--paper);
+    border-bottom:var(--bd-thick);
+    font-family:"Space Mono",monospace;
+  }
+  .status__inner{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+    background:#2a2a2a;max-width:1200px;margin:0 auto;
+  }
+  @media(min-width:760px){.status__inner{grid-template-columns:repeat(5,1fr);}}
+  .status__cell{background:var(--ink);padding:14px 16px;}
+  .status__cell .k{font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:#9a9a9a;display:block;}
+  .status__cell .v{font-size:1.1rem;font-weight:700;letter-spacing:.02em;}
+  .status__cell .v.ok{color:var(--lime);}
+  .dot{display:inline-block;width:.6em;height:.6em;background:var(--lime);margin-right:.4em;vertical-align:baseline;}
+  @media(prefers-reduced-motion:no-preference){
+    .dot{animation:blink 1.4s steps(1) infinite;}
+  }
+  @keyframes blink{50%{opacity:.25;}}
+
+  /* ---------- SECTION shell ---------- */
+  .section{padding:56px 0;border-bottom:var(--bd-thick);}
+  .section__head{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:8px;}
+  .section__head h2{
+    font-family:"Archivo Black",sans-serif;text-transform:uppercase;
+    font-size:clamp(1.8rem,5vw,3.2rem);letter-spacing:-.02em;line-height:.9;margin:0;
+  }
+  .section__idx{font-family:"Space Mono",monospace;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;}
+  .section__desc{font-family:"Space Mono",monospace;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;margin:.4rem 0 2rem;color:#3a3a3a;}
+
+  /* ---------- THE MACHINE: search console ---------- */
+  #find{background:var(--blue);}
+  #find .section__head h2,#find .section__idx,#find .section__desc{color:#fff;}
+  #find .section__desc{color:#dfe6ff;}
+
+  .console{
+    border:var(--bd-thick);background:var(--paper);box-shadow:12px 12px 0 var(--ink);
+  }
+  .console__bar{
+    background:var(--ink);color:var(--paper);font-family:"Space Mono",monospace;
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;
+    padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  }
+  .console__bar .led{display:flex;gap:.4rem;}
+  .console__bar .led i{width:.85rem;height:.85rem;border:2px solid var(--paper);display:block;}
+  .console__bar .led i.r{background:var(--orange);}
+  .console__bar .led i.y{background:var(--yellow);}
+  .console__bar .led i.g{background:var(--lime);}
+
+  .search{padding:22px;border-bottom:var(--bd-thick);background:var(--yellow);}
+  .search label{
+    display:block;font-family:"Space Mono",monospace;font-weight:700;text-transform:uppercase;
+    letter-spacing:.1em;font-size:.78rem;margin-bottom:.5rem;
+  }
+  .search__row{display:flex;flex-wrap:wrap;gap:12px;}
+  .search input[type="search"]{
+    flex:1 1 320px;min-width:0;
+    font-family:"Space Mono",monospace;font-size:1.15rem;font-weight:700;
+    padding:.85rem 1rem;border:var(--bd);background:var(--paper);color:var(--ink);
+    box-shadow:inset 3px 3px 0 rgba(10,10,10,.12);
+  }
+  .search input[type="search"]::placeholder{color:#7a7a6a;}
+  .search button[type="submit"]{flex:0 0 auto;}
+  .search__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .chip{
+    font-family:"Space Mono",monospace;font-size:.72rem;font-weight:700;text-transform:lowercase;
+    letter-spacing:.02em;border:3px solid var(--ink);background:var(--paper);
+    padding:.35rem .6rem;cursor:pointer;box-shadow:3px 3px 0 var(--ink);
+  }
+  .chip:hover{background:var(--magenta);color:#fff;}
+  .chip::before{content:"try: ";color:#888;}
+
+  /* pipeline */
+  .pipe{
+    display:grid;grid-template-columns:1fr;gap:1px;background:var(--ink);
+    border-bottom:var(--bd-thick);
+  }
+  @media(min-width:820px){.pipe{grid-template-columns:repeat(5,1fr);}}
+  .pipe__step{background:var(--paper);padding:14px;min-height:104px;display:flex;flex-direction:column;gap:.4rem;position:relative;}
+  .pipe__step .n{font-family:"Space Mono",monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#777;}
+  .pipe__step .op{font-family:"Archivo Black",sans-serif;text-transform:uppercase;font-size:.95rem;letter-spacing:-.01em;}
+  .pipe__step output, .pipe__step samp{
+    font-family:"Space Mono",monospace;font-size:.74rem;word-break:break-word;
+    display:block;margin-top:auto;line-height:1.3;
+  }
+  .pipe__step:nth-child(1){border-top:8px solid var(--magenta);}
+  .pipe__step:nth-child(2){border-top:8px solid var(--orange);}
+  .pipe__step:nth-child(3){border-top:8px solid var(--blue);}
+  .pipe__step:nth-child(4){border-top:8px solid var(--cyan);}
+  .pipe__step:nth-child(5){border-top:8px solid var(--lime);}
+  .pipe__arrow{
+    position:absolute;right:-1px;top:50%;transform:translate(50%,-50%);
+    font-family:"Space Mono",monospace;font-weight:700;font-size:1rem;z-index:2;
+    background:var(--ink);color:var(--lime);padding:.1rem .25rem;display:none;
+  }
+  @media(min-width:820px){.pipe__step:not(:last-child) .pipe__arrow{display:block;}}
+  .vecbar{display:flex;gap:2px;margin-top:.3rem;height:18px;align-items:flex-end;}
+  .vecbar i{flex:1;background:var(--blue);display:block;height:30%;}
+  @media(prefers-reduced-motion:reduce){.vecbar i{height:50% !important;}}
+
+  /* readout line */
+  .readout{
+    background:var(--ink);color:var(--paper);font-family:"Space Mono",monospace;
+    font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;
+    padding:.7rem 1rem;display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;
+  }
+  .readout b{color:var(--lime);}
+  .readout .miss{color:var(--orange);}
+
+  /* ---------- meme grid ---------- */
+  .gridhead{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;
+    padding:14px 18px;background:var(--magenta);color:#fff;border-bottom:var(--bd-thick);
+    font-family:"Space Mono",monospace;text-transform:uppercase;letter-spacing:.08em;font-size:.76rem;font-weight:700;
+  }
+  .memegrid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--ink);
+  }
+  @media(min-width:680px){.memegrid{grid-template-columns:repeat(3,1fr);}}
+  @media(min-width:1000px){.memegrid{grid-template-columns:repeat(4,1fr);}}
+
+  .cell{
+    background:var(--paper);padding:0;display:flex;flex-direction:column;
+    position:relative;min-height:210px;
+    transition:opacity .25s ease, filter .25s ease, transform .15s ease;
+  }
+  .cell__top{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:"Space Mono",monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;
+    padding:6px 8px;border-bottom:3px solid var(--ink);font-weight:700;
+  }
+  .cell__art{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    padding:10px;overflow:hidden;
+  }
+  .cell__art svg{width:100%;height:100%;max-height:120px;}
+  .cell__cap{
+    font-family:"Space Mono",monospace;font-size:.64rem;text-transform:lowercase;
+    letter-spacing:.01em;padding:7px 8px;border-top:3px solid var(--ink);
+    line-height:1.25;min-height:42px;
+  }
+  .cell__idx{font-family:"Space Mono",monospace;}
+
+  /* states */
+  .cell.dim{opacity:.16;filter:grayscale(1) contrast(.8);}
+  .cell.match{
+    z-index:5;box-shadow:0 0 0 5px var(--lime), 10px 10px 0 var(--ink);
+    transform:scale(1.02);
+  }
+  @media(prefers-reduced-motion:reduce){
+    .cell{transition:none;}
+    .cell.match{transform:none;}
+  }
+  .cell__badge{
+    position:absolute;top:-3px;right:-3px;background:var(--lime);color:var(--ink);
+    border:3px solid var(--ink);font-family:"Space Mono",monospace;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;font-size:.62rem;padding:.2rem .45rem;
+    transform:rotate(0deg);display:none;
+  }
+  .cell.match .cell__badge{display:block;}
+  .cell__score{
+    position:absolute;bottom:46px;left:8px;background:var(--ink);color:var(--lime);
+    font-family:"Space Mono",monospace;font-size:.58rem;padding:.1rem .35rem;display:none;letter-spacing:.06em;
+  }
+  .cell.match .cell__score, .cell.near .cell__score{display:block;}
+  .cell.near{box-shadow:inset 0 0 0 4px var(--orange);}
+  .cell.near .cell__score{color:var(--orange);}
+
+  .noresult{
+    grid-column:1/-1;background:var(--ink);color:var(--orange);
+    font-family:"Space Mono",monospace;text-transform:uppercase;letter-spacing:.1em;
+    padding:28px;text-align:center;font-weight:700;display:none;
+  }
+  .noresult.show{display:block;}
+
+  /* ---------- how / value props ---------- */
+  .props{display:grid;grid-template-columns:1fr;gap:0;}
+  @media(min-width:760px){.props{grid-template-columns:repeat(3,1fr);}}
+  .prop{padding:26px 22px;border-top:var(--bd);}
+  @media(min-width:760px){
+    .prop{border-top:none;border-left:var(--bd);}
+    .prop:first-child{border-left:none;}
+  }
+  .prop .num{font-family:"Archivo Black",sans-serif;font-size:3.4rem;line-height:.8;letter-spacing:-.03em;display:block;}
+  .prop:nth-child(1) .num{color:var(--blue);}
+  .prop:nth-child(2) .num{color:var(--magenta);}
+  .prop:nth-child(3) .num{color:var(--orange);}
+  .prop h3{font-family:"Space Grotesk";font-weight:700;text-transform:lowercase;font-size:1.25rem;margin:.6rem 0 .4rem;}
+  .prop p{margin:0;font-size:.98rem;color:#222;}
+  .prop .micro{font-family:"Space Mono",monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-top:.8rem;display:block;}
+
+  /* ---------- private slab ---------- */
+  .private{background:var(--ink);color:var(--paper);}
+  .private .section__head h2{color:var(--paper);}
+  .private .section__idx,.private .section__desc{color:#9a9a9a;}
+  .privgrid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start;}
+  @media(min-width:820px){.privgrid{grid-template-columns:1.1fr .9fr;}}
+  .privgrid p{font-size:1.12rem;line-height:1.5;max-width:46ch;}
+  .privgrid p strong{background:var(--yellow);color:var(--ink);padding:0 .2em;}
+  .privlist{list-style:none;padding:0;margin:0;border:var(--bd);box-shadow:8px 8px 0 var(--magenta);}
+  .privlist li{
+    padding:14px 16px;border-bottom:3px solid var(--paper);
+    font-family:"Space Mono",monospace;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;
+    display:flex;gap:.7rem;align-items:baseline;
+  }
+  .privlist li:last-child{border-bottom:none;}
+  .privlist li::before{content:"[OK]";color:var(--lime);font-weight:700;flex:0 0 auto;}
+  .privlist li.no::before{content:"[--]";color:var(--orange);}
+
+  /* ---------- final CTA ---------- */
+  .claim{background:var(--lime);text-align:center;padding:72px 20px;}
+  .claim h2{
+    font-family:"Archivo Black",sans-serif;text-transform:uppercase;
+    font-size:clamp(2.6rem,9vw,6.5rem);line-height:.84;letter-spacing:-.03em;margin:0 0 .3rem;
+  }
+  .claim p{font-family:"Space Mono",monospace;text-transform:uppercase;letter-spacing:.08em;font-size:.9rem;margin:0 0 1.8rem;}
+  .claim .btn{font-size:1rem;padding:1rem 1.8rem;box-shadow:var(--shadow);}
+
+  /* ---------- footer ---------- */
+  footer.site{background:var(--ink);color:var(--paper);padding:40px 0 60px;}
+  .foot{display:grid;grid-template-columns:1fr;gap:24px;}
+  @media(min-width:760px){.foot{grid-template-columns:2fr 1fr 1fr;}}
+  .foot .brand{color:var(--paper);}
+  .foot p{font-family:"Space Mono",monospace;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:#9a9a9a;max-width:38ch;}
+  .foot a{color:var(--lime);text-decoration:none;font-family:"Space Mono",monospace;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;display:block;padding:.25rem 0;}
+  .foot a:hover{color:var(--yellow);text-decoration:underline;}
+  .foot h4{font-family:"Space Mono",monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:#fff;border-bottom:3px solid #444;padding-bottom:.4rem;margin:0 0 .6rem;}
+  .colophon{
+    border-top:3px solid #444;margin-top:32px;padding-top:18px;
+    font-family:"Space Mono",monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:#777;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem;
+  }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+</style>
+</head>
+<body>
+<a href="#find" class="skip">skip to search</a>
+
+<!-- ===== TICKER ===== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>12,408 memes</span><span>zero folders</span><span>you saved it. now find it.</span><span>i had a meme for this</span><span>dim:768</span><span>private by default</span><span>12,408 memes</span><span>zero folders</span><span>you saved it. now find it.</span><span>i had a meme for this</span><span>dim:768</span><span>private by default</span>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="site">
+  <div class="nav">
+    <a class="brand" href="#top">sploot<span class="reg">®</span></a>
+    <div class="nav__right">
+      <span class="tag nav__tag">v2.6 / index live</span>
+      <span class="tag nav__tag">private build</span>
+      <a class="btn btn--ink" href="#claim">claim your library &raquo;</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__grid">
+      <div class="hero__main">
+        <span class="tag" style="background:var(--lime)">personal meme database</span>
+        <h1 id="hero-h">you<br><span class="hit">saved</span> it.<br>now <span class="hit2">find</span> it.</h1>
+        <p class="hero__sub">a private library for your 12,000 screenshots and reaction pics. type what is <em>in</em> the image. "two cats arguing at a table." it finds the exact one. no folders. no tags. no scrolling for nine minutes.</p>
+        <div class="hero__cta">
+          <a class="btn btn--magenta" href="#claim">claim your library</a>
+          <a class="btn btn--yellow" href="#find">try the search &darr;</a>
+          <span class="note">no upload required to demo</span>
+        </div>
+      </div>
+      <aside class="hero__side" aria-label="library statistics">
+        <div class="stat stat--mag">
+          <span class="k">indexed memes</span>
+          <span class="v">12,408</span>
+        </div>
+        <div class="stat stat--blue">
+          <span class="k">folders required</span>
+          <span class="v">0</span>
+        </div>
+        <div class="stat">
+          <span class="k">time to find "that one"</span>
+          <span class="v">38<span style="font-size:1rem">ms</span></span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== SYSTEM STATUS STRIP ===== -->
+  <section class="status" aria-label="system status">
+    <div class="status__inner">
+      <div class="status__cell"><span class="k">index</span><span class="v">12408 vec</span></div>
+      <div class="status__cell"><span class="k">dim</span><span class="v">768</span></div>
+      <div class="status__cell"><span class="k">model</span><span class="v">siglip-so400m</span></div>
+      <div class="status__cell"><span class="k">latency</span><span class="v" id="status-latency">38ms</span></div>
+      <div class="status__cell"><span class="k">status</span><span class="v ok"><span class="dot" aria-hidden="true"></span>online</span></div>
+    </div>
+  </section>
+
+  <!-- ===== THE MACHINE / SEARCH ===== -->
+  <section class="section" id="find" aria-labelledby="find-h">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="find-h">find it.</h2>
+        <span class="section__idx">// fig.01 :: retrieval pipeline</span>
+      </div>
+      <p class="section__desc">this page admits it is a database. watch the machine work.</p>
+
+      <div class="console">
+        <div class="console__bar">
+          <span>sploot://search.console</span>
+          <span class="led" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="g"></i></span>
+        </div>
+
+        <!-- SEARCH FORM -->
+        <form class="search" id="searchForm" role="search" autocomplete="off">
+          <label for="q">query &gt;&gt; describe what is in the meme</label>
+          <div class="search__row">
+            <input
+              type="search"
+              id="q"
+              name="q"
+              placeholder="what's that one meme..."
+              aria-describedby="readout"
+              spellcheck="false" />
+            <button type="submit" class="btn btn--ink">run search</button>
+          </div>
+          <div class="search__chips" aria-label="example queries">
+            <button type="button" class="chip" data-q="two cats arguing at a table">cats arguing at a table</button>
+            <button type="button" class="chip" data-q="this is fine dog fire">this is fine, fire</button>
+            <button type="button" class="chip" data-q="guy looking at other woman">distracted boyfriend</button>
+            <button type="button" class="chip" data-q="skeleton waiting on a bench">skeleton still waiting</button>
+            <button type="button" class="chip" data-q="brain galaxy expanding">galaxy brain</button>
+          </div>
+        </form>
+
+        <!-- PIPELINE -->
+        <div class="pipe" aria-hidden="true">
+          <div class="pipe__step">
+            <span class="n">00 / input</span>
+            <span class="op">query</span>
+            <output id="p-query">[ empty ]</output>
+            <span class="pipe__arrow">&gt;</span>
+          </div>
+          <div class="pipe__step">
+            <span class="n">01 / tokenize</span>
+            <span class="op">tokens</span>
+            <output id="p-tokens">[ 0 tok ]</output>
+            <span class="pipe__arrow">&gt;</span>
+          </div>
+          <div class="pipe__step">
+            <span class="n">02 / embed</span>
+            <span class="op">vector</span>
+            <output id="p-vector">768-d idle</output>
+            <div class="vecbar" id="p-vecbar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="pipe__arrow">&gt;</span>
+          </div>
+          <div class="pipe__step">
+            <span class="n">03 / cosine</span>
+            <span class="op">match</span>
+            <output id="p-cosine">await sim</output>
+            <span class="pipe__arrow">&gt;</span>
+          </div>
+          <div class="pipe__step">
+            <span class="n">04 / return</span>
+            <span class="op">result</span>
+            <output id="p-result">standby</output>
+          </div>
+        </div>
+
+        <!-- READOUT -->
+        <output class="readout" id="readout" for="q" aria-live="polite">
+          <span>scan: <b id="r-scan">12408</b> vectors</span>
+          <span>top sim: <b id="r-sim">0.00</b></span>
+          <span>hit: <b id="r-hit">--</b></span>
+          <span>t: <b id="r-time">0.0ms</b></span>
+        </output>
+
+        <!-- GRID HEAD -->
+        <div class="gridhead">
+          <span id="grid-status">12,408 memes. zero folders.</span>
+          <span>[ showing 12 sample vectors ]</span>
+        </div>
+
+        <!-- MEME GRID (populated by JS, with no-JS fallback already present) -->
+        <div class="memegrid" id="memegrid" role="list" aria-label="sample meme library">
+          <div class="noresult" id="noresult">no vector within threshold. try plainer words. it is in there somewhere.</div>
+        </div>
+      </div><!-- /console -->
+    </div>
+  </section>
+
+  <!-- ===== HOW (value props) ===== -->
+  <section class="section" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="how-h">how it works</h2>
+        <span class="section__idx">// fig.02 :: three moving parts</span>
+      </div>
+      <p class="section__desc">drop everything in. describe anything. get the exact frame back.</p>
+    </div>
+    <div class="props">
+      <div class="prop">
+        <span class="num">01</span>
+        <h3>dump the pile</h3>
+        <p>drag in years of screenshots. no sorting, no renaming, no "where does this go." the pile is the point.</p>
+        <span class="micro">ingest &gt; embed &gt; store</span>
+      </div>
+      <div class="prop">
+        <span class="num">02</span>
+        <h3>describe what's in it</h3>
+        <p>not the filename. the contents. "guy sweating over two buttons." semantic search reads the image, not your folder names.</p>
+        <span class="micro">text &gt; vector &gt; cosine</span>
+      </div>
+      <div class="prop">
+        <span class="num">03</span>
+        <h3>get the exact one</h3>
+        <p>the perfect reaction, located out of twelve thousand, before the group chat moves on. i had a meme for this.</p>
+        <span class="micro">rank &gt; return &gt; paste</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRIVATE ===== -->
+  <section class="section private" aria-labelledby="priv-h">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="priv-h">yours. only yours.</h2>
+        <span class="section__idx">// fig.03 :: access control</span>
+      </div>
+      <p class="section__desc">a meme library is a diary. it stays shut.</p>
+      <div class="privgrid">
+        <div>
+          <p>your screenshots say a lot about you. that is exactly why your library is <strong>private by default</strong>. no public feed, no shared folder, no algorithm rifling through your reaction pics. it is your stash, indexed for you, found by you.</p>
+        </div>
+        <ul class="privlist" aria-label="what sploot does and does not do">
+          <li>private library, single account</li>
+          <li>search runs against your own index</li>
+          <li>semantic match on image contents</li>
+          <li class="no">no public profiles</li>
+          <li class="no">no folders to maintain</li>
+          <li class="no">no tags to forget</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CLAIM CTA ===== -->
+  <section class="claim" id="claim" aria-labelledby="claim-h">
+    <h2 id="claim-h">claim your<br>library</h2>
+    <p>12,408 memes. zero folders. one search box.</p>
+    <a class="btn btn--magenta" href="#claim">start your index &raquo;</a>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top">sploot<span class="reg">®</span></a>
+        <p>private personal meme library with text to image semantic search. you saved it. now find it.</p>
+      </div>
+      <div>
+        <h4>[ system ]</h4>
+        <a href="#find">search console</a>
+        <a href="#how-h">how it works</a>
+        <a href="#priv-h">privacy</a>
+      </div>
+      <div>
+        <h4>[ start ]</h4>
+        <a href="#claim">claim your library</a>
+        <a href="#find">run a demo search</a>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>sploot® / rev 2.6 / index: 12408 vectors / dim: 768</span>
+      <span>built for the pile. status: online</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   sploot search demo :: in-page dataset + cosine-ish retrieval
+   no real images: each "meme" is inline SVG + caption keywords
+   ============================================================ */
+(function(){
+  "use strict";
+
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ----- color helpers for distinct cells ----- */
+  var C = {
+    blue:"#1f4cff", mag:"#ff2d9b", yel:"#ffe600",
+    org:"#ff5a1f", lime:"#9cff2e", cyan:"#00e5d4",
+    ink:"#0a0a0a", paper:"#f3efe4"
+  };
+
+  /* ----- inline SVG art generators (license-safe stand-ins) ----- */
+  function box(bg){ return '<rect width="100" height="100" fill="'+bg+'"/>'; }
+  function frame(){ return '<rect x="2" y="2" width="96" height="96" fill="none" stroke="#0a0a0a" stroke-width="4"/>'; }
+  function svg(inner){
+    return '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-hidden="true">'+inner+'</svg>';
+  }
+  // simple blocky "face" / shape primitives
+  function eyes(x1,x2,y){ return '<circle cx="'+x1+'" cy="'+y+'" r="6" fill="#0a0a0a"/><circle cx="'+x2+'" cy="'+y+'" r="6" fill="#0a0a0a"/>'; }
+
+  var ART = {
+    cats: svg(box(C.org)+frame()+
+      '<rect x="18" y="40" width="26" height="34" fill="#0a0a0a"/><polygon points="18,40 24,28 30,40" fill="#0a0a0a"/><polygon points="44,40 38,28 32,40" fill="#0a0a0a"/>'+
+      '<rect x="58" y="40" width="26" height="34" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/><polygon points="58,40 64,28 70,40" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/><polygon points="84,40 78,28 72,40" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<rect x="14" y="74" width="72" height="6" fill="#0a0a0a"/>'+
+      '<text x="50" y="22" font-family="Space Mono, monospace" font-size="10" font-weight="700" text-anchor="middle" fill="#0a0a0a">!?!?</text>'),
+
+    fire: svg(box(C.yel)+frame()+
+      '<rect x="0" y="62" width="100" height="38" fill="'+C.org+'"/>'+
+      '<polygon points="20,62 26,50 32,62" fill="'+C.mag+'"/><polygon points="44,62 52,46 60,62" fill="'+C.mag+'"/><polygon points="70,62 76,52 82,62" fill="'+C.mag+'"/>'+
+      '<rect x="40" y="40" width="20" height="20" rx="0" fill="#0a0a0a"/>'+eyes(46,54,48)+
+      '<text x="50" y="92" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="'+C.paper+'">this is fine</text>'),
+
+    boyfriend: svg(box(C.cyan)+frame()+
+      '<circle cx="28" cy="44" r="12" fill="#0a0a0a"/>'+
+      '<circle cx="58" cy="44" r="12" fill="'+C.mag+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<circle cx="84" cy="44" r="11" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<path d="M58 50 q14 6 24 -2" fill="none" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<text x="50" y="84" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#0a0a0a">&gt;&gt; looks back</text>'),
+
+    skeleton: svg(box(C.ink)+'<rect x="2" y="2" width="96" height="96" fill="none" stroke="'+C.lime+'" stroke-width="4"/>'+
+      '<rect x="20" y="70" width="60" height="8" fill="'+C.lime+'"/>'+
+      '<circle cx="50" cy="40" r="14" fill="none" stroke="'+C.paper+'" stroke-width="4"/>'+
+      '<circle cx="44" cy="40" r="3" fill="'+C.paper+'"/><circle cx="56" cy="40" r="3" fill="'+C.paper+'"/>'+
+      '<rect x="46" y="54" width="8" height="16" fill="'+C.paper+'"/>'+
+      '<text x="50" y="92" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="'+C.lime+'">still waiting</text>'),
+
+    brain: svg(box(C.mag)+frame()+
+      '<circle cx="50" cy="46" r="26" fill="'+C.ink+'"/>'+
+      '<circle cx="50" cy="46" r="26" fill="none" stroke="'+C.lime+'" stroke-width="2"/>'+
+      '<circle cx="40" cy="40" r="3" fill="'+C.cyan+'"/><circle cx="60" cy="38" r="3" fill="'+C.yel+'"/><circle cx="52" cy="54" r="3" fill="'+C.org+'"/><circle cx="44" cy="56" r="2" fill="'+C.paper+'"/><circle cx="62" cy="52" r="2" fill="'+C.lime+'"/>'+
+      '<text x="50" y="90" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="'+C.paper+'">ascended</text>'),
+
+    handshake: svg(box(C.lime)+frame()+
+      '<rect x="14" y="44" width="34" height="12" fill="#0a0a0a"/><rect x="52" y="44" width="34" height="12" fill="#0a0a0a"/>'+
+      '<rect x="40" y="38" width="20" height="24" fill="'+C.org+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<text x="50" y="28" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#0a0a0a">epic deal</text>'+
+      '<text x="50" y="84" font-family="Space Mono, monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#0a0a0a">same thing</text>'),
+
+    drake: svg(box(C.yel)+frame()+
+      '<rect x="50" y="6" width="48" height="44" fill="'+C.org+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<rect x="50" y="52" width="48" height="44" fill="'+C.lime+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<text x="20" y="30" font-family="Space Mono, monospace" font-size="20" font-weight="700" text-anchor="middle" fill="'+C.org+'">no</text>'+
+      '<text x="22" y="80" font-family="Space Mono, monospace" font-size="18" font-weight="700" text-anchor="middle" fill="'+C.lime+'">yes</text>'),
+
+    button: svg(box(C.blue)+frame()+
+      '<rect x="16" y="20" width="30" height="20" fill="'+C.org+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<rect x="54" y="20" width="30" height="20" fill="'+C.lime+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<circle cx="50" cy="70" r="16" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<path d="M44 66 l12 0 M44 74 l12 0" stroke="'+C.mag+'" stroke-width="3"/>'+
+      '<text x="50" y="56" font-family="Space Mono, monospace" font-size="8" font-weight="700" text-anchor="middle" fill="'+C.paper+'">sweat</text>'),
+
+    crying: svg(box(C.cyan)+frame()+
+      '<circle cx="50" cy="46" r="28" fill="'+C.yel+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<path d="M34 42 q6 -8 12 0 M54 42 q6 -8 12 0" fill="none" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<path d="M40 60 q10 8 20 0" fill="none" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<rect x="36" y="46" width="4" height="14" fill="'+C.blue+'"/><rect x="60" y="46" width="4" height="14" fill="'+C.blue+'"/>'+
+      '<text x="50" y="92" font-family="Space Mono, monospace" font-size="8" font-weight="700" text-anchor="middle" fill="#0a0a0a">it is what it is</text>'),
+
+    rocket: svg(box(C.ink)+'<rect x="2" y="2" width="96" height="96" fill="none" stroke="'+C.org+'" stroke-width="4"/>'+
+      '<polygon points="50,12 62,52 38,52" fill="'+C.paper+'" stroke="'+C.org+'" stroke-width="2"/>'+
+      '<rect x="44" y="52" width="12" height="20" fill="'+C.org+'"/>'+
+      '<polygon points="44,72 50,90 56,72" fill="'+C.yel+'"/>'+
+      '<text x="50" y="40" font-family="Space Mono, monospace" font-size="10" font-weight="700" text-anchor="middle" fill="'+C.ink+'">to the</text>'),
+
+    pointing: svg(box(C.mag)+frame()+
+      '<circle cx="32" cy="40" r="13" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<circle cx="66" cy="40" r="13" fill="'+C.paper+'" stroke="#0a0a0a" stroke-width="3"/>'+
+      '<path d="M40 52 l8 -6 M58 52 l-8 -6" stroke="#0a0a0a" stroke-width="4"/>'+
+      '<rect x="44" y="58" width="12" height="10" fill="'+C.yel+'" stroke="#0a0a0a" stroke-width="2"/>'+
+      '<text x="50" y="88" font-family="Space Mono, monospace" font-size="8" font-weight="700" text-anchor="middle" fill="'+C.paper+'">same picture</text>'),
+
+    dance: svg(box(C.org)+frame()+
+      '<circle cx="50" cy="26" r="10" fill="#0a0a0a"/>'+
+      '<path d="M50 36 l0 28 M50 44 l-18 -8 M50 44 l18 8 M50 64 l-14 18 M50 64 l16 14" stroke="#0a0a0a" stroke-width="5" fill="none"/>'+
+      '<text x="50" y="96" font-family="Space Mono, monospace" font-size="8" font-weight="700" text-anchor="middle" fill="#0a0a0a">vibing</text>')
+  };
+
+  /* ----- dataset: 12 fake meme entries ----- */
+  /* keywords drive the "semantic" match (token overlap + synonyms) */
+  var MEMES = [
+    { file:"IMG_4471.PNG",  idx:"v#00471", art:ART.cats,
+      caption:"two cats arguing at a dinner table, one yelling",
+      kw:"cat cats kitten arguing argument yelling angry table dinner two woman pointing screaming fight" },
+    { file:"screenshot_2019.png", idx:"v#02019", art:ART.fire,
+      caption:"cartoon dog drinking coffee in a burning room",
+      kw:"this is fine dog fire burning room flames coffee calm disaster everything okay" },
+    { file:"reaction_022.jpg", idx:"v#00822", art:ART.boyfriend,
+      caption:"guy turning to look at another woman walking by",
+      kw:"distracted boyfriend guy man looking turning other woman girlfriend jealous walking by staring" },
+    { file:"IMG_9013.PNG", idx:"v#09013", art:ART.skeleton,
+      caption:"skeleton still waiting on a park bench",
+      kw:"skeleton waiting bench park still forever bones patient dead reply text back" },
+    { file:"galaxybrain_4.png", idx:"v#04004", art:ART.brain,
+      caption:"glowing brain expanding into a cosmic galaxy",
+      kw:"galaxy brain expanding glowing cosmic genius smart big mind ascend universe stars enlightened" },
+    { file:"IMG_3120.PNG", idx:"v#03120", art:ART.handshake,
+      caption:"two strong arms shaking hands, epic handshake",
+      kw:"epic handshake arms agree same thing deal shake hands muscle bro alliance unity" },
+    { file:"drake_format.jpg", idx:"v#01777", art:ART.drake,
+      caption:"guy rejecting one option, approving another",
+      kw:"drake no yes reject approve prefer choosing two options pointing meme format hotline" },
+    { file:"IMG_5552.PNG", idx:"v#05552", art:ART.button,
+      caption:"man sweating choosing between two buttons",
+      kw:"two buttons sweating guy man choice decision hard sweat panic pressing pick dilemma" },
+    { file:"mood_final2.png", idx:"v#08431", art:ART.crying,
+      caption:"smiling face crying while pretending to be fine",
+      kw:"crying smiling face tears fine sad happy mask pretend mood feelings hiding it is what it is" },
+    { file:"IMG_7788.PNG", idx:"v#07788", art:ART.rocket,
+      caption:"tiny rocket launching to the moon, stonks energy",
+      kw:"rocket moon launch stonks up stocks crypto to the moon space fly hype gains" },
+    { file:"sameimg_03.jpg", idx:"v#00303", art:ART.pointing,
+      caption:"two spider-men pointing at each other",
+      kw:"spiderman pointing same picture two identical accuse you me copy duplicate finger" },
+    { file:"IMG_6004.PNG", idx:"v#06004", art:ART.dance,
+      caption:"little stick figure dancing with no worries",
+      kw:"dancing dance stick figure vibing happy celebrate party moves friday no worries" }
+  ];
+
+  /* ----- DOM refs ----- */
+  var grid = document.getElementById("memegrid");
+  var noresult = document.getElementById("noresult");
+  var form = document.getElementById("searchForm");
+  var input = document.getElementById("q");
+  var chips = document.querySelectorAll(".chip");
+
+  var pQuery = document.getElementById("p-query");
+  var pTokens = document.getElementById("p-tokens");
+  var pVector = document.getElementById("p-vector");
+  var pVecbar = document.getElementById("p-vecbar");
+  var pCosine = document.getElementById("p-cosine");
+  var pResult = document.getElementById("p-result");
+
+  var rScan = document.getElementById("r-scan");
+  var rSim = document.getElementById("r-sim");
+  var rHit = document.getElementById("r-hit");
+  var rTime = document.getElementById("r-time");
+  var gridStatus = document.getElementById("grid-status");
+  var statusLatency = document.getElementById("status-latency");
+
+  /* ----- build the grid ----- */
+  var cells = [];
+  MEMES.forEach(function(m, i){
+    var cell = document.createElement("article");
+    cell.className = "cell";
+    cell.setAttribute("role","listitem");
+    cell.dataset.kw = (m.kw + " " + m.caption).toLowerCase();
+    cell.innerHTML =
+      '<span class="cell__badge">match</span>'+
+      '<div class="cell__top"><span>'+m.file+'</span><span class="cell__idx">'+m.idx+'</span></div>'+
+      '<div class="cell__art">'+m.art+'</div>'+
+      '<span class="cell__score" data-score>sim 0.00</span>'+
+      '<div class="cell__cap">'+m.caption+'</div>';
+    grid.appendChild(cell);
+    cells.push(cell);
+  });
+
+  /* ----- stopwords ----- */
+  var STOP = {"a":1,"an":1,"the":1,"of":1,"at":1,"on":1,"in":1,"to":1,"and":1,
+    "with":1,"is":1,"are":1,"that":1,"this":1,"for":1,"by":1,"it":1,"its":1,
+    "one":1,"two":1,"who":1,"whats":1,"what":1};
+
+  /* lightweight synonym expansion so plain language hits */
+  var SYN = {
+    "guy":["man","boyfriend","dude"], "man":["guy","dude"],
+    "lady":["woman","girl"], "woman":["lady","girl"],
+    "kitty":["cat"], "kitties":["cats","cat"], "cat":["cats"], "cats":["cat"],
+    "mad":["angry","yelling"], "angry":["mad","yelling"],
+    "burning":["fire","flames"], "fire":["burning","flames"],
+    "sad":["crying","tears"], "crying":["tears","sad"],
+    "smart":["genius","brain","galaxy"], "genius":["brain","galaxy"],
+    "choice":["decision","buttons"], "decision":["choice","buttons"],
+    "shaking":["handshake","shake"], "spacerocket":["rocket"],
+    "stocks":["stonks"], "stonks":["stocks","moon","rocket"]
+  };
+
+  function tokenize(str){
+    var raw = str.toLowerCase().replace(/[^a-z0-9\s]/g," ").split(/\s+/);
+    var out = [];
+    raw.forEach(function(t){
+      if(!t || STOP[t]) return;
+      out.push(t);
+      if(SYN[t]) SYN[t].forEach(function(s){ out.push(s); });
+    });
+    return out;
+  }
+
+  /* "cosine-ish" relevance: weighted token overlap, normalized 0..1 */
+  function score(queryTokens, cellKw){
+    if(!queryTokens.length) return 0;
+    var hits = 0, uniqueHits = {};
+    queryTokens.forEach(function(t){
+      if(cellKw.indexOf(t) !== -1){
+        hits += (t.length >= 5 ? 1.4 : 1); // longer words = stronger signal
+        uniqueHits[t] = 1;
+      }
+    });
+    var coverage = Object.keys(uniqueHits).length / queryTokens.length;
+    // blend raw hit weight with coverage, squash into 0..0.99
+    var raw = (hits * 0.22) + (coverage * 0.6);
+    var s = 1 - Math.exp(-raw); // diminishing returns curve
+    return Math.min(0.99, s);
+  }
+
+  var THRESHOLD = 0.20;
+
+  function fakeVector(tokens){
+    // produce a deterministic-ish readout from the query
+    if(!tokens.length) return "768-d idle";
+    var seed = 0;
+    tokens.join("").split("").forEach(function(c){ seed = (seed*31 + c.charCodeAt(0)) % 9973; });
+    var a = ((seed%900)/1000 + 0.05).toFixed(3);
+    var b = (((seed*7)%900)/1000 - 0.45).toFixed(3);
+    var c = (((seed*13)%900)/1000 - 0.2).toFixed(3);
+    return "["+a+", "+b+", "+c+", ...]";
+  }
+
+  function animateVecbar(tokens){
+    var bars = pVecbar.children;
+    var seed = tokens.join("").length + 1;
+    for(var i=0;i<bars.length;i++){
+      var h = ((Math.sin(seed*(i+1)*1.3)+1)/2)*70 + 18;
+      bars[i].style.height = (tokens.length? h : 30) + "%";
+      bars[i].style.background = (i%3===0)? C.mag : (i%3===1? C.blue : C.cyan);
+    }
+  }
+
+  function run(query){
+    query = (query || "").trim();
+    var tokens = tokenize(query);
+
+    /* update pipeline */
+    pQuery.textContent = query ? '"'+query.slice(0,40)+'"' : "[ empty ]";
+    pTokens.textContent = "[ " + tokens.length + " tok ] " + (tokens.length? tokens.slice(0,5).join("·") : "");
+    pVector.textContent = fakeVector(tokens);
+    animateVecbar(tokens);
+
+    if(!query){
+      // reset state
+      cells.forEach(function(c){
+        c.classList.remove("dim","match","near");
+        var sc = c.querySelector("[data-score]"); if(sc) sc.textContent="sim 0.00";
+      });
+      noresult.classList.remove("show");
+      pCosine.textContent = "await sim";
+      pResult.textContent = "standby";
+      rScan.textContent = "12408";
+      rSim.textContent = "0.00";
+      rHit.textContent = "--";
+      rTime.textContent = "0.0ms";
+      gridStatus.textContent = "12,408 memes. zero folders.";
+      return;
+    }
+
+    /* score every cell */
+    var ranked = cells.map(function(c){
+      return { cell:c, s:score(tokens, c.dataset.kw) };
+    }).sort(function(a,b){ return b.s - a.s; });
+
+    var best = ranked[0];
+    var second = ranked[1];
+    var found = best.s >= THRESHOLD;
+
+    /* apply visual state */
+    ranked.forEach(function(r, i){
+      r.cell.classList.remove("match","near","dim");
+      var sc = r.cell.querySelector("[data-score]");
+      if(sc) sc.textContent = "sim " + r.s.toFixed(2);
+      if(!found){
+        r.cell.classList.add("dim");
+        return;
+      }
+      if(r.cell === best.cell){
+        r.cell.classList.add("match");
+      } else if(r.s >= THRESHOLD && r.s >= best.s*0.6){
+        r.cell.classList.add("near");
+      } else {
+        r.cell.classList.add("dim");
+      }
+    });
+
+    /* fake latency for flavor */
+    var ms = (28 + (tokens.length*3.1) + (Math.random()*9)).toFixed(0);
+
+    /* readouts */
+    noresult.classList.toggle("show", !found);
+    rScan.textContent = "12408";
+    rSim.textContent = best.s.toFixed(2);
+    rTime.textContent = ms + "ms";
+    statusLatency.textContent = ms + "ms";
+    pCosine.textContent = "top=" + best.s.toFixed(2) + (second? " · 2nd=" + second.s.toFixed(2) : "");
+
+    if(found){
+      var f = best.cell.querySelector(".cell__top span").textContent;
+      rHit.textContent = f;
+      rHit.classList.remove("miss");
+      pResult.textContent = "HIT → " + f;
+      gridStatus.textContent = "located 1 of 12,408. i had a meme for this.";
+    } else {
+      rHit.textContent = "none";
+      pResult.textContent = "no hit ≥ " + THRESHOLD;
+      gridStatus.textContent = "below threshold. it is in there somewhere.";
+    }
+  }
+
+  /* ----- wiring ----- */
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    run(input.value);
+  });
+
+  var t;
+  input.addEventListener("input", function(){
+    clearTimeout(t);
+    t = setTimeout(function(){ run(input.value); }, reduceMotion ? 0 : 110);
+  });
+
+  chips.forEach(function(ch){
+    ch.addEventListener("click", function(){
+      input.value = ch.dataset.q;
+      input.focus();
+      run(ch.dataset.q);
+    });
+  });
+
+  /* initial idle state */
+  run("");
+})();
+</script>
+</body>
+</html>
