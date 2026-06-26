@@ -251,6 +251,31 @@ Skills may extend this core with phase-specific fields such as hardening
 survivors, design risk, persona outcome, or artifact location. They must not
 replace live evidence with a generic "tests passed" claim.
 
+## Agent Attribution
+
+When an agent materially authors code, durable docs, repo configuration, PR
+text, or a shippable artifact, leave provenance in the commit body, PR body,
+or receipt. Use Git trailers when Git is the durable record, injected with
+`git interpret-trailers` when practical. Prefer exact values; use `unknown`
+only when the surface cannot expose them.
+
+Recommended trailers:
+
+- `Agent: <name-or-role>` — e.g. Amos, Kaylee, Urza, architect, codex-worker.
+- `Agent-Surface: <surface>` — Herdr, Hermes CLI, Kanban, Codex CLI, Claude Code,
+  OpenCode, OMP, Pi, Goose, Desktop, cron.
+- `Agent-Runner: <runtime>` — the concrete tool/process when different from
+  the surface.
+- `Agent-Model: <provider/model>` — include provider when known.
+- `Agent-Reasoning: <level>` — omit if unavailable.
+- `Agent-Task: <ticket-board-pr-issue>` — backlog/Kanban/issue/PR context.
+- `Agent-Context: <session-or-pane>` — Herdr pane, session id, worktree, or
+  receipt path when useful for audit.
+
+Do not fake attribution. If several agents contributed, list the lead agent in
+`Agent:` and put reviewer/critic lanes in the PR body or receipt unless their
+work materially authored the commit.
+
 ## Files
 
 - Shared `AGENTS.md`: universal operating rules only.

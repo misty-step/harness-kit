@@ -21,9 +21,9 @@ Harness Kit defines these contracts; both planes read and write them.
 - Either plane may file tickets; only the operator (or an operator-approved
   flow) deletes them.
 
-## 2. Closure trailers
+## 2. Commit trailers
 
-Recognized keys (`harness-kit-checks backlog trailer-keys`):
+Recognized backlog keys (`harness-kit-checks backlog trailer-keys`):
 
 - `Closes-backlog: <id>` — closes the ticket (archival intent).
 - `Ships-backlog: <id>` — synonym, closes.
@@ -34,6 +34,19 @@ IDs are bare numerics (`029`, not `BACKLOG-029`). Inject via
 ticket file on the shipping ref BEFORE the squash-merge so closure rides
 the merge commit. GitHub squash bodies drop commit trailers — pass the
 trailer block explicitly.
+
+Agent provenance trailers are advisory, not backlog-closing keys:
+
+- `Agent: <name-or-role>`
+- `Agent-Surface: <surface>`
+- `Agent-Runner: <runtime>`
+- `Agent-Model: <provider/model>`
+- `Agent-Reasoning: <level>`
+- `Agent-Task: <ticket-board-pr-issue>`
+- `Agent-Context: <session-or-pane-or-receipt>`
+
+Use them when an agent materially authors code, durable docs, repo
+configuration, PR text, or a shippable artifact. Do not fake unknown values.
 
 ## 3. Lane cards
 
