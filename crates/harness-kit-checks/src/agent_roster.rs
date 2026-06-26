@@ -31,10 +31,10 @@ pub const ROSTER_PROVIDER_IDS: &[&str] = &[
     "agy",
     "cursor-agent",
     "grok-build",
+    "ai-cli",
     "oracle",
     "manual",
 ];
-
 const VALID_TIERS: &[&str] = &["primary", "conditional", "manual", "disabled"];
 const VALID_KINDS: &[&str] = &["cli", "bench", "manual"];
 const VALID_OUTPUTS: &[&str] = &["json", "stream-json", "text", "patch-ref", "manual-summary"];
@@ -49,7 +49,6 @@ const REQUIRED_PROVIDER_FIELDS: &[&str] = &[
     "worktree",
     "notes",
 ];
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProbeOptions {
     pub roster: PathBuf,
@@ -1065,6 +1064,7 @@ providers:
   agy: {<<: *cli, tier: conditional}
   cursor-agent: {<<: *cli, tier: conditional}
   grok-build: {<<: *cli, tier: conditional}
+  ai-cli: {<<: *cli, tier: conditional}
   oracle: {<<: *cli, tier: conditional}
   manual:
     tier: manual

@@ -138,6 +138,18 @@ providers:
     worktree: recommended
     smoke: grok --model grok-4.3 --permission-mode bypassPermissions --always-approve --effort max --reasoning-effort xhigh -p
     notes: xAI Grok CLI; local Grok Build entitlement may fail, so default to the working Grok CLI model.
+  ai-cli:
+    tier: conditional
+    kind: cli
+    probe: npx --version
+    dispatch: npx -y ai-cli@0.3.1 text --json --format txt --max-tokens 2048
+    output: json
+    model: openai/gpt-5.5
+    reasoning: provider-default
+    permissions: Vercel AI Gateway text generation through local environment auth
+    worktree: not_applicable
+    smoke: npx -y ai-cli@0.3.1 --version
+    notes: Vercel AI Gateway generation CLI; installed binary is ai. Conditional text/image/video generation and model-listing surface, not a code-editing agent.
   oracle:
     tier: conditional
     kind: cli

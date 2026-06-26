@@ -1,8 +1,8 @@
 ---
 model_reference_review_due: 2026-06-15
 last_researched: 2026-06-14
-substrate_reference_review_due: 2026-06-26
-substrate_reference_last_researched: 2026-06-19
+substrate_reference_review_due: 2026-07-03
+substrate_reference_last_researched: 2026-06-26
 speech_reference_review_due: 2026-06-27
 speech_reference_last_researched: 2026-06-20
 ---
@@ -45,7 +45,9 @@ time; never hardcode them into gates.
 ## Local Harness Roster
 
 Source: `.harness-kit/agents.yaml`, probed with
-`cargo run --locked -p harness-kit-checks -- probe-agent-roster` on 2026-06-14.
+`cargo run --locked -p harness-kit-checks -- probe-agent-roster --roster .harness-kit/agents.yaml`
+on 2026-06-26, with ai-cli install/usage refreshed against `ai-cli@0.3.1` on
+2026-06-26.
 
 | Provider target | Harness / CLI | Active model id | Dispatch surface | Local probe status |
 |---|---|---|---|---|
@@ -57,6 +59,7 @@ Source: `.harness-kit/agents.yaml`, probed with
 | `agy` | Antigravity CLI | `gemini-3.5-flash` | `agy --dangerously-skip-permissions --print` | available |
 | `cursor-agent` | Cursor Agent CLI | `composer-2.5` | `cursor-agent -p --model composer-2.5` | available |
 | `grok-build` | xAI Grok CLI | `grok-4.3` | `grok --model grok-4.3 --effort max --reasoning-effort xhigh -p` | available |
+| `ai-cli` | Vercel AI Gateway generation CLI (`ai`) | `openai/gpt-5.5` | `npx -y ai-cli@0.3.1 text --json --format txt --max-tokens 2048` | available via `npx`; version smoke passed 2026-06-26; generation requires gateway auth |
 | `oracle` | Oracle browser consult | `gpt-5.5-pro-browser` | `npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p` | available via `npx`; dry-run smoke passed 2026-06-16 |
 | `manual` | Human/imported evidence | none | manual summary | manual |
 

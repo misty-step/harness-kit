@@ -51,6 +51,7 @@ const RECEIPT_PROVIDER_IDS: &[&str] = &[
     "agy",
     "cursor-agent",
     "grok-build",
+    "ai-cli",
     "oracle",
     "manual",
 ];
@@ -72,7 +73,6 @@ const VALID_LEAD_VERDICTS: &[&str] = &[
     "pending",
 ];
 const VALID_COST_SOURCES: &[&str] = &["provider_reported", "estimated", "manual", "unknown"];
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct DelegationSummary {
     pub total: usize,

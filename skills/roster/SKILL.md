@@ -1,8 +1,9 @@
 ---
 name: roster
 description: |
-  Enumerates the peer AI agent CLIs installed on this machine (codex, pi,
-  goose, opencode, claude, cursor-agent, grok, agy, hermes, oracle)
+  Enumerates the peer AI agent CLIs and generation surfaces configured for this
+  machine (codex, pi, goose, opencode, claude, cursor-agent, grok, agy,
+  hermes, ai-cli/ai, oracle)
   and how to invoke each headlessly. A capability map, not a quota: useful
   for fresh-context adversarial review on a different model family, second
   opinions, competing attempts, and wide benches. Use when: "ask codex",
@@ -14,8 +15,9 @@ argument-hint: "[provider] [task]"
 
 # /roster
 
-You are not the only frontier agent on this machine. These CLIs are
-installed and each runs headlessly. They are options, not obligations:
+You are not the only frontier agent on this machine. These CLIs are configured
+for headless use, or explicitly documented as installable when missing. They
+are options, not obligations:
 native subagents remain the default delegation path, and a peer harness
 earns a lane only when you can name what it adds — usually a decorrelated
 model family or a genuinely fresh context.
@@ -56,6 +58,7 @@ add the prompt as the argument or via stdin.
 | `grok` | xAI Grok | `grok -p "<task>"` (`--model`, `--effort`) |
 | `agy` | Antigravity (Gemini) | `agy --print "<task>"` |
 | `hermes` | Hermes agent | `hermes -z "<task>"` (`-m <model>`) |
+| `ai` / `ai-cli` | Vercel AI Gateway text/image/video generation | `npx -y ai-cli@0.3.1 text --json --format txt "<task>"` (`ai text` after global install) |
 | `oracle` | Oracle browser consult | `npx -y @steipete/oracle --engine browser --model gpt-5.5-pro -p "<task>" --file <paths>` |
 Current model ids, pricing, context windows, and freshness dates:
 `references/model-provider-harness-index.md`. Open-model facts rot in days —
@@ -98,6 +101,13 @@ not the full bench.
 - Oracle is browser-mode only in Harness Kit. Use it for high-context consults
   through a signed-in ChatGPT session; do not use Oracle API mode or multi-model
   API panels from the Harness Kit roster default.
+- ai-cli is a direct generation surface, not a coding agent. Use it when you
+  need Vercel AI Gateway model discovery, text generation, or media generation;
+  do not ask it to edit a repo or run tests. The package is `ai-cli`, the
+  installed binary is `ai`, and normal generation needs `AI_GATEWAY_API_KEY` in
+  the environment. For media in agent runs, pass `-o <dir-or-file>` plus
+  `--json --no-preview` so binary data and terminal previews do not flood the
+  transcript.
 - For a bounded lane whose evidence should outlive the session,
   `harness-kit-checks dispatch-agent` wraps the invocation and writes a
   delegation receipt (`.harness-kit/traces/delegations.jsonl`). Optional
