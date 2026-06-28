@@ -1,10 +1,9 @@
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use anyhow::{Context, Result, bail};
 
-use crate::{docs_site, frontmatter, generate_index, lint_gates, quality_gates};
+use crate::{docs_site, frontmatter, generate_index, lint_gates, process, quality_gates};
 
 pub fn run(repo: &Path) -> Result<Vec<String>> {
     let repo = repo.canonicalize().unwrap_or_else(|_| repo.to_path_buf());
@@ -122,6 +121,9 @@ fn lint_yaml(repo: &Path) -> Result<()> {
 
 fn lint_shell(repo: &Path) -> Result<()> {
     if !command_exists("shellcheck") {
+        if std::env::var_os("CI").is_some() {
+            bail!("shellcheck is required in CI but was not found on PATH");
+        }
         return Ok(());
     }
     let mut paths = Vec::new();
@@ -193,7 +195,8 @@ fn run_command(repo: &Path, command: &str, args: &[&str]) -> Result<()> {
 }
 
 fn run_command_in(cwd: &Path, command: &str, args: &[&str]) -> Result<()> {
-    let output = Command::new(command)
+    let mut process = process::command(command);
+    let output = process
         .args(args)
         .current_dir(cwd)
         .output()

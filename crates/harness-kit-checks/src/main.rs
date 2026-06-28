@@ -11,7 +11,7 @@ use harness_kit_checks::{
 
 fn main() {
     if let Err(error) = run(env::args().skip(1).collect()) {
-        eprintln!("{error}");
+        eprintln!("{error:#}");
         std::process::exit(1);
     }
 }
@@ -310,12 +310,12 @@ fn print_lines_or_exit(result: anyhow::Result<Vec<String>>) {
                 println!("{line}");
             }
         }
-        Err(_) => std::process::exit(1),
+        Err(error) => exit_error(error),
     }
 }
 
 fn exit_error<T>(error: anyhow::Error) -> T {
-    eprintln!("{error}");
+    eprintln!("{error:#}");
     std::process::exit(1);
 }
 
