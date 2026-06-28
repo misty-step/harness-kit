@@ -7,11 +7,10 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use anyhow::{Context, Result};
 
-use crate::lint_gates::GateReport;
+use crate::{lint_gates::GateReport, process};
 
 /// Extensions the structural gates treat as "code".
 const SOURCE_EXTENSIONS: &[&str] = &["rs", "ts", "tsx", "js", "py"];
@@ -165,11 +164,16 @@ pub fn check_source_markers(root: &Path) -> Result<GateReport> {
 /// precedent), so the aggregate gate stays runnable without the extra tool.
 pub fn check_supply_chain(root: &Path) -> Result<GateReport> {
     if !command_exists("cargo-deny") {
+        if std::env::var_os("CI").is_some() {
+            return Ok(GateReport::failure(vec![
+                "cargo-deny is required in CI but was not found on PATH.".to_string(),
+            ]));
+        }
         return Ok(GateReport::success(
             "cargo-deny not installed; supply-chain gate skipped (cargo install cargo-deny to enforce).",
         ));
     }
-    let output = Command::new("cargo")
+    let output = process::command("cargo")
         .args(["deny", "check", "bans", "licenses", "sources"])
         .current_dir(root)
         .output()
