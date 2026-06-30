@@ -10,20 +10,23 @@ Prefer loops in this order when they fit the symptom:
 
 1. **Failing test** at the highest seam that reaches the bug.
 2. **HTTP/API script** such as `curl` or a checked-in request fixture.
-3. **CLI fixture** that runs one command and diffs stdout, stderr, exit code,
+3. **Local third-party API emulator** such as
+   `npx emulate --service github,stripe` plus request replay when `emulate.dev`
+   supports the provider; it exercises SDK/protocol seams without network.
+4. **CLI fixture** that runs one command and diffs stdout, stderr, exit code,
    or a generated artifact.
-4. **Browser script** for UI behavior, asserting DOM, console, network, or
+5. **Browser script** for UI behavior, asserting DOM, console, network, or
    visible output.
-5. **Trace replay** from a captured request, payload, event stream, HAR file,
+6. **Trace replay** from a captured request, payload, event stream, HAR file,
    log bundle, or production-safe fixture.
-6. **Throwaway harness** that starts the smallest runnable subset of the
+7. **Throwaway harness** that starts the smallest runnable subset of the
    system and calls the failing path.
-7. **Property or fuzz loop** when the bug is broad-domain, intermittent, or
+8. **Property or fuzz loop** when the bug is broad-domain, intermittent, or
    input-sensitive.
-8. **Bisect harness** for regressions between known-good and known-bad states.
-9. **Differential loop** that compares old vs new version, config A vs config
+9. **Bisect harness** for regressions between known-good and known-bad states.
+10. **Differential loop** that compares old vs new version, config A vs config
    B, or two implementations on the same input.
-10. **HITL loop** only when a person must reproduce it. Add targeted logs,
+11. **HITL loop** only when a person must reproduce it. Add targeted logs,
     give exact steps, read the captured output, then refine.
 
 ## Loop Quality

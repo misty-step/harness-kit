@@ -227,7 +227,7 @@ pub fn validate_site(options: &CheckOptions) -> Result<()> {
     if options.compare_to_rebuild {
         let temp = tempfile::tempdir().context("failed to create temporary directory")?;
         let rebuilt = temp.path().join("site");
-        let output = crate::process::command("cargo")
+        let output = Command::new("cargo")
             .args([
                 "run",
                 "--locked",
@@ -397,7 +397,7 @@ pub fn self_test(repo: &Path) -> Result<()> {
             fs::remove_dir_all(image_root)?;
         }
         run_checked(
-            crate::process::command("cargo")
+            Command::new("cargo")
                 .args([
                     "run",
                     "--locked",
@@ -410,7 +410,7 @@ pub fn self_test(repo: &Path) -> Result<()> {
             "harness-kit-checks build-docs-site",
         )?;
         run_checked(
-            crate::process::command("cargo")
+            Command::new("cargo")
                 .args([
                     "run",
                     "--locked",

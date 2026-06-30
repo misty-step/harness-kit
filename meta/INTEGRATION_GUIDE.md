@@ -10,8 +10,8 @@ order:
 This guide is for external systems: SaaS APIs, internal services,
 authenticated data stores, design tools, calendars, mailboxes, issue trackers,
 CI providers, and production systems. Internal Harness Kit tooling such as
-`bootstrap.sh`, the Rust-owned local gate, and one-repo maintenance helpers do
-not need MCP-ification.
+`bootstrap.sh`, `scripts/generate-index.sh`, local Dagger gates, and one-repo
+maintenance helpers do not need MCP-ification.
 
 ## Reach For MCP
 
@@ -39,8 +39,8 @@ Use a simpler shape when the work is local and single-purpose:
 
 - **One-off script:** a migration, cleanup, report, or data transform that will
   run once or a few times.
-- **Inner-loop only:** a repository-local test, formatter, generated-artifact
-  check, Rust gate, or bootstrap helper.
+- **Inner-loop only:** a repository-local test, formatter, index generator,
+  Dagger gate, or bootstrap helper.
 - **Local-dev-only:** a command whose value is direct terminal feedback and
   whose inputs are local files.
 - **No external trust boundary:** the code does not cross auth, user-consent,

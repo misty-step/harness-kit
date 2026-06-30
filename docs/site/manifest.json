@@ -35,6 +35,14 @@
     {
       "source": "backlog.d/122-root-skill-vendoring-followups.md",
       "title": "Root-skill vendoring follow-ups (from the herdr cross-model review)"
+    },
+    {
+      "source": "backlog.d/123-adopt-misty-step-comic-ops-aesthetic.md",
+      "title": "Adopt the Misty Step comic-ops aesthetic baseline"
+    },
+    {
+      "source": "backlog.d/124-hermes-skill-projection-and-external-skill-scout.md",
+      "title": "Hermes skill projection and external skill scout"
     }
   ],
   "copy_source": "docs/copy/site.json",
@@ -163,7 +171,7 @@
   },
   "primitives": [
     {
-      "description": "Audit CI gates, strengthen weak coverage, then drive green. Harness Kit uses the Rust-owned local gate, not Dagger, as the canonical repo check: `cargo run --locked -p harness-kit-checks -- check --repo .`. Acts directly on mechanical fixes and never returns red without structured diagnosis. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\", \"feedback loop is slow\", \"run gates less often\". Trigger: /ci, /gates.",
+      "description": "Audit, design, and run repo-owned CI gates. Host-agnostic by default: local, GitHub Actions, Azure, or another runner should call the same repo-owned contract. Harness Kit's own gate is the Rust command `cargo run --locked -p harness-kit-checks -- check --repo .`; consumer repos keep their own native gate. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"design CI\", \"host-agnostic CI\", \"Dagger\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\", \"feedback loop is slow\", \"run gates less often\". Trigger: /ci, /gates.",
       "icon": "verify",
       "id": "skill:ci",
       "kind": "skill",
@@ -293,7 +301,7 @@
       "source": "skills/orient/SKILL.md"
     },
     {
-      "description": "Verify the running thing works. Browser walks for web, request replay for APIs, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA\", \"verify the feature\", \"test this\", \"check the app\", \"smoke test\", \"exploratory test\", \"capture evidence\". Trigger: /qa.",
+      "description": "Verify the running thing works. Browser walks for web, request replay for APIs, local API emulation for supported third-party services, shell smoke for CLIs, consumer builds for libraries, tool-call replay for MCP. \"Tests pass\" is not QA. Use when: \"run QA\", \"verify the feature\", \"test this\", \"check the app\", \"smoke test\", \"exploratory test\", \"capture evidence\". Trigger: /qa.",
       "icon": "verify",
       "id": "skill:qa",
       "kind": "skill",

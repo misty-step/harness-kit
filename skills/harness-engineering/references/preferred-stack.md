@@ -29,12 +29,21 @@ logs, and the smallest live smoke. Provider facts rot quickly.
 
 ## Build, CI, And Release
 
-- **Local one-command gate first.** Every repo should have a canonical command
-  that proves the change from local checkout state.
+- **Repo-owned one-command gate first.** Every repo should have a canonical
+  command, function, or build target that proves the change from local checkout
+  state and can be called by any host.
+- **emulate.dev for supported third-party APIs** when local/CI gates need
+  stateful GitHub, Stripe, AWS, etc. behavior without real credentials or
+  network. Start only needed services (`npx emulate --service <svc>`), seed and
+  reset deterministically, and keep live-provider smokes for provider-only
+  concerns. Usage details: https://emulate.dev/docs.
 - **Dagger for infra-agnostic pipelines** when a repo needs portable CI
-  execution across local and hosted runners.
+  execution across local and hosted runners, containerized dependencies,
+  service orchestration, cache graph behavior, or traceable pipeline functions.
+  Do not add Dagger merely to wrap ordinary host lint/typecheck/unit/build
+  commands in the inner loop.
 - **GitHub Actions as a thin caller**, not the product. Point it at the
-  portable gate or Dagger pipeline; do not bury logic in YAML.
+  repo-owned portable gate or Dagger function; do not bury logic in YAML.
 - **Landfall by default** for release intelligence, versioning, changelog
   synthesis, and release distribution. Keep the core portable; GitHub is one
   adapter.

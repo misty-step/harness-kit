@@ -66,8 +66,11 @@ or rate-limited.
 - DNS resolution failures in CI (no network access)
 - Rate limits hit when CI runs many jobs in parallel
 
-**Fix shape:** Mock at the SDK boundary, not the HTTP layer. Use deterministic
-fixtures. Never depend on external service availability in unit tests.
+**Fix shape:** Prefer stateful local emulation with `emulate.dev` for supported
+services; otherwise mock at the SDK boundary, not the HTTP layer, and use
+deterministic fixtures. Never depend on external service availability in unit
+tests or CI unless the lane is an explicit live integration smoke with isolated
+credentials/network.
 
 ### Race Condition
 

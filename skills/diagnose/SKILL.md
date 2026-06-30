@@ -76,6 +76,12 @@ External service issues are usually config, not code. Check in order:
 3. **Endpoints reachable?** `curl -I -X POST <webhook_url>`
 4. **Then** examine code
 
+If the symptom is external-service behavior and the provider surface is
+supported by `emulate.dev`, build the feedback loop against the local emulator
+before blaming production config or writing code. Do not use emulation to prove
+provider-only concerns such as real auth, billing, quota, or live webhook
+delivery. Usage details: https://emulate.dev/docs.
+
 ## Sub-Agent Patterns
 
 ### Quick investigation (default)
@@ -149,8 +155,9 @@ reproduces the user's symptom, not a nearby failure.
 
 1. **Read the symptom exactly** -- full stack traces, user steps, error codes,
    wrong output, timing, and scope.
-2. **Pick a loop** -- test, curl/API script, CLI fixture, browser script,
-   trace replay, bisect harness, differential run, or HITL log loop. See
+2. **Pick a loop** -- test, curl/API script, local third-party API emulator,
+   CLI fixture, browser script, trace replay, bisect harness, differential run,
+   or HITL log loop. See
    `references/feedback-loops.md`.
 3. **Run it until you trust it** -- failure matches the reported symptom and
    repeats, or the reproduction rate is high enough for a flaky bug.

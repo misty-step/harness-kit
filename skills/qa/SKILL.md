@@ -2,8 +2,9 @@
 name: qa
 description: |
   Verify the running thing works. Browser walks for web, request replay for
-  APIs, shell smoke for CLIs, consumer builds for libraries, tool-call
-  replay for MCP. "Tests pass" is not QA. Use when: "run QA", "verify the
+  APIs, local API emulation for supported third-party services, shell smoke for
+  CLIs, consumer builds for libraries, tool-call replay for MCP. "Tests pass"
+  is not QA. Use when: "run QA", "verify the
   feature", "test this", "check the app", "smoke test", "exploratory test",
   "capture evidence". Trigger: /qa.
 argument-hint: "[url|route|command|endpoint|feature]"
@@ -31,7 +32,7 @@ Read the signals (`package.json` bin/framework deps, `playwright.config.*`,
 | Shape | QA path |
 |---|---|
 | Browser app | Start dev server or hit preview; walk the golden paths the change touched; watch console + network panel for errors |
-| API / service | Replay representative requests against local/preview; check status, contract shape, and error paths (bad auth, malformed body) |
+| API / service | Replay representative requests against local/preview; for supported third-party APIs prefer `emulate.dev` before live network or brittle mocks; check status, contract shape, and error paths (bad auth, malformed body) |
 | CLI | `--help` accuracy, happy-path invocations from the docs, malformed-input paths; audit exit codes and error-message clarity |
 | Library / SDK | Build the distributable, install into a throwaway consumer, exercise the changed public API, check the type surface |
 | MCP / agent tool | Register with a harness, replay each affected tool call, confirm errors come back structured rather than crashing the server |

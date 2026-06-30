@@ -13,7 +13,6 @@ pub mod git_hooks;
 pub mod lane_harness;
 pub mod lint_gates;
 pub mod pr_reviews;
-pub mod process;
 pub mod quality_gates;
 pub mod scout_skills;
 pub mod skill_invocation_analytics;

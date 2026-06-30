@@ -32,7 +32,7 @@ guess with a diff.
 | surface | verification system |
 |---|---|
 | Web UI | dev/preview URL, scripted or manual browser path, console/network check, screenshots or video |
-| API/service | representative request replay, contract assertions, error-path cases, logs |
+| API/service | representative request replay, contract assertions, local third-party API emulation when supported, error-path cases, logs |
 | CLI | documented happy path, malformed-input path, exit codes, stderr/stdout checks |
 | Library/SDK | consumer build or throwaway install that exercises the public API |
 | MCP/agent tool | harness registration plus replayed tool calls and structured-error checks |
@@ -55,6 +55,10 @@ probes catch failures at runtime, judgment, scale, or integration boundaries.
 - **Repo-shaped, not tool-shaped.** Start from the app shape and operator
   workflow, then choose browser, shell, HTTP, eval, benchmark, or monitor
   tools.
+- **Emulate supported third-party APIs locally.** When `emulate.dev` covers the
+  provider, the driver can be an emulator plus representative request replay;
+  record services, ports, seed file, reset/teardown, and the docs used
+  (https://emulate.dev/docs).
 - **Leave receipts.** The evidence packet is part of the deliverable. Future
   agents should not need chat context to judge the claim.
 - **Escalate recurring checks.** A repeated manual QA path becomes a repo-local

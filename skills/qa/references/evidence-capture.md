@@ -141,6 +141,23 @@ curl -s -X POST http://localhost:3000/api/endpoint \
   -d '{"key": "value"}' | jq . > "$EVIDENCE_DIR/api-post-response.json"
 ```
 
+### emulate.dev API emulator evidence
+
+When QA uses `emulate.dev` for supported third-party APIs, capture the emulator
+as part of the proof, not just the app response:
+
+```bash
+npx --yes emulate list > "$EVIDENCE_DIR/emulate-services.txt"
+npx --yes emulate start --service github,stripe --seed emulate.config.yaml \
+  > "$EVIDENCE_DIR/emulate-start.log" 2>&1 &
+echo $! > "$EVIDENCE_DIR/emulate.pid"
+# Then capture request/response pairs against the app or emulator as above.
+```
+
+Record the exact services, package/version or command output, ports/base URLs,
+seed YAML/JSON path when non-secret, reset behavior, and teardown. Usage docs:
+https://emulate.dev/docs.
+
 ## Evidence Naming Convention
 
 ```

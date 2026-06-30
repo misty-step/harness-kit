@@ -126,6 +126,45 @@ sources:
     alias_prefix: "petekp-"
     include: [grill-me]
 
+  # mattpocock/skills — "Skills For Real Engineers" pack. Imported as
+  # externally managed, source-scoped skills because the operator has live
+  # repeated use of `writing-great-skills`, and the pack is intentionally
+  # small/composable rather than a full workflow engine. The repo is grouped by
+  # category, so each stable category is a separate sync entry. Deprecated and
+  # in-progress categories are intentionally skipped. The Claude guardrails
+  # skill is excluded because it writes `~/.claude` paths and fails the
+  # self-contained external-skill gate.
+  #
+  # LICENSE: MIT (Copyright 2026 Matt Pocock).
+  - repo: mattpocock/skills
+    ref: main
+    pin: 801dca688564c529fa84f247f64472520d9ebe28
+    layout: flat
+    skills_path: skills/engineering
+    alias_prefix: "mattpocock-"
+
+  - repo: mattpocock/skills
+    ref: main
+    pin: 801dca688564c529fa84f247f64472520d9ebe28
+    layout: flat
+    skills_path: skills/productivity
+    alias_prefix: "mattpocock-"
+
+  - repo: mattpocock/skills
+    ref: main
+    pin: 801dca688564c529fa84f247f64472520d9ebe28
+    layout: flat
+    skills_path: skills/misc
+    alias_prefix: "mattpocock-"
+    exclude: [git-guardrails-claude-code]
+
+  - repo: mattpocock/skills
+    ref: main
+    pin: 801dca688564c529fa84f247f64472520d9ebe28
+    layout: flat
+    skills_path: skills/personal
+    alias_prefix: "mattpocock-"
+
   # cursor/plugins team kit thermo-nuclear-code-quality-review — unusually
   # strict maintainability and abstraction-quality review. Upstream is the
   # Cursor team-kit skill; SkillsMP and other mirrors point back to this.
