@@ -51,6 +51,29 @@ png/jpeg). For editing or style/character consistency, add prior images as extra
 are supported. Confirm the current schema against the live doc rather than
 trusting this snippet long-term: `ai.google.dev/gemini-api/docs/image-generation`.
 
+### Video — Gemini Omni Flash (verified 2026-06-30)
+
+Omni Flash is **not** on `generateContent` — it needs the new **Interactions
+API** (`POST /v1beta/interactions`), and modalities are **lowercase**. A still
+passed as a reference (image→video) returns the clip inline as base64:
+
+```bash
+# $IMG = base64 of an optional reference still
+curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
+  -H "x-goog-api-key: $GEMINI_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"model":"gemini-omni-flash-preview",
+       "input":[{"type":"image","data":"'"$IMG"'","mime_type":"image/jpeg"},
+                 {"type":"text","text":"Animate this: slow push-in, ~8s, keep all text exactly."}],
+       "response_modalities":["video"]}' \
+| jq -r 'first(.. | objects | select(.type=="video") | .data)' | base64 -d > clip.mp4
+```
+
+~8s of 720p ≈ 46k output tokens ≈ **$0.81**. A short clip returns
+`"status":"completed"` inline; longer jobs use `"background":true` then poll
+`GET /v1beta/interactions/{id}`. **Gotchas:** `generateContent` 400s
+("only supports Interactions API"); `"VIDEO"` uppercase 400s — use lowercase
+`"video"`.
+
 ## When it earns its place — INFORMATIONAL images, not decoration
 
 Generate liberally where the image carries information prose or a table can't:
