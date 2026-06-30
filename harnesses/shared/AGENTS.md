@@ -133,7 +133,16 @@ is usually runnable from the local checkout because the tokens are on disk
 (found live 2026-06: `SPRITES_TOKEN`/`FLY_API_TOKEN`/`GITHUB_PAT` sat in
 `orchestrator/.env` while a multi-hour "credential wall" was narrated). Try the
 action and report the actual failure; never narrate a wall you have not hit.
-Read secrets to use them via env refs — never print their values.
+Read secrets to use them via env refs — never print their values. For `op`
+(1Password) in an agent loop, authenticate with a service account token
+(`OP_SERVICE_ACCOUNT_TOKEN`); without it `op` falls back to the
+desktop-app/user-session integration (`op --account <name>`), which pops an
+interactive authorize modal on every process and stalls the operator. With the
+token set, `op` hits the API directly and never prompts. If it is not already
+in the env, load it from its secure store — macOS Keychain, an env file, or the
+launcher that injects it (an `op run`/`op-agent` wrapper) — and run every
+read/write under it; falling back to the interactive path, or re-fetching the
+token through it on each call, is the anti-pattern.
 
 ### Think in HTML for plans
 For non-trivial execution plans and context packets, author the plan directly
@@ -147,6 +156,19 @@ callouts to make the plan easier to inspect than prose; prefer the Misty Step
 aesthetic kit when the artifact is visual and local review can load it. The
 HTML is the planning medium, not a Markdown export; if the task is trivial or
 no browser is available, state the fallback before acting.
+
+### Generate visual artifacts — it's cheap and authed
+Image and short-video generation is a standing affordance, not a capability to
+request or gate behind one harness's native tool. `GEMINI_API_KEY` is already in
+the env (from `op://Agents/GEMINI_API_KEY/credential`); Nano Banana 2 Lite
+renders a legible, on-brand image — including in-image text for diagrams and
+labels — in ~4s for ~$0.03. Generate **informational** images liberally wherever
+they carry information the prose or a table can't: labeled diagrams in plans,
+system maps, design contact sheets, status/incident posters, doc figures. Not
+decoration. Use your harness's native image tool if it has one (Codex
+`image_gen`); otherwise call the Gemini API directly — it is a model-native
+primitive, not a maintained wrapper script. Detail:
+`harnesses/shared/references/image-generation.md`.
 
 ### Fresh context beats self-review
 Same-model self-critique is theater — a reviewer inheriting the author's
