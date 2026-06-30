@@ -3,12 +3,12 @@ set -euo pipefail
 
 repo_root="$(git rev-parse --show-toplevel)"
 
-if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
-  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook pre-commit
-fi
-
 if command -v harness-kit-checks >/dev/null 2>&1; then
   exec harness-kit-checks git-hook pre-commit
+fi
+
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook pre-commit
 fi
 
 echo "pre-commit: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2

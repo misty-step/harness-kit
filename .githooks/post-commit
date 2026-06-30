@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
-  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook post-commit "$@"
-fi
 if command -v harness-kit-checks >/dev/null 2>&1; then
   exec harness-kit-checks git-hook post-commit "$@"
+fi
+if command -v cargo >/dev/null 2>&1 && [ -f "$repo_root/Cargo.toml" ]; then
+  exec cargo run --quiet --locked -p harness-kit-checks -- git-hook post-commit "$@"
 fi
 echo "post-commit: harness-kit-checks unavailable; install the Rust CLI or cargo." >&2
 exit 1
