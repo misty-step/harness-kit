@@ -69,7 +69,8 @@ not chain them into a sequence.
 | Final meticulous polish pass | `polish` | `jakub-make-interfaces-feel-better` (exact values) + `impeccable polish` |
 | Redesign an existing site, keep the stack | `redesign` | `impeccable audit`+`critique`; fold `leon-redesign-skill`'s a11y/SEO omissions checklist |
 | Generate a page / identity from scratch | — | `nutlope-hallmark` (+ `leon-gpt-tasteskill` for GSAP/AIDA generation) |
-| Build UI to match a design image | — | `leon-images-taste-skill` (needs an image-gen runtime) |
+| Build UI to match a design image | — | `leon-images-taste-skill` (image-gen runtime is live — `harnesses/shared/references/image-generation.md`) |
+| Generate an image / diagram / contact sheet of options | — | image-gen direct — NB2 Lite ~$0.03/img, legible in-image text; `harnesses/shared/references/image-generation.md` |
 | Motion — author it | `animate` | `emil-emil-design-eng` |
 | Motion — review it | — | `emil-review-animations` |
 | Accessibility / web-interface guidelines | — | `vercel-web-design-guidelines` |
