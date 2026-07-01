@@ -24,6 +24,7 @@ Primitives:
 - skill:roster | skills/roster/SKILL.md | docs/site/reference/skills/roster.html
 - skill:shape | skills/shape/SKILL.md | docs/site/reference/skills/shape.html
 - skill:showcase | skills/showcase/SKILL.md | docs/site/reference/skills/showcase.html
+- skill:skill-eval | skills/skill-eval/SKILL.md | docs/site/reference/skills/skill-eval.html
 - skill:sprites | skills/sprites/SKILL.md | docs/site/reference/skills/sprites.html
 - skill:todoist | skills/todoist/SKILL.md | docs/site/reference/skills/todoist.html
 - skill:vision | skills/vision/SKILL.md | docs/site/reference/skills/vision.html

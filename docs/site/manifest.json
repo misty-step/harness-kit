@@ -375,6 +375,16 @@
       "source": "skills/showcase/SKILL.md"
     },
     {
+      "description": "Prove a skill beats no-skill with a falsifiable A/B eval, or retire it. Design, generate, run, and maintain a skill-specific eval: name the one claim the skill must earn, run it skill-on vs raw same-model, grade blind with objective checks first, return a keep/adapt/cut verdict. Use when: \"eval this skill\", \"does this skill help\", \"prove the skill beats no skill\", \"write an eval for\", \"benchmark a skill\", \"is this skill worth it\", \"skill A/B\", \"skill regression test\", \"generate skill evals\". Trigger: /skill-eval, /eval-skill, /prove-skill.",
+      "icon": "catalog",
+      "id": "skill:skill-eval",
+      "kind": "skill",
+      "name": "skill-eval",
+      "page": "reference/skills/skill-eval.html",
+      "role": "Support",
+      "source": "skills/skill-eval/SKILL.md"
+    },
+    {
       "description": "Run lane cards on Fly Sprites: remote, isolated, scale-to-zero sandboxes for heavy or parallel agent work. Golden-checkpoint provisioning so lanes start on a ready sprite with zero setup tokens. Use when: \"run this on a sprite\", \"remote lane\", \"offload to a sandbox\", \"dispatch to sprites\", \"bake a sprite\", \"sprite fleet\", heavy/long-running/parallel sub-agent work that should not run on this machine. Trigger: /sprites, /sprite-lane.",
       "icon": "catalog",
       "id": "skill:sprites",

@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-eval · shape eval console</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{
+  --ink:#15161a; --ink2:#3b3d45; --mut:#6b6e78; --line:#e7e2d9; --line2:#d8d2c6;
+  --bg:#faf8f5; --card:#fffdfa; --accent:#b4530a; --accent2:#8a3e06;
+  --ok:#1f7a5a; --okbg:#e7f3ee; --bad:#b23b2e; --badbg:#f7e9e6; --warn:#9a6b00;
+  --gold:#9a6b00; --goldbg:#fbf3df;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+a{color:var(--accent2)}
+header{background:linear-gradient(180deg,#15161a,#23242b);color:#f3efe8;padding:38px 0 30px}
+header .kicker{font:600 12px/1 ui-monospace,monospace;letter-spacing:.22em;color:#d8a26a}
+header h1{margin:12px 0 6px;font-size:31px;letter-spacing:-.01em;font-weight:700}
+header .lede{margin:0;color:#cfcabf;font-size:17px;max-width:760px}
+header .meta{margin-top:16px;font:13px/1 ui-monospace,monospace;color:#b7b2a7}
+header .meta code{color:#e9c9a3;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:5px}
+header .ok{color:#7fd1ad}
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line2)}
+nav .wrap{display:flex;gap:4px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+nav a{font:600 13px/1 ui-sans-serif;color:var(--ink2);text-decoration:none;
+  padding:7px 12px;border-radius:8px}
+nav a:hover{background:#efe9df;color:var(--ink)}
+section{padding:40px 0;border-bottom:1px solid var(--line)}
+h2{font-size:22px;letter-spacing:-.01em;margin:0 0 4px}
+h2 .n{color:var(--accent);font:700 13px/1 ui-monospace,monospace;margin-right:10px;vertical-align:2px}
+.sub{color:var(--mut);margin:0 0 22px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line2);border-radius:14px;
+  padding:20px 22px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:880px){.grid3,.grid2{grid-template-columns:1fr}}
+.tier h3{margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px}
+.tier .tag{font:700 10px/1 ui-monospace;letter-spacing:.08em;padding:4px 7px;border-radius:6px}
+.tier p{margin:6px 0 0;font-size:14px;color:var(--ink2)}
+.t-obj .tag{background:#eef0f4;color:#41454f}
+.t-hum{border-color:var(--gold);box-shadow:0 0 0 1px var(--goldbg) inset}
+.t-hum .tag{background:var(--goldbg);color:var(--gold)}
+.t-ai .tag{background:#f0ece6;color:#7a6e5e}
+.claim{background:var(--goldbg);border-left:4px solid var(--gold);border-radius:8px;
+  padding:14px 18px;font-size:16px;color:#4a3a12;margin:0 0 18px}
+.claim b{color:#5a3d00}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px;padding:0;list-style:none;counter-reset:s}
+.steps li{flex:1 1 160px;background:var(--card);border:1px solid var(--line2);
+  border-radius:11px;padding:12px 14px;font-size:13.5px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;top:-9px;left:12px;
+  width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;
+  font:700 11px/20px ui-monospace;text-align:center}
+.steps li b{display:block;margin-top:2px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:4px 0}
+th,td{border:1px solid var(--line2);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f3eee6;font-weight:700;font-size:13px}
+td.c,th.c{text-align:center}
+.pass{color:var(--ok);font-weight:700}
+.fail{color:var(--bad);font-weight:700}
+.part{color:var(--warn);font-weight:700}
+ul.checks{margin:0;padding-left:0;list-style:none}
+ul.checks li{padding:6px 0 6px 26px;position:relative;border-bottom:1px solid var(--line);font-size:14px}
+ul.checks li::before{content:"▢";position:absolute;left:4px;color:var(--accent)}
+.pill{display:inline-block;font:700 11px/1 ui-monospace;padding:4px 8px;border-radius:20px;letter-spacing:.04em}
+.pill.run{background:var(--okbg);color:var(--ok)}
+.pill.todo{background:#efe9df;color:var(--mut)}
+.judge-prompt{background:#15161a;color:#f3efe8;border-radius:12px;padding:16px 20px;margin:0 0 14px}
+.judge-prompt .q{font-size:17px;font-weight:600}
+.judge-prompt .q b{color:#e9c9a3}
+.judge-prompt small{color:#b7b2a7;display:block;margin-top:6px;font-size:13px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:980px){.cols{grid-template-columns:1fr}}
+.spec{border:1px solid var(--line2);border-radius:12px;background:var(--card);overflow:hidden;display:flex;flex-direction:column}
+.spec > .hd{background:#f3eee6;border-bottom:1px solid var(--line2);padding:10px 14px;
+  font:700 13px/1 ui-monospace;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center}
+.spec > .hd .len{color:var(--mut);font-weight:400}
+.spec .body{padding:6px 18px 18px;max-height:64vh;overflow:auto}
+.spec .body h1{font-size:19px;margin:16px 0 6px}
+.spec .body h2{font-size:16px;margin:16px 0 5px;color:var(--accent2);border:0}
+.spec .body h3{font-size:14.5px;margin:13px 0 4px}
+.spec .body table{font-size:12.5px}
+.spec .body th,.spec .body td{padding:5px 7px}
+.spec .body pre{background:#1c1d22;color:#eee;padding:12px;border-radius:8px;overflow:auto;font-size:12px}
+.spec .body code{background:#efe9df;padding:1px 5px;border-radius:4px;font-size:12.5px}
+.spec .body pre code{background:none;padding:0}
+.spec .body blockquote{border-left:3px solid var(--line2);margin:8px 0;padding-left:12px;color:var(--mut)}
+details.reveal{margin-top:14px;border:1px dashed var(--line2);border-radius:10px;background:#fbf9f5}
+details.reveal>summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:14px;color:var(--accent2);list-style:none}
+details.reveal>summary::-webkit-details-marker{display:none}
+details.reveal>summary::before{content:"⊕ ";color:var(--accent)}
+details.reveal[open]>summary::before{content:"⊖ "}
+details.reveal .in{padding:4px 18px 18px}
+.scoregrid{font-size:13px}
+.note{font-size:13.5px;color:var(--ink2);background:#f3eee6;border-radius:9px;padding:12px 15px;margin:12px 0}
+.two-out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:880px){.two-out{grid-template-columns:1fr}}
+.out{border-radius:11px;padding:16px 18px}
+.out.agree{background:var(--okbg);border:1px solid #bfe0d2}
+.out.diverge{background:var(--badbg);border:1px solid #e8c9c2}
+.out h4{margin:0 0 6px;font-size:15px}
+footer{padding:30px 0 60px;color:var(--mut);font-size:13px}
+footer code{background:#efe9df;padding:1px 6px;border-radius:4px;font-size:12px}
+.kbd{font:600 12px ui-monospace;background:#efe9df;border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:2px 6px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kicker">HARNESS KIT · EVAL CONSOLE</div>
+  <h1>skill-eval — does a skill beat no-skill?</h1>
+  <p class="lede">The falsifier for a skill, and your call on it. This page <b>is</b> shape's eval — the first one we've built. Read it, then judge the side-by-sides yourself.</p>
+  <div class="meta">branch <code>skill-eval-bench</code> &nbsp;·&nbsp; run-HEAD <code>91c11ef</code> &nbsp;·&nbsp; gate <span class="ok">passing</span> &nbsp;·&nbsp; 2026-06-30</div>
+</div></header>
+<nav><div class="wrap">
+  <a href="#orient">1 · What it is</a>
+  <a href="#design">2 · How shape's eval is built</a>
+  <a href="#f1">3 · Judge — fixture 1</a>
+  <a href="#f2">4 · Judge — fixture 2</a>
+  <a href="#f3">5 · Fixture 3 (designed)</a>
+  <a href="#cal">6 · What your call does</a>
+</div></nav>
+
+<section id="orient"><div class="wrap">
+  <h2><span class="n">01</span>What this is</h2>
+  <p class="sub">Every skill is context tax until it proves it makes a strong model better than no skill at all. <code>skill-eval</code> is the generator that builds that proof — and is built so the proof can come back <i>no-skill won</i>.</p>
+
+  <ol class="steps">
+    <li><b>Name the one claim</b>the falsifiable thing the skill makes true that raw prompting doesn't</li>
+    <li><b>Fix the task</b>2–3 frozen fixtures that stress the claim differently</li>
+    <li><b>Run A/B</b>same model: arm A with the skill, arm B raw prompt</li>
+    <li><b>Grade blind</b>objective checks first, then taste — judge can't see which is which</li>
+    <li><b>Keep / adapt / cut</b>the verdict is the skill's right to exist, not a score</li>
+  </ol>
+
+  <p class="sub" style="margin-top:26px">The grader has three tiers — and <b>you are the gold standard</b>, not the model:</p>
+  <div class="grid3">
+    <div class="card tier t-obj"><h3>Objective <span class="tag">DETERMINISTIC</span></h3>
+      <p>Scriptable pass/fail — sections present, oracle is a runnable command, cited paths resolve, no forbidden edits. Free, runs every edit. Fails without a judge.</p></div>
+    <div class="card tier t-hum"><h3>Human <span class="tag">GROUND TRUTH ·  YOU</span></h3>
+      <p>For the judgment-heavy delta — is this spec actually buildable, is this design tasteful — <b>your</b> call is the truth. The keep/cut decision on a taste-heavy skill is signed off by you, or by a grader carrying a recent anchor from you.</p></div>
+    <div class="card tier t-ai"><h3>Agent rubric <span class="tag">CALIBRATED PROXY</span></h3>
+      <p>A blind, decorrelated model judge lets us run the rubric cheaply and often — but it only <i>approximates</i> your taste and drifts. Trusted <b>only while it matches your anchor</b>. Proxy disagrees with you → the rubric is broken, not you.</p></div>
+  </div>
+  <p class="note" style="margin-top:18px"><b>One eval per skill.</b> Shape's eval has 3 fixtures. The agent already graded fixtures 1 &amp; 2 (its verdict is hidden below each until you've made your own call). The whole point of this page: get <i>your</i> anchor, and see whether the cheap agent judge actually tracks you.</p>
+</div></section>
+
+<section id="design"><div class="wrap">
+  <h2><span class="n">02</span>How shape's eval is built</h2>
+  <p class="sub">The design lives at <code>skills/shape/evals/shape-eval.md</code>. Here it is at a glance.</p>
+
+  <div class="claim"><b>The one claim shape must earn:</b> given a raw idea, <code>/shape</code> produces a context packet a cold stranger can build the right-scoped thing from — fenced scope, alternatives that fail differently with a pick, an executable oracle, real repo anchors, a premise source — that bare "flesh out this spec" does not.</div>
+
+  <h3 style="margin-top:8px">The 3 fixtures (spec-only, pinned at <code>harness-kit@3bf0b46</code>)</h3>
+  <table>
+    <tr><th>#</th><th>Prompt</th><th>What it stresses</th><th class="c">Status</th></tr>
+    <tr><td class="c">1</td><td>Add a <code>--top &lt;N&gt;</code> flag to the <code>telemetry</code> subcommand</td><td>Repo anchors, executable oracle, CLI-design block — the easiest case for a bare prompt</td><td class="c"><span class="pill run">RUN</span></td></tr>
+    <tr><td class="c">2</td><td>Decide: does the eval bench need a Rust runner, or stay protocol-only?</td><td>Alternatives that fail differently + a recommendation; an architecture call</td><td class="c"><span class="pill run">RUN</span></td></tr>
+    <tr><td class="c">3</td><td>Enforce a refund-permission threshold (money/auth) in a seeded service</td><td>Formal-spec ladder, risk+rollout, premise challenge — high-risk</td><td class="c"><span class="pill todo">DESIGNED</span></td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:18px">
+    <div class="card">
+      <h3 style="margin-top:0">Objective checks (free, every edit)</h3>
+      <ul class="checks">
+        <li>All 10 packet sections present + non-empty</li>
+        <li>Oracle contains a runnable command (not "it should work")</li>
+        <li>Repo anchors cite 3–10 paths that exist at the SHA</li>
+        <li>Alternatives ≥2 with verdicts + exactly one pick</li>
+        <li>Premise Source line present (sha256 or waiver)</li>
+        <li>HTML Plan path named (or waiver)</li>
+        <li>No forbidden edits (spec only)</li>
+        <li>CLI-design block present (fixture 1)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Rubric (1–5, the judgment delta)</h3>
+      <table class="scoregrid">
+        <tr><th>Dimension</th><th>5 looks like</th></tr>
+        <tr><td>Premise challenge</td><td>reframes the request, names the real outcome</td></tr>
+        <tr><td>Alternatives</td><td>≥2 that fail differently + a killed-on-record pick</td></tr>
+        <tr><td>Architecture depth</td><td>surfaces, data/control flow, ADR-grade decision</td></tr>
+        <tr><td>Tooling + verification</td><td>exact commands/tests/deps the builder runs</td></tr>
+        <tr><td>Executability by a stranger</td><td>cold lane builds it with no author</td></tr>
+        <tr><td>Artifact quality</td><td>structure shows sequence / tradeoffs / risk</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="note"><b>Pass condition:</b> arm A beats arm B on aggregate rubric AND ties-or-wins every objective check, across ≥2 of 3 fixtures — and it isn't certified until your human anchor agrees. <b>Cadence:</b> cheap checks every edit · full A/B on contract change · re-audit on every model upgrade (a stronger bare model can erase a skill's edge — that's the signal to retire it).</p>
+</div></section>
+
+<section id="f1"><div class="wrap">
+  <h2><span class="n">03</span>Judge — fixture 1 · <span style="font-weight:400;color:var(--mut)">telemetry <code>--top N</code></span></h2>
+  <p class="sub">Both specs answer: "add a <code>--top &lt;N&gt;</code> flag to <code>telemetry</code> that limits the report to the N most-used skills." Spec-only; pinned at <code>3bf0b46</code>.</p>
+  <div class="judge-prompt">
+    <div class="q">Which is <b>more buildable by a stranger</b> — a cold engineer, no further context, builds the right-scoped thing first try?</div>
+    <small>Read both. Pick A or B (and one line of why). You may be able to guess which used the skill — judge buildability anyway. If the leaner one wins, that is the single most valuable result this page can produce.</small>
+  </div>
+  <div class="cols">
+    <div class="spec"><div class="hd"><span>SPEC&nbsp;1·A</span><span class="len" id="len_f1_left"></span></div><div class="body"><script type="text/markdown" id="md_f1_left"># Spec: `--top <N>` flag for `harness-kit-checks telemetry`
+
+## 1. Goal & premise
+
+Add a `--top <N>` flag to the `telemetry` subcommand (alias `skill-invocation-analytics`) that caps the **Skill Frequency** section of the report to the N most-used skills, ranked by invocation `count` (descending). When omitted, behavior is unchanged (all skills shown). The flag is the natural complement to the existing `--since` / `--repo` / `--project` / `--skill` filters: it narrows *how much* of the ranked frequency table is emitted without re-running anything.
+
+This is a small, additive CLI change. It rides the existing rank ordering that `analyze` already computes, so there is no new sorting logic — only a truncation.
+
+## 2. Scope decision (read this first)
+
+`--top N` limits **only the `skills` array** (the "Skill Frequency" table). It does **not** filter transitions, work sequences, source/harness coverage, delegation usage, or warnings.
+
+Rationale:
+- The task says "N most-used skills (by invocation count)." Only `report["skills"]` is the per-skill, count-ranked list. The other sections are relational (transitions are skill→skill edges; a transition involving a non-top-N skill has no well-defined "rank") or infrastructural (coverage/warnings are about data sources, not skill popularity). Filtering them would be a larger, ambiguous semantic change and is out of scope.
+- In the code, `skills` is built independently of `transitions`/`sequences`/`coverage` (all of those read from `skill_rows` / `sessions`, not from the `skills` vec), so truncating `skills` is naturally isolated and affects no other section. See `skill_invocation_analytics.rs:70-194`.
+
+If a future ticket wants "top-N everywhere," that is a separate, deliberate change — call it out, do not silently widen this one.
+
+## 3. Exact change set
+
+Two files. All line numbers are against commit `3bf0b46`.
+
+### 3.1 `crates/harness-kit-checks/src/skill_invocation_analytics.rs`
+
+**(a) Add the field to `AnalyzeOptions`** (struct at lines 18-27). Place it last, after `skill`:
+
+```rust
+pub skill: String,
+pub top: Option<usize>,
+```
+
+`Option<usize>` (not a plain `usize` sentinel) so "no limit" is unambiguous and `None` is the trivial default. `usize` because it feeds `Vec::truncate`.
+
+**(b) Truncate after the existing rank sort** (the `skills.sort_by(...)` block ends at line 93). Immediately after it, before `transition_counts` is built at line 95, add:
+
+```rust
+if let Some(top) = options.top {
+    skills.truncate(top);
+}
+```
+
+`Vec::truncate` is the whole implementation: it is a no-op when `top >= skills.len()`, and yields an empty vec when `top == 0`. The sort at lines 87-93 already establishes the exact ranking (count desc, then skill name asc as a stable tiebreak), so "first N after sort" *is* "N most-used." No other code in `analyze` reads `skills`, so this is the only touch point for the report body.
+
+**(c) Update the `self_test()` fixtures and add a contract assertion.** `self_test` constructs `AnalyzeOptions` twice (lines 291-299 and 337-345); both need the new field:
+
+```rust
+skill: String::new(),
+top: None,
+```
+
+Then add a third `analyze` call plus assertions, reusing the already-written `skill_log` fixture (which has `shape` count=2, `implement` count=1, so the expected top-1 result is deterministic). Insert after the existing `skills[0] == "shape"` assertion (around line 303) or alongside the other `analyze` calls:
+
+```rust
+let top_report = analyze(&AnalyzeOptions {
+    skill_log: skill_log.clone(),
+    work_ledger: work_ledger.clone(),
+    delegations: delegations.clone(),
+    since: String::new(),
+    repo: String::new(),
+    project: String::new(),
+    skill: String::new(),
+    top: Some(1),
+})?;
+ensure(
+    top_report["skills"].as_array().map(Vec::len) == Some(1),
+    "--top 1 should yield exactly one skill",
+)?;
+ensure(
+    top_report["skills"][0]["skill"] == "shape",
+    "--top 1 should keep the most-used skill",
+)?;
+```
+
+Note `skill_log`/`work_ledger`/`delegations` are `PathBuf` moved into the first `analyze` call today; add `.clone()` at the earlier call sites (or reorder) so the paths remain usable for this third call. The existing first `analyze` at line 291 currently moves them — switch those three to `.clone()` there as well.
+
+### 3.2 `crates/harness-kit-checks/src/main.rs`
+
+**(a) Default in the parser** (`parse_skill_invocation_analytics_args`, struct literal at lines 1161-1169). Add:
+
+```rust
+skill: String::new(),
+top: None,
+```
+
+**(b) Match arm** (the `match flag` block, lines 1177-1197). Add alongside the other value-taking flags (e.g. after `--skill` at line 1188):
+
+```rust
+"--top" => options.top = Some(parse_u64("--top", &value()) as usize),
+```
+
+Reuse the existing `parse_u64` helper (lines 842-847) — it already prints `"--top must be a non-negative integer"` and exits `2` on bad input, matching the repo's flag-error convention. Cast to `usize` (safe on the 64-bit targets this builds for). This keeps the value-consuming control flow identical to `--since`/`--repo`/etc.: the closure `value()` reads `args[index]`, and the loop's trailing `index += 1` at line 1199 advances past the consumed value. Do **not** add a `continue` (that path is only for the valueless `--self-test` flag).
+
+**(c) Usage string** (line 938). Add `[--top N]` to the telemetry line, e.g. after `[--skill NAME]`:
+
+```
+harness-kit-checks telemetry [--skill-log PATH] [--since 7d|12h] [--repo NAME] [--project NAME] [--skill NAME] [--top N] [--format json|text|markdown] [--self-test]
+```
+
+## 4. Behavior table / edge cases
+
+| Input | Result |
+|---|---|
+| flag omitted | `top = None` → all skills (unchanged behavior) |
+| `--top 2` with 5 skills | first 2 by rank |
+| `--top 99` with 5 skills | all 5 (`truncate` no-op) |
+| `--top 0` | empty `skills` array; markdown/text render the existing "none" fallback row (`skill_invocation_analytics.rs:661-663`). Allowed — harmless, no special-casing. |
+| `--top abc` / `--top -1` | `parse_u64` prints `--top must be a non-negative integer`, exit 2 |
+| `--top` with no value | `value()` closure hits `usage()`, exit 2 (same as other value flags) |
+| combined with `--since`/`--repo`/`--skill` | filters apply first (they shrink `skill_rows`), then ranking, then `--top` truncates the ranked result — correct composition |
+| `--format json\|text\|markdown` | all three read `report["skills"]`, so the cap applies uniformly to every format |
+
+## 5. Verification loop (the proof, not just green)
+
+1. **Unit/contract:** `cargo test --locked -p harness-kit-checks` — the extended `self_test_contract_passes` now asserts top-1 truncation against the in-repo fixture. This is the primary oracle.
+2. **Self-test path:** `cargo run --locked -p harness-kit-checks -- telemetry --self-test` → prints `analyze-skill-invocations self-test ok`, exit 0.
+3. **Live manual walk** — write a throwaway JSONL with ≥3 distinct skills at distinct counts (e.g. `shape`×3, `deliver`×2, `diagnose`×1), then read the evidence, not just the exit code:
+   - `telemetry --skill-log /tmp/fx.jsonl --format json --top 2` → assert `.skills | length == 2` and the two entries are the highest-count skills (pipe through `jq '.skills | map(.skill)'`).
+   - `--top 0` → `.skills == []`; markdown shows the `| none | 0 | dead | ... |` row.
+   - `--top 99` → equals the un-capped run.
+   - `--top abc` → stderr `--top must be a non-negative integer`, exit 2 (`echo $?`).
+   - `--top 1 --format markdown` and `--format text` → frequency section shows exactly one row, other sections intact.
+4. **Repo gate (must stay green):** `cargo run --locked -p harness-kit-checks -- check --repo .` plus `cargo fmt --check` and `cargo clippy --locked -- -D warnings` (the standard Rust floor for this crate).
+
+Evidence to capture in the PR/receipt: the `jq` output for `--top 2` and `--top 0`, the exit-2 transcript for `--top abc`, and the `cargo test` summary line.
+
+## 6. Out of scope / non-goals
+
+- No filtering of transitions, work sequences, coverage, harness coverage, delegation usage, or warnings (see §2).
+- No new sort modes (no `--top` by tokens or cost — `count` is the only ranking key; the existing sort is reused verbatim).
+- No `--bottom`/`--tail` inverse flag.
+- No change to default output (omitting `--top` must be byte-identical to today).
+- No new dependencies, no new helper functions if `parse_u64` suffices (delete-before-add: prefer the cast over a bespoke `parse_usize`).
+
+## 7. Why this is the minimal correct shape
+
+The ranking already exists and is already stable (`sort_by` at `skill_invocation_analytics.rs:87-93`); `--top` is one `Vec::truncate` plumbed through one new `Option<usize>` field, mirroring the four filters that already live on `AnalyzeOptions`. Parsing reuses `parse_u64`; errors reuse the existing exit-2 convention; all three render formats inherit the cap for free because they read the same `report["skills"]`. Total surface: ~6 added lines of logic across two files, plus the usage string and a self-test assertion. The interface ( `--top N` ) is far simpler than asking the operator to post-process JSON with `jq`, which is the deep-module test this passes.
+
+**Touch list:** `skill_invocation_analytics.rs` (struct field, truncate, self_test fixtures+assert) and `main.rs` (struct default, match arm, usage string). No other files. The eval fixture (`.evidence/harness-evals/shape/2026-06-30/fixtures/01-telemetry-top/`) confirms the deliverable is this spec packet only — `crates/**` edits are forbidden for this exercise.
+</script><div class="render" data-src="md_f1_left"></div></div></div>
+    <div class="spec"><div class="hd"><span>SPEC&nbsp;1·B</span><span class="len" id="len_f1_right"></span></div><div class="body"><script type="text/markdown" id="md_f1_right"># Context Packet: `telemetry --top <N>` — cap the Skill Frequency table to the N most-used skills
+
+## Goal
+
+An operator running `harness-kit-checks telemetry` can pass `--top <N>` to limit the **Skill Frequency** section of the report to the N skills with the highest invocation counts, in every output format, deterministically.
+
+## Non-Goals
+
+- **Not** filtering the other report dimensions. `transitions`, `work_sequences`, `coverage`, `harness_coverage`, and `delegation_usage` stay full-fidelity. `--top` caps the skills table only. (Whole-report top-N filtering is a different, larger feature — see Alternative D and the Risks stop-condition.)
+- **Not** changing the existing sort key or tiebreak (count desc, then skill-name asc).
+- **Not** adding `--top` to any other subcommand.
+- **Not** adding offset/pagination, percent thresholds, or a "bottom N" inverse.
+- **Not** touching the renderers (`render_markdown`, `render_text`, JSON) — they inherit the cap because truncation happens upstream in `analyze()`.
+
+## Constraints
+
+- `AnalyzeOptions` derives `Debug, Clone, PartialEq, Eq` (`skill_invocation_analytics.rs:18`). Any new field must satisfy all four (`Option<usize>` does).
+- `AnalyzeOptions` is constructed in **three** places — the CLI parser (`main.rs:1161`) and **twice** inside `self_test` (`skill_invocation_analytics.rs:291` and `:337`). Adding a field touches all three or it will not compile; the compiler is the backstop.
+- **Backward compatibility:** when `--top` is absent, output must be byte-identical to today. Existing callers (`AGENTS.md:75`, `skills/groom/SKILL.md:236`, `skills/harness-engineering/references/mode-audit.md:8`, `README.md:100`) invoke `telemetry` with no `--top`.
+- The module owns report shape; `main.rs` only dispatches and parses (`run_skill_invocation_analytics` at `:628`). Keep that separation — do not move report-mutation logic into `main.rs`.
+- `telemetry --self-test` is the standing executable oracle for this module (`run_skill_invocation_analytics` exits 0/1 on it). The new behavior must be covered by it.
+
+## Repo Anchors
+
+1. `crates/harness-kit-checks/src/skill_invocation_analytics.rs:18-27` — `struct AnalyzeOptions` (add the `top` field here).
+2. `crates/harness-kit-checks/src/skill_invocation_analytics.rs:70-93` — `skills` is built then `sort_by(...)` count-desc, skill-name-asc. **Truncate immediately after the sort (after line 93), before transition computation at line 95.**
+3. `crates/harness-kit-checks/src/skill_invocation_analytics.rs:205-357` — `self_test`: two `AnalyzeOptions` constructions (`:291`, `:337`) need the new field; add one assertion proving the cap.
+4. `crates/harness-kit-checks/src/skill_invocation_analytics.rs:631-663` — `render_markdown` already emits a `| none | 0 | dead | ... |` placeholder row when `skills` is empty (the behavior `--top 0` would otherwise expose; see Risks).
+5. `crates/harness-kit-checks/src/main.rs:1154-1202` — `parse_skill_invocation_analytics_args` (add the `--top` match arm).
+6. `crates/harness-kit-checks/src/main.rs:842-847` — `parse_u64(flag, value)` helper (parses u64, prints `"{flag} must be a non-negative integer"` and exits 2 on failure) — reuse it for `--top`.
+7. `crates/harness-kit-checks/src/main.rs:938` — the `telemetry` usage line (add `[--top N]`).
+
+## Alternatives
+
+| Option | Why it helps | How it fails | Verdict |
+|---|---|---|---|
+| **A — field on `AnalyzeOptions`, truncate in `analyze()`** | `--top` lives alongside the other report filters (`since`, `repo`, `project`, `skill`); module stays the single source of report shape; all three formats get the cap for free; the existing `--self-test` oracle can cover it. | Touches 3 `AnalyzeOptions` construction sites. | **CHOSEN** |
+| B — parse `--top` in `main.rs`, mutate `report["skills"]` array before `render()` | No struct change, no self-test construction churn. | `main.rs` reaches into the report's JSON internals — a responsibility it does not currently have (hidden coupling between dispatch and report schema); the cap is **invisible to `telemetry --self-test`**, so the feature's oracle is weaker. | reject |
+| C — no flag; document `telemetry --format json | jq '.skills[:N]'` (the boring/manual path) | Zero code; works today. | Only the JSON format is cappable; `markdown`/`text` operators get nothing; no `-h` discoverability; in non-json the transitions/coverage tables interleave with the skills table so a naive `head` is wrong. The lazy path is genuinely insufficient for the stated outcome (markdown is the default format). | reject |
+| D — filter the **entire** report (transitions, sequences, coverage) to the top-N skill set | One mental model: "focus the whole report on N skills." | Semantically murky — drop or keep a transition from a top-N skill *to* a non-top-N skill? Much larger surface for no asked-for benefit; "limits the report to the N most-used skills" reads as the skills list, not a graph-pruning operation. | reject (scope creep) |
+
+**Recommendation: Option A.** It is the smallest change that keeps the cap (a) covered by the existing oracle and (b) uniform across formats, and it places `--top` with its natural peers — the other `AnalyzeOptions` filters.
+
+## Design
+
+**Premise check.** The literal request ("limit the report to the N most-used skills") and the underlying operator outcome ("when I have dozens of skills, show me only the busiest ones so the table is scannable") agree. The one real ambiguity is the word "report": does it mean the **Skill Frequency table** or **every section**? The honest underlying need — a scannable top-of-the-leaderboard view — is served by capping the skills table; pruning the transition graph and coverage tables is neither asked for nor coherent. This packet locks scope to the skills table and flags the ambiguity as a stop-condition.
+
+**Surfaces touched (control flow):**
+
+1. **`AnalyzeOptions`** (`skill_invocation_analytics.rs:18`): add `pub top: Option<usize>` (None = unlimited). `Option<usize>` is the idiomatic representation and satisfies the existing derives; a `usize` 0-sentinel is an acceptable equivalent (builder's choice — see Review "ignore").
+2. **`analyze()`**: the `skills` vec is fully built and sorted by `:93`. Insert, right after the `sort_by`:
+   ```rust
+   if let Some(top) = options.top {
+       skills.truncate(top);
+   }
+   ```
+   `Vec::truncate` is a no-op when `top >= skills.len()`, so "N larger than available" needs no special case. Because truncation precedes the transitions/sequences/coverage computation (which all read from `skill_rows`, not from `skills`), those sections remain comprehensive — exactly the Non-Goal boundary. Because it is upstream of `render`, all three formats reflect the cap.
+3. **`self_test()`**: set `top: None` in both existing constructions (`:291`, `:337`). Add a third `analyze` call with `top: Some(1)` over the same fixture and assert `report["skills"]` has length 1 and `report["skills"][0]["skill"] == "shape"`. (Fixture counts: `shape`=2, `implement`=1, so sorted-then-capped-to-1 is deterministically `[shape]`.)
+4. **`parse_skill_invocation_analytics_args`** (`main.rs:1154`): add a match arm. Reuse `parse_u64("--top", &value())`, then reject `0`:
+   ```rust
+   "--top" => {
+       let n = parse_u64("--top", &value());
+       if n == 0 { eprintln!("--top must be a positive integer"); std::process::exit(2); }
+       options.top = Some(n as usize);
+   }
+   ```
+   The existing `value` closure already exits 2 (`usage()`) when the value is missing, and `parse_u64` already exits 2 on a non-integer — so the only new guard is the `0` rejection.
+5. **`usage()`** (`main.rs:938`): insert `[--top N]` into the telemetry line, e.g. after `[--since 7d|12h]`.
+
+**Data flow:** `--top` is config-only; it changes which rows of an already-computed, already-sorted list survive. No new I/O, no schema change to the input JSONL, no change to `usage`/cost aggregation.
+
+**Decision (ADR-grade):** `--top` is a **report filter**, modeled like `--since`/`--skill`, applied *after* those row filters and *after* the sort. Its scope is the Skill Frequency table only. It is rejected for `0` and composes with all other filters (e.g. `--skill X --top 5` yields at most one skill anyway — harmless).
+
+## CLI Surface
+
+(per `references/cli-design.md`)
+
+- **Command tree:** `harness-kit-checks telemetry [...] [--top N]` (alias `skill-invocation-analytics`, `main.rs:140`).
+- **Usage (updated line 938):**
+  `harness-kit-checks telemetry [--skill-log PATH] [--since 7d|12h] [--top N] [--repo NAME] [--project NAME] [--skill NAME] [--format json|text|markdown] [--self-test]`
+- **Args/flags:** `--top N` — `N` is a positive integer (≥ 1). Optional; absent ⇒ no limit. Order-independent (parser is a `while` loop).
+- **Primary user:** both — humans read `--format markdown` (default) / `text`; scripts read `--format json`. All reflect the cap.
+- **Output contract:** caps `skills` (JSON array) / the Skill Frequency table (markdown/text) to the first `N` post-sort rows. Other sections unchanged. Primary output → stdout; diagnostics → stderr (unchanged).
+- **Error / exit-code map:**
+  - `--top 3` → exit 0, ≤3 skills shown.
+  - `--top` with no value → exit 2 (existing `value()`→`usage()`).
+  - `--top abc` (non-integer) → exit 2, stderr `--top must be a non-negative integer` (from `parse_u64`).
+  - `--top 0` → exit 2, stderr `--top must be a positive integer`.
+  - `--top 999` (> distinct skills) → exit 0, all skills shown (no error).
+- **Config/env precedence:** flag-only; no env or config knob (consistent with the other telemetry filters).
+- **Safety controls:** read-only command; no destructive operations; `--top` adds none.
+- **Examples:**
+  ```bash
+  # top 5 busiest skills, human-readable (default markdown)
+  harness-kit-checks telemetry --top 5
+  # top 3 as JSON for a script
+  harness-kit-checks telemetry --top 3 --format json | jq -r '.skills[].skill'
+  # compose with a window
+  harness-kit-checks telemetry --since 30d --top 10 --format markdown
+  ```
+
+## Oracle
+
+(executable definition of done — per `references/executable-oracles.md`)
+
+**Automated (all must exit 0):**
+
+```bash
+cd /Users/phaedrus/Development/harness-kit
+
+# 0) Standing module oracle, now covering the cap (self_test asserts top:Some(1) -> 1 skill "shape")
+cargo run --locked -p harness-kit-checks -- telemetry --self-test            # prints "...self-test ok", exit 0
+
+# Build a 3-skill fixture (a,a,a / b,b / c) to make ordering deterministic
+F=/tmp/top-fixture.jsonl
+printf '%s\n' \
+  '{"ts":"2026-06-04T00:00:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"alpha","session_id":"s1","project":"p"}' \
+  '{"ts":"2026-06-04T00:01:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"alpha","session_id":"s1","project":"p"}' \
+  '{"ts":"2026-06-04T00:02:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"alpha","session_id":"s1","project":"p"}' \
+  '{"ts":"2026-06-04T00:03:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"beta","session_id":"s1","project":"p"}' \
+  '{"ts":"2026-06-04T00:04:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"beta","session_id":"s1","project":"p"}' \
+  '{"ts":"2026-06-04T00:05:00Z","harness":"claude","source_protocol":"post_tool_use","skill":"gamma","session_id":"s1","project":"p"}' > "$F"
+
+# 1) cap to 2 -> exactly two skills, the two highest-count ones, in order
+test "$(cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top 2 --format json | jq '.skills | length')" = "2"
+test "$(cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top 2 --format json | jq -r '.skills | map(.skill) | join(",")')" = "alpha,beta"
+
+# 2) N greater than available -> all three, no error
+test "$(cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top 99 --format json | jq '.skills | length')" = "3"
+
+# 3) default (no --top) unchanged -> all three
+test "$(cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --format json | jq '.skills | length')" = "3"
+
+# 4) cap reaches non-JSON formats too: markdown Skill Frequency table has exactly 1 data row under --top 1
+cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top 1 --format markdown | grep -q '| alpha |'
+
+# 5) bad inputs exit 2
+cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top 0   ; test $? -eq 2
+cargo run --locked -q -p harness-kit-checks -- telemetry --skill-log "$F" --top abc ; test $? -eq 2
+
+# 6) unit + integration suite and repo gate stay green
+cargo test --locked -p harness-kit-checks
+cargo run --locked -p harness-kit-checks -- check --repo .
+```
+
+**Observable (human/`/qa`):** `telemetry --top 5 --format markdown` renders a Skill Frequency table with at most five data rows while the Skill Transitions, Work Sequences, Source Coverage, and Harness Coverage tables remain unchanged versus an uncapped run.
+
+## Premise Source
+
+**Waiver.** No committed backlog item or ADR drives this; the premise is the operator task prompt, which corresponds verbatim to **eval fixture 1** at `skills/shape/evals/shape-eval.md:24` (repo pinned `harness-kit@3bf0b46`). That eval names the expected deliverables (Repo Anchors, executable oracle, CLI-design block), which this packet satisfies. **Residual risk:** the product intent of the word "report" (skills-table-only vs whole-report) is inferred, not operator-confirmed — locked here to skills-table-only with a stop-condition for the alternative.
+
+## HTML Plan
+
+`/tmp/telemetry-top-plan.html` — authored from `skills/shape/templates/html-plan.html` (214 lines, verified present). Hero states the chosen design (field-on-`AnalyzeOptions` + truncate-after-sort) and the proof path (`--self-test` + fixture `jq`); the alternatives table contrasts A/B/C/D on how each fails differently; the execution-plan lanes and risk grid carry the construction-site enumeration and the `--top 0` / scope-ambiguity stop-conditions. Open with `open /tmp/telemetry-top-plan.html` (macOS).
+
+## Risks + Rollout
+
+| Risk | Likelihood | Mitigation |
+|---|---|---|
+| Field added but one of the two `self_test` constructions missed → won't compile. | Low | The compiler catches it; both sites enumerated in Repo Anchor 3. |
+| `--top 0` silently emits the empty `| none | 0 | dead | ... |` row (markdown) and is misread as "no telemetry data." | Medium | Reject `0` with exit 2 and a clear message (Design step 4) rather than rendering an empty table. |
+| Operator actually wanted the whole report filtered to the top-N skill set (Alternative D). | Low–Med | **Stop condition:** if that is the intent, halt before building — it is a different, larger feature with murky transition semantics. |
+| Cap interacts surprisingly with `--since`/`--repo`/`--project`/`--skill`. | Low | By construction `--top` applies *after* those row filters and the sort, so it is "top-N of the filtered set" — the intuitive composition; Oracle check 1 exercises the sorted ordering. |
+| Non-determinism at the N-boundary on tied counts. | Low | The existing secondary sort (skill-name ascending, `:91-92`) already makes the order total; truncation is deterministic. Oracle check 1 asserts the exact surviving names. |
+
+**Rollout:** purely additive, behind an opt-in flag; default behavior is byte-identical (Oracle check 3). **Rollback:** revert the diff — no migration, no persisted state, no schema change. The flag is independently revertible from the rest of the telemetry surface.
+</script><div class="render" data-src="md_f1_right"></div></div></div>
+  </div>
+  <details class="reveal"><summary>Reveal mapping + the agent grade (after you've called it)</summary><div class="in">
+    <p><b>Mapping:</b> Spec 1·A = <b>raw</b> (no skill). Spec 1·B = <b>shape</b>.</p>
+    <table>
+      <tr><th>Check / dimension</th><th class="c">1·A raw</th><th class="c">1·B shape</th></tr>
+      <tr><td>Objective checks passed</td><td class="c"><span class="fail">5 / 8</span></td><td class="c"><span class="pass">8 / 8</span></td></tr>
+      <tr><td>Premise challenge</td><td class="c">4</td><td class="c">5</td></tr>
+      <tr><td>Alternatives + pick</td><td class="c">2</td><td class="c">5</td></tr>
+      <tr><td>Architecture depth</td><td class="c"><b>5</b></td><td class="c">4</td></tr>
+      <tr><td>Tooling + verification</td><td class="c">5</td><td class="c">5</td></tr>
+      <tr><td>Executability by stranger</td><td class="c">4</td><td class="c">5</td></tr>
+      <tr><td>Artifact quality</td><td class="c">4</td><td class="c">5</td></tr>
+      <tr><td><b>Rubric total</b></td><td class="c"><b>24 / 30</b></td><td class="c"><b>29 / 30</b></td></tr>
+    </table>
+    <p class="note"><b>Agent verdict: shape (1·B) more buildable — not a tie.</b> Kept honest: raw <i>won</i> architecture-depth (5 v 4) and caught a move/clone gotcha shape missed. Win is on-claim (scope-lock, alternatives+pick, premise source, HTML plan). Shared model family → smoke waiver, margin uncertified. <b>This verdict is the proxy's; it's unvalidated until your call agrees.</b></p>
+  </div></details>
+</div></section>
+
+<section id="f2"><div class="wrap">
+  <h2><span class="n">04</span>Judge — fixture 2 · <span style="font-weight:400;color:var(--mut)">runner vs protocol</span></h2>
+  <p class="sub">Both specs answer: "does the skill-eval bench need a Rust runner in <code>harness-kit-checks</code>, or stay protocol + native-subagent only?" This is the harder, more interesting one — the raw arm here is genuinely deep.</p>
+  <div class="judge-prompt">
+    <div class="q">Which is <b>more buildable / actionable by a stranger</b> — clearer decision, alternatives that fail differently with a pick, runnable confirmations, scope fenced?</div>
+    <small>Factual accuracy counts: both make strong claims about what already exists in the crate. Reward the one whose claims hold up.</small>
+  </div>
+  <div class="cols">
+    <div class="spec"><div class="hd"><span>SPEC&nbsp;2·A</span><span class="len" id="len_f2_left"></span></div><div class="body"><script type="text/markdown" id="md_f2_left"># Context Packet: Skill-eval bench — Rust runner in `harness-kit-checks`, or protocol + native-subagent only?
+
+**Decision (ADR-grade): NO new Rust _execution_ runner. The bench stays protocol + native-subagent, backed by the three runner surfaces that already exist in the repo. The only Rust that may later earn itself is a tiny deterministic _objective-check grader_, and only behind a two-consumer trigger.**
+
+Scope note: fixture pins `harness-kit@3bf0b46`. HEAD is `91c11ef`; the only diff between them is `harnesses/shared/references/image-generation.md`, so every load-bearing file below is byte-identical at the pinned SHA. All line references are from the working tree, valid at `3bf0b46`.
+
+## Goal
+
+Decide whether the skill-eval bench needs a new Rust runner inside `crates/harness-kit-checks`, and produce a buildable decision a cold lane can act on — so that when 112's "if a runner becomes necessary" clause is invoked, the answer cites the existing execution surfaces and the one real gap, not taste.
+
+## Non-Goals
+
+- Not implementing anything — no crate code, no manifests, no edits (task constraint).
+- Not building a benchmark platform inside Harness Kit (112 non-goal; serious repeated arena work graduates to Daedalus).
+- Not re-litigating the eval _protocol_ itself (`mode-eval.md`, `run-recipe.md`, `shape-eval.md` are settled); only the runner question.
+- Not adding any subcommand that launches a provider or touches the network — that job is already owned (see Design).
+
+## Constraints
+
+- **Delete-first / "provider CLIs stay thin"** (shared doctrine): new surface must earn itself; the harness must not grow a second provider-launcher.
+- **Gates must be tamper-evident, externally enforced, not self-attested** (Layer 1): an "objective" check graded by a subagent inside the same loop is not yet a gate.
+- **112's own instruction**: "If a runner becomes necessary, implement the smallest Rust-owned helper in `crates/harness-kit-checks`; otherwise keep the first delivery as protocol plus evidence artifacts." This is a deferral default, not a license to build.
+- The clean A/B knob must remain a **manifest diff, not an honor-system prompt** (`run-recipe.md` §"The clean A/B knob").
+
+## Repo Anchors
+
+- `skills/skill-eval/references/run-recipe.md` — defines the three drive modes: native-subagent smoke (free), `council.sh` (serious decorrelated), and the `lane_harness.v1` "clean A/B knob".
+- `crates/harness-kit-checks/src/lane_harness.rs` — the `lane_harness.v1` manifest: `allowed_local_skills`, `oracle`, `provider_target`, plus `materialize_manifest` which projects only allowed skills into provider discovery roots (`provider_skill_roots`, lines 263–272) and the failure taxonomy (`FAILURE_KINDS`, lines 19–31).
+- `crates/harness-kit-checks/src/main.rs:53` — `dispatch-agent` subcommand; flags `--lane-harness` (1021), `--expect-output` (1022), `--provider-target` (1005).
+- `crates/harness-kit-checks/src/agent_roster.rs` — `dispatch_from_options` (123) materializes the manifest (136) then `dispatch_provider_lane` (227) probes, **spawns the provider CLI** (`Command::new`, 330), isolates config via `HOME/CODEX_HOME/CLAUDE_CONFIG_DIR/PI_HOME/GEMINI_CONFIG_DIR/XDG_CONFIG_HOME` pointed at the projection root (339–345), captures a transcript file, enforces the `--expect-output` sentinel, kills on timeout via process group, and emits a structured receipt.
+- `crates/harness-kit-checks/src/summarize_delegations.rs:38–42,119–121` — `telemetry`/`summarize-delegations` already aggregate `lane_harness_ref`, `lane_harness_sha256`, `projection_status`, `output_check`, `failure_kind`.
+- `skills/council/scripts/council.sh` — bash fan-out to distinct OpenRouter families via opencode/pi; caller owns composition.
+- `.evidence/harness-evals/shape/2026-06-30/` — a **real, already-shipped** smoke run (arm-a/packet.md, arm-b/packet.md, blind `grader-input/{X,Y}.md` + hidden `.mapping`, `human-judge/`, `report.md`) produced with **zero new runner code**.
+- `backlog.d/112-harness-eval-bench.md` (premise) and `skills/shape/evals/shape-eval.md:25` (this is fixture 2 of the shape eval itself).
+
+## Alternatives
+
+The fixture's framing ("Rust runner _or_ protocol-only") is a false binary. "Runner" conflates two jobs that fail differently: **R1 execution/orchestration** (spin arms, isolate skill visibility, capture transcript, receipt) and **R2 objective grading** (deterministic pass/fail over the produced artifact). R1 already exists, partly in Rust. R2 exists nowhere. Separating them is the whole decision.
+
+| Option | What it buys | How it fails | Verdict |
+|---|---|---|---|
+| **A — New Rust _execution_ runner** (orchestrates arms, launches providers, one "run the A/B" command) | A single entry point for a full A/B | Re-implements `dispatch-agent` + `council.sh`; spawns a **second** provider-launcher in violation of "provider CLIs stay thin"; pushes Harness Kit toward the benchmark-platform 112 forbids. The only thing it adds over two `dispatch-agent` calls is pairing/shuffling — a shell loop, not a crate. | **Reject** |
+| **B — Pure protocol forever; never any new Rust** | Ships today; zero surface; already proven on 2026-06-30 | Leaves the "objective, ~free, every-edit" tier as a **subagent reading a prose checklist** — a gate self-attested by a model inside the loop (Layer-1 violation). Fine for a one-off run, wrong as the standing every-edit gate the skill advertises. | **Reject as the end state** |
+| **C — No new execution runner; one small deterministic _grader_ helper, gated by repetition, absorbing the unwired `premise-source validate`** | Keeps execution on the 3 existing surfaces; turns the objective tier into a real falsifiable command exactly where Rust belongs (deterministic policy), tamper-evident and external | Speculative unless the trigger has fired; must stay a pure function (no spawn, no network) or it slides into A | **Choose** |
+| **D — Graduate the whole bench to Daedalus arena now** | Strongest repeated-eval substrate | Too much surface before ≥2 skills share task families and rubrics; 112 and `mode-eval.md` both say defer until repetition proves the need | **Defer** |
+
+**Recommendation: Option C.** Today that means: **do nothing new in Rust** (the bench runs on native subagents + `council.sh` + `dispatch-agent --lane-harness`), and pin the grader helper as a deferred, triggered shape — not a build item.
+
+## Design
+
+**Execution (R1) needs no new code.** The repo already has three runner surfaces, matched to the two cadences the skill-eval names:
+
+1. **Free smoke** → native subagents. The orchestrator spins arm A (told to invoke `/<skill>`), arm B (raw same-model), and a blind grader as fresh read-only subagents. Already done for shape; produced falsifiable evidence. No Rust.
+2. **Serious decorrelated** → `council.sh`. One task file + `members.tsv` of distinct OpenRouter families; grader lane a family distinct from every worker. No Rust.
+3. **Enforced skill-on-vs-off** → `dispatch-agent --lane-harness`. This is already a complete single-lane runner: `materialize_manifest` projects **only** `allowed_local_skills` into the provider's discovery roots and isolates the provider's config env at the projection root, so "skill on" (`allowed_local_skills: [shape]`) vs "skill off" (`[]`) is a **manifest diff the worker cannot ignore** — not a prompt instruction. It then launches the provider, captures the transcript, checks the `--expect-output` sentinel, classifies failures, and emits a receipt that `summarize-delegations`/`telemetry` already roll up. A paired A/B is two invocations with two manifests; shuffling for the blind grader is a `mv X Y` step.
+
+A new Rust execution runner would re-implement `agent_roster::dispatch_provider_lane`. That is the delete-first violation this decision exists to prevent.
+
+**Grading (R2) is the only real gap — and is deferred.** The shape-eval's "Objective checks (scriptable, pass/fail, ~free — run on every `skills/shape/**` edit)" are described in **prose**; no command runs them. Worse, `skills/shape/SKILL.md` Verification cites `harness-kit-checks premise-source validate` — but **that subcommand does not exist in the crate** (no `premise-source` arm in `main.rs`, no module). So the "objective first, ~free, every-edit, tamper-evident" tier the skill promises is currently a model reading a checklist.
+
+When it earns itself, the helper is a **pure-function grader**, not a runner:
+
+```
+harness-kit-checks eval-grade <artifact.md> --spec <skill>-eval.md [--json|--plain]
+```
+
+- Exit 0 = all objective checks pass; exit 1 = any fail, printing `FAIL <check>` to stderr (the `print_gate_report` convention already used by `check-*` gates).
+- Checks (all deterministic, no judge): skeleton sections present + non-empty; oracle contains a runnable-command token (`cargo`/`harness-kit-checks`/test invocation), not "it should work"; cited anchors resolve at the repo SHA; premise-source line well-formed (`sha256:<hex> <path>`); HTML-plan path exists; forbidden-edit globs absent from the diff.
+- **No process spawn, no network** — the boundary that keeps it from becoming option A.
+- It **absorbs** the dangling `premise-source validate` as one check, rather than shipping a parallel command, and reuses `source_refs.rs` (sha/ref-shape validation already lives there) + `frontmatter.rs`.
+
+**Trigger to build it (the 112 "repetition" bar):** a **second** skill's eval reuses the same objective checklist — two consumers, not one. Until then it is speculative surface and stays a prose checklist graded by subagent (acceptable for low-volume one-off evals; explicitly _not_ acceptable if/when the bench becomes an every-edit pre-merge gate).
+
+### CLI Surface (conditional — for the deferred helper only, not in scope now)
+
+- **Command:** `eval-grade` — deterministic objective-check grader over an eval artifact. Primary user: both human and the eval loop.
+- **Inputs:** positional `<artifact.md>`; `--spec <eval-spec.md>` (the checklist source); `--repo PATH`; optional `--diff <range>` for forbidden-edit checks.
+- **Output contract:** human gate lines on stderr (`PASS/FAIL <check>`), `--json` for the loop, `--plain` stable lines. Primary verdict via exit code.
+- **Exit map:** `0` all pass · `1` ≥1 objective check failed · `2` bad args/missing spec.
+- **Config precedence:** flags > defaults; no env, no network, no spawn (invariant).
+- **Examples:** `eval-grade .evidence/harness-evals/shape/2026-06-30/arm-a/packet.md --spec skills/shape/evals/shape-eval.md` → `PASS` lines, exit 0.
+
+## Oracle
+
+This is a decision packet; "done" = the decision is correct and a cold lane can act on it. Executable confirmations a stranger can run at `3bf0b46`:
+
+- The three execution surfaces are real, not aspirational:
+  - `grep -n '"dispatch-agent"' crates/harness-kit-checks/src/main.rs` → hit at line 53.
+  - `grep -n 'Command::new' crates/harness-kit-checks/src/agent_roster.rs` → provider is spawned (≈330).
+  - `test -f skills/council/scripts/council.sh` → exit 0.
+  - `test -f .evidence/harness-evals/shape/2026-06-30/report.md` → exit 0 (protocol-only path already produced evidence).
+- The named gap is real:
+  - `grep -rn 'premise.source\|premise_source\|eval-grade\|eval_grade' crates/harness-kit-checks/src/` → **no match** (the cited grader is unwired; no objective-check command exists).
+- The clean A/B knob is a manifest diff, not a prompt:
+  - `grep -n 'allowed_local_skills' crates/harness-kit-checks/src/lane_harness.rs` and `grep -n 'CLAUDE_CONFIG_DIR\|CODEX_HOME' crates/harness-kit-checks/src/agent_roster.rs` → both hit.
+- Decision is actionable: a lane invoking 112's runner clause can answer "no execution runner; defer the grader helper until a second eval reuses the checklist" and cite the rows above. A fresh critic, given this packet + `lane_harness.rs` + `agent_roster.rs` only, returns no blocking methodological flaw (per shape Contract; the adversarial focus is named below).
+- Repo gate stays green: `cargo run --locked -p harness-kit-checks -- check --repo .` (no code changed, so trivially true — named so the contract is explicit if the deferred helper ever lands).
+
+## Premise Source
+
+Premise Source: `sha256:18efe7fbfc4013c4da9cbcbf27c4f1d3ab3b129de74ca6dafac1f0acd7693b0a backlog.d/112-harness-eval-bench.md` (carries the "if a runner becomes necessary… otherwise keep the first delivery as protocol plus evidence artifacts" clause this decision resolves). Supporting: `sha256:66934998ce8890f9dd359e13a2142afcbacba91891612456279a2bd8ef6091fa skills/skill-eval/references/run-recipe.md` (defines the three drive modes) and `sha256:1ca2a61dc566eb31d15cc427be046d212f3b244a6534a7e56928ce31d4818f6c skills/skill-eval/SKILL.md`.
+
+## HTML Plan
+
+HTML Plan: `/tmp/skill-eval-runner-plan.html` — authored as the planning medium and opened for rendered review. Hero states the chosen design (no new execution runner; deferred grader behind a two-consumer trigger) and the proof/stop conditions; the body carries the R1/R2 split diagram, the "what the repo already gives" table, the killed-alternatives grid, the deferred-helper shape, and the verification block.
+
+## Risks + Rollout
+
+| Risk | Mitigation |
+|---|---|
+| **Pairing/aggregation across two lanes secretly needs orchestration**, dragging a real Rust runner back in | Falsifier is explicit: name one A/B need none of the 3 surfaces serve without new execution code. Pairing = two `dispatch-agent` calls; shuffling = a `mv`; aggregation = existing `summarize-delegations`. If a critic finds a genuine gap, that reopens option A — and that is the intended trip-wire. |
+| **The deferred grader is option A in disguise** | Hard invariant: the helper is a pure function — no process spawn, no network. If the shape starts launching providers, it has become A and must be rejected. |
+| **Objective tier stays self-attested too long** (Layer-1 erosion) if the bench scales to an every-edit gate before the helper lands | Trigger is named (2nd eval reuses the checklist); the gap is logged here so it's a known waiver, not a silent one. Don't promote the bench to an every-edit pre-merge gate while the objective tier is subagent-graded. |
+| **`premise-source validate` reference rots further** (cited in shape/SKILL.md, unwired) | Folded into the helper's scope as one check, so when it lands the dangling citation resolves instead of proliferating into a parallel command. (Tracking-only; not this packet's edit.) |
+
+**Rollout:** nothing to ship now. The decision _is_ the deliverable. Undo cost is zero. The only future code path (the grader helper) is itself reversible: a single pure-function subcommand behind a check gate, deletable without touching execution.
+
+**Adversarial review focus (for the fresh critic — artifact only):** Is `dispatch-agent --lane-harness` _actually_ a sufficient A/B execution runner, or does cross-lane pairing/shuffling/aggregation need orchestration that justifies a real Rust runner after all? And does the deferred `eval-grade` helper smuggle option A back in under the word "grader"?
+</script><div class="render" data-src="md_f2_left"></div></div></div>
+    <div class="spec"><div class="hd"><span>SPEC&nbsp;2·B</span><span class="len" id="len_f2_right"></span></div><div class="body"><script type="text/markdown" id="md_f2_right"># Decision Spec: Skill-eval bench — Rust runner vs protocol + native-subagent
+
+**Repo:** `/Users/phaedrus/Development/harness-kit` (working HEAD `91c11ef`; the requested `3bf0b46` is not the current checkout tip, but the four named files are all present and read at current HEAD — flag if you need the exact SHA checked out).
+
+**Question:** Should the skill-eval bench gain a Rust *runner* inside `harness-kit-checks`, or stay protocol + native-subagent (+ `council.sh`) only?
+
+## TL;DR — Decision
+
+**Do not build a dedicated Rust eval runner/orchestrator subcommand. Stay protocol + native-subagent + `council.sh`, sitting on the Rust primitives that already exist.** The parts of an eval where determinism is load-bearing — skill on/off enforcement, input projection, secret redaction, schema validation, failure classification, receipt recording — are **already Rust-owned** in `lane_harness.rs` + `dispatch-agent`. The parts a "runner" would add — fan-out, A/B pairing, scoring, report assembly — are either already covered cheaply (council.sh / native subagents), or are judgment by design (the margin and the keep/adapt/cut verdict, which the skill explicitly forbids handing to an unanchored model judge). A Rust runner would add surface in the one zone the backlog's own non-goals fence off ("Do not build a large benchmark platform inside Harness Kit"; "add Rust helper only if repetition proves it").
+
+Close the **one real gap** (the serious decorrelated run loses A/B enforcement) with a recipe change and an optional thin shell wrapper, not a crate subcommand. If repeated arena work later proves the orchestration must be a product, it graduates to Daedalus — which is the standing escape hatch, not a reason to grow `harness-kit-checks`.
+
+## What already exists (this reframes the question)
+
+The premise "should there *be* a Rust runner" is partly already answered — a single-lane Rust dispatcher exists and is wired:
+
+- **`harness-kit-checks dispatch-agent`** (`main.rs:53`, `parse_dispatch_agent_args` at `main.rs:947`, `agent_roster::dispatch_from_options` at `agent_roster.rs:123`) already does, per lane: probe the provider and skip on failure, dispatch with timeout/grace, capture the transcript to a file, check an `--expect-output` sentinel, classify the failure (`auth_required` / `credits_exhausted` / `sentinel_mismatch` / `nonzero_exit` …), and record a delegation receipt.
+- **`--lane-harness <manifest>`** (`main.rs:1021`) feeds a `lane_harness.v1` manifest into `materialize_manifest` (`lane_harness.rs:152`), which validates it (`deny_unknown_fields`, roster-checked `provider_target`, skill-existence, path-escape and symlink-escape guards, secret-like-text rejection, pinned-external-alias check) and **materializes a projection root** containing only `allowed_local_skills`, then enforces it at dispatch by repointing the provider's config dirs at that root (`agent_roster.rs:339-345`: `HOME`, `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `PI_HOME`, `GEMINI_CONFIG_DIR`, `XDG_CONFIG_HOME`).
+
+So "skill on vs off" is **already** a tamper-evident manifest diff (`allowed_local_skills: ["x"]` vs `[]`), not an honor-system prompt — exactly as `run-recipe.md` §"The clean A/B knob" claims. There is **no** `eval` subcommand and no `eval.rs` today (subcommands are `check`, `bootstrap`, `telemetry`, `destructive-command-guard`, `dispatch-agent`, `summarize-delegations`, `record-delegation`, probe).
+
+## The three layers of an eval, and where each belongs
+
+| Layer | What it is | Correctness-critical? | Right owner |
+|---|---|---|---|
+| **1. Setup / enforcement** | skill visibility real not honor-system; inputs pinned; secrets redacted; schema valid | **Yes** — a worker can subvert it | **Rust — already done** (`lane_harness` + `dispatch-agent`) |
+| **2. Execution / fan-out** | run N lanes across model families in parallel, collect outputs, report which failed | No invariant a worker can break; it's process orchestration | **Bash/native** — `council.sh` (decorrelated) + native subagents (smoke). A Rust re-impl is duplicate surface |
+| **3. Grading / verdict** | objective checks → rubric → keep/adapt/cut | objective sub-tier: yes; **margin + verdict: no — judgment by design** | objective checks = per-eval **runnable commands** (already the contract); margin/verdict = **human anchor + decorrelated judge**, never a Rust scoreboard |
+
+A Rust eval runner could only legitimately own Layer 1 (done) and the *objective sub-tier* of Layer 3. Everything else it would touch is either duplicate (Layer 2) or unautomatable on purpose (the SKILL is emphatic: "Human judgment is the ground truth"; "Agent judge ≠ ground truth"; the verdict "is signed off by the human"). The objective sub-tier doesn't need a subcommand either — the skill already mandates "oracle is a runnable command not 'it should work'", so each eval ships its own checks and the repo gate (`harness-kit-checks check`) already runs.
+
+Net: a Rust runner has **almost no surface it could own that isn't already owned or deliberately un-ownable.**
+
+## The one real gap (and why it doesn't need a runner)
+
+There is a genuine architectural seam, currently undocumented:
+
+- **Enforced A/B** (`--lane-harness`) only works through `dispatch-agent`, whose `provider_target` must be a roster CLI provider that has a projection root — `provider_skill_roots` (`lane_harness.rs:263`) emits `skills`, `.codex`, `.claude`, `.pi`, `.gemini`.
+- **Decorrelated fan-out** (`council.sh`) runs `opencode`/`pi` over OpenRouter (`council.sh:89-90`) and **cannot project skills on/off** — `opencode` isn't even in the projection-root list. So the most expensive, most-trusted "serious run" currently has the **weakest A/B integrity** (honor-system skill instructions).
+
+This is real, but it composes away without new Rust:
+
+1. **Run the two enforced arms through `dispatch-agent --lane-harness`** (arm A skills=`[x]`, arm B skills=`[]`), decorrelating the workers with `--provider-target` / `--model-override` across roster providers.
+2. **Use `council.sh` only for the blind grader** (a family distinct from both workers), or run the grader as a native subagent.
+
+That's a **recipe** (and optionally a 30-line `eval.sh` that wraps the three `dispatch-agent` calls + pairing, exactly as `council.sh` wraps fan-out) — not a crate subcommand.
+
+## Buildable spec — recommended path ("no runner")
+
+**Deliverable A — fix the recipe (required, ~1 file).** Edit `skills/skill-eval/references/run-recipe.md`:
+- In §"Serious run", state the enforcement seam explicitly: `council.sh` lanes are honor-system; skill visibility is only *enforced* through `dispatch-agent --lane-harness`.
+- Add the composition: enforced arms via `dispatch-agent --lane-harness` (manifests differ only in `allowed_local_skills`), decorrelate via `--provider-target`/`--model-override`; grader via a distinct family (council.sh lane or native subagent).
+- Note that `opencode` has no projection root, so opencode-only A/B is honor-system and is a *smoke* waiver, never the certified-margin run.
+
+**Deliverable B — optional thin wrapper (`skills/skill-eval/scripts/eval-ab.sh`, ~30-50 lines).** Mirrors `council.sh`'s shape and license to live as bash: takes `--skill`, `--fixture`, `--arm-a-target`, `--arm-b-target`, `--grader`, writes the two `lane_harness.v1` manifests to a temp dir, invokes `dispatch-agent --lane-harness` twice + the grader once, lays the outputs into the `.evidence/harness-evals/<skill>/<date>/` packet shape `run-recipe.md` already specifies. Owns no scoring or verdict — it stops at "both arms + grader produced artifacts." Build this only if you run the serious A/B more than ~twice by hand; otherwise the recipe is enough.
+
+**Deliverable C — none in Rust.** No `eval.rs`, no `eval` subcommand. The objective-check tier stays per-eval runnable commands in each `skills/<skill>/evals/<skill>-eval.md`, gated by the existing `harness-kit-checks check`.
+
+**Acceptance / oracle for the recommended path:**
+- `cargo run --locked -p harness-kit-checks -- check --repo .` still passes (no Rust change → trivially true; the standing oracle from backlog 112).
+- A serious A/B for one skill produces an evidence packet where arms A and B were run under *enforced* manifests (`lane-harness-manifest.sha256` present in each arm's projection, differing only in `allowed_local_skills`) — provable from receipts, not prose.
+- The grader family differs from both worker families (decorrelation invariant), shown in the packet.
+- `run-recipe.md` names the enforcement seam and the compose-around; a fresh critic reading only the recipe + one packet finds no "honor-system serious run" methodological hole.
+
+## When this decision flips (triggers to revisit)
+
+Build the Rust runner only if **all** of these become true — i.e., repetition proves the platform, per backlog 112's "add Rust helper only if repetition proves it":
+1. The serious A/B is run on a **schedule** (e.g. every major model release across the whole skill catalog), not ad hoc — so hand-orchestration is the bottleneck.
+2. The **objective-check tier** has converged on a *shared* cross-skill grammar (same checks reused across ≥5 evals), making a generic deterministic grader a real dedup rather than premature abstraction.
+3. The `eval-ab.sh` wrapper has proven insufficient (e.g. you need pairing/variance math that bash can't carry cleanly).
+
+If those land, the right move is **graduate to Daedalus's arena loop** (the explicit standing escape hatch in both `mode-eval.md` boundaries and the SKILL's "Eval bloat" gotcha), **not** grow `harness-kit-checks` into a benchmark product. The only Rust that should *ever* land in `harness-kit-checks` for evals is more of Layer 1 (e.g. a manifest field to pin fixture SHAs) — never Layer 2 or the verdict.
+
+## Rejected alternative — the Rust runner (for completeness)
+
+Minimal shape if you overrule this: an `eval` subcommand that reads an eval spec, materializes arm-A/arm-B manifests, calls `dispatch_provider_lane` N times, runs declared objective-check commands, and emits `report.md` with a score matrix. **Why rejected:** (1) it re-implements `council.sh`'s fan-out in Rust (duplicate surface, violates "delete before adding"); (2) its only novel deterministic value is the objective-check sub-tier, which is already per-eval commands behind the existing gate; (3) it cannot own the load-bearing output (the margin / keep-adapt-cut), so it dresses a judgment call in a scoreboard — precisely the "rubric laundering" / "benchmark theater" failure modes the SKILL and backlog 112 warn against; (4) it pushes `harness-kit-checks` toward the "benchmark platform" the non-goals forbid. It buys a tidier CLI for work that is intentionally low-frequency and judgment-bound.
+
+## Risks of the recommended path
+
+| Risk | Mitigation |
+|---|---|
+| Recipe-only enforcement seam keeps getting forgotten in practice | Deliverable A makes it explicit; Deliverable B's wrapper makes the enforced compose the path of least resistance |
+| Hand-orchestration friction tempts a premature runner | The three flip-triggers above are the explicit bar; below it, friction is correct (keeps eval frequency honestly low) |
+| `opencode` lanes silently used as serious A/B | Recipe states opencode A/B is honor-system → smoke waiver only; certified margin must route enforced arms through `dispatch-agent` |
+
+**Bottom line:** the Rust footprint for the eval bench is already at the right boundary (enforcement/validation in `lane_harness` + `dispatch-agent`). The gap is a recipe/composition gap, not a missing runner. Fix the recipe, optionally add a council-style bash wrapper, and keep the verdict where the doctrine insists it stays — with a human anchor and a decorrelated judge, not a Rust scoreboard.
+
+**Key files:** `skills/skill-eval/references/run-recipe.md` (the edit), `crates/harness-kit-checks/src/lane_harness.rs` and `crates/harness-kit-checks/src/agent_roster.rs` (the existing Rust primitives — leave as-is), `skills/council/scripts/council.sh` (the wrapper precedent for Deliverable B), `backlog.d/112-harness-eval-bench.md` (the non-goals that gate this decision).
+</script><div class="render" data-src="md_f2_right"></div></div></div>
+  </div>
+  <details class="reveal"><summary>Reveal mapping + the agent grade</summary><div class="in">
+    <p><b>Mapping:</b> Spec 2·A = <b>shape</b>. Spec 2·B = <b>raw</b> (no skill).</p>
+    <table>
+      <tr><th>Check / dimension</th><th class="c">2·A shape</th><th class="c">2·B raw</th></tr>
+      <tr><td>Objective sections complete</td><td class="c"><span class="pass">PASS</span></td><td class="c"><span class="fail">FAIL</span> (no premise source / HTML plan)</td></tr>
+      <tr><td>Oracle runnable (grep/test/cargo)</td><td class="c"><span class="pass">PASS</span></td><td class="c"><span class="part">prose</span></td></tr>
+      <tr><td>Cited anchors true (verified live)</td><td class="c"><span class="pass">PASS</span></td><td class="c"><span class="pass">PASS</span></td></tr>
+      <tr><td>Premise/framing</td><td class="c">5</td><td class="c">5</td></tr>
+      <tr><td>Alternatives + pick</td><td class="c">5</td><td class="c">3</td></tr>
+      <tr><td>Architecture depth</td><td class="c">5</td><td class="c">5</td></tr>
+      <tr><td>Verification concreteness</td><td class="c">5</td><td class="c">3</td></tr>
+      <tr><td>Actionability by stranger</td><td class="c">4</td><td class="c">4</td></tr>
+      <tr><td>Artifact quality</td><td class="c">5</td><td class="c">3</td></tr>
+      <tr><td><b>Rubric total</b></td><td class="c"><b>29 / 30</b></td><td class="c"><b>23 / 30</b></td></tr>
+    </table>
+    <p class="note" id="f2grade"><b>Agent verdict: shape (2·A) more buildable — not a tie.</b> Honest counter: the raw arm's three-layer ownership table is crisp and its council.sh/opencode A/B-integrity seam is arguably <i>the</i> central gap — but it shipped prose acceptance, no premise source, no HTML plan. Both arms were factually accurate (both correctly found the unwired <code>premise-source validate</code> and the opencode enforcement hole). <b>Still the proxy's call — unvalidated until your anchor agrees.</b></p>
+  </div></details>
+</div></section>
+
+<section id="f3"><div class="wrap">
+  <h2><span class="n">05</span>Fixture 3 — designed, not yet run</h2>
+  <p class="sub">The high-risk fixture: <i>"enforce a refund-permission threshold — refunds above $X require a second approver — in a small seeded Python billing service."</i></p>
+  <div class="card">
+    <p style="margin-top:0">It stresses what fixtures 1 &amp; 2 can't: the formal-spec ladder for money/auth, an explicit Risks+Rollout, and a real premise challenge (should this even be a code threshold, or a policy?). <b>Blocked on one thing:</b> it needs a small seeded Python repo to shape against — fixtures 1 &amp; 2 ride harness-kit itself, but a billing service doesn't exist here. ~15 minutes to scaffold a throwaway fixture repo, then it runs like the others.</p>
+    <p style="margin-bottom:0"><span class="pill todo">DESIGNED</span> &nbsp; Full pass needs ≥2 of 3; fixtures 1 &amp; 2 already give that direction. Fixture 3 is the high-stakes confirmation.</p>
+  </div>
+</div></section>
+
+<section id="cal"><div class="wrap">
+  <h2><span class="n">06</span>What your call does</h2>
+  <p class="sub">This is the calibration step — the reason the page exists. Two outcomes, both valuable:</p>
+  <div class="two-out">
+    <div class="out agree"><h4>You agree with the agent → proxy is calibrated</h4>
+      <p style="margin:0;font-size:14px">The cheap model judge tracks your taste for this kind of call. We can let it run the frequent passes between your spot-checks, and trust the margin — with a fresh human anchor on each model upgrade.</p></div>
+    <div class="out diverge"><h4>You disagree (or tie) → the proxy is broken</h4>
+      <p style="margin:0;font-size:14px">If the leaner spec is more buildable <i>to you</i>, the rubric is wrong — or shape's claim is. Then we fix the grader and rewrite what <code>/shape</code> promises. We never overrule you with a model score. That's the most valuable result here.</p></div>
+  </div>
+  <p class="note" style="margin-top:18px">Tell me, per fixture: <span class="kbd">A</span> / <span class="kbd">B</span> / <span class="kbd">tie</span> + one line. I'll reveal, record your anchor into the eval, and we'll see if the agent tracked you.</p>
+</div></section>
+
+<footer><div class="wrap">
+  Artifacts: <code>.evidence/harness-evals/shape/2026-06-30/</code> · eval spec <code>skills/shape/evals/shape-eval.md</code> · skill <code>skills/skill-eval/SKILL.md</code><br>
+  Concurrent commit <code>91c11ef</code> (image-gen docs) landed on this branch mid-run — not part of this work; left untouched. Fixture files byte-identical to pinned <code>3bf0b46</code>.
+</div></footer>
+
+<script>
+function renderAll(){
+  var ok = (typeof marked !== 'undefined');
+  if(ok && marked.setOptions){ marked.setOptions({gfm:true, breaks:false}); }
+  document.querySelectorAll('.render').forEach(function(div){
+    var src = document.getElementById(div.getAttribute('data-src'));
+    var txt = src ? src.textContent : '';
+    if(ok){ try{ div.innerHTML = marked.parse(txt); return; }catch(e){} }
+    var pre = document.createElement('pre'); pre.textContent = txt; div.appendChild(pre);
+  });
+  [['md_f1_left','len_f1_left'],['md_f1_right','len_f1_right'],['md_f2_left','len_f2_left'],['md_f2_right','len_f2_right']]
+    .forEach(function(p){var s=document.getElementById(p[0]);var l=document.getElementById(p[1]);
+      if(s&&l){l.textContent=(s.textContent.length/1000).toFixed(1)+'k chars';}});
+}
+if(document.readyState!=='loading') renderAll(); else document.addEventListener('DOMContentLoaded',renderAll);
+window.addEventListener('load',renderAll);
+</script>
+</body>
+</html>
