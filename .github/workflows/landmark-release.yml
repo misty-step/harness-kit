@@ -1,0 +1,28 @@
+name: Synthesize Release Notes
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  synthesize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: misty-step/landmark@v1
+        with:
+          mode: synthesis-only
+          healthcheck: "true"
+          node-version: "24"
+          release-tag: ${{ github.event.release.tag_name }}
+          github-token: ${{ secrets.GH_RELEASE_TOKEN }}
+          llm-api-key: ${{ secrets.OPENROUTER_API_KEY }}
+          changelog-source: auto

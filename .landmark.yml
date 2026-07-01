@@ -1,0 +1,14 @@
+product:
+  name: Harness Kit
+  description: Version-controlled primitive layer for portable, evidence-backed agent work.
+audience: developer
+voice: Practical, evidence-backed, and specific to agent operator outcomes.
+changelog:
+  source: auto
+release:
+  profile: synthesis-only
+model:
+  policy: balanced
+budget:
+  max_input_tokens: 12000
+  max_output_tokens: 1200
