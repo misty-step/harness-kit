@@ -1,8 +1,12 @@
 # Harness Kit Index
-# Generated: 2026-07-01T16:31:35Z
+# Generated: 2026-07-01T18:14:12Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
+  - name: artifact
+    description: "Produce a consistently-styled, self-contained HTML report served privately over Tailscale. One house template (Silver Age comic-ops palette, dark/light toggle, and a mandatory copy-page button) so eve"
+    source: first-party
+    tags: [a,age,button,comic-ops,consistently-styled,copy-page,dark,eve,house,html]
   - name: ci
     description: "Audit, design, and run repo-owned CI gates. Host-agnostic by default: local, GitHub Actions, Azure, or another runner should call the same repo-owned contract. Harness Kit's own gate is the Rust comma"
     source: first-party

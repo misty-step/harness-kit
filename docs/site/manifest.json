@@ -175,6 +175,16 @@
   },
   "primitives": [
     {
+      "description": "Produce a consistently-styled, self-contained HTML report served privately over Tailscale. One house template (Silver Age comic-ops palette, dark/light toggle, and a mandatory copy-page button) so every report an agent hands the operator looks and behaves the same. Use when: \"make an HTML artifact/report\", \"serve this over tailscale\", \"write up a brief/report/dashboard as a page\", or any time you'd otherwise dump a long analysis into chat. Trigger: /artifact.",
+      "icon": "catalog",
+      "id": "skill:artifact",
+      "kind": "skill",
+      "name": "artifact",
+      "page": "reference/skills/artifact.html",
+      "role": "Support",
+      "source": "skills/artifact/SKILL.md"
+    },
+    {
       "description": "Audit, design, and run repo-owned CI gates. Host-agnostic by default: local, GitHub Actions, Azure, or another runner should call the same repo-owned contract. Harness Kit's own gate is the Rust command `cargo run --locked -p harness-kit-checks -- check --repo .`; consumer repos keep their own native gate. Use when: \"run ci\", \"check ci\", \"fix ci\", \"audit ci\", \"design CI\", \"host-agnostic CI\", \"Dagger\", \"is ci passing\", \"run the gates\", \"why is ci failing\", \"strengthen ci\", \"tighten ci\", \"ci is red\", \"gates failing\", \"feedback loop is slow\", \"run gates less often\". Trigger: /ci, /gates.",
       "icon": "verify",
       "id": "skill:ci",
