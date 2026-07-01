@@ -44,9 +44,9 @@ a throwaway project and verifies `--help` works from there.
 
 Run on all skills: `for s in skills/*/SKILL.md; do /harness-engineering lint "$s"; done`
 
-For duplicate skills, long descriptions, unused candidates, and Codex
-prompt-budget pressure, sync and run the external `steipete-skill-cleaner`;
-lint checks one skill's shape, not catalog tax.
+For duplicate skills, long descriptions, unused candidates, and prompt-budget
+pressure, use `harness-kit-checks telemetry`, the registry, and the
+first-party route graph; lint checks one skill's shape, not catalog tax.
 
 For skill-design upgrades across the catalog, load
 `references/skill-design-principles.md` and apply the gates there before
