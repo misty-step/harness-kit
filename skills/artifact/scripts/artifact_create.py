@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""artifact_create — render a consistently-styled, self-contained HTML report.
+
+The house template (CSS + theme toggle + mandatory copy-page button) lives HERE,
+as the single source of truth, so every artifact looks the same and ships the
+same affordances. Hermes-independent: writes to a neutral artifacts root served
+by artifact_serve.py over Tailscale.
+
+Usage:
+  artifact_create.py --title T --slug S [--summary X] [--tag "Field Memo"]
+                     (--html-file F.html | --body-file F.md | markdown on stdin)
+                     [--root ~/artifacts/public] [--base-url URL]
+
+--html-file: a fully-authored page. Placed as-is; the copy-page button is
+             injected if the author didn't already include one.
+--body-file / stdin: markdown, wrapped in the house template.
+"""
+import argparse, os, sys, json, re, html, datetime
+
+HOUSE_CSS = r"""
+  :root{--bg:#f5f0e4;--panel:#fbf7ed;--ink:#241f19;--muted:#6b6053;--line:#e2d9c6;--red:#b4392a;--teal:#2c7a68;--gold:#bd8f2e;--shadow:0 1px 0 rgba(0,0,0,.04),0 12px 30px -22px rgba(40,30,20,.5);--col:52rem;}
+  html[data-theme="dark"]{--bg:#11141a;--panel:#171b22;--ink:#e9e3d5;--muted:#9aa0ab;--line:#282e38;--red:#e3674f;--teal:#54bba4;--gold:#d8b25a;--shadow:0 1px 0 rgba(0,0,0,.3),0 16px 40px -26px rgba(0,0,0,.9);}
+  @media (prefers-color-scheme:dark){html[data-theme="auto"]{--bg:#11141a;--panel:#171b22;--ink:#e9e3d5;--muted:#9aa0ab;--line:#282e38;--red:#e3674f;--teal:#54bba4;--gold:#d8b25a;--shadow:0 1px 0 rgba(0,0,0,.3),0 16px 40px -26px rgba(0,0,0,.9);}}
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding:0 1.1rem 5rem;background-image:radial-gradient(circle at 12% -5%,rgba(189,143,46,.07),transparent 36%),radial-gradient(circle at 92% 4%,rgba(44,122,104,.07),transparent 34%);}
+  .wrap{max-width:var(--col);margin:0 auto}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  a{color:var(--red);text-underline-offset:2px;overflow-wrap:anywhere}
+  h1,h2,h3{line-height:1.2;font-weight:680}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:clamp(1.85rem,5.2vw,2.6rem);letter-spacing:-.01em;margin:.2em 0 .15em}
+  h2{font-size:1.32rem;margin:2.3em 0 .3em} h2 .k{font:600 .72rem/1 ui-monospace,monospace;color:var(--red);vertical-align:.5em;margin-right:.55em}
+  h3{font-size:1.04rem;margin:1.3em 0 .25em}
+  p{margin:.55em 0} small{color:var(--muted)}
+  header.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:0 -1.1rem 1.6rem;padding:.55rem 1.1rem}
+  .bar .row{max-width:var(--col);margin:0 auto;display:flex;align-items:center;gap:.6rem}
+  .tag{font:600 .68rem/1 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--teal);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 60%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .spacer{flex:1}
+  .toggle{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 .72rem/1 ui-monospace,monospace;padding:.42rem .7rem;border-radius:2em;display:inline-flex;gap:.4rem;align-items:center}
+  .toggle:hover{border-color:var(--red)}
+  .label{font:600 .72rem/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+  .lede{font-size:1.12rem;color:var(--muted);margin:.4em 0 1em}
+  .pill{font:600 .68rem/1.4 ui-monospace,monospace;border:1px solid var(--line);border-radius:2em;padding:.28em .7em;color:var(--muted);background:var(--panel)}
+  .call{border:1px solid var(--line);border-left:4px solid var(--teal);background:color-mix(in srgb,var(--teal) 7%,var(--panel));border-radius:.6rem;padding:.8rem 1.05rem;margin:1.1rem 0}
+  .call.red{border-left-color:var(--red);background:color-mix(in srgb,var(--red) 7%,var(--panel))}
+  .call.gold{border-left-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--panel))}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1rem 0;border:1px solid var(--line);border-radius:.6rem}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--panel)}
+  th,td{text-align:left;padding:.55rem .65rem;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font:600 .66rem/1.3 ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--panel) 70%,var(--bg))}
+  tr:last-child td{border-bottom:0}
+  code{font-family:ui-monospace,monospace;font-size:.85em;background:color-mix(in srgb,var(--ink) 8%,transparent);padding:.1em .35em;border-radius:.3em;overflow-wrap:anywhere}
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:.6rem;padding:.9rem;overflow-x:auto;font:600 .78rem/1.5 ui-monospace,monospace;color:var(--ink)}
+  blockquote{border-left:3px solid var(--gold);margin:.8em 0;padding:.2em 0 .2em 1rem;color:var(--muted)}
+  footer{margin-top:2.6rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.85rem}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none} html{scroll-behavior:auto}}
+"""
+
+# Theme toggle + the MANDATORY copy-page button. Copies the whole document.
+HOUSE_JS = r"""
+(function(){
+  var root=document.documentElement,k="hk-artifact-theme";
+  var order=["auto","light","dark"],icons={auto:"◐",light:"☀",dark:"☾"},names={auto:"System",light:"Light",dark:"Dark"};
+  var saved=null;try{saved=localStorage.getItem(k)}catch(e){}
+  var cur=order.indexOf(saved)>=0?saved:"auto";
+  function apply(){root.setAttribute("data-theme",cur);var i=document.getElementById("tgicon"),t=document.getElementById("tgtxt");if(i)i.textContent=icons[cur];if(t)t.textContent=names[cur];}
+  apply();
+  var tg=document.getElementById("tg");if(tg)tg.addEventListener("click",function(){cur=order[(order.indexOf(cur)+1)%order.length];try{localStorage.setItem(k,cur)}catch(e){}apply();});
+  var cp=document.getElementById("cp"),cpt=document.getElementById("cptxt");
+  if(cp)cp.addEventListener("click",function(){var doc="<!doctype html>\n"+document.documentElement.outerHTML;
+    function ok(){if(cpt){cpt.textContent="Copied ✓";setTimeout(function(){cpt.textContent="Copy page"},1600);}}
+    function fallback(){var ta=document.createElement("textarea");ta.value=doc;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");ok()}catch(e){if(cpt)cpt.textContent="Copy failed"}document.body.removeChild(ta);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(doc).then(ok,fallback)}else{fallback()}});
+})();
+"""
+
+HEADER = ('<header class="bar"><div class="row">'
+          '<span class="dot" aria-hidden="true"></span>'
+          '<span class="tag">{tag}</span><span class="spacer"></span>'
+          '<button class="toggle" id="cp" aria-label="Copy page HTML"><span id="cpicon">⧉</span><span id="cptxt">Copy page</span></button>'
+          '<button class="toggle" id="tg" aria-label="Toggle theme"><span id="tgicon">◐</span><span id="tgtxt">System</span></button>'
+          '</div></header>')
+
+COPY_BTN_SNIPPET = ('<button class="toggle" id="cp" aria-label="Copy page HTML">'
+                    '<span id="cpicon">⧉</span><span id="cptxt">Copy page</span></button>')
+
+COPY_HANDLER_SNIPPET = (
+    '<script data-hk-artifact-copy>(function(){var cp=document.getElementById("cp"),cpt=document.getElementById("cptxt");'
+    'if(!cp)return;cp.addEventListener("click",function(){var d="<!doctype html>\\n"+document.documentElement.outerHTML;'
+    'function ok(){if(cpt){cpt.textContent="Copied \\u2713";setTimeout(function(){cpt.textContent="Copy page"},1600);}}'
+    'function fallback(){var ta=document.createElement("textarea");ta.value=d;ta.style.position="fixed";ta.style.opacity="0";'
+    'document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");ok()}catch(e){if(cpt)cpt.textContent="Copy failed"}'
+    'document.body.removeChild(ta);}'
+    'if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(d).then(ok,fallback)}else{fallback()}});})();</script>'
+)
+
+
+def md_to_html(md: str) -> str:
+    """Small dependency-free markdown renderer: headings, bold/italic/code,
+    fenced code, blockquotes, ul/ol, tables (pipe), paragraphs."""
+    out, i, lines = [], 0, md.split("\n")
+    def inline(s):
+        s = html.escape(s, quote=False)
+        s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+        s = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
+        s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", s)
+        s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2">\1</a>', s)
+        return s
+    n = len(lines)
+    while i < n:
+        ln = lines[i]
+        if ln.strip().startswith("```"):
+            i += 1; buf = []
+            while i < n and not lines[i].strip().startswith("```"):
+                buf.append(html.escape(lines[i], quote=False)); i += 1
+            i += 1; out.append("<pre>" + "\n".join(buf) + "</pre>"); continue
+        m = re.match(r"^(#{1,3})\s+(.*)$", ln)
+        if m:
+            lvl = len(m.group(1)); out.append(f"<h{lvl}>{inline(m.group(2))}</h{lvl}>"); i += 1; continue
+        if ln.strip().startswith(">"):
+            buf = []
+            while i < n and lines[i].strip().startswith(">"):
+                buf.append(inline(lines[i].strip()[1:].strip())); i += 1
+            out.append("<blockquote>" + "<br>".join(buf) + "</blockquote>"); continue
+        if "|" in ln and i + 1 < n and re.match(r"^[\s|:-]+$", lines[i+1]):
+            hdr = [c.strip() for c in ln.strip().strip("|").split("|")]
+            i += 2; rows = []
+            while i < n and "|" in lines[i] and lines[i].strip():
+                rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")]); i += 1
+            t = ["<div class='scroll'><table><thead><tr>"] + [f"<th>{inline(c)}</th>" for c in hdr] + ["</tr></thead><tbody>"]
+            for r in rows:
+                t.append("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>")
+            t.append("</tbody></table></div>"); out.append("".join(t)); continue
+        if re.match(r"^\s*[-*]\s+", ln):
+            buf = []
+            while i < n and re.match(r"^\s*[-*]\s+", lines[i]):
+                buf.append("<li>" + inline(re.sub(r"^\s*[-*]\s+", "", lines[i])) + "</li>"); i += 1
+            out.append("<ul>" + "".join(buf) + "</ul>"); continue
+        if re.match(r"^\s*\d+\.\s+", ln):
+            buf = []
+            while i < n and re.match(r"^\s*\d+\.\s+", lines[i]):
+                buf.append("<li>" + inline(re.sub(r"^\s*\d+\.\s+", "", lines[i])) + "</li>"); i += 1
+            out.append("<ol>" + "".join(buf) + "</ol>"); continue
+        if ln.strip() == "":
+            i += 1; continue
+        buf = []
+        while i < n and lines[i].strip() and not re.match(r"^(#{1,3}\s|```|>|\s*[-*]\s|\s*\d+\.\s)", lines[i]):
+            buf.append(inline(lines[i])); i += 1
+        out.append("<p>" + " ".join(buf) + "</p>")
+    return "\n".join(out)
+
+
+def wrap(title, tag, summary, body_html):
+    lede = f'<p class="lede">{html.escape(summary)}</p>' if summary else ""
+    stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    return f"""<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(title)}</title>
+<style>{HOUSE_CSS}</style>
+</head>
+<body>
+{HEADER.format(tag=html.escape(tag))}
+<div class="wrap">
+<h1>{html.escape(title)}</h1>
+{lede}
+{body_html}
+<footer><p class="mono">artifact · {stamp}</p></footer>
+</div>
+<script>{HOUSE_JS}</script>
+</body>
+</html>"""
+
+
+def ensure_copy_button(doc: str) -> str:
+    """Inject the copy-page button + its JS into an authored full HTML doc if absent."""
+    if 'id="cp"' not in doc:
+        # add button before the theme toggle if present, else after <body>
+        if 'id="tg"' in doc:
+            doc = doc.replace('<button class="toggle" id="tg"', COPY_BTN_SNIPPET + '\n  <button class="toggle" id="tg"', 1)
+        else:
+            doc = re.sub(r"(<body[^>]*>)", r"\1\n" + HEADER.format(tag="Artifact"), doc, count=1)
+    if 'id="cp"' in doc and "data-hk-artifact-copy" not in doc and "</body>" in doc:
+        doc = doc.replace("</body>", COPY_HANDLER_SNIPPET + "\n</body>", 1)
+    return doc
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--title", required=True)
+    ap.add_argument("--slug", required=True)
+    ap.add_argument("--summary", default="")
+    ap.add_argument("--tag", default="Artifact")
+    ap.add_argument("--html-file")
+    ap.add_argument("--body-file")
+    ap.add_argument("--root", default=os.path.expanduser("~/artifacts/public"))
+    ap.add_argument("--base-url", default="https://serenity.tail5f5eb4.ts.net/artifacts")
+    a = ap.parse_args()
+
+    slug = re.sub(r"[^a-zA-Z0-9-]+", "-", a.slug).strip("-").lower()
+    if a.html_file:
+        doc = open(os.path.expanduser(a.html_file)).read()
+        if "<html" in doc.lower():
+            doc = ensure_copy_button(doc)
+        else:
+            doc = wrap(a.title, a.tag, a.summary, doc)
+    else:
+        md = open(os.path.expanduser(a.body_file)).read() if a.body_file else sys.stdin.read()
+        doc = wrap(a.title, a.tag, a.summary, md_to_html(md))
+
+    dest_dir = os.path.join(a.root, "a", slug)
+    os.makedirs(dest_dir, exist_ok=True)
+    dest = os.path.join(dest_dir, "index.html")
+    with open(dest, "w") as f:
+        f.write(doc)
+    url = f"{a.base_url.rstrip('/')}/a/{slug}/"
+    print(json.dumps({"slug": slug, "path": dest, "url": url, "bytes": len(doc)}, indent=2))
+
+
+if __name__ == "__main__":
+    main()
