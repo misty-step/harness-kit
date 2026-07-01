@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/misty-step/harness-kit/compare/v1.1.0...v1.2.0) (2026-07-01)
+
+
+### Features
+
+* **skill:** add artifact report generator ([abb1ef1](https://github.com/misty-step/harness-kit/commit/abb1ef1208626b820be84b1af8203862af51e792))
+
 # [1.1.0](https://github.com/misty-step/harness-kit/compare/v1.0.0...v1.1.0) (2026-07-01)
 
 
