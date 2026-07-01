@@ -47,6 +47,30 @@
     {
       "source": "backlog.d/126-landmark-fleet-adoption.md",
       "title": "Landmark fleet adoption"
+    },
+    {
+      "source": "backlog.d/127-cull-zero-use-vendored-skills.md",
+      "title": "Cull zero-use vendored skills from the default catalog"
+    },
+    {
+      "source": "backlog.d/128-scale-skill-eval-integration.md",
+      "title": "Scale skill-eval integration across first-party skills"
+    },
+    {
+      "source": "backlog.d/129-diet-checks-crate-boundaries.md",
+      "title": "Diet the checks crate into clear maintenance boundaries"
+    },
+    {
+      "source": "backlog.d/130-role-scoped-bootstrap-bundles.md",
+      "title": "Add role-scoped bootstrap bundles"
+    },
+    {
+      "source": "backlog.d/131-bespoke-skill-subset-generator.md",
+      "title": "Generalize bespoke skill subset generation"
+    },
+    {
+      "source": "backlog.d/132-greenfield-template-ci.md",
+      "title": "Declare and verify the greenfield Factory template"
     }
   ],
   "copy_source": "docs/copy/site.json",

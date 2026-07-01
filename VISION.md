@@ -3,12 +3,13 @@
 Harness Kit exists to make agent work explicit, portable, and empirically
 improvable across fast-changing agent surfaces.
 
-It is the version-controlled primitive layer for agent work: shared
-`AGENTS.md` doctrine, skills, references, provider and harness configuration,
+It is the version-controlled primitive layer for agent work: a pile of skills,
+shared `AGENTS.md` doctrine, references, provider and harness configuration,
 bootstrap/install logic, receipts, gates, and eval contracts. Codex, Claude
 Code, OMP, OpenCode, Pi, Antigravity, Goose, and whatever earns a place next
 should not each require a separate philosophy and maintenance loop. Improve the
-primitive once, re-bootstrap, and every useful harness gets sharper.
+primitive once, sync it in whole or subset into system and repo harnesses, and
+every useful harness gets sharper.
 
 Harness Kit is operator-first. It is built for this operator's workflows,
 preferences, tools, standards, and taste. It should be general enough that
@@ -27,14 +28,18 @@ primitives that tell agents what good work looks like, what proof is required,
 which tools are worth using, how to delegate, how to stop, and how to leave
 evidence.
 
-The near-term product is a high-quality shared harness for supervised agent
-work. The central next bet is orchestration: master agents that can manage
-projects, dispatch bespoke subagents, assemble ad hoc harnesses, and coordinate
-large or specialized agent teams without turning the operator into a babysitter.
+The near-term product is the skill pile and easy sync layer for supervised agent
+work. In the Weave, Harness Kit is not the compute plane or work app; it is the
+source of agent primitives that those tools install, subset, evaluate, and hand
+to domain agents. The central next bet is orchestration: master agents that can
+manage projects, dispatch bespoke subagents, assemble ad hoc harnesses, and
+coordinate large or specialized agent teams without turning the operator into a
+babysitter.
 
 Harness Kit should move toward that world without prematurely hardening the
-wrong architecture. It may remain a shared global primitive catalog. It may
-become a source of primitive buckets for specific roles. It may become the
+wrong architecture. It may remain a shared global primitive catalog, but that
+cannot stay the only install shape. It should become a source of primitive
+buckets for specific roles and repo-local domain agents. It may become the
 doctrine and component library a master agent uses to generate task-specific
 harnesses. It may split primitives by supervision level, task family, or agent
 role. The project should preserve optionality while making the orchestration
@@ -43,8 +48,8 @@ experiments concrete enough to learn from.
 ## What Must Stay True
 
 - **One source, many harnesses.** The source repo owns the primitives;
-  bootstrap projects them into the agent surfaces that matter. Harness-specific
-  behavior is an adapter, not a second truth.
+  bootstrap projects all or selected subsets into the agent surfaces that
+  matter. Harness-specific behavior is an adapter, not a second truth.
 - **Operator-bespoke, not machine-private.** Lean into this operator's chosen
   tools, vendors, stacks, and doctrine. Do not bake in private local paths,
   accidental machine state, or assumptions that make the primitives impossible
@@ -57,9 +62,15 @@ experiments concrete enough to learn from.
   that frames work, dispatches lanes, compares evidence, and decides. Skills
   should support role-specific and ad hoc harness assembly, not only one human
   manually invoking slash commands.
+- **Subsettable by design.** The whole catalog stays available, but the default
+  direction is smaller role and repo bundles. A critic, designer, implementer,
+  or project-specific QA agent should load the skills it needs, not every skill
+  Harness Kit has ever seen.
 - **Evidence beats taste.** Skills, doctrine, provider defaults, orchestration
   patterns, and model choices earn their place through telemetry, evals,
-  benchmarks, fresh-context critique, live QA, and user outcomes.
+  benchmarks, fresh-context critique, live QA, and user outcomes. Durable
+  first-party skills ship with an eval or an explicit waiver; vendored skills
+  survive by use, routed reference, or measured win.
 - **Delete as progress.** Stale skills, duplicated prose, obsolete harness
   bridges, and gates that only enforce ceremony should disappear. The best
   harness is often smaller after learning.
@@ -89,6 +100,13 @@ specific evals should often live with the project that cares about them. Harness
 Kit should be able to import, export, run, or consume those evals when its
 primitives are under test.
 
+The local eval bar is pragmatic: every first-party skill needs a falsifiable
+claim, at least one run or seeded eval path, and a cadence for model-upgrade
+re-audit. New skills should start with the eval scaffold rather than inheriting
+trust from the catalog. External skills remain recoverable from upstream; if
+telemetry and references do not justify default loading, they should leave the
+active sync set.
+
 Daedalus has a different job if that split holds: optimization over agent
 configurations. Given an eval or task specification, Daedalus can vary prompts,
 skills, available tools, subagent topology, models, reasoning budgets, runtime
@@ -102,6 +120,18 @@ Keep the shared harness excellent: source skills, shared `AGENTS.md`, provider
 roster, bootstrap, local gate, docs, receipts, and backlog discipline. Make it
 easy to use across Codex, Claude Code, OMP, OpenCode, Pi, Antigravity, Goose,
 and whatever earns a place next.
+
+The immediate product work is deletion and proof:
+
+- cull zero-use, zero-reference vendored skills from the default catalog;
+- wire skill evals into first-party skill creation and maintenance;
+- fix telemetry blind spots for routed invocations;
+- diet the checks crate back toward gates, bootstrap, generated artifacts, and
+  repo maintenance;
+- build role-scoped bootstrap bundles that target <=5k standing prompt tokens
+  for common session roles;
+- prove the one-core-many-faces template as greenfield-only by instantiating it
+  in CI.
 
 Push lightly but deliberately toward the master-orchestrator pattern:
 
