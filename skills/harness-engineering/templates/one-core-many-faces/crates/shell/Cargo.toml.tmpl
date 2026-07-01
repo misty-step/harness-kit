@@ -1,0 +1,12 @@
+[package]
+name = "{{crate_prefix}}-shell"
+version = "0.1.0"
+description = "{{description}} use cases and effect ports"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+{{crate_prefix}}-core = { path = "../core" }
+anyhow.workspace = true
+serde.workspace = true

@@ -1,0 +1,33 @@
+---
+name: {{binary}}
+description: |
+  Use {{project}} from an agent session. {{description}} Use when: "{{binary}}",
+  "{{project}}", or when a task needs this product's API, CLI, MCP, or release
+  evidence. Trigger: /{{binary}}.
+---
+
+# {{project}}
+
+{{description}}
+
+## Use It
+
+- CLI: `{{binary}} --help`
+- API: `{{binary}} serve` then call the documented route.
+- MCP: register `{{binary}}-mcp` with the active harness.
+
+## Evidence
+
+Before claiming done, capture:
+
+- exact command, route, or MCP tool call exercised
+- output or artifact path
+- gate result
+- residual risk
+
+## Boundaries
+
+- Do not mutate production state without explicit operator approval.
+- Do not use the API surface when an MCP tool exists for the same agent task.
+- Do not treat generated SDK/API docs as proof; run the consumer or protocol
+  smoke.

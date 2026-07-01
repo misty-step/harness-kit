@@ -1,0 +1,30 @@
+use anyhow::Result;
+use {{crate_prefix}}_core::{normalize_item, WorkItem};
+
+pub trait ItemStore {
+    fn save(&self, item: &WorkItem) -> Result<()>;
+    fn list(&self) -> Result<Vec<WorkItem>>;
+}
+
+pub struct Service<S> {
+    store: S,
+}
+
+impl<S> Service<S>
+where
+    S: ItemStore,
+{
+    pub fn new(store: S) -> Self {
+        Self { store }
+    }
+
+    pub fn create_item(&self, item: WorkItem) -> Result<WorkItem> {
+        let item = normalize_item(item)?;
+        self.store.save(&item)?;
+        Ok(item)
+    }
+
+    pub fn list_items(&self) -> Result<Vec<WorkItem>> {
+        self.store.list()
+    }
+}

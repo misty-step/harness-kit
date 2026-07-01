@@ -1,0 +1,19 @@
+[package]
+name = "{{crate_prefix}}-mcp"
+version = "0.1.0"
+description = "{{description}} MCP adapter"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "{{binary}}-mcp"
+path = "src/main.rs"
+
+[dependencies]
+{{crate_prefix}}-core = { path = "../core" }
+{{crate_prefix}}-shell = { path = "../shell" }
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true

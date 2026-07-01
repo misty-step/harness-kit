@@ -1,0 +1,21 @@
+product:
+  name: {{project}}
+  description: "{{description}}"
+audience: developer
+voice: Clear, concrete, and specific to shipped behavior.
+changelog:
+  source: auto
+artifacts:
+  markdown: docs/releases/{version}.md
+  plaintext: docs/releases/{version}.txt
+  html: docs/releases/{version}.html
+  json: docs/releases/releases.json
+  rss: docs/releases/feed.xml
+release:
+  profile: full
+model:
+  policy: balanced
+budget:
+  max_input_tokens: 12000
+  max_output_tokens: 1200
+  max_usd: 0.25

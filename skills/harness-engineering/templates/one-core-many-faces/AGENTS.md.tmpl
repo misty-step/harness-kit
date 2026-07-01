@@ -1,0 +1,32 @@
+# AGENTS.md - {{project}}
+
+{{description}}
+
+## Contracts
+
+- Base branch: `master`.
+- Gate: `cargo test --workspace --locked`.
+- Core business rules live in `crates/core`.
+- Effects and use cases live in `crates/shell`.
+- API, CLI, MCP, SDK, UI, and skills are adapters. They must not duplicate
+  business rules.
+- Release intelligence uses Landmark; see `.github/workflows/landmark-release.yml`
+  and `.landmark.yml`.
+
+## Verification
+
+- Core changes: run unit tests for `{{crate_prefix}}-core`.
+- API changes: replay representative requests and one validation error.
+- CLI changes: run the documented happy path and malformed-input path.
+- MCP changes: replay `initialize`, `tools/list`, one read tool, and one
+  structured error.
+- SDK changes: build a throwaway consumer.
+- Skill changes: run a cold-agent smoke using only `skills/{{binary}}/SKILL.md`
+  and this repo.
+
+## Red Lines
+
+- No 1:1 endpoint dumps as MCP tools.
+- No adapter-specific policy forks.
+- No generated SDK/client claim without a consumer build.
+- No weakening the gate to land release automation.

@@ -1,0 +1,19 @@
+//! MCP adapter skeleton.
+//!
+//! Prefer the current official MCP SDK for the real implementation. Keep this
+//! face intent-shaped: expose agent tasks, not every HTTP endpoint.
+
+use anyhow::Result;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    eprintln!("{{binary}}-mcp: replace with SDK-backed stdio or streamable HTTP server");
+    Ok(())
+}
+
+// Tool design checklist:
+// - list_* read-only tools return enough context for the agent to decide.
+// - prepare_* tools assemble multi-step state behind one intent.
+// - mutate_* tools are narrow and require explicit arguments.
+// - destructive tools are separate and obvious.
+// - validation errors return structured tool errors.
