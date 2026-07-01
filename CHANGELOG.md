@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/misty-step/harness-kit/compare/v1.2.0...v1.3.0) (2026-07-01)
+
+
+### Features
+
+* **skill:** add skill-eval A/B eval framework + shape eval ([aedfb4f](https://github.com/misty-step/harness-kit/commit/aedfb4f00bb513f12bb2487ea2c9e84f2306a3ac))
+
 # [1.2.0](https://github.com/misty-step/harness-kit/compare/v1.1.0...v1.2.0) (2026-07-01)
 
 
