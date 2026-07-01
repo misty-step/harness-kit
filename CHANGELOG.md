@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/misty-step/harness-kit/compare/v1.0.0...v1.1.0) (2026-07-01)
+
+
+### Features
+
+* **template:** bake in Fly Litestream deploy layer ([8a704f1](https://github.com/misty-step/harness-kit/commit/8a704f1673d3c184c1d36e5894a2dd394aad15cb))
+
 # 1.0.0 (2026-07-01)
 
 
