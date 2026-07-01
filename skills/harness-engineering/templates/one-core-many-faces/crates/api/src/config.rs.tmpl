@@ -1,0 +1,117 @@
+use std::{collections::BTreeMap, fmt, net::SocketAddr, path::PathBuf};
+
+const DEFAULT_DATABASE_PATH: &str = "/data/{{binary}}.db";
+const DEFAULT_PORT: u16 = 8080;
+
+/// Fully parsed process configuration for the HTTP server.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ServerProcessConfig {
+    /// SQLite database path used by the shell/store adapter.
+    pub database_path: PathBuf,
+    /// Socket address the process should bind.
+    pub listen_addr: SocketAddr,
+}
+
+impl ServerProcessConfig {
+    /// Build process configuration from key/value environment pairs.
+    pub fn from_env<I, K, V>(vars: I) -> Result<Self, RuntimeEnvError>
+    where
+        I: IntoIterator<Item = (K, V)>,
+        K: Into<String>,
+        V: Into<String>,
+    {
+        let vars = vars
+            .into_iter()
+            .map(|(key, value)| (key.into(), value.into()))
+            .collect::<BTreeMap<_, _>>();
+
+        let database_path = env_value(&vars, "DATABASE_PATH")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| PathBuf::from(DEFAULT_DATABASE_PATH));
+        let port = parse_port(env_value(&vars, "PORT"))?;
+
+        Ok(Self {
+            database_path,
+            listen_addr: SocketAddr::from(([0, 0, 0, 0], port)),
+        })
+    }
+}
+
+/// Invalid process environment for the HTTP server.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RuntimeEnvError {
+    variable: &'static str,
+    detail: String,
+}
+
+impl RuntimeEnvError {
+    fn new(variable: &'static str, detail: impl Into<String>) -> Self {
+        Self {
+            variable,
+            detail: detail.into(),
+        }
+    }
+
+    /// Environment variable that failed validation.
+    pub const fn variable(&self) -> &'static str {
+        self.variable
+    }
+}
+
+impl fmt::Display for RuntimeEnvError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "invalid {} environment variable: {}",
+            self.variable, self.detail
+        )
+    }
+}
+
+impl std::error::Error for RuntimeEnvError {}
+
+fn env_value<'a>(vars: &'a BTreeMap<String, String>, key: &str) -> Option<&'a str> {
+    vars.get(key)
+        .map(String::as_str)
+        .filter(|value| !value.is_empty())
+}
+
+fn parse_port(value: Option<&str>) -> Result<u16, RuntimeEnvError> {
+    match value {
+        Some(value) => value.parse::<u16>().map_err(|error| {
+            RuntimeEnvError::new("PORT", format!("expected TCP port 0-65535 ({error})"))
+        }),
+        None => Ok(DEFAULT_PORT),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn process_config_uses_deploy_defaults() -> Result<(), RuntimeEnvError> {
+        let config = ServerProcessConfig::from_env(Vec::<(String, String)>::new())?;
+
+        assert_eq!(config.database_path, PathBuf::from("/data/{{binary}}.db"));
+        assert_eq!(config.listen_addr, SocketAddr::from(([0, 0, 0, 0], 8080)));
+        Ok(())
+    }
+
+    #[test]
+    fn process_config_reads_production_environment() -> Result<(), RuntimeEnvError> {
+        let config =
+            ServerProcessConfig::from_env([("DATABASE_PATH", "/tmp/{{binary}}.db"), ("PORT", "9090")])?;
+
+        assert_eq!(config.database_path, PathBuf::from("/tmp/{{binary}}.db"));
+        assert_eq!(config.listen_addr, SocketAddr::from(([0, 0, 0, 0], 9090)));
+        Ok(())
+    }
+
+    #[test]
+    fn process_config_rejects_invalid_port() {
+        let error = ServerProcessConfig::from_env([("PORT", "70000")]).unwrap_err();
+
+        assert_eq!(error.variable(), "PORT");
+    }
+}

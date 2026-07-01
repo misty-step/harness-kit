@@ -10,6 +10,9 @@
 - Effects and use cases live in `crates/shell`.
 - API, CLI, MCP, SDK, UI, and skills are adapters. They must not duplicate
   business rules.
+- Deploy runtime is Fly + SQLite under `/data` + Litestream to Fly Tigris. No
+  production-ready claim without Docker build, Fly config validation,
+  `/healthz`, `/readyz`, and a restore drill or explicit waiver.
 - Release intelligence uses Landmark; see `.github/workflows/landmark-release.yml`
   and `.landmark.yml`.
 
@@ -23,10 +26,14 @@
 - SDK changes: build a throwaway consumer.
 - Skill changes: run a cold-agent smoke using only `skills/{{binary}}/SKILL.md`
   and this repo.
+- Deploy changes: build the Docker image, validate `fly.toml`, smoke
+  `/healthz` and `/readyz`, and prove Litestream restore behavior against a
+  non-production database before enabling `REQUIRE_LITESTREAM=1`.
 
 ## Red Lines
 
 - No 1:1 endpoint dumps as MCP tools.
 - No adapter-specific policy forks.
 - No generated SDK/client claim without a consumer build.
+- No deploy claim that skips restore-on-boot evidence.
 - No weakening the gate to land release automation.

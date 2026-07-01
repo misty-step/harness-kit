@@ -1,5 +1,5 @@
 use anyhow::Result;
-use {{crate_prefix}}_core::{normalize_item, WorkItem};
+use {{crate_prefix}}_core::{WorkItem, normalize_item};
 
 pub trait ItemStore {
     fn save(&self, item: &WorkItem) -> Result<()>;

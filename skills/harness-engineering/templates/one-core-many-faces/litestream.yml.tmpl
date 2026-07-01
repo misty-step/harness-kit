@@ -1,0 +1,10 @@
+dbs:
+  - path: /data/{{binary}}.db
+    replicas:
+      - type: s3
+        bucket: ${BUCKET_NAME}
+        path: {{binary}}.db
+        endpoint: https://fly.storage.tigris.dev
+        region: auto
+        force-path-style: true
+        snapshot-interval: 1h

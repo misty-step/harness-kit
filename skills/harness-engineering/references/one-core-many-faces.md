@@ -1,7 +1,8 @@
 # One Core, Many Faces
 
 Use when a factory repo should expose one product through API, CLI, MCP, SDK,
-human UI, and a shipped skill without duplicating business logic.
+human UI, deploy runtime, and a shipped skill without duplicating business
+logic.
 
 ## Source Signals
 
@@ -17,10 +18,10 @@ human UI, and a shipped skill without duplicating business logic.
 ## Target Shape
 
 ```text
-AGENTS FIRST                                      HUMANS THIN
-api   cli   mcp   sdk   web/control   SKILL.md   AGENTS.md
- |     |     |     |        |            |          |
- +-----+-----+-----+--------+------------+----------+
+AGENTS FIRST                                             HUMANS THIN
+api   cli   mcp   sdk   web/control   deploy   SKILL.md   AGENTS.md
+ |     |     |     |        |          |          |          |
+ +-----+-----+-----+--------+----------+----------+----------+
                   shell / ports / use cases
                          |
                       core crate
@@ -57,6 +58,11 @@ SDK over hand-rolled JSON-RPC.
 : Consumer package over the stable API or generated schema. Keep non-Rust SDKs
 tiny unless a real consumer requires them. Generate when the schema is stable
 enough; otherwise ship a typed minimal client.
+
+`deploy`
+: Process edge: Docker image, Fly runtime config, `/data` mount, Litestream
+restore/replicate wrapper, and typed config-from-env. No product policy and no
+business logic.
 
 `SKILL.md`
 : Agent judgment: when to use the tool, what evidence to capture, safety
@@ -100,6 +106,8 @@ repo or planning branch and replace:
 - `{{base_branch}}` with the repository base branch, for example `main` or
   `master`.
 - `{{npm_scope}}` with the npm scope, for example `misty-step`.
+- `{{fly_app}}` with the Fly.io app name.
+- `{{fly_region}}` with the Fly.io primary region.
 - `{{description}}` with one concrete product sentence.
 
 Then delete every face the first slice cannot verify. The template is a menu,
@@ -118,6 +126,9 @@ Minimum proof for the scaffold itself:
   a read tool, and one structured error.
 - SDK: throwaway consumer build that imports the package and calls one public
   method.
+- Deploy: materialized Docker build, `fly.toml` validation, `/healthz` and
+  `/readyz` smoke, and Litestream restore drill against a non-production
+  database or explicit pre-production waiver.
 - Skill: cold-agent smoke: ask the agent to use the product from only the
   skill and repo docs, then inspect the evidence it leaves.
 
@@ -134,3 +145,5 @@ Minimum proof for the scaffold itself:
   boundaries.
 - Human UI that tries to match every API operation instead of owning oversight,
   approval, trace, and recovery.
+- Deploy files copied without typed env parsing, readiness probes, and restore
+  evidence.
