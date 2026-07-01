@@ -26,7 +26,7 @@ Engineer the harness. Keep it thin.
 | eval skill | `references/mode-eval.md` |
 | lint skill | `references/mode-lint.md` |
 | apply skill-design lessons | `references/skill-design-principles.md` |
-| clean Codex skill catalog | external `steipete-skill-cleaner` |
+| clean skill catalog | `references/mode-audit.md` + `harness-kit-checks telemetry` |
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |

@@ -96,9 +96,7 @@ sources:
     layout: flat
     skills_path: plugins/compound-engineering/skills
     alias_prefix: "every-"
-    include:
-      - ce-dogfood-beta
-      - ce-promote
+    include: [ce-promote]
 
   # JuliusBrussee/caveman — terse-output token compression ("few token do trick").
   # Sibling skills (caveman-commit, caveman-review, compress) intentionally
@@ -111,59 +109,6 @@ sources:
     skills_path: skills
     alias_prefix: "julius-"
     include: [caveman]
-
-  # petekp/claude-code-setup grill-me — standalone pressure-test interview.
-  # We intentionally import this complete SKILL.md rather than the current
-  # mattpocock/skills grill-me wrapper, which delegates to a separate
-  # `/grilling` skill/command chain. This source gives Harness Kit the named
-  # `grill-me` primitive wholecloth without importing extra slash-command
-  # machinery.
-  - repo: petekp/claude-code-setup
-    ref: main
-    pin: 8355490ec50d174573cbd4cc0663a72a178e55e0
-    layout: flat
-    skills_path: skills
-    alias_prefix: "petekp-"
-    include: [grill-me]
-
-  # mattpocock/skills — "Skills For Real Engineers" pack. Imported as
-  # externally managed, source-scoped skills because the operator has live
-  # repeated use of `writing-great-skills`, and the pack is intentionally
-  # small/composable rather than a full workflow engine. The repo is grouped by
-  # category, so each stable category is a separate sync entry. Deprecated and
-  # in-progress categories are intentionally skipped. The Claude guardrails
-  # skill is excluded because it writes `~/.claude` paths and fails the
-  # self-contained external-skill gate.
-  #
-  # LICENSE: MIT (Copyright 2026 Matt Pocock).
-  - repo: mattpocock/skills
-    ref: main
-    pin: 801dca688564c529fa84f247f64472520d9ebe28
-    layout: flat
-    skills_path: skills/engineering
-    alias_prefix: "mattpocock-"
-
-  - repo: mattpocock/skills
-    ref: main
-    pin: 801dca688564c529fa84f247f64472520d9ebe28
-    layout: flat
-    skills_path: skills/productivity
-    alias_prefix: "mattpocock-"
-
-  - repo: mattpocock/skills
-    ref: main
-    pin: 801dca688564c529fa84f247f64472520d9ebe28
-    layout: flat
-    skills_path: skills/misc
-    alias_prefix: "mattpocock-"
-    exclude: [git-guardrails-claude-code]
-
-  - repo: mattpocock/skills
-    ref: main
-    pin: 801dca688564c529fa84f247f64472520d9ebe28
-    layout: flat
-    skills_path: skills/personal
-    alias_prefix: "mattpocock-"
 
   # cursor/plugins team kit thermo-nuclear-code-quality-review — unusually
   # strict maintainability and abstraction-quality review. Upstream is the
@@ -190,19 +135,6 @@ sources:
     skills_path: skills
     alias_prefix: "dietrich-"
     include: [ponytail]
-
-  # OpenAI .curated — only the GitHub workflow skills with proven usage
-  # (gh-address-comments: 200+ Codex sessions). Widen by evidence, not
-  # default.
-  - repo: openai/skills
-    ref: main
-    pin: a8924c2a35cfa290458852c4fad17c9133054c2e
-    layout: flat
-    skills_path: skills/.curated
-    alias_prefix: "openai-"
-    include:
-      - gh-address-comments
-      - gh-fix-ci
 
   # jakubkrehel/make-interfaces-feel-better — design-engineering skill for UI
   # polish. Encodes 16 specific techniques (concentric border radius, optical
@@ -269,19 +201,6 @@ sources:
       - soft-skill
       - stitch-skill
       - taste-skill
-
-  # steipete/agent-scripts skill-cleaner — Codex/OpenClaw skill catalog audit:
-  # prompt-budget math, duplicate copies, unused candidates, loaded roots, and
-  # compact description suggestions. Keep external rather than first-party
-  # because the analyzer intentionally reads Codex-specific roots and logs.
-  # MIT licensed upstream; local sync cache remains gitignored.
-  - repo: steipete/agent-scripts
-    ref: main
-    pin: 5dc3c2435ba70f39a7fd022a80bf12c5c2b6b0c5
-    layout: flat
-    skills_path: skills
-    alias_prefix: "steipete-"
-    include: [skill-cleaner]
 
   # Nutlope/hallmark — Together AI's anti-AI-slop design skill (MIT, May 2026).
   # Macrostructure-first generation: picks a page shape for the brief, dresses

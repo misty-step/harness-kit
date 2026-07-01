@@ -71,3 +71,11 @@ The groom teardown identified the safe cull set as the mattpocock suite,
 Do not hand-edit generated external skill directories as the primary mechanism.
 `registry.yaml` is the source of truth and `sync-external` owns
 `skills/.external/`.
+
+## What Was Built
+
+Removed the 29 zero-use vendored external aliases from the active registry sync
+set and pruned their generated directories through `sync-external`. Updated
+first-party Harness Kit references that still pointed at the removed
+`steipete-skill-cleaner` alias. Before/after evidence lives in
+`.evidence/factory-groom-2026-07-01/phase2-cull-receipt.md`.

@@ -49,10 +49,6 @@
       "title": "Landmark fleet adoption"
     },
     {
-      "source": "backlog.d/127-cull-zero-use-vendored-skills.md",
-      "title": "Cull zero-use vendored skills from the default catalog"
-    },
-    {
       "source": "backlog.d/128-scale-skill-eval-integration.md",
       "title": "Scale skill-eval integration across first-party skills"
     },
