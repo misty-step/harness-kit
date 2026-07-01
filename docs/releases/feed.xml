@@ -4,8 +4,23 @@
 <title>misty-step/harness-kit</title>
 <link>https://github.com/misty-step/harness-kit</link>
 <description>Release notes for misty-step/harness-kit</description>
-<lastBuildDate>Wed, 1 Jul 2026 17:20:30 +0000</lastBuildDate>
-<item><title>misty-step/harness-kit v1.0.0</title><link>https://github.com/misty-step/harness-kit/releases/tag/v1.0.0</link><guid>v1.0.0</guid><description><![CDATA[<h2>New Features</h2>
+<lastBuildDate>Wed, 1 Jul 2026 18:07:57 +0000</lastBuildDate>
+<item><title>misty-step/harness-kit v1.1.0</title><link>https://github.com/misty-step/harness-kit/releases/tag/v1.1.0</link><guid>v1.1.0</guid><description><![CDATA[<h2>New Features</h2>
+<ul>
+<li>You can now deploy to Fly.io with built-in Litestream database replication using the template layer</li>
+<li>You can now bootstrap harnesses with expanded global coverage (13 skills + 4 agents) and skill allowlisting via <code>.spellbook.yaml</code></li>
+<li>You can now generate project-specific skills using <code>/harness scaffold</code> mode for local QA automation</li>
+<li>You can now track agent work sessions and skill invocations through the new trace system with PostToolUse hooks</li>
+</ul>
+<h2>Improvements</h2>
+<ul>
+<li>The bootstrap process now resolves <code>.spellbook.yaml</code> from git root instead of current directory, fixing path resolution issues</li>
+<li>The roster dispatch system now properly bounds lane targeting to specific repositories, preventing cross-repo conflicts</li>
+<li>The CI pipeline now excludes <code>skills/.external</code> from source context and rejects unresolved conflict markers</li>
+<li>The skill discovery system now scans the filesystem directly instead of relying on registry files for better reliability</li>
+</ul>
+]]></description><pubDate>Wed, 1 Jul 2026 18:07:57 +0000</pubDate></item>
+<item><title>misty-step/harness-kit v1.0.0</title><link>https://github.com/misty-step/harness-kit/releases/tag/v1.0.0</link><guid>v1.0.0</guid><description><![CDATA[<![CDATA[<h2>New Features</h2>
 <ul>
 <li>You can now use the <code>/deps</code> skill for semantic dependency management with reachability analysis</li>
 <li>You can now leverage agent-first workflow capabilities including distributed issue tracking via git-bug, Dagger CI integration, and atomic claim protocols</li>
@@ -26,6 +41,6 @@
 <li>Fixed CI gates to exclude <code>skills/.external</code> from source context and reject unresolved conflict markers during validation</li>
 <li>Fixed skill discovery to use filesystem scanning instead of registry.yaml and properly handle external skill synchronization</li>
 </ul>
-]]></description><pubDate>Wed, 1 Jul 2026 17:20:30 +0000</pubDate></item>
+]]]]><![CDATA[>]]></description><pubDate>Wed, 1 Jul 2026 17:20:30 +0000</pubDate></item>
 </channel>
 </rss>
