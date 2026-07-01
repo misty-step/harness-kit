@@ -11,6 +11,7 @@ pub mod external_sync;
 pub mod frontmatter;
 pub mod generate_index;
 pub mod git_hooks;
+pub mod invocation_kind;
 pub mod lane_harness;
 pub mod lint_gates;
 pub mod pr_reviews;
