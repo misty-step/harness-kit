@@ -6,6 +6,7 @@ pub mod claude_hooks;
 pub mod config_loader;
 pub mod docs_site;
 pub mod error_report;
+pub mod eval_coverage;
 pub mod external_skill_lint;
 pub mod external_sync;
 pub mod frontmatter;

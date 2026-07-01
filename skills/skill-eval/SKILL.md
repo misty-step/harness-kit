@@ -139,3 +139,10 @@ exemplar). Run evidence lands at `.evidence/harness-evals/<skill>/<date>/` —
 sanitized artifacts + scored receipts only, never raw transcripts with secrets.
 A run is real only when it produced both arms and a grader verdict that *could*
 have gone the other way.
+
+`cargo run --locked -p harness-kit-checks -- check-eval-coverage --repo .`
+(folded into the repo gate) enforces that every first-party skill has either
+an eval spec or a live, unexpired `skills/<skill>/evals/WAIVER.md` — see
+`skills/harness-engineering/references/skill-design-principles.md`'s "New
+Skill: Eval Scaffold Is Not Optional" for the exact new-skill scaffolding
+steps this gate enforces.
