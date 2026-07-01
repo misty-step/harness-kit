@@ -32,20 +32,27 @@ never ships on its own review — that is the one hard rule.
    is a natural fit — that scale costs tokens, so routine diffs don't get
    it. Reviewers get the diff, the acceptance oracle, and a risk lens —
    **never the author's reasoning trail.**
+   Pick lenses from `harnesses/shared/references/lenses.md` — the bench is the
+   index. Match **1–2 sharp, decorrelated** lenses to what changed; do not stack
+   overlapping structure lenses (see "Decorrelate, don't stack" in that file —
+   `fowler`, `thermo-nuclear`, `delete-first`, `grug`, `carmack`, and
+   `ousterhout` all hammer structure-and-simplicity, so running three triple-
+   reports one finding). Quick routing:
+   - `fowler` — structural/OO diffs where the problem is nameable; gives
+     reviewers Refactoring's smell vocabulary (Mysterious Name, Duplicated Code,
+     Feature Envy, Data Clumps, Primitive Obsession, Shotgun Surgery, …). A
+     documented repo standard overrides it; every smell is a judgement call,
+     never an auto-block.
+   - `thermo-nuclear` — file-size/spaghetti growth or behavior-preserving
+     restructuring ambition; routes to the synced harsh-maintainability skill
+     (`skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`).
+   - `delete-first` / `ponytail`
+     (`skills/.external/dietrich-ponytail/SKILL.md`) — "should this exist at
+     all": abstraction, automation, dependencies, modes, speculative flexibility.
    Add `harnesses/shared/references/works-critique.md` when the diff touches
    public API, CLI, UI, performance, compatibility, migration, or operator
-   workflow. Add `harnesses/shared/references/delete-first.md` when the diff
-   adds abstraction, automation, dependencies, modes, or optimization; pair it
-   with the synced Ponytail skill
-   (`skills/.external/dietrich-ponytail/SKILL.md`) when the main risk is bloat,
-   boilerplate, or speculative engineering.
-   Add the synced Thermo-Nuclear skill
-   (`skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`)
-   whenever the diff changes meaningful implementation structure, grows large
-   files, adds wrappers, or risks spaghetti branching; this is the default
-   harsh maintainability lens, not a last resort.
-   Add `harnesses/shared/references/verification-system-first.md` when the
-   diff's proof story is missing, weak, eval/benchmark-shaped, or depends on
+   workflow. Add `harnesses/shared/references/verification-system-first.md` when
+   the diff's proof story is missing, weak, eval/benchmark-shaped, or depends on
    QA/manual judgment.
 4. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as

@@ -45,9 +45,15 @@ are written directly into that repo's `.agents/skills/` with its real
 routes and commands; this skill owns the craft either way. For a repo's
 verification skill, interview the operator first: the manual checks they
 run after the agent responds and before merge are the spec — encode each
-check that has a tool. Turning a proven session pattern into a first-party
-primitive starts at the primitive test below — most patterns are prompts,
-not skills.
+check that has a tool. The QA case has a canonical shape: name it
+`<repo>-qa`, scaffold from `../qa/templates/repo-qa-skill.md`, and follow
+`/qa` → "Scaffold a repo-local QA skill". **Repo-QA audit** (to "make sure
+every active repo has one"): enumerate repos with recent commits, check each
+for a `<repo>-qa` skill, and close the gap **thin-first — one grounded skill
+per repo, earned on a real QA pass**, never a deterministic blast across all
+repos at once (line-173 failure mode). Turning a proven session pattern into
+a first-party primitive starts at the primitive test below — most patterns
+are prompts, not skills.
 
 ## Contract
 

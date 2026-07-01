@@ -101,6 +101,63 @@ production signal is incoherent.
 **Looks for:** see `harnesses/shared/references/delete-first.md`.
 **Catches:** optimizing or automating a requirement, dependency, process, mode,
 or abstraction that should not exist.
+**Heavy external version:** the synced Ponytail skill
+(`skills/.external/dietrich-ponytail/SKILL.md`) — reach for it when the main
+risk is bloat, boilerplate, or speculative engineering and you want the concrete
+YAGNI / stdlib / native / existing-dependency ladder.
+
+## fowler
+**Essence:** Martin Fowler's *Refactoring* Ch.3 smell vocabulary — dense,
+pretraining-anchored names that make a structural problem nameable in a diff.
+The name carries its own definition; pair each with a diff-specific cue.
+**Looks for** (each is a judgement call, surfaced as a question — never an
+auto-block):
+- **Mysterious Name** — a new name needs the body read to understand the call site.
+- **Duplicated Code** — the diff repeats a structure that already exists, or
+  repeats itself across new hunks, instead of extracting it.
+- **Feature Envy** — a new method touches another object's data more than its
+  own; the logic wants to live on that other type.
+- **Data Clumps** — the same 3+ fields/params travel together and want one object.
+- **Primitive Obsession** — string/int/map stands in for a domain concept that
+  wants its own type (id, money, range, enum).
+- **Repeated Switches** — the same switch/if-on-type appears in 2+ places; a new
+  case means editing all of them.
+- **Shotgun Surgery** — one logical change forced scattered edits across many
+  files/functions.
+- **Divergent Change** — one module is edited for unrelated reasons in the same
+  diff; too many responsibilities.
+- **Speculative Generality** — abstraction, hook, param, or "for later"
+  flexibility with no current caller.
+- **Message Chains** — `a.getB().getC().getD()`; the caller navigates structure
+  it shouldn't know.
+- **Middle Man** — a new class/method mostly delegates; a hop without value.
+- **Refused Bequest** — an impl/subclass ignores or overrides most of what it
+  inherits or the interface it claims.
+**Binding rules:** a documented repo standard **overrides** this baseline; every
+smell is a **judgement call**, reported as a question, never a hard violation.
+**Catches:** structural decay that passes tests and review-by-vibes because no
+one named it — duplication, wrong-home logic, primitive sprawl, change
+amplification. (Curation credit: Matt Pocock's `/review` baseline.)
+
+## thermo-nuclear
+**Essence:** maximally strict maintainability — abstraction quality, file size,
+and spaghetti-condition growth, with ambition for behavior-preserving "code
+judo" restructurings, not local cleanup.
+**Looks for:** see `skills/.external/cursor-thermo-nuclear-code-quality-review/SKILL.md`.
+**Distinct earn over `ousterhout`/`grug`/`delete-first`/`fowler`:** the concrete
+1000-line-file threshold and the "make it inevitable in hindsight" reframing bar.
+**Catches:** working-but-messier diffs that rubber-stamp because nobody held the
+structure to a restructuring-ambition bar.
+
+## Decorrelate, don't stack
+`fowler`, `thermo-nuclear`, `delete-first`, `grug`, `carmack`, and `ousterhout`
+overlap heavily on structure-and-simplicity. Running three of them on the same
+hunk produces three critics triple-reporting one duplication finding — the
+undifferentiated wall this bench exists to prevent. Pick the **sharpest 1–2**
+for the change (`fowler` for nameable structural smells, `thermo-nuclear` for
+file-size/spaghetti and restructuring ambition, `delete-first`/`ponytail` for
+"should this exist at all"); reach for a heavy external skill only when its
+distinct earn applies. Diversity across failure modes beats redundancy.
 
 ## Adding a lens
 A lens is name + essence + "looks for" + "the failure it catches." Keep it to
