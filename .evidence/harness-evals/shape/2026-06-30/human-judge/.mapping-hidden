@@ -1,0 +1,3 @@
+P = arm-a (shape)
+Q = arm-b (raw)
+agent grader said: shape(=P) more buildable, 29 vs 24
