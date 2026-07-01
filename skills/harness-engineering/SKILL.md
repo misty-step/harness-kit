@@ -8,7 +8,8 @@ description: |
   "description tax", "eval skill", "sync primitives", "roster defaults",
   "preferred stack", "stack defaults", "hosting defaults", "CI defaults",
   "observability defaults", "release defaults", "design system defaults",
-  "storage defaults", "agent substrate defaults".
+  "storage defaults", "agent substrate defaults", "one core many faces",
+  "API CLI MCP SDK skill template", "factory product template".
   Trigger: /harness-engineering, /harness, /skill.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
 ---
@@ -33,6 +34,7 @@ Engineer the harness. Keep it thin.
 | current model/provider/harness facts | the roster skill's `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
 | preferred stack / infrastructure defaults | `references/preferred-stack.md` |
+| one core / many faces product template | `references/one-core-many-faces.md` + `templates/one-core-many-faces/` |
 | public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
 | model-native product boundary | `../../harnesses/shared/references/model-native-product-primitives.md` |
 | loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |

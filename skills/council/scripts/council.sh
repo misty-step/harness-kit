@@ -41,9 +41,15 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-[ -n "$TASK_FILE" ] && [ -f "$TASK_FILE" ] || die "missing/unreadable --task file"
-[ -n "$MEMBERS_FILE" ] && [ -f "$MEMBERS_FILE" ] || die "missing/unreadable --members file"
-[ "$TIMEOUT" -eq "$TIMEOUT" ] 2>/dev/null && [ "$TIMEOUT" -gt 0 ] || die "--timeout must be a positive integer"
+if [ -z "$TASK_FILE" ] || [ ! -f "$TASK_FILE" ]; then
+  die "missing/unreadable --task file"
+fi
+if [ -z "$MEMBERS_FILE" ] || [ ! -f "$MEMBERS_FILE" ]; then
+  die "missing/unreadable --members file"
+fi
+if ! [ "$TIMEOUT" -eq "$TIMEOUT" ] 2>/dev/null || [ "$TIMEOUT" -le 0 ]; then
+  die "--timeout must be a positive integer"
+fi
 [ -n "$OUTDIR" ] || OUTDIR="$(dirname "$MEMBERS_FILE")/council-out"
 mkdir -p "$OUTDIR" || die "cannot create outdir: $OUTDIR"
 

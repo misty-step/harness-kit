@@ -1,0 +1,25 @@
+product:
+  name: Harness Kit
+  description: "Operator-first primitive layer for agent work: shared doctrine, skills, references, provider and harness config, bootstrap/install logic, receipts, gates, and eval contracts."
+audience: developer
+voice: Clear, concrete, and operator-facing. Explain what changed for agents, which harness surfaces are affected, and what proof exists.
+changelog:
+  source: auto
+artifacts:
+  markdown: docs/releases/{version}.md
+  plaintext: docs/releases/{version}.txt
+  html: docs/releases/{version}.html
+  json: docs/releases/releases.json
+  rss: docs/releases/feed.xml
+release:
+  profile: full
+model:
+  policy: balanced
+  primary: anthropic/claude-sonnet-4
+  fallbacks:
+    - google/gemini-2.5-flash
+    - openai/gpt-4o-mini
+budget:
+  max_input_tokens: 12000
+  max_output_tokens: 1200
+  max_usd: 0.25

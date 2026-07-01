@@ -1,0 +1,50 @@
+use serde::{Deserialize, Serialize};
+use thiserror::Error;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WorkItem {
+    pub id: String,
+    pub title: String,
+    pub body: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Error)]
+pub enum CoreError {
+    #[error("title is required")]
+    MissingTitle,
+}
+
+pub fn normalize_item(mut item: WorkItem) -> Result<WorkItem, CoreError> {
+    item.title = item.title.trim().to_string();
+    item.body = item.body.trim().to_string();
+    if item.title.is_empty() {
+        return Err(CoreError::MissingTitle);
+    }
+    Ok(item)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn trims_and_requires_title() {
+        let item = WorkItem {
+            id: "1".into(),
+            title: "  Ship it  ".into(),
+            body: "  evidence  ".into(),
+        };
+
+        let normalized = normalize_item(item).unwrap();
+        assert_eq!(normalized.title, "Ship it");
+        assert_eq!(normalized.body, "evidence");
+
+        let err = normalize_item(WorkItem {
+            id: "2".into(),
+            title: " ".into(),
+            body: "body".into(),
+        })
+        .unwrap_err();
+        assert!(matches!(err, CoreError::MissingTitle));
+    }
+}

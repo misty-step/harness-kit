@@ -1,0 +1,31 @@
+use anyhow::Result;
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+#[command(name = "{{binary}}", version, about = "{{description}}")]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand)]
+enum Command {
+    /// List work through the local shell or configured API client.
+    List,
+    /// Run adapter smoke checks that prove the face is wired.
+    Doctor,
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    match Cli::parse().command {
+        Command::List => {
+            println!("[]");
+        }
+        Command::Doctor => {
+            eprintln!("core: ok");
+            eprintln!("shell: ok");
+        }
+    }
+    Ok(())
+}

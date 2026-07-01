@@ -1,0 +1,22 @@
+use axum::{routing::get, Json, Router};
+use {{crate_prefix}}_core::WorkItem;
+
+pub fn router() -> Router {
+    Router::new()
+        .route("/healthz", get(healthz))
+        .route("/items", get(list_items).post(create_item))
+}
+
+async fn healthz() -> &'static str {
+    "ok"
+}
+
+async fn list_items() -> Json<Vec<WorkItem>> {
+    // Wire to {{crate_prefix}}_shell::Service in the first real slice.
+    Json(Vec::new())
+}
+
+async fn create_item(Json(item): Json<WorkItem>) -> Json<WorkItem> {
+    // Parse transport here; product policy belongs in core/shell.
+    Json(item)
+}

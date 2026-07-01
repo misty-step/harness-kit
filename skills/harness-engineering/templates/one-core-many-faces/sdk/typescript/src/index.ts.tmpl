@@ -1,0 +1,26 @@
+export interface WorkItem {
+  id: string;
+  title: string;
+  body: string;
+}
+
+export class {{client_class}}Client {
+  constructor(
+    private readonly baseUrl: string,
+    private readonly token?: string,
+  ) {}
+
+  async listItems(): Promise<WorkItem[]> {
+    const response = await fetch(`${this.baseUrl}/items`, {
+      headers: this.headers(),
+    });
+    if (!response.ok) {
+      throw new Error(`{{project}} API failed: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  private headers(): Record<string, string> {
+    return this.token ? { authorization: `Bearer ${this.token}` } : {};
+  }
+}
