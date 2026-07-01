@@ -1697,6 +1697,10 @@ pub fn build_skill_invocation_entry(data: &Value) -> Option<Value> {
     );
     entry.insert("cwd".to_string(), json!(cwd));
     entry.insert("project".to_string(), json!(project));
+    entry.insert(
+        "invocation_kind".to_string(),
+        json!(crate::invocation_kind::classify(data)),
+    );
 
     for field in ["model_id", "outcome", "duration_ms", "usage"] {
         if let Some(value) = data.get(field) {
@@ -1817,6 +1821,46 @@ mod tests {
             .map(|row| row["skill"].as_str().unwrap().to_string())
             .collect();
         assert_eq!(skills, ["commit", "review", "investigate"]);
+    }
+
+    #[test]
+    fn invocation_kind_falls_back_to_unknown_without_a_readable_transcript() {
+        let entry = build_skill_invocation_entry(&serde_json::json!({
+            "tool_name": "Skill",
+            "tool_input": {"skill": "commit", "args": ""},
+        }))
+        .unwrap();
+        assert_eq!(entry["invocation_kind"], "unknown");
+    }
+
+    #[test]
+    fn invocation_kind_flows_through_build_skill_invocation_entry() {
+        let temp = TempDir::new().unwrap();
+        let transcript_path = temp.path().join("transcript.jsonl");
+        let rows = [
+            json!({"type": "user", "message": {"content": "make this look brutalist"}}),
+            json!({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "name": "Skill", "input": {"skill": "design", "args": ""}}
+            ]}}),
+            // The routed call itself, mirroring what the real transcript
+            // looks like by the time PostToolUse fires.
+            json!({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "name": "Skill", "input": {"skill": "leon-brutalist-skill", "args": ""}}
+            ]}}),
+        ]
+        .into_iter()
+        .map(|row| serde_json::to_string(&row).unwrap())
+        .collect::<Vec<_>>()
+        .join("\n");
+        fs::write(&transcript_path, rows).unwrap();
+
+        let entry = build_skill_invocation_entry(&json!({
+            "tool_name": "Skill",
+            "tool_input": {"skill": "leon-brutalist-skill", "args": ""},
+            "transcript_path": transcript_path.display().to_string(),
+        }))
+        .unwrap();
+        assert_eq!(entry["invocation_kind"], "routed");
     }
 
     #[test]

@@ -82,6 +82,7 @@ pub fn analyze(options: &AnalyzeOptions) -> Result<Value> {
             "last_used": timestamps.last().map(DateTime::<Utc>::to_rfc3339).unwrap_or_else(|| "unknown".to_string()),
             "projects": projects.into_iter().collect::<Vec<_>>(),
             "usage": usage_summary(&rows)?,
+            "invocation_kinds": invocation_kind_counts(&rows),
         }));
     }
     skills.sort_by(|left, right| {
@@ -224,6 +225,7 @@ pub fn self_test() -> Result<()> {
                 "project": "harness-kit",
                 "backlog_ref": "088",
                 "work_id": "work-088",
+                "invocation_kind": "direct",
                 "usage": {
                     "input_tokens": 10,
                     "output_tokens": 5,
@@ -256,6 +258,7 @@ pub fn self_test() -> Result<()> {
                 "session_id": "s2",
                 "cwd": "/tmp/harness-kit",
                 "project": "harness-kit",
+                "invocation_kind": "routed",
             }),
         ]
         .into_iter()
@@ -332,6 +335,19 @@ pub fn self_test() -> Result<()> {
     ensure(
         render_markdown(&report)?.contains("unknown"),
         "markdown should include unknown",
+    )?;
+    ensure(
+        report["skills"].as_array().is_some_and(|rows| {
+            rows.iter().any(|row| {
+                row["skill"] == "shape"
+                    && row["invocation_kinds"] == json!({"direct": 1, "routed": 1})
+            })
+        }),
+        "shape invocation_kinds should split direct/routed",
+    )?;
+    ensure(
+        render_markdown(&report)?.contains("Direct/Routed/Unknown"),
+        "markdown should surface the invocation-kind breakdown",
     )?;
 
     let missing_report = analyze(&AnalyzeOptions {
@@ -444,6 +460,20 @@ fn passes_filters(row: &Value, options: &AnalyzeOptions, since: Option<&DateTime
         return false;
     }
     true
+}
+
+/// Breaks a skill's rows down by `invocation_kind` (see `invocation_kind::classify`)
+/// so routed-only use (e.g. a `/design` bench specialist) is visibly distinct
+/// from zero use, rather than collapsing into the same flat `count`.
+fn invocation_kind_counts(rows: &[Value]) -> Value {
+    let mut counts: BTreeMap<String, usize> = BTreeMap::new();
+    for row in rows {
+        let kind = value_str(row, "invocation_kind")
+            .unwrap_or("unknown")
+            .to_string();
+        *counts.entry(kind).or_default() += 1;
+    }
+    json!(counts)
 }
 
 fn usage_summary(rows: &[Value]) -> Result<Value> {
@@ -635,16 +665,20 @@ fn render_markdown(report: &Value) -> Result<String> {
         "## Skill Frequency".to_string(),
         String::new(),
     ];
-    lines.push("| Skill | Count | Health | Last Used | Projects | Tokens | Cost |".to_string());
-    lines.push("|---|---:|---|---|---|---:|---:|".to_string());
+    lines.push(
+        "| Skill | Count | Health | Direct/Routed/Unknown | Last Used | Projects | Tokens | Cost |"
+            .to_string(),
+    );
+    lines.push("|---|---:|---|---|---|---|---:|---:|".to_string());
     let skills = array(report, "skills");
     for row in skills {
         let usage = &row["usage"];
         lines.push(format!(
-            "| {} | {} | {} | {} | {} | {} | {} |",
+            "| {} | {} | {} | {} | {} | {} | {} | {} |",
             string_value(&row["skill"]),
             number_or_zero(&row["count"]),
             string_value(&row["health"]),
+            invocation_kinds_summary(&row["invocation_kinds"]),
             string_value(&row["last_used"]),
             row["projects"]
                 .as_array()
@@ -659,7 +693,9 @@ fn render_markdown(report: &Value) -> Result<String> {
         ));
     }
     if skills.is_empty() {
-        lines.push("| none | 0 | dead | unknown | unknown | unknown | unknown |".to_string());
+        lines.push(
+            "| none | 0 | dead | unknown | unknown | unknown | unknown | unknown |".to_string(),
+        );
     }
     lines.extend(
         [
@@ -803,10 +839,11 @@ fn render_text(report: &Value) -> Result<String> {
             })
             .unwrap_or_default();
         lines.push(format!(
-            "- {}: count={} health={} projects={} total_tokens={} cost_usd={}",
+            "- {}: count={} health={} direct/routed/unknown={} projects={} total_tokens={} cost_usd={}",
             string_value(&row["skill"]),
             number_or_zero(&row["count"]),
             string_value(&row["health"]),
+            invocation_kinds_summary(&row["invocation_kinds"]),
             projects,
             unknown(&usage["total_tokens"]),
             unknown(&usage["cost_usd"])
@@ -917,6 +954,11 @@ fn number_or_zero(value: &Value) -> String {
         .as_u64()
         .map(|value| value.to_string())
         .unwrap_or_else(|| "0".to_string())
+}
+
+fn invocation_kinds_summary(value: &Value) -> String {
+    let get = |kind: &str| value.get(kind).and_then(Value::as_u64).unwrap_or(0);
+    format!("{}/{}/{}", get("direct"), get("routed"), get("unknown"))
 }
 
 fn array<'a>(report: &'a Value, key: &str) -> &'a Vec<Value> {
