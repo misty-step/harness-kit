@@ -1,6 +1,6 @@
 ---
 name: artifact
-description: >
+description: |
   Produce a consistently-styled, self-contained HTML report served privately over
   Tailscale. One house template (Silver Age comic-ops palette, dark/light toggle,
   and a mandatory copy-page button) so every report an agent hands the operator
