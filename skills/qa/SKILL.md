@@ -14,10 +14,12 @@ argument-hint: "[url|route|command|endpoint|feature]"
 
 **Every app has a QA path.** The first question is not "how do I drive a
 browser?" — it's "what shape is this app, and what does verifying it look
-like here?" If the repo has its own QA/verification skill, defer to it: it
-encodes the actual routes, commands, and golden paths. If it doesn't, that
-absence is a harness gap — run the protocol below AND flag the gap to
-`/groom` so the repo grows one.
+like here?" If the repo has its own `<repo>-qa` skill, defer to it: it
+encodes the actual routes, commands, and golden paths, and it wins over this
+generic method. If it doesn't, that absence is a harness gap — run the
+protocol below to QA now, then **scaffold the repo-local skill** (see
+"Scaffold a repo-local QA skill") so the next QA is cheaper. A repo you QA
+more than once should own its QA skill.
 
 For recurring QA, unclear app shapes, eval-like agent behavior, performance
 claims, or weak pass/fail criteria, load
@@ -75,6 +77,37 @@ embarrass us in production?
 For public API, CLI, UI, performance, compatibility, migration, or operator
 workflow changes, include `harnesses/shared/references/works-critique.md` in
 that fresh pass-claim attack.
+
+## Scaffold a repo-local QA skill
+
+The durable form of QA is a `<repo>-qa` skill in the repo itself — the
+project-specific knowledge this generic method structurally can't hold (exact
+launch commands, ports, env, seed/auth, per-surface golden paths, gotchas).
+This is the highest-leverage local agent investment; build it the moment a
+repo earns a second QA pass.
+
+1. **Explore the repo for the run surface.** `package.json` scripts/bin,
+   `Cargo.toml` bin vs lib, `Makefile`, `docker-compose`, `.env.example`,
+   `playwright.config.*`, `scripts/`, and any existing verify/smoke gate. The
+   goal is the exact copy-pasteable launch command(s) + ports + required env.
+2. **Interview the operator — the manual checks they run before merging ARE
+   the spec.** What do they open, log into, click, curl, or run to believe a
+   change works? Encode that sequence, not a generic protocol.
+3. **Write it from the template**
+   (`skills/qa/templates/repo-qa-skill.md`) into the repo's skill root
+   (`.agents/skills/<repo>-qa/SKILL.md`, or `skills/` where the repo uses
+   that). Name it `<repo>-qa`. Fill every placeholder with real commands;
+   delete sections that don't apply.
+4. **Start thin, refine through use.** A 20-line skill naming the real launch
+   command and one golden path beats a 500-line speculative one. Grow it the
+   next time QA is painful — not preemptively. Deterministic mass-scaffolding
+   across many repos at once is the known failure mode; one grounded skill per
+   repo, earned, is the pattern.
+5. **Verify it works** by running your own new skill against the current diff
+   before declaring it done.
+
+To find which active repos still lack one, this is a `/harness-engineering`
+repo-QA audit, not a blind blast.
 
 ## Gotchas
 
