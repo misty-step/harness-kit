@@ -3,7 +3,9 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, bail};
 
-use crate::{docs_site, frontmatter, generate_index, lint_gates, process, quality_gates};
+use crate::{
+    docs_site, eval_coverage, frontmatter, generate_index, lint_gates, process, quality_gates,
+};
 
 pub fn run(repo: &Path) -> Result<Vec<String>> {
     let repo = repo.canonicalize().unwrap_or_else(|_| repo.to_path_buf());
@@ -50,6 +52,9 @@ pub fn run(repo: &Path) -> Result<Vec<String>> {
     })?;
     gate_report(&mut lines, "check-supply-chain", || {
         quality_gates::check_supply_chain(&repo)
+    })?;
+    gate_report(&mut lines, "check-eval-coverage", || {
+        eval_coverage::check_eval_coverage(&repo, chrono::Utc::now())
     })?;
     gate(&mut lines, "test-sync-external-partial", || {
         let _ = crate::external_sync::self_test_partial_sync()?;

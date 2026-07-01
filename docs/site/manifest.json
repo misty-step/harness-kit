@@ -78,6 +78,7 @@
     "cargo-test",
     "check-conflict-markers",
     "check-docs-site",
+    "check-eval-coverage",
     "check-exclusions",
     "check-frontmatter",
     "check-godfiles",
