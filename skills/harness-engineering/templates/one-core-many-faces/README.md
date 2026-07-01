@@ -16,6 +16,8 @@ make the first verified slice work before adding surface.
 - `{{repo}}` - GitHub repository, for example `misty-step/example`.
 - `{{base_branch}}` - repository base branch, for example `main` or `master`.
 - `{{npm_scope}}` - npm scope without `@`, for example `misty-step`.
+- `{{fly_app}}` - Fly.io app name, for example `example-prod`.
+- `{{fly_region}}` - Fly.io primary region, for example `iad`.
 - `{{description}}` - one concrete product sentence.
 
 ## Target Tree
@@ -24,6 +26,12 @@ make the first verified slice work before adding surface.
 .
 ├── AGENTS.md
 ├── Cargo.toml
+├── Dockerfile
+├── fly.toml
+├── litestream.yml
+├── .env.example
+├── bin
+│   └── entrypoint.sh
 ├── .landmark.yml
 ├── crates
 │   ├── core
@@ -44,7 +52,8 @@ make the first verified slice work before adding surface.
 2. Fill `shell` with one use case and fake external ports.
 3. Add only the first adapter that has a real consumer.
 4. Add the verification path for that adapter.
-5. Delete the adapter folders not exercised by the first acceptance oracle.
+5. Run `cargo generate-lockfile` before locked gates or Docker builds.
+6. Delete the adapter folders not exercised by the first acceptance oracle.
 
 ## Proof Before Expansion
 
@@ -54,6 +63,9 @@ make the first verified slice work before adding surface.
 - SDK face: throwaway consumer build.
 - Skill face: cold-agent use smoke.
 - Web face: browser path with screenshot or trace.
+- Deploy face: Docker image build, `fly.toml` validation, `/healthz` and
+  `/readyz` smoke, and Litestream restore drill or explicit pre-production
+  waiver.
 
 ## Guardrails
 
@@ -62,3 +74,5 @@ make the first verified slice work before adding surface.
 - MCP tools are intent-shaped, not endpoint-shaped.
 - Non-Rust SDKs stay tiny unless a consumer needs them.
 - Landmark release intelligence is part of the shipped product surface.
+- Litestream runs only at the process edge; business logic never shells out to
+  backup tooling.

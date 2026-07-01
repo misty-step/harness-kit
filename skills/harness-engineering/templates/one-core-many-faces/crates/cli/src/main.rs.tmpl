@@ -2,7 +2,11 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "{{binary}}", version, about = "{{description}}")]
+#[command(
+    name = "{{binary}}",
+    version,
+    about = "{{description}}"
+)]
 struct Cli {
     #[command(subcommand)]
     command: Command,
