@@ -4,14 +4,14 @@ use std::path::{Path, PathBuf};
 
 use harness_kit_checks::{
     agent_roster, backlog, bootstrap, ci_check, claude_hooks, config_loader, docs_site,
-    external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
-    pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
+    error_report, external_skill_lint, external_sync, frontmatter, generate_index, git_hooks,
+    lint_gates, pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
     summarize_delegations,
 };
 
 fn main() {
     if let Err(error) = run(env::args().skip(1).collect()) {
-        eprintln!("{error}");
+        error_report::print_error_chain(&error);
         std::process::exit(1);
     }
 }

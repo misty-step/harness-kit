@@ -1,33 +1,36 @@
 ---
 name: {{binary}}
 description: |
-  Use {{project}} from an agent session. {{description}} Use when: "{{binary}}",
-  "{{project}}", or when a task needs this product's API, CLI, MCP, or release
-  evidence. Trigger: /{{binary}}.
+  HARD PLACEHOLDER: replace with 2-4 concrete {{project}} agent-task trigger
+  branches, using product language an agent or operator will actually type.
+  Include explicit Use when phrases and Trigger: /{{binary}}.
 ---
 
 # {{project}}
 
 {{description}}
 
-## Use It
+## Agent Tasks
 
-- CLI: `{{binary}} --help`
-- API: `{{binary}} serve` then call the documented route.
-- MCP: register `{{binary}}-mcp` with the active harness.
+HARD PLACEHOLDER: replace this section with the real agent tasks this skill
+should make predictable. Do not keep CLI/API/MCP procedure here.
 
-## Evidence
+For each task, name:
 
-Before claiming done, capture:
+- intent: the user-visible job the agent is trying to finish
+- surface: exact CLI command, API route, MCP tool, SDK call, or UI path
+- proof: artifact, output, replay, trace, or gate that proves the job worked
+- stop: approval, mutation, spend, or production boundary
 
-- exact command, route, or MCP tool call exercised
-- output or artifact path
-- gate result
-- residual risk
+## Proof
 
-## Boundaries
+HARD PLACEHOLDER: replace with the product's acceptance oracle. A valid proof
+names exact commands/routes/tools, expected evidence, and residual risk. Generated
+API docs, SDK docs, or `--help` output do not prove the product worked.
 
-- Do not mutate production state without explicit operator approval.
-- Do not use the API surface when an MCP tool exists for the same agent task.
-- Do not treat generated SDK/API docs as proof; run the consumer or protocol
-  smoke.
+## Safety
+
+HARD PLACEHOLDER: replace with concrete read/write/destructive boundaries for
+{{project}}. Split read-only, write, destructive, spend, production, and secret
+handling rules where they differ. If no boundary exists for a class, say so and
+why.

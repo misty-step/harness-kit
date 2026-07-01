@@ -97,6 +97,8 @@ repo or planning branch and replace:
 - `{{crate_prefix}}` with the Rust crate prefix, for example `landmark`.
 - `{{binary}}` with the CLI binary name.
 - `{{repo}}` with `owner/repo`.
+- `{{base_branch}}` with the repository base branch, for example `main` or
+  `master`.
 - `{{npm_scope}}` with the npm scope, for example `misty-step`.
 - `{{description}}` with one concrete product sentence.
 

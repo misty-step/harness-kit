@@ -14,6 +14,7 @@ make the first verified slice work before adding surface.
 - `{{crate_prefix}}` - Rust crate prefix, snake case.
 - `{{binary}}` - CLI binary name.
 - `{{repo}}` - GitHub repository, for example `misty-step/example`.
+- `{{base_branch}}` - repository base branch, for example `main` or `master`.
 - `{{npm_scope}}` - npm scope without `@`, for example `misty-step`.
 - `{{description}}` - one concrete product sentence.
 
