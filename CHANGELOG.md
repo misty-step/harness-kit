@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/misty-step/harness-kit/compare/v1.10.1...v1.11.0) (2026-07-02)
+
+
+### Features
+
+* **artifact:** add scoped relay for the Bridge's inline answer form ([#165](https://github.com/misty-step/harness-kit/issues/165)) ([8ac1dd7](https://github.com/misty-step/harness-kit/commit/8ac1dd70fb2406ba293351db8daed454aa4d20bd))
+
 ## [1.10.1](https://github.com/misty-step/harness-kit/compare/v1.10.0...v1.10.1) (2026-07-02)
 
 
