@@ -63,10 +63,6 @@
     {
       "source": "backlog.d/132-greenfield-template-ci.md",
       "title": "Declare and verify the greenfield Factory template"
-    },
-    {
-      "source": "backlog.d/133-installed-cli-self-update-blind-spot.md",
-      "title": "Fix installed harness-kit-checks CLI self-update blind spot"
     }
   ],
   "copy_source": "docs/copy/site.json",

@@ -1,6 +1,6 @@
 # Fix installed harness-kit-checks CLI self-update blind spot
 
-Priority: P2 · Status: pending · Estimate: S
+Priority: P2 (shipped) · Status: done · Estimate: S · Shipped: 2026-07-02
 
 ## Goal
 
@@ -10,14 +10,21 @@ instead of permanently freezing at whatever version first got installed.
 
 ## Oracle
 
-- [ ] After a source change + `cargo build`, running the *installed* binary
+- [x] After a source change + `cargo build`, running the *installed* binary
       (`~/.harness-kit/bin/harness-kit-checks check --repo .` or via
       `command -v harness-kit-checks` on `PATH`) reflects the new build —
-      not just `cargo run -p harness-kit-checks`.
-- [ ] `bootstrap`'s `install_cli` step distinguishes "the running binary is
+      not just `cargo run -p harness-kit-checks`. (Verified live: reproduced
+      the bug with the old installed binary — "already current" while
+      `target/debug` held a genuinely different build — then proved the fix
+      by running the *newly-fixed installed binary's own* `bootstrap` against
+      a simulated newer `target/debug` build and watching it correctly
+      refresh itself.)
+- [x] `bootstrap`'s `install_cli` step distinguishes "the running binary is
       already the freshest build" from "the running binary happens to be the
-      installed copy, which may itself be stale."
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+      installed copy, which may itself be stale." (Option (a) from the notes:
+      sha256 content comparison between the freshest `target/{release,debug}`
+      build and the installed destination, never `current_exe()` identity.)
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 
 ## Verification System
 
@@ -68,3 +75,25 @@ timestamp instead of path identity, (b) always building fresh
 than trusting `current_exe()`, or (c) a version/build-id stamp compiled into
 the binary that `install_cli` can compare without relying on which copy
 happens to be running.
+
+**2026-07-02 — fixed.** Implemented option (a): `crates/harness-kit-checks/src/cli_install.rs`
+(split out of `bootstrap.rs`, see below) picks the newest-by-mtime of
+`target/release/harness-kit-checks` / `target/debug/harness-kit-checks` as
+the install *source* (falling back to `current_exe()` only when neither
+exists), then compares its sha256 against the installed destination's —
+content identity, never path/process identity. Live reproduction-then-fix
+transcript: with the pre-fix installed binary, running its own `bootstrap`
+against a `target/debug` build with different content still reported
+"already current" (bug reproduced). After installing the fix via
+`cargo run -- bootstrap`, running the *newly-installed, now-fixed* binary's
+own `bootstrap` against a simulated newer `target/debug` build correctly
+detected the content mismatch and refreshed itself. 3 fixture tests added
+(`cli_install::tests`) covering: stale-installed-vs-fresh-debug-build,
+identical-content-skip (with an mtime-untouched assertion proving it's a
+true no-op, not just idempotent), and release-preferred-over-debug-when-newer.
+
+Incidental fix: extracting `install_cli` into its own module was required
+to keep `bootstrap.rs` under the repo's 800-line god-file ceiling (adding the
+fix + tests in place would have pushed it to 848 lines) — a small, welcome
+head start on `backlog.d/129`'s "repeat by domain" child 4, though the
+roster-cluster split that ticket actually tracks is separate and unstarted.

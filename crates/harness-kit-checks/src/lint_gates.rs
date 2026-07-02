@@ -467,7 +467,11 @@ pub fn check_harness_install_paths(root: &Path) -> Result<GateReport> {
     if !matches_any_file(
         root,
         r"cargo install --quiet --locked --path.*crates/harness-kit-checks|bin/harness-kit-checks",
-        &["bootstrap.sh", "crates/harness-kit-checks/src/bootstrap.rs"],
+        &[
+            "bootstrap.sh",
+            "crates/harness-kit-checks/src/bootstrap.rs",
+            "crates/harness-kit-checks/src/cli_install.rs",
+        ],
     )? {
         failures.push(
             "bootstrap must install the Rust Harness Kit CLI into the system-wide Harness Kit location"

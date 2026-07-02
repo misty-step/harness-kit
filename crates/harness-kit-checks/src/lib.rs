@@ -3,6 +3,7 @@ pub mod backlog;
 pub mod bootstrap;
 mod bundles;
 pub mod ci_check;
+mod cli_install;
 pub mod config_loader;
 pub mod docs_site;
 pub mod error_report;
