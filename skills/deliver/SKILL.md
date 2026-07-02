@@ -81,7 +81,12 @@ the claim is checkable after you're gone.
 
 ## Refactor at three altitudes
 
-With working code in hand, ask at each level — and act on what you find:
+With working code in hand, ask at each level — and act on what you find. When
+the refactor must prove it changed *nothing observable* and the target has no
+characterization tests, "unit tests pass" cannot see the seam a lift most
+often breaks — reach for the live-diff pattern in
+`harnesses/shared/references/verification-system-first.md` (diff the local
+branch against the deployed/pre-refactor build over the same backing store).
 
 1. **The diff.** Would we write it this way from scratch? Duplicate code to
    DRY out? Conditionals to collapse? Slop to delete (unnecessary comments,

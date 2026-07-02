@@ -89,5 +89,11 @@ that fresh pass-claim attack.
   first (shared AGENTS.md, Layer 1) — don't just file the gap. Build it by
   interviewing the operator: the manual checks they run before merging are
   the spec. Ad-hoc QA evaporates; a harness compounds.
+- **QAing a behavior-preserving refactor with no characterization tests?**
+  "Tests pass" proves nothing when there are no tests pinning the current
+  behavior. Reach for the live-diff pattern in
+  `harnesses/shared/references/verification-system-first.md`: diff the local
+  branch against the deployed/pre-refactor build over the same backing store,
+  byte-for-byte, including error paths.
 - Browser tool selection and evidence conventions: `references/browser-tools.md`,
   `references/evidence-capture.md`.
