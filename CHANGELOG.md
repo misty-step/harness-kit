@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/misty-step/harness-kit/compare/v1.9.0...v1.9.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **bootstrap:** stop leaving dangling worktree symlinks ([#156](https://github.com/misty-step/harness-kit/issues/156)) ([c9b5eda](https://github.com/misty-step/harness-kit/commit/c9b5eda01d8b659e091be44be82ef4bb2ba60be5))
+
 # [1.9.0](https://github.com/misty-step/harness-kit/compare/v1.8.0...v1.9.0) (2026-07-02)
 
 
