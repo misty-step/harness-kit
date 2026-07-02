@@ -53,10 +53,6 @@
       "title": "Declare and verify the greenfield Factory template"
     },
     {
-      "source": "backlog.d/137-retire-stale-project-md.md",
-      "title": "Retire or fold stale project.md into VISION.md/README"
-    },
-    {
       "source": "backlog.d/138-document-bootstrap-bundle-flag.md",
       "title": "Document bootstrap --bundle/--dry-run in the README Quick Start"
     }
