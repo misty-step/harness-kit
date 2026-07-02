@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/misty-step/harness-kit/compare/v1.3.0...v1.4.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* **telemetry:** classify skill invocations as direct vs routed ([#144](https://github.com/misty-step/harness-kit/issues/144)) ([d47b032](https://github.com/misty-step/harness-kit/commit/d47b0320da5b45f1bc55bfdbfef147806a307930))
+
+
+### Features
+
+* **skills:** wire eval-coverage gate + seed hot-skill evals ([#143](https://github.com/misty-step/harness-kit/issues/143)) ([59fd79a](https://github.com/misty-step/harness-kit/commit/59fd79a94cc6509696630735ee00aaafa5a7a682))
+
 # [1.3.0](https://github.com/misty-step/harness-kit/compare/v1.2.0...v1.3.0) (2026-07-01)
 
 
