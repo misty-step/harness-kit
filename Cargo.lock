@@ -202,6 +202,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "harness-kit-hooks",
  "libc",
  "regex",
  "serde",
@@ -211,6 +212,19 @@ dependencies = [
  "shell-words",
  "tempfile",
  "uuid",
+ "wait-timeout",
+]
+
+[[package]]
+name = "harness-kit-hooks"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "libc",
+ "regex",
+ "serde_json",
+ "tempfile",
  "wait-timeout",
 ]
 

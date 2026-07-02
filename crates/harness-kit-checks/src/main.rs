@@ -3,11 +3,12 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use harness_kit_checks::{
-    agent_roster, backlog, bootstrap, ci_check, claude_hooks, config_loader, docs_site,
-    error_report, external_skill_lint, external_sync, frontmatter, generate_index, git_hooks,
-    lint_gates, pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
+    agent_roster, backlog, bootstrap, ci_check, config_loader, docs_site, error_report,
+    external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
+    pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
     summarize_delegations,
 };
+use harness_kit_hooks::claude_hooks;
 
 fn main() {
     if let Err(error) = run(env::args().skip(1).collect()) {
