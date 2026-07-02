@@ -1,0 +1,107 @@
+# harness-kit-checks module boundary inventory
+
+Backlog `129-diet-checks-crate-boundaries.md` child 1. Classifies every module
+in `crates/harness-kit-checks/src/*.rs` (18.1k LOC, 26 files) by real
+dependency evidence — `grep -n "^use crate::"` per file, not vibes — into
+keep-in-checks, split-to-roster, split-to-hooks, split-to-site-analytics, or
+park/delete. Regenerate this table by hand whenever a module's `use crate::`
+imports change meaningfully; it is a plan, not generated output, so no gate
+checks it for drift.
+
+## Method
+
+For each file: `grep -n "^use crate::" <file>` shows what it imports from
+elsewhere in the crate. A file with **no internal `use crate::` line** has
+zero code-level coupling to the rest of the crate (it may still share a
+*data* contract, e.g. a JSON field name, which is called out explicitly below
+since `grep` cannot see it).
+
+## Keep in `harness-kit-checks` (core: gates, bootstrap, index, install)
+
+The true "checks" identity — everything a fresh clone needs to gate itself
+and stay installed correctly. ~10,000 LOC.
+
+| Module | LOC | Why core |
+|---|---:|---|
+| `ci_check.rs` | 231 | The gate orchestrator itself; imports `docs_site, eval_coverage, frontmatter, generate_index, lint_gates, process, quality_gates` |
+| `lint_gates.rs` | 759 | Gate implementations (`GateReport` is the shared return type `eval_coverage`/`quality_gates` reuse) |
+| `quality_gates.rs` | 322 | Gate implementations; imports `lint_gates::GateReport` |
+| `eval_coverage.rs` | 241 | Gate implementation; imports `lint_gates::GateReport` |
+| `frontmatter.rs` | 405 | Catalog integrity (skill/agent frontmatter validation) |
+| `generate_index.rs` | 376 | Catalog integrity (`index.yaml` generation + drift check) |
+| `docs_site.rs` | 1883 | Site generator — kept here (not split-to-site-analytics) because `check-docs-site` is a core gate lane and `ci_check.rs` calls it directly; splitting it would make the core crate depend on a "site" crate for a gate it owns |
+| `git_hooks.rs` | 682 | General repo pre-commit/post-commit hooks (NOT Claude-specific — imports `bootstrap, ci_check, docs_site, frontmatter, generate_index, lint_gates` directly, i.e. it orchestrates the gate/index/docs machinery on every commit) |
+| `bootstrap.rs` | 660 | Install/sync logic |
+| `config_loader.rs` | 859 | Config loading for bootstrap/deploy targets |
+| `backlog.rs` | 457 | Backlog trailer/ID parsing (`/ship` trailer canon); standalone, no internal deps |
+| `source_refs.rs` | 260 | Validates backlog/external ref shape; standalone, but **imported by `summarize_delegations.rs`** (roster cluster) — see cross-boundary note below |
+| `external_skill_lint.rs` | 264 | Lints vendored external skills against `registry.yaml`; standalone |
+| `external_sync.rs` + `external_sync_tests.rs` | 821 + 197 | Vendored-skill sync engine; standalone |
+| `scout_skills.rs` | 439 | Skill scouting/duplicate detection; imports `external_sync` |
+| `process.rs` | 65 | Tiny process-spawn utility; used transitively everywhere |
+| `error_report.rs` | 37 | Tiny error-chain printer; used by `main.rs` |
+| `pr_reviews.rs` | 325 | `gh`-backed PR review fetch/render; standalone, single CLI entrypoint (`fetch-pr-reviews`) — low-maintenance, no urgency to split |
+| `skill_invocation_analytics.rs` | 1014 | Telemetry report (`harness-kit-checks telemetry`); standalone code-wise, but shares a **data contract** with `harness-kit-hooks` (reads the `invocation_kind`/`invocation_kinds` JSON fields the hook writes) — see note below |
+| `lib.rs`, `main.rs` | 24 + 1202 | Crate root / CLI dispatch |
+
+**Cross-boundary note (`source_refs.rs`):** it is core (catalog-integrity,
+same family as `frontmatter.rs`) but `summarize_delegations.rs` (roster
+cluster, below) imports it. If/when `harness-kit-roster` becomes its own
+crate, it depends on core for `source_refs` — a normal one-directional
+workspace dependency, not a reason to move `source_refs.rs` out of core.
+
+**Data-contract note (`skill_invocation_analytics.rs`):** it has *zero*
+`use crate::` lines — no code dependency on `harness-kit-hooks` — but its
+`invocation_kind_counts` reads a JSON field (`"invocation_kind"`) that only
+`harness-kit-hooks`'s `claude_hooks.rs` ever writes. Kept in core for now
+because its audience (an operator running `telemetry` reports) matches
+`docs_site`/`pr_reviews`'s audience, not the hook-runtime's. Revisit if a
+future split wants "everything about skill invocation" co-located instead.
+
+## Split to `harness-kit-roster` (agent orchestration — not split this pass)
+
+| Module | LOC | Coupling |
+|---|---:|---|
+| `agent_roster.rs` | 1975 | Imports `lane_harness, summarize_delegations` |
+| `summarize_delegations.rs` | 1155 | Imports `lane_harness, source_refs` (core, see above) |
+| `lane_harness.rs` | 811 | Imports `agent_roster` |
+
+**Tightly coupled cluster**, ~3941 LOC: `agent_roster` and `lane_harness`
+import each other (mutual dependency), and `summarize_delegations` sits
+between them. This is dispatch + receipt machinery — a distinct audience
+(agents dispatching sub-agents) from gate-callers. Real split candidate, but
+not attempted in this pass; extracting a 3-module mutually-coupled cluster
+is materially riskier than the zero-coupling `harness-kit-hooks` split below,
+so it goes second per the "smallest, cleanest domain first" cadence rule.
+
+## Split to `harness-kit-hooks` (Claude-specific hook runner — split this pass)
+
+| Module | LOC | Coupling |
+|---|---:|---|
+| `claude_hooks.rs` | 2465 | Imports `invocation_kind` only |
+| `invocation_kind.rs` | 179 | No internal imports |
+
+~2644 LOC, **zero code-level coupling to anything else in the crate** beyond
+the pair itself. `main.rs`'s only touchpoint is 18 call sites of the shape
+`claude_hooks::run_<hook_name>_from_stdin().unwrap_or_else(exit_error)` — each
+a parameterless `pub fn run_*() -> Result<()>` that reads its own input from
+stdin. This is the cleanest possible extraction: no shared types cross the
+boundary, no arguments to thread through, no other module reaches into it.
+Executed in this pass (see `crates/harness-kit-hooks/`).
+
+## Park / delete
+
+None identified. Every module in the crate has at least one live CLI
+entrypoint or gate consumer; nothing here is dead weight independent of the
+skill-catalog cull already completed (PR #142).
+
+## What this inventory is not
+
+- Not a mandate to split roster this month — it is real work with real risk
+  (mutual-dependency untangling) and belongs to a dedicated PR per the
+  backlog's "one domain per PR, never combine with unrelated changes" rule.
+- Not a claim that `docs_site.rs` or `skill_invocation_analytics.rs` can
+  never move — the "keep in core" calls above are the current best fit given
+  today's actual dependency edges, not a permanent boundary.
+- Not generated: re-derive by re-running the `grep -n "^use crate::"` sweep
+  per file before trusting an old copy of this table.
