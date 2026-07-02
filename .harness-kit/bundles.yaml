@@ -1,0 +1,101 @@
+# Role-scoped bootstrap bundles (backlog.d/130-role-scoped-bootstrap-bundles.md).
+#
+# Data only — skill directory names, never duplicated skill prose. Each name
+# must resolve to an existing skills/<name>/ or skills/.external/<name>/
+# directory; `bootstrap --bundle <name>` fails loudly if one doesn't (drift
+# between this file and the catalog is a bug, not a silent skip).
+#
+# Bundles are role-scoped, not partition-exclusive: a skill can and does
+# appear in more than one bundle when it genuinely serves more than one role
+# (qa and diagnose serve both implementer and critic; ci threads through
+# lead/critic/vault). Full-catalog install (no --bundle flag) remains the
+# default; these are an opt-in subset for a session role that doesn't need
+# the whole library standing in every prompt.
+#
+# Membership is a first cut, not a permanent taxonomy — validate against real
+# telemetry after bundles see live use (child 5) and adjust rather than
+# treating this as settled.
+version: 1
+bundles:
+  lead:
+    # Frames work, orients, decides what's next, dispatches. Top-of-session role.
+    skills:
+      - orient
+      - next
+      - groom
+      - shape
+      - vision
+      - research
+      - roster
+      - council
+      - harness-engineering
+    external:
+      - nous-creative-ideation
+      - julius-caveman
+  implementer:
+    # Builds the thing: docs->tests->code, live QA, refactor.
+    skills:
+      - deliver
+      - qa
+      - diagnose
+      - refactor
+      - human-writing
+      - artifact
+      - document
+    external:
+      - vercel-react-best-practices
+      - vercel-react-native-skills
+      - vercel-dogfood
+      - cursor-thermo-nuclear-code-quality-review
+      - dietrich-ponytail
+  critic:
+    # Reviews and verifies without building; fresh-context adversarial lenses.
+    skills:
+      - code-review
+      - qa
+      - diagnose
+      - ci
+      - skill-eval
+    external:
+      - cursor-thermo-nuclear-code-quality-review
+      - dietrich-ponytail
+      - vercel-web-design-guidelines
+      - vercel-dogfood
+      - julius-caveman
+  designer:
+    # Visual/interface work; the /design bench and its routed specialists.
+    skills:
+      - design
+      - artifact
+      - document
+      - human-writing
+    external:
+      - leon-taste-skill
+      - leon-soft-skill
+      - leon-minimalist-skill
+      - leon-brutalist-skill
+      - nutlope-hallmark
+      - leon-gpt-tasteskill
+      - leon-images-taste-skill
+      - emil-emil-design-eng
+      - emil-review-animations
+      - vercel-web-design-guidelines
+      - vercel-react-view-transitions
+      - vercel-composition-patterns
+      - leon-stitch-skill
+      - jakub-make-interfaces-feel-better
+      - leon-redesign-skill
+      - impeccable-impeccable
+      - anthropic-frontend-design
+  vault:
+    # Ops/infra/external-service-adjacent: secrets, sandboxes, deploys, tasks.
+    skills:
+      - sprites
+      - todoist
+      - oracle
+      - showcase
+      - ci
+    external:
+      - herdr-herdr
+      - every-ce-promote
+      - vercel-agent-browser

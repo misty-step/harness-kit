@@ -32,6 +32,13 @@ const RETIRED_PROMPTS: &[&str] = &[
 pub struct BootstrapOptions {
     pub repo: PathBuf,
     pub home: PathBuf,
+    /// Role-scoped bundle name (backlog.d/130). `None` installs the full
+    /// catalog — the default, unchanged behavior.
+    pub bundle: Option<String>,
+    /// Report the projected skill count and description-byte estimate for
+    /// the selected scope (bundle or full catalog) without touching the
+    /// filesystem.
+    pub dry_run: bool,
 }
 
 impl BootstrapOptions {
@@ -42,7 +49,12 @@ impl BootstrapOptions {
         let home = env::var_os("HOME")
             .map(PathBuf::from)
             .context("HOME must be set")?;
-        Ok(Self { repo, home })
+        Ok(Self {
+            repo,
+            home,
+            bundle: None,
+            dry_run: false,
+        })
     }
 }
 
@@ -62,10 +74,27 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         .with_context(|| format!("failed to canonicalize {}", options.repo.display()))?;
     ensure_checkout(&repo)?;
 
-    let skills = discover_skills(&repo)?;
+    let all_skills = discover_skills(&repo)?;
+    let all_externals = discover_external_skills(&repo)?;
     let agents = discover_agents(&repo)?;
-    if skills.is_empty() {
+    if all_skills.is_empty() {
         bail!("No skills found");
+    }
+
+    let (skills, externals) = match &options.bundle {
+        Some(name) => crate::bundles::resolve_bundle(&repo, name, &all_skills, &all_externals)?,
+        None => (all_skills.clone(), all_externals.clone()),
+    };
+
+    if options.dry_run {
+        return crate::bundles::dry_run_report(
+            &repo,
+            options.bundle.as_deref(),
+            &all_skills,
+            &all_externals,
+            &skills,
+            &externals,
+        );
     }
 
     let mut lines = vec![
@@ -74,6 +103,10 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         blue("Mode: symlink"),
         String::new(),
     ];
+    if let Some(name) = &options.bundle {
+        lines.push(blue(format!("Bundle: {name}")));
+        lines.push(String::new());
+    }
     install_system_roster(&repo, &options.home, &mut lines)?;
     install_cli(&options.home, &mut lines)?;
 
@@ -92,7 +125,15 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         }
         fs::create_dir_all(&harness_dir)?;
         lines.push(blue(format!("Detected: {harness}")));
-        link_harness(&repo, harness, &harness_dir, &skills, &agents, &mut lines)?;
+        link_harness(
+            &repo,
+            harness,
+            &harness_dir,
+            &skills,
+            &externals,
+            &agents,
+            &mut lines,
+        )?;
         installed += 1;
         lines.push(String::new());
     }
@@ -102,7 +143,9 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         lines.push(yellow("Installing to ~/.claude/ as default."));
         let claude = options.home.join(".claude");
         fs::create_dir_all(&claude)?;
-        link_harness(&repo, "claude", &claude, &skills, &agents, &mut lines)?;
+        link_harness(
+            &repo, "claude", &claude, &skills, &externals, &agents, &mut lines,
+        )?;
         installed = 1;
     }
 
@@ -123,9 +166,14 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
             agents.join(" ")
         )));
     }
-    lines.push(blue(
-        "All first-party skills are installed system-wide for each detected harness.",
-    ));
+    match &options.bundle {
+        Some(name) => lines.push(blue(format!(
+            "'{name}' bundle skills are installed system-wide for each detected harness."
+        ))),
+        None => lines.push(blue(
+            "All first-party skills are installed system-wide for each detected harness.",
+        )),
+    }
     lines.push(String::new());
     lines.push(blue(format!(
         "Mode: symlink (edits in {} propagate instantly)",
@@ -142,7 +190,7 @@ fn ensure_checkout(repo: &Path) -> Result<()> {
     }
 }
 
-fn discover_skills(repo: &Path) -> Result<Vec<String>> {
+pub(crate) fn discover_skills(repo: &Path) -> Result<Vec<String>> {
     let mut skills = BTreeSet::new();
     for entry in fs::read_dir(repo.join("skills"))? {
         let path = entry?.path();
@@ -164,7 +212,7 @@ fn discover_agents(repo: &Path) -> Result<Vec<String>> {
         .collect())
 }
 
-fn discover_external_skills(repo: &Path) -> Result<Vec<String>> {
+pub(crate) fn discover_external_skills(repo: &Path) -> Result<Vec<String>> {
     let external = repo.join("skills/.external");
     let mut skills = BTreeSet::new();
     if external.is_dir() {
@@ -258,13 +306,13 @@ fn link_harness(
     harness: &str,
     harness_dir: &Path,
     skills: &[String],
+    externals: &[String],
     agents: &[String],
     lines: &mut Vec<String>,
 ) -> Result<()> {
     let skills_dir = harness_dir.join("skills");
     fs::create_dir_all(&skills_dir)?;
     lines.push(blue("  Linking skills..."));
-    let externals = discover_external_skills(repo)?;
     let mut all_expected = skills.to_vec();
     all_expected.extend(externals.iter().cloned());
     cleanup_symlinks_under_prefix(&skills_dir, &repo.join("skills"), &all_expected, lines)?;
@@ -272,7 +320,7 @@ fn link_harness(
         link_or_replace(&repo.join("skills").join(skill), &skills_dir.join(skill))?;
         lines.push(green(format!("    {skill}")));
     }
-    for alias in &externals {
+    for alias in externals {
         link_or_replace(
             &repo.join("skills/.external").join(alias),
             &skills_dir.join(alias),

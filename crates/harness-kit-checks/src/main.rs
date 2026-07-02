@@ -89,8 +89,10 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         }
         "build-docs-site" => run_build_docs_site(rest),
         "bootstrap" => {
-            let repo = parse_repo_arg(rest);
-            let options = bootstrap::BootstrapOptions::from_env(Some(repo))?;
+            let (repo, bundle, dry_run) = parse_bootstrap_args(rest);
+            let mut options = bootstrap::BootstrapOptions::from_env(Some(repo))?;
+            options.bundle = bundle;
+            options.dry_run = dry_run;
             println!("{}", bootstrap::run(&options)?);
         }
         "test-sync-external-partial" => {
@@ -337,6 +339,33 @@ fn parse_repo_arg(args: &[String]) -> PathBuf {
         [flag, path] if flag == "--repo" => PathBuf::from(path),
         _ => usage(),
     }
+}
+
+fn parse_bootstrap_args(args: &[String]) -> (PathBuf, Option<String>, bool) {
+    let mut repo = PathBuf::from(".");
+    let mut bundle = None;
+    let mut dry_run = false;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--dry-run" => dry_run = true,
+            "--repo" => {
+                if let Some(path) = args.get(index + 1) {
+                    repo = PathBuf::from(path);
+                    index += 1;
+                }
+            }
+            "--bundle" => {
+                if let Some(name) = args.get(index + 1) {
+                    bundle = Some(name.clone());
+                    index += 1;
+                }
+            }
+            _ => {}
+        }
+        index += 1;
+    }
+    (repo, bundle, dry_run)
 }
 
 fn parse_godfile_args(args: &[String]) -> (PathBuf, bool) {
@@ -918,7 +947,7 @@ fn usage() -> ! {
     eprintln!(
         r#"usage:
   harness-kit-checks check [--repo PATH]
-  harness-kit-checks bootstrap [--repo PATH]
+  harness-kit-checks bootstrap [--repo PATH] [--bundle NAME] [--dry-run]
   harness-kit-checks check-frontmatter [--repo PATH]
   harness-kit-checks generate-index [--repo PATH]
   harness-kit-checks check-index-drift [--repo PATH]

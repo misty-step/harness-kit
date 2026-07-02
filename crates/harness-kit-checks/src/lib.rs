@@ -1,6 +1,7 @@
 pub mod agent_roster;
 pub mod backlog;
 pub mod bootstrap;
+mod bundles;
 pub mod ci_check;
 pub mod config_loader;
 pub mod docs_site;
