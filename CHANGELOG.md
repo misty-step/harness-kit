@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/misty-step/harness-kit/compare/v1.5.0...v1.6.0) (2026-07-02)
+
+
+### Features
+
+* **template:** CI-instantiate the one-core-many-faces template ([#150](https://github.com/misty-step/harness-kit/issues/150)) ([7dc8b7c](https://github.com/misty-step/harness-kit/commit/7dc8b7c072577a4136b3ffe51321bfce7f8824a0)), closes [#137](https://github.com/misty-step/harness-kit/issues/137)
+
 # [1.5.0](https://github.com/misty-step/harness-kit/compare/v1.4.0...v1.5.0) (2026-07-02)
 
 
