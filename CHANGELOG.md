@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/misty-step/harness-kit/compare/v1.4.0...v1.5.0) (2026-07-02)
+
+
+### Features
+
+* **bootstrap:** add role-scoped bundles (lead/implementer/critic/designer/vault) ([#149](https://github.com/misty-step/harness-kit/issues/149)) ([d4008d7](https://github.com/misty-step/harness-kit/commit/d4008d75aaab1421af9d04d3876dd2b4a750322f))
+
 # [1.4.0](https://github.com/misty-step/harness-kit/compare/v1.3.0...v1.4.0) (2026-07-02)
 
 
