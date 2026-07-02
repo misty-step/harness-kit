@@ -17,7 +17,7 @@ export class {{client_class}}Client {
     if (!response.ok) {
       throw new Error(`{{project}} API failed: ${response.status}`);
     }
-    return response.json();
+    return (await response.json()) as WorkItem[];
   }
 
   private headers(): Record<string, string> {
