@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/misty-step/harness-kit/compare/v1.7.1...v1.8.0) (2026-07-02)
+
+
+### Features
+
+* **template:** add API boot and SDK build checks (132 child 4) ([#153](https://github.com/misty-step/harness-kit/issues/153)) ([8c3dbcf](https://github.com/misty-step/harness-kit/commit/8c3dbcfe14fbac35037aa8ee14c71c06e80782c5))
+
 ## [1.7.1](https://github.com/misty-step/harness-kit/compare/v1.7.0...v1.7.1) (2026-07-02)
 
 
