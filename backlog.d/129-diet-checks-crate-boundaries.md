@@ -14,14 +14,19 @@ roster, hook, site, and orchestration sprawl currently living inside
       `crates/harness-kit-checks/src/*.rs` module into keep-in-checks,
       split-to-roster, split-to-hooks, split-to-site/analytics, or park/delete.
       (`crates/harness-kit-checks/BOUNDARIES.md`.)
-- [ ] The first mechanical split moves at least one non-gate domain behind a
+- [x] The first mechanical split moves at least one non-gate domain behind a
       clearer crate or module boundary without changing CLI behavior.
-- [ ] Existing CLI entrypoints used by hooks, bootstrap, CI, and docs either
+      (`harness-kit-hooks` — PR #147.)
+- [x] Existing CLI entrypoints used by hooks, bootstrap, CI, and docs either
       continue to work or emit an intentional migration message with a tested
-      compatibility path.
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
-- [ ] No gate is disabled, loosened, or removed without a replacement that
-      catches the same named failure.
+      compatibility path. (Verified live post-split: `claude-hook
+      permission-auto-approve`, `claude-hook time-context`, `claude-hook
+      skill-invocation-tracker` all produce identical output — PR #147.)
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+- [x] No gate is disabled, loosened, or removed without a replacement that
+      catches the same named failure. (God-file baseline entry for
+      `claude_hooks.rs` moved to its new path, still enforced at the same
+      ceiling — not loosened.)
 
 ## Verification System
 
@@ -47,14 +52,19 @@ roster, hook, site, and orchestration sprawl currently living inside
    evidence, not vibes — surfaced that `claude_hooks.rs`+`invocation_kind.rs`
    have zero code coupling to the rest of the crate, the cleanest possible
    split candidate.)
-2. [ ] Pick the smallest non-gate domain whose CLI compatibility can be proven and
-   split it first. (In progress — `harness-kit-hooks`, see next PR.)
-3. [ ] Add compatibility tests around the moved entrypoints before changing their
-   internals.
+2. [x] Pick the smallest non-gate domain whose CLI compatibility can be proven and
+   split it first. (`harness-kit-hooks` — PR #147: zero code coupling to the
+   rest of the crate, confirmed before moving.)
+3. [x] Add compatibility tests around the moved entrypoints before changing their
+   internals. (All 39 existing tests moved and pass unmodified; live CLI
+   smoke-check for 3 representative hooks — PR #147.)
 4. [ ] Repeat by domain until `harness-kit-checks` is a maintenance gate and install
-   tool rather than a grab bag. (`harness-kit-roster` — `agent_roster` +
-   `summarize_delegations` + `lane_harness`, ~3941 LOC, mutually coupled — is
-   the next candidate per `BOUNDARIES.md`, not attempted yet.)
+   tool rather than a grab bag. **Not yet done.** `harness-kit-roster`
+   (`agent_roster` + `summarize_delegations` + `lane_harness`, ~3941 LOC,
+   mutually coupled per `BOUNDARIES.md`) is the next candidate — materially
+   riskier than the hooks split since it requires untangling a real mutual
+   dependency, not just moving a self-contained pair. Leave this epic
+   `in-progress` until that split lands or is explicitly deferred.
 
 ## Notes
 
