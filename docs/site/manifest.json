@@ -61,10 +61,6 @@
       "title": "Add role-scoped bootstrap bundles"
     },
     {
-      "source": "backlog.d/131-bespoke-skill-subset-generator.md",
-      "title": "Generalize bespoke skill subset generation"
-    },
-    {
       "source": "backlog.d/132-greenfield-template-ci.md",
       "title": "Declare and verify the greenfield Factory template"
     },

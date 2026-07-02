@@ -1,6 +1,6 @@
 # Generalize bespoke skill subset generation
 
-Priority: P2 · Status: done · Estimate: M
+Priority: P2 (shipped) · Status: done · Estimate: M · Shipped: 2026-07-02
 
 ## Goal
 
