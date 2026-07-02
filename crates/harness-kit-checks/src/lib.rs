@@ -14,6 +14,7 @@ pub mod generate_index;
 pub mod git_hooks;
 pub mod lint_gates;
 pub mod pr_reviews;
+pub mod premise_source;
 pub mod process;
 pub mod quality_gates;
 pub mod scout_skills;

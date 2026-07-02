@@ -5,10 +5,6 @@
       "title": "Context Packet: Harness eval bench against raw runs and alternative primitives"
     },
     {
-      "source": "backlog.d/113-restore-premise-source-verifier.md",
-      "title": "Context Packet: Restore premise-source verifier contract"
-    },
-    {
       "source": "backlog.d/114-bootstrap-no-worktree-symlinks.md",
       "title": "Context Packet: Bootstrap must not leave symlinks into disposable worktrees"
     },

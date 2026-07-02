@@ -4,8 +4,8 @@ use std::path::{Path, PathBuf};
 
 use harness_kit_checks::{
     backlog, bootstrap, ci_check, config_loader, docs_site, error_report, external_skill_lint,
-    external_sync, frontmatter, generate_index, git_hooks, lint_gates, pr_reviews, quality_gates,
-    scout_skills, skill_invocation_analytics, template_check,
+    external_sync, frontmatter, generate_index, git_hooks, lint_gates, pr_reviews, premise_source,
+    quality_gates, scout_skills, skill_invocation_analytics, template_check,
 };
 use harness_kit_hooks::claude_hooks;
 use harness_kit_roster::{agent_roster, source_refs, summarize_delegations};
@@ -144,6 +144,7 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
             &parse_repo_arg(rest),
         )?)?,
         "telemetry" | "skill-invocation-analytics" => run_skill_invocation_analytics(rest),
+        "premise-source" => print_gate_report(premise_source::run(rest)?)?,
         _ => usage(),
     }
     Ok(())
@@ -972,7 +973,8 @@ fn usage() -> ! {
   harness-kit-checks probe-agent-roster [--validate-only] [--write-receipts] [options]
   harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [--repo PATH] [options]
   harness-kit-checks summarize-delegations [--backlog-ref REF] [--format json|text] [PATH]
-  harness-kit-checks record-delegation --provider-target ID --provider-status STATUS --attempt-status STATUS --objective TEXT --input-ref REF --worktree-id ID [options]"#
+  harness-kit-checks record-delegation --provider-target ID --provider-status STATUS --attempt-status STATUS --objective TEXT --input-ref REF --worktree-id ID [options]
+  harness-kit-checks premise-source validate PACKET [--repo PATH]|self-test"#
     );
     std::process::exit(2);
 }
