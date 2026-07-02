@@ -203,16 +203,13 @@ dependencies = [
  "anyhow",
  "chrono",
  "harness-kit-hooks",
- "libc",
+ "harness-kit-roster",
  "regex",
  "serde",
  "serde_json",
  "serde_yaml",
  "sha2",
- "shell-words",
  "tempfile",
- "uuid",
- "wait-timeout",
 ]
 
 [[package]]
@@ -225,6 +222,24 @@ dependencies = [
  "regex",
  "serde_json",
  "tempfile",
+ "wait-timeout",
+]
+
+[[package]]
+name = "harness-kit-roster"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "libc",
+ "regex",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha2",
+ "shell-words",
+ "tempfile",
+ "uuid",
  "wait-timeout",
 ]
 

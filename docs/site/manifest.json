@@ -53,10 +53,6 @@
       "title": "Scale skill-eval integration across first-party skills"
     },
     {
-      "source": "backlog.d/129-diet-checks-crate-boundaries.md",
-      "title": "Diet the checks crate into clear maintenance boundaries"
-    },
-    {
       "source": "backlog.d/130-role-scoped-bootstrap-bundles.md",
       "title": "Add role-scoped bootstrap bundles"
     },
