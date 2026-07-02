@@ -1,8 +1,9 @@
 # Context Packet: Document the "live-diff" verification pattern for behavior-preserving refactors
 
-Priority: P2
-Status: shaped
+Priority: P2 (shipped)
+Status: done
 Estimate: S
+Shipped: 2026-07-02
 
 ## PRD Summary
 - User: any agent running `/deliver` or `/qa` on a behavior-preserving
@@ -68,3 +69,20 @@ Estimate: S
 - Origin detail for whoever writes it: Habitat HA-034 close-out evidence —
   modules/cycles/sprints list GETs (21/4/10 rows) + a detail GET + a bogus-id
   404, all byte-identical local-branch vs prod against the shared DB.
+
+## Resolution
+
+**2026-07-02 — shipped.** New "Live-Diff For Behavior-Preserving Refactors"
+subsection added to `harnesses/shared/references/verification-system-first.md`
+(placed after "What Counts", before "Design Rules") covering when/how/why-it-
+bites/precondition-and-limits/pair-don't-replace exactly as specified, phrased
+in the file's own claim/falsifier/grader vocabulary (deployed build = grader's
+reference oracle, the diff = the falsifier), closing with the real Habitat
+HA-034 evidence from the ticket's own Notes.
+
+P1 cross-links added to both named skills, not just one: `/deliver`'s
+"Refactor at three altitudes" section (the natural point-of-use — refactors
+are exactly where this pattern applies) and `/qa`'s Gotchas section (a new
+bullet next to the existing "Generic QA is a stopgap" gotcha, since QAing a
+coverage-poor refactor is precisely the failure mode both bullets address).
+`cargo run --locked -p harness-kit-checks -- check --repo .` green.

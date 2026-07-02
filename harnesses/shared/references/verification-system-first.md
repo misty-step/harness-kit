@@ -45,6 +45,39 @@ Use multiple systems when one boundary cannot see the failure. Unit tests,
 typechecks, and lint catch structural regressions; QA, evals, benchmarks, and
 probes catch failures at runtime, judgment, scale, or integration boundaries.
 
+## Live-Diff For Behavior-Preserving Refactors
+
+When the oracle is "identical to before" and the target has no
+characterization tests to pin current behavior (extract-to-module,
+route-thinning, dedup, lifts), "unit tests pass" cannot catch the seam a lift
+most often breaks — the integration between the refactored layer and its real
+dependencies, which unit tests mock away.
+
+**Technique:** exercise the same representative inputs against (a) the local
+refactor branch and (b) the deployed or pre-refactor build, both pointed at
+the same backing store. Diff responses byte-for-byte, including error and
+not-found paths, not just the happy path. Identical responses across the set
+= behavior preserved; any divergence is the bug, located precisely at the
+diverging input. In verification-system terms: the deployed/pre-refactor
+build is the grader's reference oracle; the diff itself is the falsifier.
+
+**Precondition:** the pre-refactor behavior must still be runnable against the
+same data — a deployed prod instance, a pinned build, or `git stash` + rerun
+locally.
+
+**Does not apply when:** the refactor is meant to change output (pin a golden
+instead); or for write-path side effects, since a read-only diff says nothing
+about them — diff those via post-state reads or a transaction-scoped probe.
+
+**Pair, don't replace.** Live-diff is the integration net; keep
+repository/unit tests as the structural net underneath it.
+
+Proven live 2026-06-17/18 on a 6-route rewrite with zero route-level tests:
+repository unit tests plus a before/after live diff (local branch vs deployed
+prod, same backing store → byte-identical list/detail/404 responses across
+representative reads) was the only thing that actually proved the rewrite
+preserved behavior.
+
 ## Design Rules
 
 - **Falsifiability first.** A system that passes when the values are wrong is
