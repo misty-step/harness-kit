@@ -9,6 +9,9 @@ use regex::Regex;
 use serde::Deserialize;
 use serde_json::{Value, json};
 
+#[path = "external_sync_git.rs"]
+mod git;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SyncMode {
     Sync,
@@ -398,11 +401,11 @@ fn sync_source(
         );
     }
 
-    let checkout_dir = ensure_checkout(checkout_root, &source.repo)?;
-    set_sparse(&checkout_dir, &source.skills_path)?;
+    let checkout_dir = git::ensure_checkout(checkout_root, &source.repo)?;
+    git::set_sparse(&checkout_dir, &source.skills_path)?;
     let want_ref = source.pin.as_deref().unwrap_or(&source.ref_name);
-    let sha = resolve_ref_to_sha(&checkout_dir, want_ref)?;
-    checkout_sha(&checkout_dir, &sha)?;
+    let sha = git::resolve_ref_to_sha(&checkout_dir, want_ref)?;
+    git::checkout_sha(&checkout_dir, &sha)?;
     // Repo root of the checkout — the license fallback for subdir skills whose
     // upstream keeps a single LICENSE at the root rather than in each skill dir.
     let license_root = checkout_dir.clone();
@@ -474,106 +477,6 @@ fn sync_source(
         if options.mode == SyncMode::Sync {
             carry_license(&external_root.join(&alias), &license_root)?;
         }
-    }
-    Ok(())
-}
-
-fn ensure_checkout(checkout_root: &Path, repo: &str) -> Result<PathBuf> {
-    let dir = checkout_root.join(slugify_repo(repo));
-    if !dir.join(".git").is_dir() {
-        fs::create_dir_all(checkout_root)?;
-        let url = format!("https://github.com/{repo}.git");
-        run_checked(
-            Command::new("git")
-                .args(["clone", "--filter=blob:none", "--sparse", &url])
-                .arg(&dir),
-            &format!("clone failed: {url} (unreachable or auth required)"),
-        )?;
-    }
-    Ok(dir)
-}
-
-fn set_sparse(dir: &Path, skills_path: &str) -> Result<()> {
-    if skills_path == "." || skills_path.is_empty() {
-        let _ = Command::new("git")
-            .args(["-C"])
-            .arg(dir)
-            .args(["sparse-checkout", "disable"])
-            .status();
-    } else {
-        run_checked(
-            Command::new("git")
-                .args(["-C"])
-                .arg(dir)
-                .args(["sparse-checkout", "set", skills_path]),
-            &format!(
-                "sparse-checkout failed in {} for {skills_path}",
-                dir.display()
-            ),
-        )?;
-    }
-    Ok(())
-}
-
-fn resolve_ref_to_sha(dir: &Path, ref_name: &str) -> Result<String> {
-    if Regex::new(r"^[0-9a-f]{40}$").unwrap().is_match(ref_name) {
-        return Ok(ref_name.to_string());
-    }
-    for pattern in [
-        format!("refs/tags/{ref_name}"),
-        format!("refs/heads/{ref_name}"),
-        ref_name.to_string(),
-    ] {
-        let output = Command::new("git")
-            .args(["-C"])
-            .arg(dir)
-            .args(["ls-remote", "origin", &pattern])
-            .output()
-            .with_context(|| format!("failed to resolve ref '{ref_name}' in {}", dir.display()))?;
-        if output.status.success() {
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            if let Some(sha) = stdout
-                .lines()
-                .filter_map(|line| line.split_whitespace().next())
-                .find(|sha| !sha.is_empty())
-            {
-                return Ok(sha.to_string());
-            }
-        }
-    }
-    bail!("cannot resolve ref '{ref_name}' in {}", dir.display());
-}
-
-fn checkout_sha(dir: &Path, sha: &str) -> Result<()> {
-    let shallow = Command::new("git")
-        .args(["-C"])
-        .arg(dir)
-        .args(["fetch", "--depth=1", "--filter=blob:none", "origin", sha])
-        .status();
-    let fetched = shallow.is_ok_and(|status| status.success())
-        || Command::new("git")
-            .args(["-C"])
-            .arg(dir)
-            .args(["fetch", "--filter=blob:none", "origin"])
-            .status()
-            .is_ok_and(|status| status.success());
-    if !fetched {
-        bail!("fetch failed in {}", dir.display());
-    }
-    let checked_out = Command::new("git")
-        .args(["-C"])
-        .arg(dir)
-        .args(["checkout", "--quiet", sha])
-        .status()
-        .is_ok_and(|status| status.success())
-        || Command::new("git")
-            .args(["-C"])
-            .arg(dir)
-            .args(["checkout", "--quiet", "-B", "harness-kit-sync", sha])
-            .status()
-            .is_ok_and(|status| status.success());
-    if !checked_out {
-        bail!("checkout {sha} failed in {}", dir.display());
     }
     Ok(())
 }
@@ -787,14 +690,6 @@ fn sorted_dirs(root: &Path) -> Result<Vec<PathBuf>> {
     }
     dirs.sort();
     Ok(dirs)
-}
-
-fn run_checked(command: &mut Command, message: &str) -> Result<()> {
-    let status = command.status().with_context(|| message.to_string())?;
-    if !status.success() {
-        bail!("{message}");
-    }
-    Ok(())
 }
 
 fn ensure_command(name: &str) -> Result<()> {
