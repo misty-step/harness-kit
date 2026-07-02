@@ -1,12 +1,13 @@
 # harness-kit-checks module boundary inventory
 
-Backlog `129-diet-checks-crate-boundaries.md` child 1. Classifies every module
-in `crates/harness-kit-checks/src/*.rs` (18.1k LOC, 26 files) by real
-dependency evidence — `grep -n "^use crate::"` per file, not vibes — into
-keep-in-checks, split-to-roster, split-to-hooks, split-to-site-analytics, or
-park/delete. Regenerate this table by hand whenever a module's `use crate::`
-imports change meaningfully; it is a plan, not generated output, so no gate
-checks it for drift.
+Backlog `129-diet-checks-crate-boundaries.md` children 1 and 4. Classifies
+every module in `crates/harness-kit-checks/src/*.rs` (12.3k LOC, 24 files as
+of the roster split — was 18.1k LOC/26 files before it) by real dependency
+evidence — `grep -n "^use crate::"` per file, not vibes — into
+keep-in-checks, split-to-roster (done), split-to-hooks (done),
+split-to-site-analytics, or park/delete. Regenerate this table by hand
+whenever a module's `use crate::` imports change meaningfully; it is a plan,
+not generated output, so no gate checks it for drift.
 
 ## Method
 
@@ -19,7 +20,7 @@ since `grep` cannot see it).
 ## Keep in `harness-kit-checks` (core: gates, bootstrap, index, install)
 
 The true "checks" identity — everything a fresh clone needs to gate itself
-and stay installed correctly. ~10,000 LOC.
+and stay installed correctly. ~12,300 LOC.
 
 | Module | LOC | Why core |
 |---|---:|---|
@@ -32,10 +33,9 @@ and stay installed correctly. ~10,000 LOC.
 | `docs_site.rs` | 1883 | Site generator — kept here (not split-to-site-analytics) because `check-docs-site` is a core gate lane and `ci_check.rs` calls it directly; splitting it would make the core crate depend on a "site" crate for a gate it owns |
 | `git_hooks.rs` | 682 | General repo pre-commit/post-commit hooks (NOT Claude-specific — imports `bootstrap, ci_check, docs_site, frontmatter, generate_index, lint_gates` directly, i.e. it orchestrates the gate/index/docs machinery on every commit) |
 | `bootstrap.rs` | 677 | Install/sync logic |
-| `cli_install.rs` | 188 | Split out of `bootstrap.rs` (backlog.d/133) purely to stay under the god-file ceiling after fixing the CLI self-update blind spot; imports `bootstrap::{blue, green}` for shared output formatting — a one-directional dependency on core, same shape as `source_refs.rs`'s cross-boundary note below |
+| `cli_install.rs` | 188 | Split out of `bootstrap.rs` (backlog.d/133) purely to stay under the god-file ceiling after fixing the CLI self-update blind spot; imports `bootstrap::{blue, green}` for shared output formatting |
 | `config_loader.rs` | 859 | Config loading for bootstrap/deploy targets |
 | `backlog.rs` | 457 | Backlog trailer/ID parsing (`/ship` trailer canon); standalone, no internal deps |
-| `source_refs.rs` | 260 | Validates backlog/external ref shape; standalone, but **imported by `summarize_delegations.rs`** (roster cluster) — see cross-boundary note below |
 | `external_skill_lint.rs` | 264 | Lints vendored external skills against `registry.yaml`; standalone |
 | `external_sync.rs` + `external_sync_tests.rs` | 821 + 197 | Vendored-skill sync engine; standalone |
 | `scout_skills.rs` | 439 | Skill scouting/duplicate detection; imports `external_sync` |
@@ -43,13 +43,7 @@ and stay installed correctly. ~10,000 LOC.
 | `error_report.rs` | 37 | Tiny error-chain printer; used by `main.rs` |
 | `pr_reviews.rs` | 325 | `gh`-backed PR review fetch/render; standalone, single CLI entrypoint (`fetch-pr-reviews`) — low-maintenance, no urgency to split |
 | `skill_invocation_analytics.rs` | 1014 | Telemetry report (`harness-kit-checks telemetry`); standalone code-wise, but shares a **data contract** with `harness-kit-hooks` (reads the `invocation_kind`/`invocation_kinds` JSON fields the hook writes) — see note below |
-| `lib.rs`, `main.rs` | 24 + 1202 | Crate root / CLI dispatch |
-
-**Cross-boundary note (`source_refs.rs`):** it is core (catalog-integrity,
-same family as `frontmatter.rs`) but `summarize_delegations.rs` (roster
-cluster, below) imports it. If/when `harness-kit-roster` becomes its own
-crate, it depends on core for `source_refs` — a normal one-directional
-workspace dependency, not a reason to move `source_refs.rs` out of core.
+| `lib.rs`, `main.rs` | ~19 + 1235 | Crate root / CLI dispatch. `main.rs` depends on both sibling crates (`harness_kit_hooks::claude_hooks`, `harness_kit_roster::{agent_roster, source_refs, summarize_delegations}`) for CLI dispatch, same shape as the hooks split — core is the binary that assembles the other crates, never the reverse |
 
 **Data-contract note (`skill_invocation_analytics.rs`):** it has *zero*
 `use crate::` lines — no code dependency on `harness-kit-hooks` — but its
@@ -59,21 +53,40 @@ because its audience (an operator running `telemetry` reports) matches
 `docs_site`/`pr_reviews`'s audience, not the hook-runtime's. Revisit if a
 future split wants "everything about skill invocation" co-located instead.
 
-## Split to `harness-kit-roster` (agent orchestration — not split this pass)
+## Split to `harness-kit-roster` (agent orchestration — split this pass)
 
 | Module | LOC | Coupling |
 |---|---:|---|
 | `agent_roster.rs` | 1975 | Imports `lane_harness, summarize_delegations` |
-| `summarize_delegations.rs` | 1155 | Imports `lane_harness, source_refs` (core, see above) |
+| `summarize_delegations.rs` | 1155 | Imports `lane_harness, source_refs` |
 | `lane_harness.rs` | 811 | Imports `agent_roster` |
+| `source_refs.rs` | 260 | Validates backlog/external ref shape; standalone, imported only by `summarize_delegations.rs` and (directly, for `record-delegation`'s `--work-source-ref` flag) `main.rs` |
 
-**Tightly coupled cluster**, ~3941 LOC: `agent_roster` and `lane_harness`
-import each other (mutual dependency), and `summarize_delegations` sits
-between them. This is dispatch + receipt machinery — a distinct audience
-(agents dispatching sub-agents) from gate-callers. Real split candidate, but
-not attempted in this pass; extracting a 3-module mutually-coupled cluster
-is materially riskier than the zero-coupling `harness-kit-hooks` split below,
-so it goes second per the "smallest, cleanest domain first" cadence rule.
+**Tightly coupled cluster**, ~4200 LOC. `agent_roster` and `lane_harness`
+import each other (mutual dependency) — the actual reason this was riskier
+than the hooks split: a real cyclic pair, not a self-contained one. This
+resolves cleanly because Rust crates can't be cyclic *between* crates, only
+*within* one, so the mutual pair simply moves together as internal modules
+of the same new crate. `source_refs.rs` was re-classified from "core" to
+"roster" once the actual dependency graph was checked directly (not
+assumed): despite BOUNDARIES.md originally guessing "core depends back on
+roster for `source_refs`," `grep -rln "source_refs::"` showed the *only*
+callers outside its own file are `summarize_delegations.rs` (moving with it
+anyway) and `main.rs`'s CLI dispatch (which already depends on the roster
+crate as a sibling library, same as it depends on `harness-kit-hooks`) — so
+nothing in core actually needed `source_refs.rs` to stay in core. Moving it
+fully into `harness-kit-roster` removed the one dependency edge that would
+otherwise have made `harness-kit-checks` and `harness-kit-roster` depend on
+each other in both directions (a real cycle Rust would reject outright).
+Landed in `crates/harness-kit-roster/` — dispatch + receipt machinery, a
+distinct audience (agents dispatching sub-agents) from gate-callers.
+`harness-kit-checks` depends on it as a library the same way it already
+depends on `harness-kit-hooks`; `harness-kit-roster` has zero dependency
+back on `harness-kit-checks`. Verified live post-split:
+`probe-agent-roster --validate-only`, and a full
+`record-delegation` → `summarize-delegations` round-trip, both produce
+correct output through the new crate boundary; `cargo test --workspace`
+carries all 34 roster-cluster tests over unmodified.
 
 ## Split to `harness-kit-hooks` (Claude-specific hook runner — split this pass)
 
@@ -98,9 +111,6 @@ skill-catalog cull already completed (PR #142).
 
 ## What this inventory is not
 
-- Not a mandate to split roster this month — it is real work with real risk
-  (mutual-dependency untangling) and belongs to a dedicated PR per the
-  backlog's "one domain per PR, never combine with unrelated changes" rule.
 - Not a claim that `docs_site.rs` or `skill_invocation_analytics.rs` can
   never move — the "keep in core" calls above are the current best fit given
   today's actual dependency edges, not a permanent boundary.

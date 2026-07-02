@@ -1,6 +1,6 @@
 # Diet the checks crate into clear maintenance boundaries
 
-Priority: P1 · Status: in-progress · Estimate: L
+Priority: P1 (shipped) · Status: done · Estimate: L · Shipped: 2026-07-02
 
 ## Goal
 
@@ -58,13 +58,28 @@ roster, hook, site, and orchestration sprawl currently living inside
 3. [x] Add compatibility tests around the moved entrypoints before changing their
    internals. (All 39 existing tests moved and pass unmodified; live CLI
    smoke-check for 3 representative hooks — PR #147.)
-4. [ ] Repeat by domain until `harness-kit-checks` is a maintenance gate and install
-   tool rather than a grab bag. **Not yet done.** `harness-kit-roster`
-   (`agent_roster` + `summarize_delegations` + `lane_harness`, ~3941 LOC,
-   mutually coupled per `BOUNDARIES.md`) is the next candidate — materially
-   riskier than the hooks split since it requires untangling a real mutual
-   dependency, not just moving a self-contained pair. Leave this epic
-   `in-progress` until that split lands or is explicitly deferred.
+4. [x] Repeat by domain until `harness-kit-checks` is a maintenance gate and install
+   tool rather than a grab bag. `harness-kit-roster` split landed:
+   `agent_roster` + `lane_harness` + `summarize_delegations` +
+   `source_refs` (~4200 LOC) moved to `crates/harness-kit-roster/`. The
+   mutual `agent_roster` ↔ `lane_harness` dependency resolved cleanly by
+   moving both together as internal modules of the new crate — Rust
+   forbids cycles *between* crates, not *within* one, so pairing them was
+   never the actual obstacle. `source_refs.rs` was re-classified from
+   "core" to "roster" after checking the real dependency graph directly
+   (`grep -rln "source_refs::"`) instead of trusting `BOUNDARIES.md`'s
+   original guess — nothing in core actually used it, so keeping it in
+   core would have created a real two-way crate cycle
+   (`harness-kit-checks` ↔ `harness-kit-roster`) once `main.rs` started
+   depending on the roster crate for CLI dispatch. `harness-kit-checks`
+   depends on `harness-kit-roster` as a library exactly like it already
+   depends on `harness-kit-hooks`; the reverse dependency is zero.
+   Verified live post-split: `probe-agent-roster --validate-only` and a
+   full `record-delegation` → `summarize-delegations` round-trip both
+   produce correct output through the new crate boundary;
+   `cargo test --workspace` carries all 34 roster-cluster tests over
+   unmodified (184 total workspace tests, 0 failed). God-file baseline
+   updated to the new paths at unchanged ceilings (no gate loosened).
 
 ## Notes
 
@@ -73,3 +88,14 @@ roster+hooks+site sprawl."
 
 The teardown judged the gate set itself strong. This epic is not permission to
 weaken gates; it is a boundary and ownership cleanup.
+
+**2026-07-02 — closing.** Both split candidates `BOUNDARIES.md` identified
+(`harness-kit-hooks`, `harness-kit-roster`) are landed. The remaining
+"keep in core" modules are gates, bootstrap/install, and catalog-integrity
+tooling — the "true checks identity" per the inventory's own definition —
+and `BOUNDARIES.md`'s "Park / delete" section identifies no further
+candidates. `harness-kit-checks` is now 12.3k LOC/24 files, down from
+18.1k/26 at the epic's start; the two extractions (~2.6k LOC hooks, ~4.2k
+LOC roster) moved dispatch/receipt/hook-runtime concerns out into their own
+crates with their own audiences, leaving gates+bootstrap+install+catalog as
+the core identity `ci_check.rs` orchestrates directly.

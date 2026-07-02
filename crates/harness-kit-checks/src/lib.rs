@@ -1,4 +1,3 @@
-pub mod agent_roster;
 pub mod backlog;
 pub mod bootstrap;
 mod bundles;
@@ -13,13 +12,10 @@ pub mod external_sync;
 pub mod frontmatter;
 pub mod generate_index;
 pub mod git_hooks;
-pub mod lane_harness;
 pub mod lint_gates;
 pub mod pr_reviews;
 pub mod process;
 pub mod quality_gates;
 pub mod scout_skills;
 pub mod skill_invocation_analytics;
-pub mod source_refs;
-pub mod summarize_delegations;
 pub mod template_check;
