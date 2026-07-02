@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/misty-step/harness-kit/compare/v1.7.0...v1.7.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **bootstrap:** fix installed CLI self-update blind spot ([#152](https://github.com/misty-step/harness-kit/issues/152)) ([2a3b105](https://github.com/misty-step/harness-kit/commit/2a3b105be062575a02ed769bf1750241d0c48461))
+
 # [1.7.0](https://github.com/misty-step/harness-kit/compare/v1.6.0...v1.7.0) (2026-07-02)
 
 
