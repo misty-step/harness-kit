@@ -53,10 +53,6 @@
       "title": "Declare and verify the greenfield Factory template"
     },
     {
-      "source": "backlog.d/136-codebase-md-stale-post-crate-split.md",
-      "title": "Update CODEBASE.md for the harness-kit-hooks / harness-kit-roster split"
-    },
-    {
       "source": "backlog.d/137-retire-stale-project-md.md",
       "title": "Retire or fold stale project.md into VISION.md/README"
     },
