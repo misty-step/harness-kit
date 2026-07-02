@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/misty-step/harness-kit/compare/v1.10.0...v1.10.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **external-sync:** fix root-skill sparse checkout, decompose git plumbing ([#164](https://github.com/misty-step/harness-kit/issues/164)) ([3e4c392](https://github.com/misty-step/harness-kit/commit/3e4c392a6db25de2608e8cb9b38a95e9df386cce))
+
 # [1.10.0](https://github.com/misty-step/harness-kit/compare/v1.9.1...v1.10.0) (2026-07-02)
 
 
