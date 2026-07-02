@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/misty-step/harness-kit/compare/v1.8.0...v1.9.0) (2026-07-02)
+
+
+### Features
+
+* **checks:** restore the premise-source verifier CLI contract ([#155](https://github.com/misty-step/harness-kit/issues/155)) ([17ae98e](https://github.com/misty-step/harness-kit/commit/17ae98ef8023762ef04737582318e20d0047a803))
+
 # [1.8.0](https://github.com/misty-step/harness-kit/compare/v1.7.1...v1.8.0) (2026-07-02)
 
 
