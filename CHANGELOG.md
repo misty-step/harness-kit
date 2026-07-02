@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/misty-step/harness-kit/compare/v1.6.0...v1.7.0) (2026-07-02)
+
+
+### Features
+
+* **harness-engineering:** generate focused repo-local skills for domain agents ([#151](https://github.com/misty-step/harness-kit/issues/151)) ([db1966a](https://github.com/misty-step/harness-kit/commit/db1966a8553f81f0cc6d47ff8934894c5d91f665)), closes [misty-step/canary#182](https://github.com/misty-step/canary/issues/182) [misty-step/powder#12](https://github.com/misty-step/powder/issues/12)
+
 # [1.6.0](https://github.com/misty-step/harness-kit/compare/v1.5.0...v1.6.0) (2026-07-02)
 
 
