@@ -1,6 +1,6 @@
 # Diet the checks crate into clear maintenance boundaries
 
-Priority: P1 · Status: pending · Estimate: L
+Priority: P1 · Status: in-progress · Estimate: L
 
 ## Goal
 
@@ -10,9 +10,10 @@ roster, hook, site, and orchestration sprawl currently living inside
 
 ## Oracle
 
-- [ ] A checked-in boundary plan classifies every current
+- [x] A checked-in boundary plan classifies every current
       `crates/harness-kit-checks/src/*.rs` module into keep-in-checks,
       split-to-roster, split-to-hooks, split-to-site/analytics, or park/delete.
+      (`crates/harness-kit-checks/BOUNDARIES.md`.)
 - [ ] The first mechanical split moves at least one non-gate domain behind a
       clearer crate or module boundary without changing CLI behavior.
 - [ ] Existing CLI entrypoints used by hooks, bootstrap, CI, and docs either
@@ -39,15 +40,21 @@ roster, hook, site, and orchestration sprawl currently living inside
 
 ## Children
 
-1. Write the boundary inventory from the current crate: gates/bootstrap/index as
+1. [x] Write the boundary inventory from the current crate: gates/bootstrap/index as
    the checks core; roster/delegations/lane harness as roster; Claude hooks as
    hooks; docs-site/analytics/external sync as explicit keep/split decisions.
-2. Pick the smallest non-gate domain whose CLI compatibility can be proven and
-   split it first.
-3. Add compatibility tests around the moved entrypoints before changing their
+   (`BOUNDARIES.md`, based on real `grep -n "^use crate::"` dependency
+   evidence, not vibes — surfaced that `claude_hooks.rs`+`invocation_kind.rs`
+   have zero code coupling to the rest of the crate, the cleanest possible
+   split candidate.)
+2. [ ] Pick the smallest non-gate domain whose CLI compatibility can be proven and
+   split it first. (In progress — `harness-kit-hooks`, see next PR.)
+3. [ ] Add compatibility tests around the moved entrypoints before changing their
    internals.
-4. Repeat by domain until `harness-kit-checks` is a maintenance gate and install
-   tool rather than a grab bag.
+4. [ ] Repeat by domain until `harness-kit-checks` is a maintenance gate and install
+   tool rather than a grab bag. (`harness-kit-roster` — `agent_roster` +
+   `summarize_delegations` + `lane_harness`, ~3941 LOC, mutually coupled — is
+   the next candidate per `BOUNDARIES.md`, not attempted yet.)
 
 ## Notes
 
