@@ -1,6 +1,6 @@
 # Update CODEBASE.md for the harness-kit-hooks / harness-kit-roster split
 
-Priority: P2 · Status: ready · Estimate: S
+Priority: P2 (shipped) · Status: done · Estimate: S · Shipped: 2026-07-02
 
 ## Goal
 
@@ -12,17 +12,17 @@ cluster no longer live in `crates/harness-kit-checks` — they moved to
 
 ## Oracle
 
-- [ ] `CODEBASE.md`'s crate section lists three crates
+- [x] `CODEBASE.md`'s crate section lists three crates
       (`harness-kit-checks`, `harness-kit-hooks`, `harness-kit-roster`)
       matching `ls crates/`, each with its actual module contents.
-- [ ] The `git_hooks` + `claude_hooks` bullet (currently `CODEBASE.md:45-47`)
+- [x] The `git_hooks` + `claude_hooks` bullet (currently `CODEBASE.md:45-47`)
       is corrected: `git_hooks` stays in `harness-kit-checks`
       (pre-commit/pre-push/etc. dispatch), `claude_hooks` moved to
       `harness-kit-hooks`.
-- [ ] The `agent_roster` + `lane_harness` + `source_refs` +
+- [x] The `agent_roster` + `lane_harness` + `source_refs` +
       `summarize_delegations` bullet (currently `CODEBASE.md:53-55`) is moved
       under a `harness-kit-roster` heading.
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 
 ## Notes
 
@@ -40,3 +40,13 @@ describing the old, pre-diet crate boundary.
 crate ownership; it currently tells that agent to look for `claude_hooks` and
 `agent_roster` inside `harness-kit-checks`, which is now false and will send
 the next session down the wrong module path.
+
+**2026-07-02 — shipped.** Section renamed "The Rust Crate" → "The Rust
+Crates" (plural, now accurate), split into three per-crate bullets matching
+`ls crates/` exactly, plus a one-line dependency-direction note (checks
+depends on hooks/roster as libraries, never the reverse) since that's the
+fact most likely to trip up a cold agent trying to add a new command. Also
+folded in two modules this same overnight session added
+(`premise_source` — backlog 113, `cli_install` — backlog 133) that
+`CODEBASE.md` had never mentioned at all, so the map doesn't go stale again
+the moment this PR merges.
