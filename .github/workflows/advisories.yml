@@ -1,0 +1,33 @@
+name: advisories
+
+# Networked tier (backlog.d/118): RustSec vulnerability advisories via
+# cargo-deny. Deliberately separate from ci.yml's fast local gate — the
+# advisory database needs network access to fetch, and a newly published
+# RustSec advisory can turn a merged, unchanged Cargo.lock vulnerable
+# overnight, so this also runs on a daily schedule, not just per-PR.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "17 6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: advisories-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  cargo-deny-advisories:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-deny
+        run: cargo install cargo-deny --version 0.19.9 --locked
+      - run: cargo run --locked -p harness-kit-checks -- check-supply-chain-advisories
