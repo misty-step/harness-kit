@@ -1,6 +1,6 @@
 # Generalize bespoke skill subset generation
 
-Priority: P2 · Status: pending · Estimate: M
+Priority: P2 · Status: in-progress · Estimate: M
 
 ## Goal
 
@@ -40,15 +40,26 @@ source repo into a semantic workflow engine.
 
 ## Children
 
-1. Select the first consumer repo and domain where a focused generated skill
+1. [x] Select the first consumer repo and domain where a focused generated skill
    beats the full library, preferably QA because the verification path is
-   concrete.
-2. Extract the repo-local QA-skill pattern into a reusable prompt/template under
+   concrete. (Canary's hand-authored `.agents/skills/canary-qa/SKILL.md` is
+   the exemplar this generalizes from — see child 2's reference doc's
+   "Exemplar" section. Two live proof repos chosen: canary — a second domain,
+   `canary-deploy`, since QA is already proven there — and powder — first
+   domain, `powder-qa`, since it has none yet.)
+2. [x] Extract the repo-local QA-skill pattern into a reusable prompt/template under
    the owning Harness Kit skill.
-3. Generate a subset for the consumer repo and run its live QA/check path.
-4. Document boundaries: generated repo-local skill folders are consumer artifacts
+   (`skills/harness-engineering/references/repo-local-skill-generation.md` +
+   `skills/harness-engineering/templates/repo-local-skill/` — a documented
+   judgment process + copy-and-fill templates, explicitly NOT a Rust
+   verb/workflow engine; the reference names why, citing the two prior
+   `/tailor`/`/focus` retirements for over-engineering the same territory.)
+3. [ ] Generate a subset for the consumer repo and run its live QA/check path.
+   (In progress — `canary-deploy` and `powder-qa`.)
+4. [x] Document boundaries: generated repo-local skill folders are consumer artifacts
    and should not be committed back as Harness Kit source bridges.
-5. Decide whether to keep, adapt, or cut the generator based on the smoke.
+   (Reference doc's "Name and place the file" + "Anti-goals" sections.)
+5. [ ] Decide whether to keep, adapt, or cut the generator based on the smoke.
 
 ## Notes
 
@@ -58,3 +69,10 @@ skill subsets, not the whole library."
 
 This is an experiment, not a new default install model. If one strong prompt
 plus manual copy is enough, do not build a larger generator.
+
+**2026-07-02 — generator asset landed** (this PR). Also introduces a
+provenance-header + eval-stub convention for generated repo-local skills (the
+evals-per-skill floor, backlog 128, extended past Harness Kit's own catalog)
+that `canary-qa` predates and is not retrofitted with — it stays as its
+authoring lane committed it. Live proof on canary + powder tracked as child 3;
+this ticket stays open until child 5's keep/adapt/cut call.
