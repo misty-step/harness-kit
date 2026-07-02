@@ -29,6 +29,25 @@ is already on `PATH`. Bootstrap from a stable checkout (set
 `HARNESS_KIT_DIR=/path/to/harness-kit` to pin one), never a disposable
 worktree.
 
+By default bootstrap installs the full skill catalog (51 skills, ~21.4k
+description bytes standing in every session's system prompt). Pass
+`--bundle NAME` for a role-scoped subset instead — same install, fewer
+skills:
+
+```bash
+harness-kit-checks bootstrap --bundle lead        # 11 skills, ~5.2k bytes
+harness-kit-checks bootstrap --bundle implementer # 12 skills, ~5.2k bytes
+harness-kit-checks bootstrap --bundle critic       # 10 skills, ~4.2k bytes
+harness-kit-checks bootstrap --bundle designer     # 21 skills, ~7.8k bytes
+harness-kit-checks bootstrap --bundle vault        #  8 skills, ~4.0k bytes
+```
+
+Add `--dry-run` to preview the projected skill count and byte estimate
+without touching the filesystem (works with or without `--bundle`).
+Bundles are opt-in — omitting `--bundle` keeps today's full-catalog
+behavior unchanged; membership is defined in `.harness-kit/bundles.yaml`
+(backlog 130).
+
 ## Skills
 
 | Skill | Purpose |

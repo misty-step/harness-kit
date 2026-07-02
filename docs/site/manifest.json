@@ -51,10 +51,6 @@
     {
       "source": "backlog.d/132-greenfield-template-ci.md",
       "title": "Declare and verify the greenfield Factory template"
-    },
-    {
-      "source": "backlog.d/138-document-bootstrap-bundle-flag.md",
-      "title": "Document bootstrap --bundle/--dry-run in the README Quick Start"
     }
   ],
   "copy_source": "docs/copy/site.json",
