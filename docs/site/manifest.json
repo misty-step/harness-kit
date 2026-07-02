@@ -51,6 +51,22 @@
     {
       "source": "backlog.d/132-greenfield-template-ci.md",
       "title": "Declare and verify the greenfield Factory template"
+    },
+    {
+      "source": "backlog.d/135-fix-dead-grill-me-reference-post-cull.md",
+      "title": "Fix dead petekp-grill-me reference in interrogate-first.md"
+    },
+    {
+      "source": "backlog.d/136-codebase-md-stale-post-crate-split.md",
+      "title": "Update CODEBASE.md for the harness-kit-hooks / harness-kit-roster split"
+    },
+    {
+      "source": "backlog.d/137-retire-stale-project-md.md",
+      "title": "Retire or fold stale project.md into VISION.md/README"
+    },
+    {
+      "source": "backlog.d/138-document-bootstrap-bundle-flag.md",
+      "title": "Document bootstrap --bundle/--dry-run in the README Quick Start"
     }
   ],
   "copy_source": "docs/copy/site.json",
