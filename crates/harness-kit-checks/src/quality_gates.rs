@@ -160,24 +160,47 @@ pub fn check_source_markers(root: &Path) -> Result<GateReport> {
 }
 
 /// Hard-block gate: supply-chain policy via cargo-deny (offline checks: bans,
-/// licenses, sources). Advisories (network) run in CI / the coverage+mutation
-/// fast-follow. Gracefully skips when cargo-deny is absent (shellcheck
-/// precedent), so the aggregate gate stays runnable without the extra tool.
+/// licenses, sources). Advisories (network) run separately — see
+/// `check_supply_chain_advisories` below, wired into the networked CI tier,
+/// not this fast local gate. Gracefully skips when cargo-deny is absent
+/// (shellcheck precedent), so the aggregate gate stays runnable without the
+/// extra tool.
 pub fn check_supply_chain(root: &Path) -> Result<GateReport> {
+    run_cargo_deny(
+        root,
+        &["bans", "licenses", "sources"],
+        "cargo-deny: bans, licenses, sources clean.",
+    )
+}
+
+/// Networked-tier gate: RustSec vulnerability advisories via cargo-deny.
+/// Deliberately separate from `check_supply_chain` (offline) and from
+/// `check --repo .` (the fast local gate) — advisories need network access
+/// to fetch the RustSec database, so this runs in its own CI step
+/// (`.github/workflows/advisories.yml`), not on every pre-commit/pre-push.
+/// backlog.d/118: scoped to advisories only; diff-coverage and mutation
+/// testing are deferred — see that ticket's notes on why they need
+/// threshold calibration against real PR traffic before landing as a gate.
+pub fn check_supply_chain_advisories(root: &Path) -> Result<GateReport> {
+    run_cargo_deny(root, &["advisories"], "cargo-deny: advisories clean.")
+}
+
+fn run_cargo_deny(root: &Path, checks: &[&str], ok_message: &str) -> Result<GateReport> {
     if !command_exists("cargo-deny") {
-        return Ok(GateReport::success(
-            "cargo-deny not installed; supply-chain gate skipped (cargo install cargo-deny to enforce).",
-        ));
+        return Ok(GateReport::success(format!(
+            "cargo-deny not installed; {} gate skipped (cargo install cargo-deny to enforce).",
+            checks.join("/")
+        )));
     }
     let output = Command::new("cargo")
-        .args(["deny", "check", "bans", "licenses", "sources"])
+        .arg("deny")
+        .arg("check")
+        .args(checks)
         .current_dir(root)
         .output()
         .context("failed to run cargo deny")?;
     if output.status.success() {
-        return Ok(GateReport::success(
-            "cargo-deny: bans, licenses, sources clean.",
-        ));
+        return Ok(GateReport::success(ok_message));
     }
     let stderr = String::from_utf8_lossy(&output.stderr);
     let stdout = String::from_utf8_lossy(&output.stdout);

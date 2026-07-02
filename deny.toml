@@ -1,7 +1,8 @@
-# cargo-deny supply-chain policy — harness-kit-checks check-supply-chain.
-# Offline checks only here (bans, licenses, sources); advisories (network) run
-# in CI / the coverage+mutation fast-follow. Doctrine:
-# harnesses/shared/references/quality-gates.md.
+# cargo-deny supply-chain policy — harness-kit-checks check-supply-chain
+# (offline: bans, licenses, sources) and check-supply-chain-advisories
+# (networked: RustSec advisories, .github/workflows/advisories.yml — not the
+# fast local gate, since it needs network access to the advisory database).
+# Doctrine: harnesses/shared/references/quality-gates.md.
 # The allow-list encodes the licenses actually present today (ratchet floor);
 # tighten it, never loosen it to pass.
 

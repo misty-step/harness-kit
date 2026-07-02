@@ -140,6 +140,9 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "check-supply-chain" => {
             print_gate_report(quality_gates::check_supply_chain(&parse_repo_arg(rest))?)?
         }
+        "check-supply-chain-advisories" => print_gate_report(
+            quality_gates::check_supply_chain_advisories(&parse_repo_arg(rest))?,
+        )?,
         "check-template" => print_gate_report(template_check::check_template_instantiates(
             &parse_repo_arg(rest),
         )?)?,
@@ -958,7 +961,7 @@ fn usage() -> ! {
   harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
   harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
   harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
-  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain|check-template [--repo PATH]
+  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain|check-supply-chain-advisories|check-template [--repo PATH]
   harness-kit-checks lint-external-skills [--strict]
   harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]
   harness-kit-checks test-sync-external-partial
