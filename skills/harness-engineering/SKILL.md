@@ -9,7 +9,8 @@ description: |
   "preferred stack", "stack defaults", "hosting defaults", "CI defaults",
   "observability defaults", "release defaults", "design system defaults",
   "storage defaults", "agent substrate defaults", "one core many faces",
-  "API CLI MCP SDK skill template", "factory product template".
+  "API CLI MCP SDK skill template", "factory product template",
+  "generate repo-local skill", "bespoke skill subset", "domain agent skill".
   Trigger: /harness-engineering, /harness, /skill.
 argument-hint: "[create|eval|lint|convert|sync|engineer|audit|models] [target]"
 ---
@@ -35,6 +36,7 @@ Engineer the harness. Keep it thin.
 | open-model defaults | `references/open-model-roster.md` |
 | preferred stack / infrastructure defaults | `references/preferred-stack.md` |
 | one core / many faces product template | `references/one-core-many-faces.md` + `templates/one-core-many-faces/` |
+| generate a focused repo-local skill for a domain agent | `references/repo-local-skill-generation.md` + `templates/repo-local-skill/` |
 | public-surface "works" critique | `../../harnesses/shared/references/works-critique.md` |
 | model-native product boundary | `../../harnesses/shared/references/model-native-product-primitives.md` |
 | loop readiness / Mode B handoff | `../../harnesses/shared/references/loop-readiness.md` |
@@ -42,14 +44,16 @@ Engineer the harness. Keep it thin.
 | delete-first simplification lens | `../../harnesses/shared/references/delete-first.md` |
 | Ponytail anti-overengineering ladder | `../.external/dietrich-ponytail/SKILL.md` |
 
-Repo-local skills for consumer repos (bespoke QA drivers, persona probes)
-are written directly into that repo's `.agents/skills/` with its real
-routes and commands; this skill owns the craft either way. For a repo's
-verification skill, interview the operator first: the manual checks they
-run after the agent responds and before merge are the spec — encode each
-check that has a tool. Turning a proven session pattern into a first-party
-primitive starts at the primitive test below — most patterns are prompts,
-not skills.
+Repo-local skills for consumer repos (bespoke QA drivers, deploy runbooks,
+persona probes) are written directly into that repo's `.agents/skills/`
+with its real routes and commands; this skill owns the craft either way.
+Process, provenance header, and eval-stub shape:
+`references/repo-local-skill-generation.md` +
+`templates/repo-local-skill/`. For a repo's verification skill, interview
+the operator first: the manual checks they run after the agent responds and
+before merge are the spec — encode each check that has a tool. Turning a
+proven session pattern into a first-party primitive starts at the primitive
+test below — most patterns are prompts, not skills.
 
 ## Contract
 
