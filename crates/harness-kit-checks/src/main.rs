@@ -6,7 +6,7 @@ use harness_kit_checks::{
     agent_roster, backlog, bootstrap, ci_check, config_loader, docs_site, error_report,
     external_skill_lint, external_sync, frontmatter, generate_index, git_hooks, lint_gates,
     pr_reviews, quality_gates, scout_skills, skill_invocation_analytics, source_refs,
-    summarize_delegations,
+    summarize_delegations, template_check,
 };
 use harness_kit_hooks::claude_hooks;
 
@@ -140,6 +140,9 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "check-supply-chain" => {
             print_gate_report(quality_gates::check_supply_chain(&parse_repo_arg(rest))?)?
         }
+        "check-template" => print_gate_report(template_check::check_template_instantiates(
+            &parse_repo_arg(rest),
+        )?)?,
         "telemetry" | "skill-invocation-analytics" => run_skill_invocation_analytics(rest),
         _ => usage(),
     }
@@ -954,7 +957,7 @@ fn usage() -> ! {
   harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
   harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
   harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
-  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain [--repo PATH]
+  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain|check-template [--repo PATH]
   harness-kit-checks lint-external-skills [--strict]
   harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]
   harness-kit-checks test-sync-external-partial

@@ -49,6 +49,7 @@ CI gates:
 - check-portable-paths
 - check-source-markers
 - check-supply-chain
+- check-template
 - check-vendored-copies
 - lint-shell
 - lint-yaml
