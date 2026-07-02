@@ -4,6 +4,15 @@ Use when a factory repo should expose one product through API, CLI, MCP, SDK,
 human UI, deploy runtime, and a shipped skill without duplicating business
 logic.
 
+**Greenfield-only.** This template is for a new product's first commit, not a
+retrofit of an existing repo. The 2026-07-01 groom teardown estimated
+60-116 engineer-hours per repo to retrofit an existing fleet repo (canary is a
+7-crate workspace, crucible a 2-crate one — neither matches the template
+topology) and judged retrofit uneconomical. If a repo already ships a working
+product in a different shape, do not migrate it to this layout; the shape
+argument in `skills/harness-engineering/SKILL.md` and this file's own doctrine
+still apply without the file layout.
+
 ## Source Signals
 
 - In-house exemplar: `~/Development/bastion/apps/cairn` ships web, JSON API,
@@ -112,6 +121,13 @@ repo or planning branch and replace:
 
 Then delete every face the first slice cannot verify. The template is a menu,
 not a mandate. A repo earns a face by naming its proof loop.
+
+The template itself cannot drift silently: `check-template`
+(`crates/harness-kit-checks/src/template_check.rs`, part of this repo's own
+`check --repo .`) materializes every `.tmpl` file with sample tokens into a
+temp workspace, checks no token survives substitution, and runs
+`cargo generate-lockfile && cargo build --locked --workspace` against it. A
+broken template file fails Harness Kit's own gate, not just a consumer's.
 
 ## Verification System
 

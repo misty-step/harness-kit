@@ -1,6 +1,6 @@
 # Declare and verify the greenfield Factory template
 
-Priority: P1 · Status: pending · Estimate: M
+Priority: P1 · Status: in-progress · Estimate: M
 
 ## Goal
 
@@ -9,18 +9,26 @@ from drifting by instantiating and building it in CI.
 
 ## Oracle
 
-- [ ] `skills/harness-engineering/references/one-core-many-faces.md` and the
+- [x] `skills/harness-engineering/references/one-core-many-faces.md` and the
       template README state that the template is for greenfield products, not
       fleet retrofits.
-- [ ] A repo-owned fixture or command materializes
+- [x] A repo-owned fixture or command materializes
       `skills/harness-engineering/templates/one-core-many-faces/` with sample
-      substitutions in a temp directory.
-- [ ] The materialized template runs at least `cargo build --locked`; if API or
+      substitutions in a temp directory. (`harness-kit-checks check-template`,
+      `crates/harness-kit-checks/src/template_check.rs`.)
+- [x] The materialized template runs at least `cargo build --locked`; if API or
       MCP boot is not yet runnable, the gap is named as a child rather than
-      hidden by the test.
-- [ ] The CI/local gate includes the template instantiation check or an explicit
-      sub-gate that `check --repo .` runs.
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+      hidden by the test. (Runs `cargo generate-lockfile && cargo build
+      --locked --workspace` — a fresh instantiation has no committed
+      Cargo.lock, so generate-lockfile-then-locked-build is the template's own
+      documented flow, not a weakening of `--locked`. API/MCP boot and SDK
+      consumer builds are child 4, explicitly not attempted here.)
+- [x] The CI/local gate includes the template instantiation check or an explicit
+      sub-gate that `check --repo .` runs. (`check-template` gate lane in
+      `ci_check.rs`, verified both directions live: passes on the real
+      template, and fails with the real `cargo` compile error when a `.tmpl`
+      file was deliberately corrupted for the test, then reverted.)
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 
 ## Verification System
 
@@ -38,14 +46,26 @@ from drifting by instantiating and building it in CI.
 
 ## Children
 
-1. Add the greenfield-only declaration to the template reference and README.
-2. Write the smallest Rust-owned materializer/check that substitutes sample
-   tokens into a temp workspace.
-3. Build the generated workspace and capture the first failure honestly.
-4. Add boot/protocol checks for API, MCP, SDK, and deploy only after the build
-   path is stable.
-5. Backfill store/auth pieces from a golden repo only when a consumer needs
-   them and the generated check can prove them.
+1. [x] Add the greenfield-only declaration to the template reference and README.
+2. [x] Write the smallest Rust-owned materializer/check that substitutes sample
+   tokens into a temp workspace. (`template_check::materialize` — walks every
+   `.tmpl` file, strips the suffix, substitutes the 10 documented tokens;
+   `README.md` is correctly excluded since it documents the template rather
+   than being part of the generated tree.)
+3. [x] Build the generated workspace and capture the first failure honestly.
+   (`template_check::build_generated_workspace`; a deliberately broken
+   `crates/core/src/lib.rs.tmpl` produced the real `rustc` "unclosed
+   delimiter" error surfaced verbatim through the gate, exit code 1 —
+   verified live, not just asserted in a unit test.)
+4. [ ] Add boot/protocol checks for API, MCP, SDK, and deploy only after the build
+   path is stable. **Not attempted.** `cargo build --locked --workspace`
+   compiles all 5 crates (core/shell/api/cli/mcp) but nothing runs the API
+   server, boots the MCP stdio server, or builds the TypeScript SDK — those
+   need protocol-specific drivers (HTTP request replay, MCP `initialize`
+   handshake, `npm install && tsc`) this pass didn't build.
+5. [ ] Backfill store/auth pieces from a golden repo only when a consumer needs
+   them and the generated check can prove them. **Not attempted** — no
+   current consumer of this template exists to backfill from.
 
 ## Notes
 
@@ -56,3 +76,11 @@ The teardown verified that PR #137 added the deploy layer. It also found no CI
 lane instantiating the template and no evidence that retrofitting existing fleet
 repos is economical. This epic resolves the template's posture before adding
 more faces.
+
+**2026-07-01 — children 1-3 landed.** `check-template` runs as part of
+`check --repo .` (adds ~10-12s per run: `cargo generate-lockfile` + a cold
+`cargo build --locked --workspace` of a fresh 5-crate workspace with real
+dependencies — axum, tokio, clap — resolved fresh each run since the template
+intentionally ships unpinned version ranges, not a frozen lockfile). Children
+4-5 stay open for a future pass; they need real protocol drivers, not more
+`cargo build` coverage.

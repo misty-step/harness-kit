@@ -1,10 +1,20 @@
 # One Core, Many Faces Template
 
-Copy this folder into a new product repo when the product needs API, CLI, MCP,
-SDK, skill, and human surfaces over one Rust-owned core.
+Copy this folder into a **new** product repo when the product needs API, CLI,
+MCP, SDK, skill, and human surfaces over one Rust-owned core.
+
+**Greenfield-only.** Use this for a product's first commit, not to retrofit an
+existing repo into this shape — retrofitting a working repo with a different
+topology (a 7-crate workspace, a 2-crate one, whatever it already is) was
+estimated at 60-116 engineer-hours and judged not worth it. An existing repo
+should adopt the doctrine (core/shell/adapter separation, intent-shaped MCP
+tools, proof-before-expansion) without migrating its file layout.
 
 This is a scaffold, not a generator. Replace tokens, delete unearned faces, and
-make the first verified slice work before adding surface.
+make the first verified slice work before adding surface. Harness Kit's own
+gate materializes this template with sample tokens and builds it
+(`check-template`) so a broken `.tmpl` file fails before it ever reaches a
+consumer.
 
 ## Tokens
 

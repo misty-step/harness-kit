@@ -21,3 +21,4 @@ pub mod scout_skills;
 pub mod skill_invocation_analytics;
 pub mod source_refs;
 pub mod summarize_delegations;
+pub mod template_check;
