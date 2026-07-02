@@ -1,6 +1,6 @@
 # Generalize bespoke skill subset generation
 
-Priority: P2 · Status: in-progress · Estimate: M
+Priority: P2 · Status: done · Estimate: M
 
 ## Goal
 
@@ -10,17 +10,25 @@ source repo into a semantic workflow engine.
 
 ## Oracle
 
-- [ ] A prototype takes one real consumer repo and produces a repo-local
+- [x] A prototype takes one real consumer repo and produces a repo-local
       `.agents/skills/` or equivalent subset with a focused QA or domain skill,
-      using live repo commands and routes.
-- [ ] The generated subset contains only portable skill folders and references;
+      using live repo commands and routes. (Two: `canary-deploy` —
+      misty-step/canary#182 — and `powder-qa` — misty-step/powder#12.)
+- [x] The generated subset contains only portable skill folders and references;
       no source-repo `.codex/skills`, `.claude/skills`, `.pi/skills`, or other
-      generated bridge directories are committed to Harness Kit.
-- [ ] A cold-agent smoke verifies the generated subset by running the repo's
-      actual QA/check path from the generated skill.
-- [ ] The generation pattern is documented as a skill/template asset, not a
+      generated bridge directories are committed to Harness Kit. (Both PRs add
+      only `.agents/skills/<repo>-<domain>/**`; Harness Kit itself carries only
+      the reference + template under `skills/harness-engineering/`.)
+- [x] A cold-agent smoke verifies the generated subset by running the repo's
+      actual QA/check path from the generated skill. (Both: fresh-context
+      subagents, zero session memory of the generation work, ran the skills'
+      exact commands verbatim and passed — `canary-deploy` against the real
+      production `canary-obs` Fly app, `powder-qa` through the full 12-step CLI
+      lifecycle. See both PRs' eval-stub run logs for full transcripts.)
+- [x] The generation pattern is documented as a skill/template asset, not a
       general workflow engine around provider CLIs.
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+      (`skills/harness-engineering/references/repo-local-skill-generation.md`.)
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 
 ## Verification System
 
@@ -54,12 +62,26 @@ source repo into a semantic workflow engine.
    judgment process + copy-and-fill templates, explicitly NOT a Rust
    verb/workflow engine; the reference names why, citing the two prior
    `/tailor`/`/focus` retirements for over-engineering the same territory.)
-3. [ ] Generate a subset for the consumer repo and run its live QA/check path.
-   (In progress — `canary-deploy` and `powder-qa`.)
+3. [x] Generate a subset for the consumer repo and run its live QA/check path.
+   (`canary-deploy` — misty-step/canary#182 — a second domain, additive
+   alongside the existing `canary-qa`; `powder-qa` — misty-step/powder#12 —
+   powder's first repo-local skill. Both cold-agent smokes PASS; both agents
+   self-reported zero guessing/invention was needed.)
 4. [x] Document boundaries: generated repo-local skill folders are consumer artifacts
    and should not be committed back as Harness Kit source bridges.
    (Reference doc's "Name and place the file" + "Anti-goals" sections.)
-5. [ ] Decide whether to keep, adapt, or cut the generator based on the smoke.
+5. [x] Decide whether to keep, adapt, or cut the generator based on the smoke.
+   **Verdict: keep, as-is — no scope growth.** Both cold-agent smokes passed on
+   the first try with the skill as the *only* input (no guessing, no digging
+   outside the file, per both agents' explicit self-reports); the one real gap
+   either smoke surfaced (`powder-qa`: `init-db --show-secret` prints the
+   bootstrap key) was cheap enough to fold straight back into the generated
+   skill's own Gotchas rather than into the generator process. Nothing in
+   either proof motivated more machinery (no manifest, no A/B eval, no lint
+   hook) — the boundary section's bet holds. Re-open this ticket only if a
+   future repo needs a domain with no drivable oracle, or if more than ~3
+   generated skills start accumulating in one repo (the signal to reach for a
+   role-scoped bundle instead, per the reference doc).
 
 ## Notes
 
@@ -70,9 +92,18 @@ skill subsets, not the whole library."
 This is an experiment, not a new default install model. If one strong prompt
 plus manual copy is enough, do not build a larger generator.
 
-**2026-07-02 — generator asset landed** (this PR). Also introduces a
+**2026-07-02 — generator asset landed** (harness-kit#151). Also introduces a
 provenance-header + eval-stub convention for generated repo-local skills (the
 evals-per-skill floor, backlog 128, extended past Harness Kit's own catalog)
 that `canary-qa` predates and is not retrofitted with — it stays as its
-authoring lane committed it. Live proof on canary + powder tracked as child 3;
-this ticket stays open until child 5's keep/adapt/cut call.
+authoring lane committed it.
+
+**2026-07-02 — proved on canary + powder, closing.** `canary-deploy`
+(misty-step/canary#182) and `powder-qa` (misty-step/powder#12) both generated,
+both cold-agent-smoked PASS, both PRs open with the target repo's own gate
+green (canary: `./bin/validate --strict`; powder: local `cargo fmt`/CLI
+lifecycle, matching its CI). Keep verdict recorded in child 5. This experiment
+ticket is done; the pattern lives on as documented process
+(`skills/harness-engineering/references/repo-local-skill-generation.md`), not
+as a new standing default — future repos generate on demand, not via any
+new install-time step.
