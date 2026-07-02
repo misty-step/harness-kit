@@ -1,5 +1,5 @@
 [package]
-name = "harness-kit-checks"
+name = "harness-kit-hooks"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
@@ -8,14 +8,8 @@ rust-version.workspace = true
 [dependencies]
 anyhow = "1.0.98"
 chrono = { version = "0.4.41", default-features = false, features = ["clock"] }
-harness-kit-hooks = { path = "../harness-kit-hooks", version = "0.1.0" }
 libc = "0.2.186"
 regex = "1.11.1"
-serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
-serde_yaml = "0.9.34"
-sha2 = "0.10.9"
-shell-words = "1.1.0"
 tempfile = "3.20.0"
-uuid = { version = "1.11.0", features = ["v4"] }
 wait-timeout = "0.2.1"
