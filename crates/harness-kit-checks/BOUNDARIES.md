@@ -31,7 +31,8 @@ and stay installed correctly. ~10,000 LOC.
 | `generate_index.rs` | 376 | Catalog integrity (`index.yaml` generation + drift check) |
 | `docs_site.rs` | 1883 | Site generator — kept here (not split-to-site-analytics) because `check-docs-site` is a core gate lane and `ci_check.rs` calls it directly; splitting it would make the core crate depend on a "site" crate for a gate it owns |
 | `git_hooks.rs` | 682 | General repo pre-commit/post-commit hooks (NOT Claude-specific — imports `bootstrap, ci_check, docs_site, frontmatter, generate_index, lint_gates` directly, i.e. it orchestrates the gate/index/docs machinery on every commit) |
-| `bootstrap.rs` | 660 | Install/sync logic |
+| `bootstrap.rs` | 677 | Install/sync logic |
+| `cli_install.rs` | 188 | Split out of `bootstrap.rs` (backlog.d/133) purely to stay under the god-file ceiling after fixing the CLI self-update blind spot; imports `bootstrap::{blue, green}` for shared output formatting — a one-directional dependency on core, same shape as `source_refs.rs`'s cross-boundary note below |
 | `config_loader.rs` | 859 | Config loading for bootstrap/deploy targets |
 | `backlog.rs` | 457 | Backlog trailer/ID parsing (`/ship` trailer canon); standalone, no internal deps |
 | `source_refs.rs` | 260 | Validates backlog/external ref shape; standalone, but **imported by `summarize_delegations.rs`** (roster cluster) — see cross-boundary note below |

@@ -108,7 +108,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         lines.push(String::new());
     }
     install_system_roster(&repo, &options.home, &mut lines)?;
-    install_cli(&options.home, &mut lines)?;
+    crate::cli_install::install_cli(&repo, &options.home, &mut lines)?;
 
     let mut installed = 0usize;
     for harness in [
@@ -266,37 +266,6 @@ fn cleanup_retired_system_examples(
         fs::remove_file(&path)?;
         lines.push(green("    removed retired examples/"));
     }
-    Ok(())
-}
-
-#[cfg(unix)]
-fn install_cli(home: &Path, lines: &mut Vec<String>) -> Result<()> {
-    lines.push(blue("Installing Rust CLI..."));
-    let bin_dir = home.join(".harness-kit/bin");
-    fs::create_dir_all(&bin_dir)?;
-    let destination = bin_dir.join("harness-kit-checks");
-    let current = env::current_exe()?;
-    // When the running binary IS the installed one (invoked via PATH or a
-    // symlink into bin_dir), fs::copy(src, src) truncates it to zero bytes.
-    // Skip the self-copy; there is nothing newer to install.
-    let same_file = match (current.canonicalize(), destination.canonicalize()) {
-        (Ok(a), Ok(b)) => a == b,
-        _ => false,
-    };
-    if same_file {
-        lines.push(green("    bin/harness-kit-checks (already current)"));
-        lines.push(String::new());
-        return Ok(());
-    }
-    // Copy via temp + rename so a concurrent invocation never sees a
-    // half-written binary.
-    let staging = bin_dir.join(".harness-kit-checks.tmp");
-    fs::copy(&current, &staging)
-        .with_context(|| format!("failed to stage {}", staging.display()))?;
-    fs::rename(&staging, &destination)
-        .with_context(|| format!("failed to install {}", destination.display()))?;
-    lines.push(green("    bin/harness-kit-checks"));
-    lines.push(String::new());
     Ok(())
 }
 
@@ -670,11 +639,11 @@ fn set_hooks_path(repo: &Path, lines: &mut Vec<String>) -> Result<()> {
     Ok(())
 }
 
-fn blue(message: impl AsRef<str>) -> String {
+pub(crate) fn blue(message: impl AsRef<str>) -> String {
     format!("\x1b[0;34m{}\x1b[0m", message.as_ref())
 }
 
-fn green(message: impl AsRef<str>) -> String {
+pub(crate) fn green(message: impl AsRef<str>) -> String {
     format!("\x1b[0;32m{}\x1b[0m", message.as_ref())
 }
 
