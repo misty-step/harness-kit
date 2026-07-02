@@ -53,10 +53,6 @@
       "title": "Declare and verify the greenfield Factory template"
     },
     {
-      "source": "backlog.d/135-fix-dead-grill-me-reference-post-cull.md",
-      "title": "Fix dead petekp-grill-me reference in interrogate-first.md"
-    },
-    {
       "source": "backlog.d/136-codebase-md-stale-post-crate-split.md",
       "title": "Update CODEBASE.md for the harness-kit-hooks / harness-kit-roster split"
     },

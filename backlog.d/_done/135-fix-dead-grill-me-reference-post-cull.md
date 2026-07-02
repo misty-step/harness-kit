@@ -1,6 +1,6 @@
 # Fix dead petekp-grill-me reference in interrogate-first.md
 
-Priority: P2 · Status: ready · Estimate: S
+Priority: P2 (shipped) · Status: done · Estimate: S · Shipped: 2026-07-02
 
 ## Goal
 
@@ -10,17 +10,23 @@ behind by tonight's zero-use vendored skill cull (backlog 127, `_done/`).
 
 ## Oracle
 
-- [ ] `harnesses/shared/references/interrogate-first.md:5-7` no longer cites
+- [x] `harnesses/shared/references/interrogate-first.md:5-7` no longer cites
       `skills/.external/petekp-grill-me/SKILL.md` as a live exemplar (the
       directory is confirmed gone from `skills/.external/`).
-- [ ] The "interview, not questionnaire" posture keeps its exemplar sentence —
+- [x] The "interview, not questionnaire" posture keeps its exemplar sentence —
       either point it at a first-party skill that still embodies the stance
       (`/shape`'s grill step, per `skills/shape/SKILL.md:98`, was named as the
       redundant survivor in the cull's own evidence) or drop the file
-      reference and keep the prose description.
-- [ ] `grep -rn "petekp-grill-me" harnesses/ skills/ docs/` returns nothing
-      outside `backlog.d/_done/` and `.evidence/`.
-- [ ] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
+      reference and keep the prose description. (Repointed to
+      `skills/shape/SKILL.md` — `/shape` loads this reference and is the
+      primary consumer of the stance, not a co-equal external exemplar.)
+- [x] `grep -rn "petekp-grill-me" harnesses/ skills/ docs/` returns nothing
+      outside `backlog.d/_done/` and `.evidence/`. (One hit remains,
+      `docs/site/manifest.json` — the generated backlog index echoing this
+      ticket's own title text, not a doctrine reference; the actual
+      `interrogate-first.md` citation is gone, confirmed by a targeted grep
+      against that file alone.)
+- [x] `cargo run --locked -p harness-kit-checks -- check --repo .` passes.
 
 ## Notes
 

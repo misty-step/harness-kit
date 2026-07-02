@@ -2,9 +2,9 @@
 
 Use before shaping a contestable idea or framing a strategic groom. The posture
 is an interview, not a questionnaire: walk the operator down the decision tree
-until the hidden choices are visible and resolved. The vendored `grill-me` skill
-(`skills/.external/petekp-grill-me/SKILL.md`) is the named exemplar of this
-stance.
+until the hidden choices are visible and resolved. `/shape`'s own grill step
+(`skills/shape/SKILL.md`) loads this reference and is the primary consumer of
+the stance.
 
 1. **One question at a time.** Never batch. Each answer reshapes the next
    question; a wall of questions is a form, and forms get skimmed.
