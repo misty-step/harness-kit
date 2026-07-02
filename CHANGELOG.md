@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/misty-step/harness-kit/compare/v1.9.1...v1.10.0) (2026-07-02)
+
+
+### Features
+
+* **quality-gates:** add cargo-deny advisories gate (118 scoped) ([#163](https://github.com/misty-step/harness-kit/issues/163)) ([ace7517](https://github.com/misty-step/harness-kit/commit/ace751714a07bac48202360159f6066b1ec06389))
+
 ## [1.9.1](https://github.com/misty-step/harness-kit/compare/v1.9.0...v1.9.1) (2026-07-02)
 
 
