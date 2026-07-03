@@ -117,3 +117,13 @@ not the full bench.
   security/data-loss surface earns.
 - Auth rots independently per CLI. A lane failing instantly with an auth
   error means re-login locally, not a provider verdict.
+
+## Prompting frontier lanes
+
+For Fable/GPT-5.5-class lanes (and the lead's own operation), load
+`harnesses/shared/references/prompting-frontier.md`: goal-not-steps briefs
+fenced by house rules, executable bars (delegate metric-invention when the
+bar is fuzzy), builder-never-grades verification against the REAL output,
+loop-until-the-bar with a live status artifact, prior traces as fuel, and
+budgets instead of permission-asks. Cheaper models still earn more
+mechanism — tier the prescription to the model.

@@ -54,6 +54,11 @@ an architecture choice needs the full treatment.
 - **Oracle is executable.** "It should work" is not an oracle; "these
   commands pass, this route returns X" is. If you can't write the oracle,
   the goal isn't clear yet — go back. See `references/executable-oracles.md`.
+  When you cannot define the measuring stick, delegating its INVENTION is a
+  legal oracle ("figure out how to measure X, then hit it") — and the
+  builder never grades its own work: acceptance is a fresh context pointed
+  at the real output, told to prove it fails
+  (`harnesses/shared/references/prompting-frontier.md`).
 - **Verification harness named.** The packet states which live-verification
   harness will prove the work (the repo's one-command evidence loop) — and
   when none exists, the packet's first milestone is building it
