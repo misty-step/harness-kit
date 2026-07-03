@@ -1,17 +1,24 @@
 # Prompting Fable-class models
 
 Adapted for this harness from Matt Shumer's "How I Prompt Fable" (2026-07-03),
-operator-ratified the same day. Applies to Fable/GPT-5.5-class lanes and to
-the lead's own operation. Older/cheaper models still need more mechanism —
-tier the prescription to the model.
+operator-ratified the same day, with the operator's directionality correction:
+**these rules describe how to commission FABLE — the operator prompting the
+lead, or the lead prompting a rare peer-Fable lane.** They do NOT loosen how
+Fable commissions downward: when the lead dispatches non-Fable subagents
+(codex, sonnet, GLM), the lead IS the superior judgment in the pair and OWNS
+the broad design decisions and the specific implementation decisions — briefs
+to cheaper models are rightly prescriptive, and get more so as capability
+drops. What flows downward to every lane regardless of tier: bars not
+adjectives, builder-never-grades, live status artifacts, evidence
+expectations, and house rules.
 
 ## The seven rules
 
-1. **Goal, not steps.** Hand big, underspecified outcomes. Every step you
-   dictate overrides the model's judgment with yours, and on frontier models
-   yours is usually worse. A brief that reads like a recipe is a smell —
-   unless a step encodes an operator RULING, in which case it is a house
-   rule, not a step (label it so).
+1. **Goal, not steps** (when commissioning Fable). Hand big, underspecified
+   outcomes. Every step dictated to a Fable overrides its judgment with
+   yours. Inverted downward: a FABLE dictating design and mechanism to a
+   lesser lane is the system working as intended — that is where the
+   frontier judgment belongs.
 2. **House rules, not scripts.** Fence the open goal with the few invariants
    that must survive any path: repo red lines, ratified design verdicts,
    security boundaries, "describe behavior in the agent's prompt instead of
