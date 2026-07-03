@@ -84,12 +84,12 @@ an architecture choice needs the full treatment.
   current state, change shape, repo anchors, alternatives and tradeoffs,
   acceptance, verification, communication cadence, risks, and adversarial
   review focus. Use layout as thinking: comparison tables, phase lanes, risk
-  grids, diagrams, callouts, and links to repo anchors. Generate the diagrams
-  themselves when a labeled architecture / sequence / system map beats ASCII —
-  Nano Banana 2 Lite renders legible in-image text for ~$0.03
-  (`harnesses/shared/references/image-generation.md`); keep mermaid for precise
-  call-graphs. Prefer the Misty Step aesthetic kit when the artifact is visual
-  and local review can load it; keep any local CSS as thin plan-specific glue. This is not Markdown exported to
+  grids, diagrams, callouts, and links to repo anchors. Generate diagram images
+  only for complex or contested plans where a labeled architecture / sequence /
+  system map carries information HTML, mermaid, or ASCII cannot; keep mermaid
+  for precise call-graphs (`harnesses/shared/references/image-generation.md`).
+  Prefer the Misty Step aesthetic kit when the artifact is visual and local
+  review can load it; keep any local CSS as thin plan-specific glue. This is not Markdown exported to
   HTML; the HTML is the planning medium. Skip only for trivial shapes,
   no-browser environments, or explicit operator waiver.
 

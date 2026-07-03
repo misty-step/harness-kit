@@ -157,17 +157,19 @@ aesthetic kit when the artifact is visual and local review can load it. The
 HTML is the planning medium, not a Markdown export; if the task is trivial or
 no browser is available, state the fallback before acting.
 
-### Generate visual artifacts — it's cheap and authed
+### Generate visual artifacts when they earn it
 Image and short-video generation is a standing affordance, not a capability to
 request or gate behind one harness's native tool. `GEMINI_API_KEY` is already in
 the env (from `op://Agents/GEMINI_API_KEY/credential`); Nano Banana 2 Lite
 renders a legible, on-brand image — including in-image text for diagrams and
-labels — in ~4s for ~$0.03. Generate **informational** images liberally wherever
-they carry information the prose or a table can't: labeled diagrams in plans,
-system maps, design contact sheets, status/incident posters, doc figures. Not
-decoration. Use your harness's native image tool if it has one (Codex
-`image_gen`); otherwise call the Gemini API directly — it is a model-native
-primitive, not a maintained wrapper script. Detail:
+labels — in ~4s for ~$0.03. Generate **informational** images only when they
+carry information prose, HTML layout, mermaid, or a table cannot: complex or
+contested plans, labeled system maps, design contact sheets, status/incident
+posters, or doc figures. Routine plans, straightforward status reports, and
+simple architecture notes should stay text-first. Not decoration. Use your
+harness's native image tool if it has one (Codex `image_gen`); otherwise call
+the Gemini API directly — it is a model-native primitive, not a maintained
+wrapper script. Detail:
 `harnesses/shared/references/image-generation.md`.
 
 ### Fresh context beats self-review

@@ -54,9 +54,9 @@ into local cleanup.
   changes in chat, issue comments, or the final report only.
 - Use the vision to backchain: themes and tickets should say which part of the
   vision they advance, de-risk, simplify, or deliberately reject.
-- A vision or moonshot artifact can carry a one-glance **system map** — generate
-  it (Nano Banana 2 Lite, ~$0.03, legible in-image text) instead of describing
-  the shape in prose: `harnesses/shared/references/image-generation.md`.
+- A vision or moonshot artifact can carry a one-glance **system map** when the
+  relationships, scope, or sequencing are too complex for prose alone. Generate
+  it only when it earns that role: `harnesses/shared/references/image-generation.md`.
 
 ## Tidy (mandatory, mechanical)
 
