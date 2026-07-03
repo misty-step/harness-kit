@@ -1,5 +1,4 @@
 use std::collections::BTreeSet;
-use std::fs;
 use std::path::Path;
 
 use anyhow::{Context, Result};
@@ -8,53 +7,68 @@ use serde::Deserialize;
 use crate::lint_gates::GateReport;
 
 #[derive(Debug, Deserialize)]
-struct Registry {
-    version: u32,
-    servers: Vec<Server>,
-    profiles: Vec<Profile>,
+pub struct Registry {
+    pub version: u32,
+    pub servers: Vec<Server>,
+    pub profiles: Vec<Profile>,
 }
 
 #[derive(Debug, Deserialize)]
-struct Server {
-    id: String,
-    app: String,
-    source_repo: String,
-    product_skill: String,
-    status: String,
-    reason: Option<String>,
-    required_env_any: Option<Vec<Vec<String>>>,
-    env_sources: Option<Vec<EnvSource>>,
-    codex: Option<CodexServer>,
+pub struct Server {
+    pub id: String,
+    pub app: String,
+    pub source_repo: String,
+    pub product_skill: String,
+    pub status: String,
+    pub reason: Option<String>,
+    pub scope: Option<Scope>,
+    pub required_env_any: Option<Vec<Vec<String>>>,
+    pub env_sources: Option<Vec<EnvSource>>,
+    pub codex: Option<CodexServer>,
 }
 
 #[derive(Debug, Deserialize)]
-struct EnvSource {
-    name: String,
-    op_ref: String,
+pub struct Scope {
+    pub default_profiles: Option<Vec<String>>,
+    pub include_repo_globs: Option<Vec<String>>,
+    pub exclude_repo_globs: Option<Vec<String>>,
 }
 
 #[derive(Debug, Deserialize)]
-struct CodexServer {
-    server_name: String,
-    command: Option<String>,
-    url: Option<String>,
-    args: Option<Vec<String>>,
-    env_policy: Option<String>,
+pub struct EnvSource {
+    pub name: String,
+    pub op_ref: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct Profile {
-    id: String,
-    servers: Vec<String>,
+pub struct CodexServer {
+    pub server_name: String,
+    pub command: Option<String>,
+    pub url: Option<String>,
+    pub args: Option<Vec<String>>,
+    pub env_policy: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Profile {
+    pub id: String,
+    pub servers: Vec<String>,
 }
 
 pub fn check_repo(repo: &Path) -> Result<GateReport> {
-    let path = repo.join(".harness-kit/factory-mcps.yaml");
-    let text =
-        fs::read_to_string(&path).with_context(|| format!("failed to read {}", path.display()))?;
-    let registry: Registry = serde_yaml::from_str(&text)
-        .with_context(|| format!("invalid factory MCP registry: {}", path.display()))?;
+    let registry = load_registry(repo)?;
+    validate_registry(repo, &registry)
+}
 
+pub fn load_registry(repo: &Path) -> Result<Registry> {
+    let path = repo.join(".harness-kit/factory-mcps.yaml");
+    let text = std::fs::read_to_string(&path)
+        .with_context(|| format!("failed to read {}", path.display()))?;
+    serde_yaml::from_str(&text)
+        .with_context(|| format!("invalid factory MCP registry: {}", path.display()))
+}
+
+fn validate_registry(repo: &Path, registry: &Registry) -> Result<GateReport> {
     let mut errors = Vec::new();
     if registry.version != 1 {
         errors.push(format!(
@@ -146,6 +160,12 @@ fn validate_available_server(
     errors: &mut Vec<String>,
     codex_names: &mut BTreeSet<String>,
 ) {
+    if server.scope.is_none() {
+        errors.push(format!(
+            "available server '{}' must declare profile/repo scope",
+            server.id
+        ));
+    }
     let Some(codex) = server.codex.as_ref() else {
         errors.push(format!(
             "available server '{}' must declare a codex launcher",
