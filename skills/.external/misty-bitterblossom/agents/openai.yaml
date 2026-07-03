@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bitterblossom"
+  short_description: "Operate the bb event-plane CLI"
+  default_prompt: "Use $bitterblossom to inspect the event plane and run the appropriate bb workflow."

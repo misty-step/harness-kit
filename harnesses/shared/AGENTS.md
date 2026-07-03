@@ -317,9 +317,10 @@ quality matters, it is probably wrong.
   smoke-tested open-model peer lanes preferred for breadth: Pi, Goose, and
   OpenCode through OpenRouter. Runtime features are optimizations.
 - Skills are self-contained. No `$REPO_ROOT` sourcing, no `../..` escapes.
-- System bootstrap installs every first-party skill into each detected harness.
-  Repo-local vendored skill roots with per-harness bridges are exceptional
-  consumer-repo artifacts and must earn their complexity.
+- System bootstrap installs every first-party skill and every declared external
+  product skill into each detected harness. Repo-local vendored skill roots with
+  per-harness bridges are exceptional consumer-repo artifacts and must earn
+  their complexity.
 - Unknown or unmarked harness artifacts are user-owned. Preserve or ask.
 - Provider CLIs stay thin: launch, bound, record. No semantic workflow engine.
 

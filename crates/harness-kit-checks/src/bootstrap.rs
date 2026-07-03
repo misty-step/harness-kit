@@ -117,6 +117,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
         lines.push(String::new());
     }
     install_system_roster(&repo, &options.home, &mut lines)?;
+    install_factory_mcp_registry(&repo, &options.home, &mut lines)?;
     crate::cli_install::install_cli(&repo, &options.home, &mut lines)?;
 
     let mut installed = 0usize;
@@ -180,7 +181,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
             "'{name}' bundle skills are installed system-wide for each detected harness."
         ))),
         None => lines.push(blue(
-            "All first-party skills are installed system-wide for each detected harness.",
+            "All first-party and declared external skills are installed system-wide for each detected harness.",
         )),
     }
     lines.push(String::new());
@@ -275,6 +276,21 @@ fn cleanup_retired_system_examples(
         fs::remove_file(&path)?;
         lines.push(green("    removed retired examples/"));
     }
+    Ok(())
+}
+
+#[cfg(unix)]
+fn install_factory_mcp_registry(repo: &Path, home: &Path, lines: &mut Vec<String>) -> Result<()> {
+    let src = repo.join(".harness-kit/factory-mcps.yaml");
+    if !src.is_file() {
+        return Ok(());
+    }
+    lines.push(blue("Installing factory MCP registry..."));
+    link_or_replace(&src, &home.join(".harness-kit/factory-mcps.yaml"))?;
+    lines.push(green("    factory-mcps.yaml"));
+    link_or_replace(&src, &home.join(".spellbook/factory-mcps.yaml"))?;
+    lines.push(green("    legacy factory-mcps.yaml"));
+    lines.push(String::new());
     Ok(())
 }
 

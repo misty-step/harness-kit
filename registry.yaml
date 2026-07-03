@@ -18,6 +18,8 @@
 #                                        where SKILL.md dirs live.
 #   layout:        flat | multi-root     advisory (used by embeddings). flat = one
 #                                        SKILL.md per subdir of skills_path.
+#   skill_name:    <name>                optional. For product repos that ship a
+#                                        root-level SKILL.md at skills_path.
 #   include:       [name, name, …]       optional allowlist of skill dir names.
 #   exclude:       [name, name, …]       optional blocklist.
 #   alias_prefix:  "prefix-"             REQUIRED for non-default sources. Prepended
@@ -42,6 +44,49 @@ sources:
     default: true
     layout: flat
     skills_path: skills
+
+  # Misty Step factory app product-owned skills. These repos own their agent
+  # contracts; Harness Kit imports the current pins as external skills so
+  # every bootstrapped harness can route work to the actual product surface.
+  - repo: misty-step/aesthetic
+    ref: 0d4cf9a4a7b50fab5e00491daab35fa8cbef93ce
+    pin: 0d4cf9a4a7b50fab5e00491daab35fa8cbef93ce
+    layout: root
+    skills_path: "."
+    skill_name: aesthetic
+    alias_prefix: "misty-"
+
+  - repo: misty-step/canary
+    ref: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
+    pin: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
+    layout: root
+    skills_path: "."
+    skill_name: canary
+    alias_prefix: "misty-"
+
+  - repo: misty-step/powder
+    ref: a20d4ecefcb6a16d595966177b48c47a87dfffc8
+    pin: a20d4ecefcb6a16d595966177b48c47a87dfffc8
+    layout: root
+    skills_path: "."
+    skill_name: powder
+    alias_prefix: "misty-"
+
+  - repo: misty-step/landmark
+    ref: 393e15c2f816036c1edd0985696ba4d2a64772d4
+    pin: 393e15c2f816036c1edd0985696ba4d2a64772d4
+    layout: root
+    skills_path: "."
+    skill_name: landmark
+    alias_prefix: "misty-"
+
+  - repo: misty-step/bitterblossom
+    ref: b017458d21d13d4f6f435a9e9307c575b6694b1f
+    pin: b017458d21d13d4f6f435a9e9307c575b6694b1f
+    layout: flat
+    skills_path: skills
+    alias_prefix: "misty-"
+    include: [bitterblossom]
 
   # Anthropic official skills. frontend-design only: the /design skill points
   # at it, and Codex/Pi consume the same primitive as Claude.

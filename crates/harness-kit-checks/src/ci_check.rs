@@ -4,8 +4,8 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result, bail};
 
 use crate::{
-    docs_site, eval_coverage, frontmatter, generate_index, lint_gates, process, quality_gates,
-    template_check,
+    docs_site, eval_coverage, frontmatter, generate_index, lint_gates, mcp_registry, process,
+    quality_gates, template_check,
 };
 
 pub fn run(repo: &Path) -> Result<Vec<String>> {
@@ -59,6 +59,9 @@ pub fn run(repo: &Path) -> Result<Vec<String>> {
     })?;
     gate_report(&mut lines, "check-template", || {
         template_check::check_template_instantiates(&repo)
+    })?;
+    gate_report(&mut lines, "check-mcp-registry", || {
+        mcp_registry::check_repo(&repo)
     })?;
     gate(&mut lines, "test-sync-external-partial", || {
         let _ = crate::external_sync::self_test_partial_sync()?;

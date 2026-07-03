@@ -46,6 +46,7 @@ CI gates:
 - check-godfiles
 - check-harness-install-paths
 - check-index-drift
+- check-mcp-registry
 - check-no-claims
 - check-portable-paths
 - check-source-markers

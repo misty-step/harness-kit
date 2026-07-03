@@ -13,18 +13,19 @@ argument-hint: "[canary|powder|landmark|aesthetic|bitterblossom|audit]"
 # /factory-apps
 
 Use the owned factory app before inventing local state, bespoke glue, or a
-generic third-party workflow. Prefer MCP when it is registered in the current
-harness; otherwise use the product CLI/API/SKILL from the local checkout.
+generic third-party workflow. Product repos own the concrete skills and MCP
+servers; Harness Kit imports those skills under `misty-*` aliases and manages
+MCP policy in `.harness-kit/factory-mcps.yaml`.
 
 ## Router
 
 | Need | App | First surface | Fallback |
 |---|---|---|---|
-| uptime, incidents, error timelines, health checks, service evidence, production debugging | Canary | Canary MCP if registered | `/Users/phaedrus/Development/canary/bin/canary`, API, `docs/factory-fleet-integration.md` |
-| backlog, issue cards, claims, relations, operator input requests, work status | Powder | Powder MCP if configured | Powder root `SKILL.md`, CLI, API |
-| release intelligence, versions, changelogs, release notes, release kit, fleet adoption | Landmark | `landmark describe --json` and dry-run CLI/action paths | `docs/agent-integration.md`, `docs/fleet-integration-playbook.md` |
-| UI/UX, Misty Step design law, tokens, static design registry, rendered design gate | Aesthetic | `@misty-step/aesthetic` package, static API, law gate | `docs/ADOPTING.md`, `DESIGN.md` |
-| ad-hoc supervised dispatch, event-triggered agents, reflex loops, durable runs | Bitterblossom | `bb` CLI and product skill | read-only `bb ... mcp serve` when a plane is configured |
+| uptime, incidents, error timelines, health checks, service evidence, production debugging | Canary | Canary MCP from the `global` profile when registered | `misty-canary`, `/Users/phaedrus/Development/canary/bin/canary`, API |
+| backlog, issue cards, claims, relations, operator input requests, work status | Powder | Powder MCP from the `non-adminifi-non-r90` profile when configured | `misty-powder`, CLI, API |
+| release intelligence, versions, changelogs, release notes, release kit, fleet adoption | Landmark | `misty-landmark` and `landmark describe --json` / dry-run CLI/action paths | `docs/agent-integration.md`, `docs/fleet-integration-playbook.md` |
+| UI/UX, Misty Step design law, tokens, static design registry, rendered design gate | Aesthetic | `misty-aesthetic`, `@misty-step/aesthetic` package, static API, law gate | `docs/ADOPTING.md`, `DESIGN.md` |
+| ad-hoc supervised dispatch, event-triggered agents, reflex loops, durable runs | Bitterblossom | `misty-bitterblossom`, `bb` CLI, read-only MCP from `factory-ops` profile | product plane config |
 
 ## Operating Rule
 
@@ -50,11 +51,12 @@ or system config.
 ## Gotchas
 
 - A product repo having an MCP implementation does not mean this harness has
-  that MCP registered. Check the active harness config before claiming MCP
-  availability.
+  that MCP registered. Check `.harness-kit/factory-mcps.yaml` and the active
+  harness config before claiming MCP availability.
 - Do not add placeholder MCP servers. A broken registered tool is worse than a
   clear CLI/API fallback.
-- Root product skills (`SKILL.md`) are for consumers of the app. Repo-local
+- Root product skills (`SKILL.md`) and portable product skills under
+  `<repo>/skills/<name>/SKILL.md` are for consumers of the app. Repo-local
   `.agents/skills/*` are usually QA/deploy/dogfood runbooks for work inside
   that repo. Do not treat one as a substitute for the other.
 - Bitterblossom's MCP is read-only in the audited checkout. Mutating dispatch

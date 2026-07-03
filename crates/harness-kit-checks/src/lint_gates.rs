@@ -444,11 +444,11 @@ pub fn check_harness_install_paths(root: &Path) -> Result<GateReport> {
 
     if !matches_any_file(
         root,
-        r"All first-party skills are installed system-wide",
+        r"All first-party and declared external skills are installed system-wide",
         &["bootstrap.sh", "crates/harness-kit-checks/src/bootstrap.rs"],
     )? {
         failures.push(
-            "bootstrap must report the all-first-party-skills system-wide install contract"
+            "bootstrap must report the first-party plus declared external skills system-wide install contract"
                 .to_string(),
         );
     }

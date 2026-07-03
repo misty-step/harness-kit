@@ -30,6 +30,11 @@ bundles:
       - council
       - harness-engineering
     external:
+      - misty-aesthetic
+      - misty-bitterblossom
+      - misty-canary
+      - misty-landmark
+      - misty-powder
       - nous-creative-ideation
       - julius-caveman
   implementer:
@@ -43,6 +48,11 @@ bundles:
       - artifact
       - document
     external:
+      - misty-aesthetic
+      - misty-bitterblossom
+      - misty-canary
+      - misty-landmark
+      - misty-powder
       - vercel-react-best-practices
       - vercel-react-native-skills
       - vercel-dogfood
@@ -57,6 +67,11 @@ bundles:
       - ci
       - skill-eval
     external:
+      - misty-aesthetic
+      - misty-bitterblossom
+      - misty-canary
+      - misty-landmark
+      - misty-powder
       - cursor-thermo-nuclear-code-quality-review
       - dietrich-ponytail
       - vercel-web-design-guidelines
@@ -70,6 +85,9 @@ bundles:
       - document
       - human-writing
     external:
+      - misty-aesthetic
+      - misty-canary
+      - misty-landmark
       - leon-taste-skill
       - leon-soft-skill
       - leon-minimalist-skill
@@ -96,6 +114,9 @@ bundles:
       - showcase
       - ci
     external:
+      - misty-bitterblossom
+      - misty-canary
+      - misty-powder
       - herdr-herdr
       - every-ce-promote
       - vercel-agent-browser

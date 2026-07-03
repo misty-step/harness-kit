@@ -1,0 +1,122 @@
+version: 1
+
+# Product repos own MCP implementations. Harness Kit owns the policy that says
+# which bootstrapped agents should see those servers, without copying secrets or
+# inventing placeholder MCPs for products that do not expose one.
+servers:
+  - id: canary
+    app: Canary
+    source_repo: misty-step/canary
+    source_ref: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
+    product_skill: misty-canary
+    status: available
+    capabilities:
+      - uptime monitoring
+      - incident tracking
+      - error logging
+      - health checks
+      - production debugging
+    scope:
+      default_profiles: [global]
+      include_repo_globs: ["*"]
+      exclude_repo_globs: []
+    required_env_any:
+      - [CANARY_ENDPOINT, CANARY_API_KEY]
+    codex:
+      server_name: canary
+      command: bash
+      args:
+        - -lc
+        - cd /Users/phaedrus/Development/canary && set -a && [ -f .env ] && . ./.env; exec bin/canary mcp-server
+      env_policy: inherited_or_repo_env
+
+  - id: powder
+    app: Powder
+    source_repo: misty-step/powder
+    source_ref: a20d4ecefcb6a16d595966177b48c47a87dfffc8
+    product_skill: misty-powder
+    status: available
+    capabilities:
+      - backlog management
+      - issue claiming
+      - issue updates
+      - operator input requests
+      - work status tracking
+    scope:
+      default_profiles: [non-adminifi-non-r90]
+      include_repo_globs: ["/Users/phaedrus/Development/**"]
+      exclude_repo_globs:
+        - "/Users/phaedrus/Development/adminifi/**"
+        - "/Users/phaedrus/Development/r90/**"
+    required_env_any:
+      - [POWDER_API_BASE_URL, POWDER_API_KEY]
+      - [POWDER_DB_PATH]
+    codex:
+      server_name: powder
+      command: bash
+      args:
+        - -lc
+        - cd /Users/phaedrus/Development/powder && set -a && [ -f .env ] && . ./.env; exec cargo run --locked -q -p powder-mcp
+      env_policy: inherited_or_repo_env
+
+  - id: bitterblossom
+    app: Bitterblossom
+    source_repo: misty-step/bitterblossom
+    source_ref: b017458d21d13d4f6f435a9e9307c575b6694b1f
+    product_skill: misty-bitterblossom
+    status: available
+    capabilities:
+      - supervised dispatch agents
+      - event-driven workflow agents
+      - reflex plane inspection
+      - run ledger inspection
+    scope:
+      default_profiles: [factory-ops]
+      include_repo_globs: ["/Users/phaedrus/Development/**"]
+      exclude_repo_globs: []
+    codex:
+      server_name: bitterblossom
+      command: /Users/phaedrus/Development/bitterblossom/target/debug/bb
+      args:
+        - --config
+        - /Users/phaedrus/Development/bitterblossom/plane
+        - mcp
+        - serve
+      env_policy: local_plane
+
+  - id: landmark
+    app: Landmark
+    source_repo: misty-step/landmark
+    source_ref: 393e15c2f816036c1edd0985696ba4d2a64772d4
+    product_skill: misty-landmark
+    status: not_applicable
+    reason: Landmark does not expose an MCP server yet; use the product skill and CLI/action release-intelligence contract.
+    capabilities:
+      - release intelligence
+      - changelog synthesis
+      - release kit planning
+
+  - id: aesthetic
+    app: Aesthetic
+    source_repo: misty-step/aesthetic
+    source_ref: 0d4cf9a4a7b50fab5e00491daab35fa8cbef93ce
+    product_skill: misty-aesthetic
+    status: not_applicable
+    reason: Aesthetic currently ships a skill plus package/static API/law gate, not an MCP server.
+    capabilities:
+      - UI/UX doctrine
+      - design law gates
+      - tokens and static registry
+
+profiles:
+  - id: global
+    description: Every project should use Canary for observability and production debugging.
+    servers: [canary]
+
+  - id: non-adminifi-non-r90
+    description: General Misty Step backlog work should use Powder except Adminifi and r90 projects.
+    servers: [powder]
+
+  - id: factory-ops
+    description: Factory agent operations, dispatch, reflex, and supervised workflow inspection.
+    servers: [canary, powder, bitterblossom]

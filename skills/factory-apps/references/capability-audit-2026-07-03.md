@@ -8,11 +8,11 @@ snapshot, not a product status source.
 
 | App | Role | Skills | MCP | SDK | Harness/system state | Gap |
 |---|---|---|---|---|---|---|
-| Canary | observability, uptime, incidents, health checks, error timelines | repo-local `canary-qa` and `canary-deploy` | implemented via `bin/canary mcp-server` | TypeScript SDK in `clients/typescript` | trusted project path exists; no Codex MCP server registered | missing root product skill; MCP not registered on this system |
-| Powder | backlog, issues/cards, claims, relations, operator input | root product `SKILL.md`; repo-local `powder-qa` | implemented in `crates/powder-mcp` | no SDK observed | trusted project path exists; no Codex MCP server registered | SDK absent; MCP not registered; checkout was diverged |
-| Landmark | release intelligence, versions, changelogs, release kit, fleet adoption | dogfood skill only | no MCP observed | no SDK observed | trusted project path exists; Harness preferred stack said Landfall | missing product skill, MCP, SDK; stale Harness naming |
-| Aesthetic | UI/UX system, Misty Step law, tokens, static registry | no product skill observed | no MCP observed | package/static API via `@misty-step/aesthetic` | trusted project path exists; no app skill in Harness catalog | missing product skill; CLI/MCP intentionally later per local vision |
-| Bitterblossom | ad-hoc supervised dispatch, Mode B reflex loops, durable runs | portable product skill in `skills/bitterblossom`; repo-local dogfood skill | read-only MCP via `bb --config <plane> mcp serve` | no SDK observed | trusted project path exists; no Codex MCP server registered | product skill not in Harness catalog before this router; MCP not registered |
+| Canary | observability, uptime, incidents, health checks, error timelines | product root `SKILL.md`, imported as `misty-canary`; repo-local `canary-qa` and `canary-deploy` | implemented via `bin/canary mcp-server`; registered in factory MCP `global` profile | TypeScript SDK in `clients/typescript` | trusted project path exists; Harness Kit imports product skill and installs factory MCP registry | default-branch landing still depends on the Canary PR/merge path if branch protection rejects direct skill branch use |
+| Powder | backlog, issues/cards, claims, relations, operator input | root product `SKILL.md`, imported as `misty-powder`; repo-local `powder-qa` | implemented in `crates/powder-mcp`; profile-gated for non-Adminifi/non-r90 repos | no SDK observed | trusted project path exists; Harness Kit imports product skill and records MCP profile policy | SDK absent; local MCP needs `POWDER_API_BASE_URL`+`POWDER_API_KEY` or `POWDER_DB_PATH` |
+| Landmark | release intelligence, versions, changelogs, release kit, fleet adoption | product root `SKILL.md`, imported as `misty-landmark`; dogfood skill remains contributor-facing | no MCP observed | no SDK observed | trusted project path exists; Harness preferred stack now says Landmark | no MCP/SDK; current product-owned surface is skill + CLI/action |
+| Aesthetic | UI/UX system, Misty Step law, tokens, static registry | product root `SKILL.md`, imported as `misty-aesthetic` | no MCP observed | package/static API via `@misty-step/aesthetic` | trusted project path exists; Harness Kit imports product skill | CLI/MCP intentionally later per local vision |
+| Bitterblossom | ad-hoc supervised dispatch, Mode B reflex loops, durable runs | portable product skill in `skills/bitterblossom`, imported as `misty-bitterblossom`; repo-local dogfood skill | read-only MCP via `bb --config <plane> mcp serve`; registered in factory MCP `factory-ops` profile | no SDK observed | trusted project path exists; Harness Kit imports product skill and installs factory MCP registry | mutating MCP tools remain intentionally absent |
 
 ## Evidence Read
 
@@ -54,19 +54,21 @@ snapshot, not a product status source.
 
 ## System Configuration Finding
 
-The local Codex config trusts the five app checkout paths, but the registered
-MCP servers are unrelated general tools. No Canary, Powder, Landmark,
-Aesthetic, or Bitterblossom MCP server was active in the audited session.
+The local Codex config trusts the five app checkout paths. Harness Kit now
+ships `.harness-kit/factory-mcps.yaml` as the managed factory MCP registry and
+bootstrap links it to `~/.harness-kit/factory-mcps.yaml`.
 
 Do not register placeholder MCPs. Register only when the real instance and
 auth source are known:
 
-- Canary: command `bin/canary mcp-server`; needs endpoint and responder/read
-  credentials from the service environment.
-- Powder: `powder-mcp` or equivalent CLI wrapper; needs either a local
-  `POWDER_DB_PATH` or `POWDER_API_BASE_URL` plus `POWDER_API_KEY`.
-- Bitterblossom: `bb --config <plane> mcp serve`; needs the intended plane
-  path. The audited MCP is read-only.
+- Canary: command `bin/canary mcp-server`; registered in the `global` profile
+  through a secret-free launcher that inherits env or loads the Canary repo
+  `.env`.
+- Powder: `powder-mcp`; registered for the `non-adminifi-non-r90` profile and
+  still requires either `POWDER_DB_PATH` or `POWDER_API_BASE_URL` plus
+  `POWDER_API_KEY`.
+- Bitterblossom: `bb --config <plane> mcp serve`; registered for the
+  `factory-ops` profile using the local plane. The audited MCP is read-only.
 - Landmark: no MCP server observed; use CLI/action until the product exposes
   one.
 - Aesthetic: no MCP server observed; use package/static API/law gate until the
@@ -76,6 +78,11 @@ auth source are known:
 
 - Added first-party `factory-apps` skill so future agents have an app-visible
   router for Canary, Powder, Landmark, Aesthetic, and Bitterblossom.
+- Added product-owned external skill imports in `registry.yaml`:
+  `misty-canary`, `misty-powder`, `misty-landmark`, `misty-aesthetic`, and
+  `misty-bitterblossom`.
+- Added `.harness-kit/factory-mcps.yaml` plus `check-mcp-registry` so MCP
+  profile policy is data, validated, and bootstrapped.
 - Updated Harness Engineering preferred stack defaults:
   - Powder is the default backlog/work-state system.
   - Landmark replaces stale Landfall naming for release intelligence.
@@ -87,14 +94,10 @@ auth source are known:
 
 These require clean product-repo branches or concrete deployment credentials:
 
-- Add a Canary root product `SKILL.md` that tells consumers how to query and
-  integrate Canary, distinct from QA/deploy skills for Canary contributors.
-- Add a Landmark product skill. Decide whether Landmark needs an MCP or whether
-  CLI/action remains the right agent surface.
-- Add an Aesthetic product skill first; its own vision doc names skill as the
-  cheapest missing agent surface. CLI and MCP can follow only if repeated
-  adoption work proves they are needed.
 - Decide whether Powder needs a small SDK or if API/CLI/MCP is sufficient.
-- Register Canary, Powder, and Bitterblossom MCP servers in harness config
-  only after the real endpoint/database/plane and non-interactive credential
-  source are known.
+- Decide whether Landmark earns an MCP or whether CLI/action remains the right
+  agent surface.
+- Decide whether Aesthetic earns an MCP after repeated adoption work proves it
+  needs one beyond skill/package/static API.
+- Provide a non-interactive Powder instance source (`POWDER_API_BASE_URL` plus
+  `POWDER_API_KEY`, or `POWDER_DB_PATH`) for local Codex MCP activation.
