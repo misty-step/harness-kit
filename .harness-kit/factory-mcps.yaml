@@ -22,13 +22,18 @@ servers:
       exclude_repo_globs: []
     required_env_any:
       - [CANARY_ENDPOINT, CANARY_API_KEY]
+    env_sources:
+      - name: CANARY_ENDPOINT
+        op_ref: op://Agents/CANARY_ENDPOINT/credential
+      - name: CANARY_API_KEY
+        op_ref: op://Agents/CANARY_API_KEY/credential
     codex:
       server_name: canary
       command: bash
       args:
         - -lc
-        - cd /Users/phaedrus/Development/canary && set -a && [ -f .env ] && . ./.env; exec bin/canary mcp-server
-      env_policy: inherited_or_repo_env
+        - test -n "${CANARY_ENDPOINT:-}" || CANARY_ENDPOINT="$(op read "op://Agents/CANARY_ENDPOINT/credential")"; test -n "${CANARY_API_KEY:-}" || CANARY_API_KEY="$(op read "op://Agents/CANARY_API_KEY/credential")"; export CANARY_ENDPOINT CANARY_API_KEY; cd /Users/phaedrus/Development/canary && exec bin/canary mcp-server
+      env_policy: inherited_or_op_agents_vault
 
   - id: powder
     app: Powder
@@ -51,13 +56,18 @@ servers:
     required_env_any:
       - [POWDER_API_BASE_URL, POWDER_API_KEY]
       - [POWDER_DB_PATH]
+    env_sources:
+      - name: POWDER_API_BASE_URL
+        op_ref: op://Agents/POWDER_ENDPOINT/URL
+      - name: POWDER_API_KEY
+        op_ref: op://Agents/POWDER_API_KEY__bridge/credential
     codex:
       server_name: powder
       command: bash
       args:
         - -lc
-        - cd /Users/phaedrus/Development/powder && set -a && [ -f .env ] && . ./.env; exec cargo run --locked -q -p powder-mcp
-      env_policy: inherited_or_repo_env
+        - test -n "${POWDER_API_BASE_URL:-}" || POWDER_API_BASE_URL="$(op read "op://Agents/POWDER_ENDPOINT/URL")"; test -n "${POWDER_API_KEY:-}" || POWDER_API_KEY="$(op read "op://Agents/POWDER_API_KEY__bridge/credential")"; export POWDER_API_BASE_URL POWDER_API_KEY; cd /Users/phaedrus/Development/powder && exec cargo run --locked -q -p powder-mcp
+      env_policy: inherited_or_op_agents_vault
 
   - id: bitterblossom
     app: Bitterblossom

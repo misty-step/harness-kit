@@ -9,7 +9,7 @@ snapshot, not a product status source.
 | App | Role | Skills | MCP | SDK | Harness/system state | Gap |
 |---|---|---|---|---|---|---|
 | Canary | observability, uptime, incidents, health checks, error timelines | product root `SKILL.md`, imported as `misty-canary`; repo-local `canary-qa` and `canary-deploy` | implemented via `bin/canary mcp-server`; registered in factory MCP `global` profile | TypeScript SDK in `clients/typescript` | trusted project path exists; Harness Kit imports product skill and installs factory MCP registry | none for current skill/MCP registry; full profile-aware MCP materialization is tracked separately in backlog `135` |
-| Powder | backlog, issues/cards, claims, relations, operator input | root product `SKILL.md`, imported as `misty-powder`; repo-local `powder-qa` | implemented in `crates/powder-mcp`; profile-gated for non-Adminifi/non-r90 repos | no SDK observed | trusted project path exists; Harness Kit imports product skill and records MCP profile policy | SDK absent; local MCP needs `POWDER_API_BASE_URL`+`POWDER_API_KEY` or `POWDER_DB_PATH` |
+| Powder | backlog, issues/cards, claims, relations, operator input | root product `SKILL.md`, imported as `misty-powder`; repo-local `powder-qa` | implemented in `crates/powder-mcp`; profile-gated for non-Adminifi/non-r90 repos; active Codex launcher reads `op://Agents/POWDER_ENDPOINT/URL` and `op://Agents/POWDER_API_KEY__bridge/credential` | no SDK observed | trusted project path exists; Harness Kit imports product skill and records MCP profile policy | SDK absent; full profile-aware MCP materialization is tracked separately in backlog `135` |
 | Landmark | release intelligence, versions, changelogs, release kit, fleet adoption | product root `SKILL.md`, imported as `misty-landmark`; dogfood skill remains contributor-facing | no MCP observed | no SDK observed | trusted project path exists; Harness preferred stack now says Landmark | no MCP/SDK; current product-owned surface is skill + CLI/action |
 | Aesthetic | UI/UX system, Misty Step law, tokens, static registry | product root `SKILL.md`, imported as `misty-aesthetic` | no MCP observed | package/static API via `@misty-step/aesthetic` | trusted project path exists; Harness Kit imports product skill | CLI/MCP intentionally later per local vision |
 | Bitterblossom | ad-hoc supervised dispatch, Mode B reflex loops, durable runs | portable product skill in `skills/bitterblossom`, imported as `misty-bitterblossom`; repo-local dogfood skill | read-only MCP via `bb --config <plane> mcp serve`; registered in factory MCP `factory-ops` profile | no SDK observed | trusted project path exists; Harness Kit imports product skill and installs factory MCP registry | mutating MCP tools remain intentionally absent |
@@ -62,11 +62,13 @@ Do not register placeholder MCPs. Register only when the real instance and
 auth source are known:
 
 - Canary: command `bin/canary mcp-server`; registered in the `global` profile
-  through a secret-free launcher that inherits env or loads the Canary repo
-  `.env`.
+  through a secret-free launcher that inherits env or reads
+  `op://Agents/CANARY_ENDPOINT/credential` and
+  `op://Agents/CANARY_API_KEY/credential`.
 - Powder: `powder-mcp`; registered for the `non-adminifi-non-r90` profile and
-  still requires either `POWDER_DB_PATH` or `POWDER_API_BASE_URL` plus
-  `POWDER_API_KEY`.
+  configured from the Agents vault with `POWDER_API_BASE_URL` from
+  `op://Agents/POWDER_ENDPOINT/URL` and `POWDER_API_KEY` from
+  `op://Agents/POWDER_API_KEY__bridge/credential`.
 - Bitterblossom: `bb --config <plane> mcp serve`; registered for the
   `factory-ops` profile using the local plane. The audited MCP is read-only.
 - Landmark: no MCP server observed; use CLI/action until the product exposes
@@ -99,5 +101,6 @@ These require clean product-repo branches or concrete deployment credentials:
   agent surface.
 - Decide whether Aesthetic earns an MCP after repeated adoption work proves it
   needs one beyond skill/package/static API.
-- Provide a non-interactive Powder instance source (`POWDER_API_BASE_URL` plus
-  `POWDER_API_KEY`, or `POWDER_DB_PATH`) for local Codex MCP activation.
+- Build the profile-aware MCP materializer tracked in backlog `135`; until
+  then the registry is installed system-wide and this machine's Codex config is
+  manually aligned with it.

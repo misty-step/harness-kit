@@ -47,6 +47,8 @@ an applyable MCP installation surface for each supported harness.
 Source: 2026-07-03 factory-app audit/remediation. The first remediation added
 the product-owned skill imports, a validated factory MCP registry, bootstrap
 symlinks for that registry, and active local Codex registration for Canary and
-Bitterblossom. It deliberately did not register Powder without a runnable API or
-DB target. This ticket is the remaining installer layer: profile-aware
-materialization from registry to active harness config.
+Bitterblossom. A follow-up checked the 1Password Agents vault and found the
+deployed Powder endpoint and API key, so this machine now has active local Codex
+registration for Canary, Powder, and Bitterblossom. This ticket remains the
+installer layer: profile-aware materialization from registry to active harness
+config without manual `codex mcp add` commands.

@@ -22,7 +22,15 @@ struct Server {
     product_skill: String,
     status: String,
     reason: Option<String>,
+    required_env_any: Option<Vec<Vec<String>>>,
+    env_sources: Option<Vec<EnvSource>>,
     codex: Option<CodexServer>,
+}
+
+#[derive(Debug, Deserialize)]
+struct EnvSource {
+    name: String,
+    op_ref: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,6 +39,7 @@ struct CodexServer {
     command: Option<String>,
     url: Option<String>,
     args: Option<Vec<String>>,
+    env_policy: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -83,7 +92,10 @@ pub fn check_repo(repo: &Path) -> Result<GateReport> {
             ));
         }
         match server.status.as_str() {
-            "available" => validate_available_server(server, &mut errors, &mut codex_names),
+            "available" => {
+                validate_available_server(server, &mut errors, &mut codex_names);
+                validate_env_sources(server, &mut errors);
+            }
             "not_applicable" => {
                 if server.reason.as_deref().unwrap_or("").trim().is_empty() {
                     errors.push(format!(
@@ -168,6 +180,60 @@ fn validate_available_server(
             "server '{}' codex args should be omitted rather than empty",
             server.id
         ));
+    }
+    if codex
+        .env_policy
+        .as_deref()
+        .is_some_and(|policy| policy.contains("op_agents_vault"))
+        && server
+            .env_sources
+            .as_ref()
+            .is_none_or(|sources| sources.is_empty())
+    {
+        errors.push(format!(
+            "server '{}' codex env_policy references op_agents_vault but env_sources is empty",
+            server.id
+        ));
+    }
+}
+
+fn validate_env_sources(server: &Server, errors: &mut Vec<String>) {
+    let Some(sources) = server.env_sources.as_ref() else {
+        return;
+    };
+    let mut names = BTreeSet::new();
+    for source in sources {
+        if source.name.trim().is_empty() {
+            errors.push(format!("server '{}' env source name is empty", server.id));
+        }
+        if !names.insert(source.name.as_str()) {
+            errors.push(format!(
+                "server '{}' has duplicate env source '{}'",
+                server.id, source.name
+            ));
+        }
+        if !source.op_ref.starts_with("op://Agents/") {
+            errors.push(format!(
+                "server '{}' env source '{}' must use op://Agents/",
+                server.id, source.name
+            ));
+        }
+    }
+    if let Some(groups) = server.required_env_any.as_ref() {
+        for group in groups {
+            let all_present = group
+                .iter()
+                .all(|required| names.contains(required.as_str()));
+            let any_present = group
+                .iter()
+                .any(|required| names.contains(required.as_str()));
+            if any_present && !all_present {
+                errors.push(format!(
+                    "server '{}' env_sources partially cover required env group {:?}",
+                    server.id, group
+                ));
+            }
+        }
     }
 }
 
