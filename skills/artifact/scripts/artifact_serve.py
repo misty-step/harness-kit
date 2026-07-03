@@ -31,10 +31,21 @@ POWDER_BASE = "http://127.0.0.1:14030"
 class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-cache")
+        # The Bridge page is mirrored on other tailnet hosts (Sanctum/bastion)
+        # but the answer relay lives only here; cross-origin POSTs are
+        # tailnet-private, so a permissive origin is acceptable.
+        self.send_header("Access-Control-Allow-Origin", "*")
         super().end_headers()
 
     def log_message(self, *args):  # quiet
         pass
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "86400")
+        self.end_headers()
 
     def do_POST(self):
         if self.path == "/api/bridge-answer":
