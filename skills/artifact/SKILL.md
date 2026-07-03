@@ -28,6 +28,40 @@ Hermes-independent (replaced `~/.hermes/scripts/hermes_artifact_*`).
 - **Informational, not decorative.** Tables, callouts, diagrams that carry
   information prose can't. See the aesthetic repo for the deeper design language.
 
+## Information design doctrine (operator ruling, 2026-07-03)
+
+"It's a little bit silly to be leaning into HTML and then still have it be one
+long-ass pile of text." An artifact that is a Markdown report in a browser has
+missed the medium. Before authoring, ask: **what is the most effective
+articulation of THIS information?** — then climb the ladder only as far as the
+content earns:
+
+1. **Prose** — for argument and verdicts. Short. Never the whole page.
+2. **Structure** — tables for enumerable facts, callouts for rulings, phase
+   lanes for sequence, comparison grids for alternatives. Layout IS analysis.
+3. **Diagrams & generated images** — when shape carries the meaning (system
+   maps, flows, timelines). Nano Banana renders legible labeled infographics
+   in ~4s for ~$0.03 (`GEMINI_API_KEY` is in the env) — use it liberally for
+   informational images, never decoration.
+4. **Interactive & animated** — drill-downs, toggles, simulations, canvas/
+   three.js/WebGL — when the reader needs to *explore* (a graph, a
+   before/after, a what-if), not just read. Inline the library or keep it
+   dependency-free; the page must stay self-contained.
+
+Guardrails: single-column narrative spine is generally right; a noisy
+dense dashboard is as much a failure as the wall of text. Strong visual
+hierarchy, restrained color used semantically, progressive disclosure —
+the first viewport carries the verdict, depth unfolds below. Tell a story;
+every claim links to its evidence (the atlas principle applies to pages too).
+
+## Shelf gotcha
+
+`artifact_create.py` mirrors to the bastion/Sanctum shelf automatically. Files
+written RAW into `~/artifacts/public/a/<slug>/` serve on the local host only —
+they need the bearer-PUT publish step (see `publish_to_shelf` in
+`~/.factory-lanes/scripts/bridge.py`) or the operator won't find them on
+Sanctum. Bit us live 2026-07-03.
+
 ## Do it
 
 ```bash
