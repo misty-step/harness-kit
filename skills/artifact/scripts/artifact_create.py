@@ -15,7 +15,8 @@ Usage:
              injected if the author didn't already include one.
 --body-file / stdin: markdown, wrapped in the house template.
 """
-import argparse, os, sys, json, re, html, datetime
+import argparse
+import urllib.request, os, sys, json, re, html, datetime
 
 HOUSE_CSS = r"""
   :root{--bg:#f5f0e4;--panel:#fbf7ed;--ink:#241f19;--muted:#6b6053;--line:#e2d9c6;--red:#b4392a;--teal:#2c7a68;--gold:#bd8f2e;--shadow:0 1px 0 rgba(0,0,0,.04),0 12px 30px -22px rgba(40,30,20,.5);--col:52rem;}
@@ -188,6 +189,41 @@ def ensure_copy_button(doc: str) -> str:
     return doc
 
 
+def _artifacts_token():
+    tok = os.environ.get("ARTIFACTS_API_TOKEN", "")
+    if tok:
+        return tok
+    try:
+        with open(os.path.expanduser("~/.secrets")) as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("export ARTIFACTS_API_TOKEN="):
+                    return line.split("=", 1)[1].strip().strip('"')
+    except OSError:
+        pass
+    return ""
+
+
+def publish(base_url, slug, doc):
+    """PUT the page to the box's artifact shelf. Best-effort: the local
+    mirror is already written, so a publish failure warns and returns False
+    instead of failing the run."""
+    token = _artifacts_token()
+    if not token:
+        print("publish skipped: ARTIFACTS_API_TOKEN not set", file=sys.stderr)
+        return False
+    target = f"{base_url.rstrip('/')}/a/{slug}/index.html"
+    req = urllib.request.Request(
+        target, data=doc.encode(), method="PUT",
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "text/html"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return 200 <= resp.status < 300
+    except Exception as e:  # noqa: BLE001 — best-effort by design
+        print(f"publish failed ({e}); local mirror still written", file=sys.stderr)
+        return False
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--title", required=True)
@@ -197,7 +233,9 @@ def main():
     ap.add_argument("--html-file")
     ap.add_argument("--body-file")
     ap.add_argument("--root", default=os.path.expanduser("~/artifacts/public"))
-    ap.add_argument("--base-url", default="https://serenity.tail5f5eb4.ts.net/artifacts")
+    ap.add_argument("--base-url", default="https://bastion.tail5f5eb4.ts.net/artifacts")
+    ap.add_argument("--local-only", action="store_true",
+                    help="skip the remote PUT; write only the local mirror")
     a = ap.parse_args()
 
     slug = re.sub(r"[^a-zA-Z0-9-]+", "-", a.slug).strip("-").lower()
@@ -217,7 +255,9 @@ def main():
     with open(dest, "w") as f:
         f.write(doc)
     url = f"{a.base_url.rstrip('/')}/a/{slug}/"
-    print(json.dumps({"slug": slug, "path": dest, "url": url, "bytes": len(doc)}, indent=2))
+    published = False if a.local_only else publish(a.base_url, slug, doc)
+    print(json.dumps({"slug": slug, "path": dest, "url": url, "bytes": len(doc),
+                      "published": published}, indent=2))
 
 
 if __name__ == "__main__":

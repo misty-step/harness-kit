@@ -47,6 +47,10 @@
     {
       "source": "backlog.d/132-greenfield-template-ci.md",
       "title": "Declare and verify the greenfield Factory template"
+    },
+    {
+      "source": "backlog.d/133-adopt-lucide-toolbox-as-the-harness-kit-wordmark-icon.md",
+      "title": "Adopt Lucide toolbox as the harness-kit wordmark icon"
     }
   ],
   "copy_source": "docs/copy/site.json",

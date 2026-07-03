@@ -41,16 +41,30 @@ python3 $S/artifact_create.py --title "The Factory" --slug factory \
   --tag "Field Memo" --html-file factory.html
 ```
 
-Output is written to `~/artifacts/public/a/<slug>/index.html` and printed as a
-URL: `https://serenity.tail5f5eb4.ts.net/artifacts/a/<slug>/`. Use a 1–2 word slug.
-Verify with `curl -s -o /dev/null -w '%{http_code}' <url>` before handing over the link.
+The script writes a local mirror (`~/artifacts/public/a/<slug>/index.html`),
+then PUTs the page to the box shelf and prints the canonical URL:
+`https://bastion.tail5f5eb4.ts.net/artifacts/a/<slug>/`. Use a 1–2 word slug.
+Publishing needs `ARTIFACTS_API_TOKEN` (env or `~/.secrets`; canonical copy in
+1Password `op://Agents/ARTIFACTS_API_TOKEN`). `--local-only` skips the PUT.
+Verify with `curl -s -o /dev/null -w '%{http_code}' <url>` before handing over
+the link. Publish any raw HTML from anywhere on the tailnet with one line:
+
+```bash
+curl -T page.html -H "Authorization: Bearer $ARTIFACTS_API_TOKEN" \
+  https://bastion.tail5f5eb4.ts.net/artifacts/a/<slug>/index.html
+```
 
 ## Serving
 
-`scripts/artifact_serve.py` serves `~/artifacts/public` on `127.0.0.1:8789`; the
-Tailscale route `serve /artifacts -> 127.0.0.1:8789` exposes it tailnet-privately.
-It runs under launchd (`~/Library/LaunchAgents/com.phaedrus.artifacts.plist`) so it
-survives reboots. Zero LLM tokens (stdlib http.server).
+The shelf lives on the bastion Fly box (`apps/artifacts` in the bastion repo):
+files on the `/data` volume, served at `…ts.net/artifacts/`, indexed newest-first
+at the bare path, linked from the Sanctum portal at the tailnet root
+(`https://bastion.tail5f5eb4.ts.net/`). Survives laptop sleep and reboots.
+
+Legacy mirror: `scripts/artifact_serve.py` still serves `~/artifacts/public` on
+`127.0.0.1:8789` under launchd (`com.phaedrus.artifacts.plist`), exposed at
+`serenity.tail5f5eb4.ts.net/artifacts/`. Old links keep resolving; the local
+tree doubles as the shelf's backup. New links always point at bastion.
 
 ## Extending
 
