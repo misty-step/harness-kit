@@ -51,6 +51,10 @@
     {
       "source": "backlog.d/133-adopt-lucide-toolbox-as-the-harness-kit-wordmark-icon.md",
       "title": "Adopt Lucide toolbox as the harness-kit wordmark icon"
+    },
+    {
+      "source": "backlog.d/134-audit-description-tax-for-hand-only-skills.md",
+      "title": "Audit description tax: flag hand-only skills for user-invoked projection"
     }
   ],
   "copy_source": "docs/copy/site.json",

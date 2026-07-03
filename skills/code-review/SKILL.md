@@ -31,7 +31,10 @@ never ships on its own review — that is the one hard rule.
    cross-check each other's findings before reporting, a substantive diff
    is a natural fit — that scale costs tokens, so routine diffs don't get
    it. Reviewers get the diff, the acceptance oracle, and a risk lens —
-   **never the author's reasoning trail.**
+   **never the author's reasoning trail.** When the delivery logged
+   deviations, hand reviewers the deviation *sites* — where the plan bent is
+   where plausible-but-wrong concentrates — but never the author's
+   justifications for them.
    Add `harnesses/shared/references/works-critique.md` when the diff touches
    public API, CLI, UI, performance, compatibility, migration, or operator
    workflow. Add `harnesses/shared/references/delete-first.md` when the diff

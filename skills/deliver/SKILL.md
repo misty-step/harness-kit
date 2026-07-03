@@ -70,6 +70,21 @@ Lenses, when judgment is contested: Ousterhout (deep modules, small
 interfaces), Carmack (shippability — what can be cut), Kent C. Dodds (test
 what users do, not implementation), Uncle Bob (leave it cleaner than found).
 
+## Deviations
+
+The plan will be wrong somewhere — live code always holds unknowns the shape
+didn't map. When an edge case forces an off-plan choice that doesn't break
+the shape itself: pick the conservative option, log it in a **Deviations**
+section of the plan artifact (site, what forced it, what you chose), and
+keep going. If the deviation invalidates the shape, that's the re-shaping
+stop (Gotchas), not a ledger entry.
+
+The ledger is routed, not private notes: reviewers get the deviation sites
+as risk coordinates (locations, never your justifications — that stays the
+reasoning-trail rule), `/qa` drives them as the edges most plausibly broken,
+and each entry is a discovered unknown that feeds the shape or backlog after
+landing.
+
 ## QA the live thing
 
 "Tests pass" is not verification. Run the application and drive the surface
@@ -127,8 +142,9 @@ is long; keep code, commits, PR text, and irreversible warnings normal.
 ## Done means
 
 State plainly: what behavior changed and how you verified it live (exact
-command/route/surface), what review found and how it was resolved, what
-residual risk remains, and final `git status --short` + branch/remote state.
+command/route/surface), what review found and how it was resolved, the
+deviation ledger (or "none"), what residual risk remains, and final
+`git status --short` + branch/remote state.
 A clean tree is part of done — every leftover path gets committed, ignored,
 moved out, or named as a blocker. No green-gate hand-waving: name the
 evidence, not the aggregate.

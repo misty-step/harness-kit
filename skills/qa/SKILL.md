@@ -47,7 +47,8 @@ name a path, ask; never ship a generic shrug.
 ## Run it
 
 Drive the changed surface specifically — happy path first, then the edges
-the change plausibly broke. Capture evidence as you go (screenshot on
+the change plausibly broke. If the delivery carries a deviation ledger,
+those sites are that edge list, precomputed — drive them first. Capture evidence as you go (screenshot on
 anomaly, terminal transcript, request/response pairs) under the repo's
 evidence convention or a dated scratch dir; link the specific artifact in
 the report, not just a directory name.

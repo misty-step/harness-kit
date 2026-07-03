@@ -21,6 +21,24 @@ the stance.
    pinned, not when the operator sounds tired. "Decide during implementation" on
    a load-bearing choice means the interview isn't done.
 
+## Which Move for Which Unknown
+
+The interview handles decisions the operator knows are open. Not every gap is
+that kind; route by the type of unknown:
+
+- **Resolvable** — the repo, vision, or a command can answer it. Read it
+  (rule 4). Never interview for facts.
+- **Known unknown** — a decision the operator knows is open. Interview: the
+  body of this file.
+- **Unknown known** — "I'll know it when I see it" (design, copy, feel).
+  Don't extract prose criteria that don't exist yet; route to disposable
+  prototype variations and let the operator react before the spec locks.
+- **Unknown unknown** — new domain; the operator doesn't know what to ask.
+  Run a **blindspot pass** before interrogating: teach the domain's shape —
+  what good looks like, the standard failure modes, the questions they should
+  be asking — then interview. Answers extracted from an untaught operator pin
+  the design to guesses.
+
 ## Boundaries
 
 Do not manufacture questions for choices the evidence already locks — that is

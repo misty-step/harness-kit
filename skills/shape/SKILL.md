@@ -42,6 +42,13 @@ an architecture choice needs the full treatment.
   and the synced Ponytail skill (`skills/.external/dietrich-ponytail/SKILL.md`)
   before choosing the build path; the lazy viable path must be a real
   alternative, not a throwaway paragraph.
+- **Perceptual criteria prototyped.** When acceptance is taste — design,
+  copy, feel, layout — prose alternatives are the wrong artifact; the
+  operator can't evaluate what they haven't seen. Route through `/design`
+  prototype variations, let the operator react, then lock what the reaction
+  taught. When the operator can't articulate the want at all, hunt a
+  reference artifact instead — source code beats docs beats screenshots —
+  and anchor the packet to it (Repo Anchors carries it).
 - **Scope is fenced.** Goal (outcome, not mechanism), explicit non-goals,
   and invariants that must survive the change.
 - **Oracle is executable.** "It should work" is not an oracle; "these
@@ -79,7 +86,11 @@ an architecture choice needs the full treatment.
   plan directly as a local `.html` artifact from
   `templates/html-plan.html`, open it, and inspect the rendered hierarchy
   before execution. The hero is the complete work contract: target outcome,
-  chosen design, why it wins, proof surface, and stop conditions. Below it,
+  chosen design, why it wins, proof surface, and stop conditions. Order the
+  body by decision volatility: lead with what the operator is most likely to
+  tweak — data model, public interfaces, UX flows — and bury the mechanical
+  work at the bottom. The plan doubles as an unknown detector; put the
+  contestable decisions where the reviewer's attention lands first. Below it,
   include the support needed for a stranger to execute without chat context:
   current state, change shape, repo anchors, alternatives and tradeoffs,
   acceptance, verification, communication cadence, risks, and adversarial
