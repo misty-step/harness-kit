@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-ae-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Factory MCP Materializer Plan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/misty-step/aesthetic@v2.5.1/aesthetic.css">
+  <style>
+    .wrap { width: min(80rem, calc(100% - 3rem)); margin: 0 auto; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(22rem, .7fr); gap: 2rem; align-items: end; padding: 2rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--ae-line); }
+    .cell { background: var(--ae-surface); padding: 1rem; }
+    @media (max-width: 900px) { .hero, .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <p class="ae-chrome">BACKLOG 135 / EXECUTION CONTRACT</p>
+        <h1 class="ae-strong">Materialize factory MCP policy into Codex config without broken tools or user config clobbering.</h1>
+        <p class="ae-lede">Harness Kit already owns `.harness-kit/factory-mcps.yaml`; this delivery adds the apply surface for Codex, with profile and repo-scope filtering, required-env readiness, dry-run planning, and idempotent updates.</p>
+      </div>
+      <aside class="ae-panel">
+        <h2 class="ae-h">Chosen Design</h2>
+        <p>A small Rust command in `harness-kit-checks`, reusing the existing registry loader and editing only selected `[mcp_servers.*]` TOML tables.</p>
+        <h2 class="ae-h">Stop Rules</h2>
+        <p>Stop if registry scope contradicts the audit, if env readiness requires printing secrets, or if unrelated MCP tables cannot be preserved.</p>
+      </aside>
+    </section>
+    <section class="grid">
+      <article class="cell">
+        <h2 class="ae-h">Standards</h2>
+        <p>Rust-owned harness plumbing, no placeholder MCPs, no secret output, narrow Codex support, unrelated user config preserved.</p>
+      </article>
+      <article class="cell">
+        <h2 class="ae-h">Proof</h2>
+        <p>Unit tests for scope/env/config editing, dry-run transcript, temp `$CODEX_HOME` apply, real local Codex apply, and the repo gate.</p>
+      </article>
+      <article class="cell">
+        <h2 class="ae-h">Critic Focus</h2>
+        <p>Public CLI workflow, idempotence, skip reasons, env readiness, and compatibility with existing Codex config shape.</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

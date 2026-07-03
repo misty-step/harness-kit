@@ -2,10 +2,12 @@ use std::env;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
+use harness_kit_checks::cli_usage::usage;
 use harness_kit_checks::{
     backlog, bootstrap, ci_check, config_loader, docs_site, error_report, external_skill_lint,
-    external_sync, frontmatter, generate_index, git_hooks, lint_gates, pr_reviews, premise_source,
-    quality_gates, scout_skills, skill_invocation_analytics, template_check,
+    external_sync, factory_mcp_materializer, frontmatter, generate_index, git_hooks, lint_gates,
+    pr_reviews, premise_source, quality_gates, scout_skills, skill_invocation_analytics,
+    template_check,
 };
 use harness_kit_hooks::claude_hooks;
 use harness_kit_roster::{agent_roster, source_refs, summarize_delegations};
@@ -103,6 +105,9 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         }
         "lint-external-skills" => run_lint_external_skills(rest),
         "sync-external" => run_sync_external(rest),
+        "apply-factory-mcps" => {
+            println!("{}", factory_mcp_materializer::run_cli(rest)?);
+        }
         "fetch-pr-reviews" => run_fetch_pr_reviews(rest),
         "scout-skills" => run_scout_skills(rest),
         "backlog" => run_backlog(rest),
@@ -948,38 +953,6 @@ fn repo_root() -> PathBuf {
         return repo.to_path_buf();
     }
     env::current_dir().unwrap_or_else(|_| Path::new(".").to_path_buf())
-}
-
-fn usage() -> ! {
-    eprintln!(
-        r#"usage:
-  harness-kit-checks check [--repo PATH]
-  harness-kit-checks bootstrap [--repo PATH] [--bundle NAME] [--dry-run]
-  harness-kit-checks check-frontmatter [--repo PATH]
-  harness-kit-checks generate-index [--repo PATH]
-  harness-kit-checks check-index-drift [--repo PATH]
-  harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
-  harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
-  harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
-  harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain|check-supply-chain-advisories|check-template [--repo PATH]
-  harness-kit-checks lint-external-skills [--strict]
-  harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]
-  harness-kit-checks test-sync-external-partial
-  harness-kit-checks load-config deploy|monitor [--repo PATH] [--config PATH] [--optional]
-  harness-kit-checks fetch-pr-reviews [PR]
-  harness-kit-checks scout-skills --input PATH [--output PATH] [--format markdown|json] [--offline|--live]
-  harness-kit-checks backlog trailer-keys|closing-keys
-  harness-kit-checks backlog ids-from-commit|ids-from-range|file-for-id|archive <arg>
-  harness-kit-checks claude-hook <hook-name>
-  harness-kit-checks git-hook pre-commit|pre-push|pre-merge-commit|post-commit|post-merge|post-rewrite [arg...]
-  harness-kit-checks telemetry [--skill-log PATH] [--since 7d|12h] [--repo NAME] [--project NAME] [--skill NAME] [--format json|text|markdown] [--self-test]
-  harness-kit-checks probe-agent-roster [--validate-only] [--write-receipts] [options]
-  harness-kit-checks dispatch-agent --provider-target ID --objective TEXT --input-ref REF --prompt-file PATH [--repo PATH] [options]
-  harness-kit-checks summarize-delegations [--backlog-ref REF] [--format json|text] [PATH]
-  harness-kit-checks record-delegation --provider-target ID --provider-status STATUS --attempt-status STATUS --objective TEXT --input-ref REF --worktree-id ID [options]
-  harness-kit-checks premise-source validate PACKET [--repo PATH]|self-test"#
-    );
-    std::process::exit(2);
 }
 
 fn parse_dispatch_agent_args(args: &[String]) -> agent_roster::DispatchOptions {

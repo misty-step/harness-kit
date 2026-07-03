@@ -55,10 +55,6 @@
     {
       "source": "backlog.d/134-audit-description-tax-for-hand-only-skills.md",
       "title": "Audit description tax: flag hand-only skills for user-invoked projection"
-    },
-    {
-      "source": "backlog.d/135-profile-aware-factory-mcp-materializer.md",
-      "title": "Add a profile-aware factory MCP materializer"
     }
   ],
   "copy_source": "docs/copy/site.json",
