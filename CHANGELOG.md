@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/misty-step/harness-kit/compare/v1.14.0...v1.15.0) (2026-07-03)
+
+
+### Features
+
+* **factory:** source MCP env from Agents vault ([0cd51c1](https://github.com/misty-step/harness-kit/commit/0cd51c17cb1a2bd053063f249029cdc21483d7b2))
+
 # [1.14.0](https://github.com/misty-step/harness-kit/compare/v1.13.0...v1.14.0) (2026-07-03)
 
 
