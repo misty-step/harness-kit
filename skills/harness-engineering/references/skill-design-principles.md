@@ -26,6 +26,33 @@ contract.
 | Compose explicitly | Name the owner skill instead of copying its method. |
 | Measure | Use invocation and work-ledger data to find hot, cold, undertriggering, stale, and overlapping skills. |
 
+## Skill-Prose Compression
+
+Source: Matt Pocock, "Writing Great Skills" (mattpocock/skills,
+`writing-great-skills`) — vocabulary for the pruning discipline the Upgrade
+Loop already demands.
+
+- **Leading words.** A pretrained token the agent thinks with (*ratchet*,
+  *mundane harvest*, *plausible-but-wrong*, *unknown unknowns*) anchors a
+  region of behavior in the fewest tokens — and doubles as an invocation
+  hook when it recurs in descriptions and prompts. Upgrade-loop move: hunt
+  restatements ("fast, deterministic, low-overhead") that collapse into one
+  word (*tight*). Fewer tokens and a sharper behavioral hook, at once.
+- **No-op test, per sentence.** Does this sentence change behavior versus
+  the model's default? No → delete the sentence, don't trim it. This is the
+  per-sentence form of the standing gotcha that each new frontier model
+  converts judgment prose into railroading.
+- **Premature completion.** The named failure the oracle doctrine defends
+  against: attention slips to *being done* before the completion criterion
+  is met. Defense order: sharpen the criterion first (checkable,
+  exhaustive); split the sequence only when the rush is actually observed.
+- **Invocation cost accounting.** Every model-facing description pays
+  context load every session — the description tax. A skill only ever fired
+  by hand can drop its model-facing description in harness projections that
+  support it (e.g. Claude Code `disable-model-invocation`); telemetry
+  (`/groom audit`) names the candidates. Cross-harness caveat: this is a
+  per-harness projection decision, never a source-skill deletion.
+
 ## Upgrade Loop
 
 1. Classify the target skill's single primary category.
