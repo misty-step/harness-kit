@@ -1,3 +1,17 @@
+# [1.12.0](https://github.com/misty-step/harness-kit/compare/v1.11.0...v1.12.0) (2026-07-03)
+
+
+### Bug Fixes
+
+* **artifact:** CORS + preflight on bridge relay for cross-host mirrors ([8251c73](https://github.com/misty-step/harness-kit/commit/8251c73fa018b1d64e7fa1969d6a610500004ade))
+
+
+### Features
+
+* **artifact:** publish to the bastion shelf; serenity becomes the local mirror ([97247b4](https://github.com/misty-step/harness-kit/commit/97247b4690c768ee736dbe38a4ffc93c561f4ebb))
+* **artifact:** send X-Artifact-Mtime so the shelf index keeps true history ([a0293eb](https://github.com/misty-step/harness-kit/commit/a0293eb330273e676c3787f4bd314eac102065e8))
+* **claude:** pin subagents to Sonnet 5, deny claude.ai Drive connector ([fcdc227](https://github.com/misty-step/harness-kit/commit/fcdc2270ef43c2d69df90ada3b204f2d9fbdf4e7))
+
 # [1.11.0](https://github.com/misty-step/harness-kit/compare/v1.10.1...v1.11.0) (2026-07-02)
 
 
