@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/misty-step/harness-kit/compare/v1.13.0...v1.14.0) (2026-07-03)
+
+
+### Features
+
+* **factory:** wire product agent surfaces ([60e61f2](https://github.com/misty-step/harness-kit/commit/60e61f293da8d789e11fba208814cb46151c91ff))
+
 # [1.13.0](https://github.com/misty-step/harness-kit/compare/v1.12.0...v1.13.0) (2026-07-03)
 
 
