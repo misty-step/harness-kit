@@ -204,7 +204,7 @@ def _artifacts_token():
     return ""
 
 
-def publish(base_url, slug, doc):
+def publish(base_url, slug, doc, mtime=None):
     """PUT the page to the box's artifact shelf. Best-effort: the local
     mirror is already written, so a publish failure warns and returns False
     instead of failing the run."""
@@ -213,9 +213,10 @@ def publish(base_url, slug, doc):
         print("publish skipped: ARTIFACTS_API_TOKEN not set", file=sys.stderr)
         return False
     target = f"{base_url.rstrip('/')}/a/{slug}/index.html"
-    req = urllib.request.Request(
-        target, data=doc.encode(), method="PUT",
-        headers={"Authorization": f"Bearer {token}", "Content-Type": "text/html"})
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "text/html"}
+    if mtime:
+        headers["X-Artifact-Mtime"] = str(int(mtime))
+    req = urllib.request.Request(target, data=doc.encode(), method="PUT", headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             return 200 <= resp.status < 300
@@ -255,7 +256,7 @@ def main():
     with open(dest, "w") as f:
         f.write(doc)
     url = f"{a.base_url.rstrip('/')}/a/{slug}/"
-    published = False if a.local_only else publish(a.base_url, slug, doc)
+    published = False if a.local_only else publish(a.base_url, slug, doc, os.path.getmtime(dest))
     print(json.dumps({"slug": slug, "path": dest, "url": url, "bytes": len(doc),
                       "published": published}, indent=2))
 
