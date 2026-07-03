@@ -7,7 +7,7 @@ servers:
   - id: canary
     app: Canary
     source_repo: misty-step/canary
-    source_ref: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
+    source_ref: e9bce96a5c24654c2692ae701a6db596f5966471
     product_skill: misty-canary
     status: available
     capabilities:

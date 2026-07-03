@@ -57,8 +57,8 @@ sources:
     alias_prefix: "misty-"
 
   - repo: misty-step/canary
-    ref: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
-    pin: 81e04cb7b0461e598e2fd0c44d50b1237f9aaf40
+    ref: e9bce96a5c24654c2692ae701a6db596f5966471
+    pin: e9bce96a5c24654c2692ae701a6db596f5966471
     layout: root
     skills_path: "."
     skill_name: canary
