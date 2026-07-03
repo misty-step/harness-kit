@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/misty-step/harness-kit/compare/v1.12.0...v1.13.0) (2026-07-03)
+
+
+### Features
+
+* **skills:** route factory app capabilities ([ade35f3](https://github.com/misty-step/harness-kit/commit/ade35f35cf924339febf05587225dfa08f0a1aa9))
+
 # [1.12.0](https://github.com/misty-step/harness-kit/compare/v1.11.0...v1.12.0) (2026-07-03)
 
 
