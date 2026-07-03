@@ -12,6 +12,7 @@ Primitives:
 - skill:design | skills/design/SKILL.md | docs/site/reference/skills/design.html
 - skill:diagnose | skills/diagnose/SKILL.md | docs/site/reference/skills/diagnose.html
 - skill:document | skills/document/SKILL.md | docs/site/reference/skills/document.html
+- skill:factory-apps | skills/factory-apps/SKILL.md | docs/site/reference/skills/factory-apps.html
 - skill:groom | skills/groom/SKILL.md | docs/site/reference/skills/groom.html
 - skill:harness-engineering | skills/harness-engineering/SKILL.md | docs/site/reference/skills/harness-engineering.html
 - skill:human-writing | skills/human-writing/SKILL.md | docs/site/reference/skills/human-writing.html

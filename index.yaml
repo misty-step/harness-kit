@@ -1,5 +1,5 @@
 # Harness Kit Index
-# Generated: 2026-07-03T19:51:19Z
+# Generated: 2026-07-03T20:23:13Z
 # Do not edit manually. Run: harness-kit-checks generate-index --repo .
 
 skills:
@@ -35,6 +35,10 @@ skills:
     description: "Generate world-class, source-verified reference documentation for a codebase: a multi-agent loop that surveys the repo, plans the information architecture, writes facet-scoped pages, and adversarially"
     source: first-party
     tags: [a,adversarially,architecture,codebase,documentation,facet-scoped,generate,information,loop,multi-agent]
+  - name: factory-apps
+    description: "Route Misty Step factory application capabilities. Use when choosing, auditing, integrating, or operating Canary, Powder, Landmark, Aesthetic, or Bitterblossom: production observability, incidents, he"
+    source: first-party
+    tags: [aesthetic,application,auditing,bitterblossom,canary,capabilities,choosing,factory,he,incidents]
   - name: groom
     description: "Always-on backlog grooming. Tidy, brainstorm, interrogate, investigate, research, and simplify in a single loop. Tidy is not a mode — it happens every time. Strategic-layer work is a mega-sweep: swa"
     source: first-party
