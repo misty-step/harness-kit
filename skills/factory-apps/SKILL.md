@@ -48,6 +48,14 @@ The live 2026-07-03 audit is in
 "are these configured?" or "what gaps remain?" before changing product repos
 or system config.
 
+## Fleet Integration Standard
+
+For active Misty Step repos, load
+`references/fleet-integration-standard.md` before claiming a project is
+factory-integrated. The standard defines the repo-level Canary receipt,
+Powder backlog, and Landmark manifest/workflow evidence expected for runtime
+apps, libraries, and non-release support repos.
+
 ## Gotchas
 
 - A product repo having an MCP implementation does not mean this harness has
