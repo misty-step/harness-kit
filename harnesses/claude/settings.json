@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5"
   },
   "permissions": {
     "allow": [
@@ -41,7 +42,11 @@
       "Bash(curl -s https://api.x.ai/:*)",
       "Bash(curl -s https://api.exa.ai/:*)"
     ],
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "bypassPermissions",
+    "deny": [
+      "mcp__claude_ai_Google_Drive__authenticate",
+      "mcp__claude_ai_Google_Drive__complete_authentication"
+    ]
   },
   "enabledMcpjsonServers": [],
   "hooks": {
