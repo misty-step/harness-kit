@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/misty-step/harness-kit/compare/v1.15.0...v1.16.0) (2026-07-03)
+
+
+### Features
+
+* **factory:** materialize profile-aware codex mcps ([#167](https://github.com/misty-step/harness-kit/issues/167)) ([96fd97a](https://github.com/misty-step/harness-kit/commit/96fd97a0e5a54a12ff772e1d47781c4cbd8b93a1))
+
 # [1.15.0](https://github.com/misty-step/harness-kit/compare/v1.14.0...v1.15.0) (2026-07-03)
 
 
