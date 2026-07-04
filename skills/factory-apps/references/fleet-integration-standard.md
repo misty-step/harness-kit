@@ -77,9 +77,11 @@ curl -fsS -H "Authorization: Bearer $POWDER_API_KEY" \
   "$POWDER_API_BASE_URL/api/v1/cards?repo=misty-step%2F<repo>&limit=100"
 ```
 
-If the deployed Powder instance is reached through the local Fly proxy, use
-`http://127.0.0.1:14030` as the base URL until the public API route and
-repository summary endpoint are confirmed.
+As of the 2026-07-04 cutover, the canonical Powder instance is Sanctum Powder
+on the `phrazzld-bastion` Fly app: use
+`https://bastion.tail5f5eb4.ts.net:10001` as `$POWDER_API_BASE_URL` (reachable
+from any device on the tailnet). The old standalone `powder` Fly app and its
+`127.0.0.1:14030` local proxy are retired.
 
 ## Waivers
 
