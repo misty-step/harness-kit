@@ -155,7 +155,13 @@ token through it on each call, is the anti-pattern.
 
 ### Think in HTML for plans
 For non-trivial execution plans and context packets, author the plan directly
-as a local HTML artifact and open it before execution. The first viewport is
+as an HTML artifact before execution. Never auto-open it in a browser —
+operator ruling 2026-07-04: auto-opened planning artifacts are a distraction.
+Instead, make it durable and context-coupled: publish it to the Sanctum shelf
+(artifact skill; slug = the work-ticket id) and attach the URL to the Powder
+card it represents (link or comment), so every plan is tied to its ticket and
+reachable later. The operator opens plans from Powder or the bridge, on his
+clock. The first viewport is
 the work contract: target outcome, chosen design, why it wins, proof surface,
 and stop conditions. Below it, include the complete support an executor or
 critic needs without chat context: current state, change shape, alternatives

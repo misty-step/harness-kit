@@ -92,9 +92,14 @@ an architecture choice needs the full treatment.
   `references/voice-transcript-metadata.md`; never store raw audio paths.
   This is grader-enforced (see Verification).
 - **HTML plan authored.** For non-trivial or contestable shapes, write the
-  plan directly as a local `.html` artifact from
-  `templates/html-plan.html`, open it, and inspect the rendered hierarchy
-  before execution. The hero is the complete work contract: target outcome,
+  plan directly as a `.html` artifact from `templates/html-plan.html`,
+  publish it to the Sanctum shelf (artifact skill; slug = the Powder card
+  id), and attach the URL to the card (link or comment) so the plan is
+  durably ticket-coupled. Never auto-open it in a browser (operator ruling
+  2026-07-04: auto-opened planning artifacts are a distraction) — inspect
+  the rendered hierarchy yourself via the published page; the operator
+  opens it from Powder on his clock.
+  The hero is the complete work contract: target outcome,
   chosen design, why it wins, proof surface, and stop conditions. Order the
   body by decision volatility: lead with what the operator is most likely to
   tweak — data model, public interfaces, UX flows — and bury the mechanical
@@ -142,7 +147,7 @@ the block from `references/cli-design.md`.
                      rejected alternatives and why, ADR decision if any
 ## Oracle          — executable definition of done
 ## Premise Source  — sha256 + artifact, or explicit waiver
-## HTML Plan       — local .html path opened for review, or explicit waiver
+## HTML Plan       — Sanctum shelf URL attached to the Powder card, or explicit waiver
 ## Risks + Rollout — how it fails, how to undo it
 ```
 
@@ -203,14 +208,18 @@ cargo run --locked -p harness-kit-checks -- premise-source self-test
 HTML plan artifact:
 
 ```sh
-cp skills/shape/templates/html-plan.html /tmp/<slug>-plan.html
-open /tmp/<slug>-plan.html   # macOS; use xdg-open on Linux or a browser tab
+cp skills/shape/templates/html-plan.html /tmp/<card-id>-plan.html
+# fill it, then publish + attach (never `open` it):
+python3 ~/Development/harness-kit/skills/artifact/scripts/artifact_create.py \
+  --title "<title>" --slug <card-id> --tag "Plan" --html-file /tmp/<card-id>-plan.html
+# attach the printed URL to the Powder card (add_link MCP tool or a comment)
+curl -s -o /dev/null -w '%{http_code}' <printed-url>   # expect 200
 ```
 
-Fill it as HTML, open it, and revise after seeing the rendered page. Inspect
+Fill it as HTML, publish, and revise after reading the rendered page. Inspect
 that the hero states the chosen design and proof path, the alternatives table
 names tradeoffs, the verification section names exact commands/artifacts, and
-the review section gives a useful artifact-only critic prompt. In headless
-runs, still write the `.html` file and report the path. Keep source links,
-commands, and oracles exact; use the browser view to make the plan clearer,
-not less precise.
+the review section gives a useful artifact-only critic prompt. Do not auto-open
+a browser; the shelf URL attached to the card is the deliverable. Keep source
+links, commands, and oracles exact; use the rendered view to make the plan
+clearer, not less precise.
