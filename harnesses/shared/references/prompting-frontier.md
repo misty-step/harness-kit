@@ -54,6 +54,18 @@ expectations, and house rules.
    the plan first and surface every uncertainty as upfront questions — then
    run without stopping.
 
+## Reviewing lane work: narration before diff
+
+(Dax/OpenCode observation, operator-ratified 2026-07-04.) After a big lane
+change, don't start from the raw diff — ask the builder (or a fresh reader)
+for a per-file narration: what changed in each file and why, surfacing
+files and function signatures, not function bodies. Anything weird sticks
+out immediately in narration; one or two follow-ups usually converge. The
+diff stays the ground truth for the final gate — narration is the triage
+layer that tells you where to actually read. Same principle shapes
+documentation surfaces (glance pages, PR bodies, receipts): signatures and
+flows first, bodies on demand, 10,000 ft before detail.
+
 ## Two formations
 
 - **Engineering:** several sessions pulling tasks in parallel, each
