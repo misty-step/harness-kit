@@ -517,6 +517,19 @@ pub fn check_harness_install_paths(root: &Path) -> Result<GateReport> {
     }
 }
 
+pub fn check_claude_hook_commands(settings_path: &Path) -> Result<GateReport> {
+    let errors = crate::claude_settings::validate_settings_file(settings_path)?;
+    if errors.is_empty() {
+        Ok(GateReport::success(
+            "Claude hook commands resolve to executable binaries.",
+        ))
+    } else {
+        let mut report = vec!["Claude hook command check failed:".to_string()];
+        report.extend(errors.into_iter().map(|error| format!("  - {error}")));
+        Ok(GateReport::failure(report))
+    }
+}
+
 fn files(root: &Path) -> Result<Vec<PathBuf>> {
     let mut paths = Vec::new();
     collect_files(root, &mut paths)?;
@@ -758,6 +771,30 @@ mod tests {
                 .errors
                 .iter()
                 .any(|error| error.contains("Pi settings must allow"))
+        );
+    }
+
+    #[test]
+    fn claude_hook_command_check_reports_unresolvable_binary() {
+        let temp = tempfile::tempdir().unwrap();
+        let settings = temp.path().join("settings.json");
+        fs::write(
+            &settings,
+            r#"{
+              "hooks": {"SessionStart": [{"hooks": [
+                {"command": "'/tmp/not-a-real-harness-kit-checks' claude-hook time-context"}
+              ]}]}
+            }"#,
+        )
+        .unwrap();
+
+        let report = check_claude_hook_commands(&settings).unwrap();
+        assert_eq!(report.errors[0], "Claude hook command check failed:");
+        assert!(
+            report
+                .errors
+                .iter()
+                .any(|error| error.contains("not executable"))
         );
     }
 }

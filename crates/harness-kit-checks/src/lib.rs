@@ -2,6 +2,7 @@ pub mod backlog;
 pub mod bootstrap;
 mod bundles;
 pub mod ci_check;
+pub mod claude_settings;
 mod cli_install;
 pub mod cli_usage;
 pub mod config_loader;
