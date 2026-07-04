@@ -42,6 +42,10 @@ img{cursor:zoom-in}
   .spacer{flex:1}
   .toggle{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 .72rem/1 ui-monospace,monospace;padding:.42rem .7rem;border-radius:2em;display:inline-flex;gap:.4rem;align-items:center}
   .toggle:hover{border-color:var(--red)}
+  .sanctum-home{position:fixed;left:max(.85rem,env(safe-area-inset-left));bottom:max(.85rem,env(safe-area-inset-bottom));z-index:19;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--panel) 88%,transparent);color:var(--ink);text-decoration:none;box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .sanctum-home svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .sanctum-home:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .sanctum-home:hover{border-color:var(--red);color:var(--red)}
   .label{font:600 .72rem/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
   .lede{font-size:1.12rem;color:var(--muted);margin:.4em 0 1em}
   .pill{font:600 .68rem/1.4 ui-monospace,monospace;border:1px solid var(--line);border-radius:2em;padding:.28em .7em;color:var(--muted);background:var(--panel)}
@@ -97,6 +101,13 @@ HEADER = ('<header class="bar"><div class="row">'
           '<button class="toggle" id="cp" aria-label="Copy page HTML"><span id="cpicon">⧉</span><span id="cptxt">Copy page</span></button>'
           '<button class="toggle" id="tg" aria-label="Toggle theme"><span id="tgicon">◐</span><span id="tgtxt">System</span></button>'
           '</div></header>')
+
+HOME_SNIPPET = ('<a data-sanctum-home class="sanctum-home" href="/" '
+                'aria-label="Back to Sanctum" title="Back to Sanctum">'
+                '<svg viewBox="0 0 24 24" aria-hidden="true">'
+                '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>'
+                '<path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
+                '</svg></a>')
 
 COPY_BTN_SNIPPET = ('<button class="toggle" id="cp" aria-label="Copy page HTML">'
                     '<span id="cpicon">⧉</span><span id="cptxt">Copy page</span></button>')
@@ -180,6 +191,7 @@ def wrap(title, tag, summary, body_html):
 </head>
 <body>
 {HEADER.format(tag=html.escape(tag))}
+{HOME_SNIPPET}
 <div class="wrap">
 <h1>{html.escape(title)}</h1>
 {lede}
@@ -201,6 +213,8 @@ def ensure_copy_button(doc: str) -> str:
             doc = re.sub(r"(<body[^>]*>)", r"\1\n" + HEADER.format(tag="Artifact"), doc, count=1)
     if 'id="cp"' in doc and "data-hk-artifact-copy" not in doc and "</body>" in doc:
         doc = doc.replace("</body>", COPY_HANDLER_SNIPPET + "\n</body>", 1)
+    if "data-sanctum-home" not in doc and "</body>" in doc:
+        doc = re.sub(r"(<body[^>]*>)", r"\1\n" + HOME_SNIPPET, doc, count=1, flags=re.IGNORECASE)
     return doc
 
 
