@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/misty-step/harness-kit/compare/v1.16.1...v1.16.2) (2026-07-04)
+
+
+### Bug Fixes
+
+* **artifact:** bridge-answer relay follows powder cutover to sanctum origin ([0cd5ea0](https://github.com/misty-step/harness-kit/commit/0cd5ea036ebf7448e9c98ccd8fa9581a992de0f3))
+
 ## [1.16.1](https://github.com/misty-step/harness-kit/compare/v1.16.0...v1.16.1) (2026-07-04)
 
 
