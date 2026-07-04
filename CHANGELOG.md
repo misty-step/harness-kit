@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/misty-step/harness-kit/compare/v1.17.0...v1.18.0) (2026-07-04)
+
+
+### Features
+
+* **artifact:** click-to-full-size lightbox on content images ([ffedacd](https://github.com/misty-step/harness-kit/commit/ffedacd6d0532101e83b9804b095de9ce5dee345))
+
 # [1.17.0](https://github.com/misty-step/harness-kit/compare/v1.16.2...v1.17.0) (2026-07-04)
 
 
