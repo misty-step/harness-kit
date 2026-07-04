@@ -216,6 +216,16 @@
       "source": "skills/code-review/SKILL.md"
     },
     {
+      "description": "Capture one compounding repo-technical learning while a solved problem is still fresh. Use when: after a bug fix, diagnosis, delivery, review, or incident reveals a reusable pattern worth adding to `docs/solutions/`. Trigger: /compound, /capture-learning, /learning.",
+      "icon": "catalog",
+      "id": "skill:compound",
+      "kind": "skill",
+      "name": "compound",
+      "page": "reference/skills/compound.html",
+      "role": "Support",
+      "source": "skills/compound/SKILL.md"
+    },
+    {
       "description": "Convene a council/thinktank: fan one question out to several DISTINCT high-quality OpenRouter model families (via opencode/pi), each carrying a different generative persona/perspective, then synthesize the divergent thinking as chair. Generative deliberation — brainstorm, explore the option space, weigh tradeoffs, decorrelated ideation, lock a contested direction. Distinct from /roster's adversarial critique bench (that finds bugs in an artifact; this generates and reframes). Use when: \"convene a council\", \"thinktank\", \"council of models\", \"brainstorm with different models\", \"get diverse perspectives\", \"panel of AIs\", \"what would different experts think\", \"divergence pass\", \"ideate broadly\", \"stress-test this direction with other models\". Trigger: /council, /thinktank.",
       "icon": "catalog",
       "id": "skill:council",

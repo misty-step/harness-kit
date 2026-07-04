@@ -147,7 +147,8 @@ deviation ledger (or "none"), what residual risk remains, and final
 `git status --short` + branch/remote state.
 A clean tree is part of done — every leftover path gets committed, ignored,
 moved out, or named as a blocker. No green-gate hand-waving: name the
-evidence, not the aggregate.
+evidence, not the aggregate. If the work produced a reusable repo-technical
+lesson, offer `/compound` before the evidence goes stale.
 
 ## Gotchas
 

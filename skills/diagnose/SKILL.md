@@ -55,6 +55,12 @@ Otherwise, this is a debugging session — continue below.
 
 **The user's symptoms:** $ARGUMENTS
 
+## Learnings
+
+Before root-cause ranking, grep known failures:
+`rg -n --glob '*.md' '^(title|tags|applies_when):|<module>|<symptom>|<failure-mode>' docs/solutions`.
+Open likely matches and test any applicable known cause first.
+
 ## The Iron Law
 
 ```
@@ -277,6 +283,8 @@ For non-trivial production issues, create `INCIDENT-{timestamp}.md`:
 - **Root cause**: What's actually wrong
 - **Fix**: How it was resolved
 - **Verification**: Observable proof it works
+- **Learning**: If the fix revealed a reusable repo-technical pattern, offer
+  `/compound` while evidence is fresh.
 
 ## Gotchas
 

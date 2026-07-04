@@ -19,11 +19,16 @@ never ships on its own review — that is the one hard rule.
 1. **Scope = the diff.** `git diff <base>...HEAD` (default base: the repo's
    default branch). Classify what changed: API, UI, security surface, data
    model, infra, docs.
-2. **Choose the risk tier.** Use
+2. **Learnings audit.** Grep matched learnings before dispatch:
+   `rg -n --glob '*.md' '^(title|tags|applies_when):|<module>|<failure-mode>' docs/solutions`.
+   For each applicable match, the synthesis includes
+   `followed|violated <learning title> <file:line> <why>`; no file:line means
+   the verdict is not anchored.
+3. **Choose the risk tier.** Use
    `harnesses/shared/references/quality-system.md` to decide whether the diff
    needs a tiny, substantive, high-stakes, or Mode B review topology. Scale to
    the failure cost, not to habit.
-3. **Fan out in parallel, decorrelated.** Native subagents for focused
+4. **Fan out in parallel, decorrelated.** Native subagents for focused
    lenses (pick 2–4 that fit the diff: correctness, security, simplicity,
    tests); peer harness CLIs (`/roster`) for cross-model judgment — a
    different model family has decorrelated failure modes. If the harness can run a
@@ -50,7 +55,7 @@ never ships on its own review — that is the one hard rule.
    Add `harnesses/shared/references/verification-system-first.md` when the
    diff's proof story is missing, weak, eval/benchmark-shaped, or depends on
    QA/manual judgment.
-4. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
+5. **Aim reviewers at production embarrassment, not nitpicks.** Tell each
    one what to ignore (style, naming, speculative "consider…") as
    explicitly as what to find.
 

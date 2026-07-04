@@ -7,6 +7,7 @@ Primitives:
 - skill:artifact | skills/artifact/SKILL.md | docs/site/reference/skills/artifact.html
 - skill:ci | skills/ci/SKILL.md | docs/site/reference/skills/ci.html
 - skill:code-review | skills/code-review/SKILL.md | docs/site/reference/skills/code-review.html
+- skill:compound | skills/compound/SKILL.md | docs/site/reference/skills/compound.html
 - skill:council | skills/council/SKILL.md | docs/site/reference/skills/council.html
 - skill:deliver | skills/deliver/SKILL.md | docs/site/reference/skills/deliver.html
 - skill:design | skills/design/SKILL.md | docs/site/reference/skills/design.html
