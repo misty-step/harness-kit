@@ -147,11 +147,18 @@ Read secrets to use them via env refs — never print their values. For `op`
 (`OP_SERVICE_ACCOUNT_TOKEN`); without it `op` falls back to the
 desktop-app/user-session integration (`op --account <name>`), which pops an
 interactive authorize modal on every process and stalls the operator. With the
-token set, `op` hits the API directly and never prompts. If it is not already
-in the env, load it from its secure store — macOS Keychain, an env file, or the
-launcher that injects it (an `op run`/`op-agent` wrapper) — and run every
-read/write under it; falling back to the interactive path, or re-fetching the
-token through it on each call, is the anti-pattern.
+token set, `op` hits the API directly and never prompts. On this machine the
+token lives in the macOS Keychain and the exact bootstrap is
+`export OP_SERVICE_ACCOUNT_TOKEN="${OP_SERVICE_ACCOUNT_TOKEN:-$(security find-generic-password -a "$USER" -s op-agent -w 2>/dev/null)}"`.
+Zsh loads it automatically via `~/.zshenv`, but sanitized contexts do NOT
+inherit it — `bash -c`/`bash -lc` scripts, MCP-server bootstrap commands
+(harnesses spawn MCP servers with a minimal env), daemons/LaunchAgents, cron,
+and any runner that clears the environment (e.g. bitterblossom's local
+substrate). Any command that calls `op` in such a context must carry that
+bootstrap line first (root cause of the 2026-07-04 authorize-modal storm: a
+codex MCP bootstrap ran bare `op read` on every codex launch); falling back to
+the interactive path, or re-fetching the token through it on each call, is the
+anti-pattern.
 
 ### Think in HTML for plans
 For non-trivial execution plans and context packets, author the plan directly
