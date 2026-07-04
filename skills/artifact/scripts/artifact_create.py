@@ -19,6 +19,8 @@ import argparse
 import urllib.request, os, sys, json, re, html, datetime
 
 HOUSE_CSS = r"""
+img{cursor:zoom-in}
+
   :root{--bg:#f5f0e4;--panel:#fbf7ed;--ink:#241f19;--muted:#6b6053;--line:#e2d9c6;--red:#b4392a;--teal:#2c7a68;--gold:#bd8f2e;--shadow:0 1px 0 rgba(0,0,0,.04),0 12px 30px -22px rgba(40,30,20,.5);--col:52rem;}
   html[data-theme="dark"]{--bg:#11141a;--panel:#171b22;--ink:#e9e3d5;--muted:#9aa0ab;--line:#282e38;--red:#e3674f;--teal:#54bba4;--gold:#d8b25a;--shadow:0 1px 0 rgba(0,0,0,.3),0 16px 40px -26px rgba(0,0,0,.9);}
   @media (prefers-color-scheme:dark){html[data-theme="auto"]{--bg:#11141a;--panel:#171b22;--ink:#e9e3d5;--muted:#9aa0ab;--line:#282e38;--red:#e3674f;--teal:#54bba4;--gold:#d8b25a;--shadow:0 1px 0 rgba(0,0,0,.3),0 16px 40px -26px rgba(0,0,0,.9);}}
@@ -69,6 +71,19 @@ HOUSE_JS = r"""
   apply();
   var tg=document.getElementById("tg");if(tg)tg.addEventListener("click",function(){cur=order[(order.indexOf(cur)+1)%order.length];try{localStorage.setItem(k,cur)}catch(e){}apply();});
   var cp=document.getElementById("cp"),cpt=document.getElementById("cptxt");
+  // Lightbox: click any content image for full size (operator ask 2026-07-04)
+  document.addEventListener("click",function(e){
+    var t=e.target;
+    if(t.tagName==="IMG"&&!t.closest("a")&&!t.closest("#hk-lb")){
+      var o=document.createElement("div");o.id="hk-lb";
+      o.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;cursor:zoom-out;padding:2vh 2vw";
+      var im=document.createElement("img");im.src=t.src;
+      im.style.cssText="max-width:96vw;max-height:96vh;width:auto;height:auto;box-shadow:0 8px 40px rgba(0,0,0,.6)";
+      o.appendChild(im);o.addEventListener("click",function(){o.remove()});
+      document.addEventListener("keydown",function esc(ev){if(ev.key==="Escape"){o.remove();document.removeEventListener("keydown",esc)}});
+      document.body.appendChild(o);
+    }
+  });
   if(cp)cp.addEventListener("click",function(){var doc="<!doctype html>\n"+document.documentElement.outerHTML;
     function ok(){if(cpt){cpt.textContent="Copied ✓";setTimeout(function(){cpt.textContent="Copy page"},1600);}}
     function fallback(){var ta=document.createElement("textarea");ta.value=doc;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");ok()}catch(e){if(cpt)cpt.textContent="Copy failed"}document.body.removeChild(ta);}
