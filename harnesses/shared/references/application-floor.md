@@ -37,6 +37,17 @@ name an explicit waiver per item.
 7. **Test coverage approaching 100%, spanning unit, integration, and
    end-to-end.** Coverage earns its number through behavior-asserting
    tests (`verification-system-first.md`), not implementation mirrors.
+   For any surface that ships HTML/JS/CSS, "end-to-end" means a real
+   engine executes the artifact — three tiers, all mandatory: (a) every
+   embedded or generated artifact is syntax-validated in the gate
+   (extract inline scripts → parse them; templates fail closed on empty
+   interpolation or missing assets — a build error, never a placeholder);
+   (b) a smoke load of each major page in a headless browser asserts
+   zero console errors; (c) the few golden user paths are exercised
+   behaviorally (click → visible state change) at desktop AND ~390px
+   widths. Substring assertions against rendered HTML do not count as
+   coverage of the code inside it: they test the transcript, not the
+   program.
 8. **Rust — or the strongest static typing the platform boundary allows.**
    Maximize compile-time correctness guarantees. Every non-Rust surface
    names its constraint.
@@ -47,7 +58,7 @@ name an explicit waiver per item.
    and ship agent-ready setup prompts. A `doctor` command that fails loudly
    when the deployment is dead is part of onboarding, not polish.
 
-## The case study that made this doctrine
+## The case studies that made this doctrine
 
 Counterspell, 2026-07-05: the tool existed, was installed, configured, and
 green — and still failed the operator, because `setup` installed only the
@@ -56,3 +67,15 @@ was two days stale, and the menu-bar indicator's host app was never
 installed. Three "done" claims, zero live protection. Floor items 9 and 3
 exist so "installed" can never again masquerade as "running": onboarding
 ends at verified-live, and doctor is the proof.
+
+Sanctum artifacts, 2026-07-05: one Rust raw-string escaping slip
+(`main.rs`, a `\"` shipped verbatim into inline JS) made the page's entire
+script throw a SyntaxError on load — star toggle, search, and pagination
+all dead for every user — while 84 tests stayed green, because every one
+of them substring-matched the rendered HTML and none parsed or executed
+the JavaScript. Two independent verification lanes then confirmed the
+server behavior and still missed it, because both stopped at the layer
+boundary they owned. Floor item 7's real-engine tiers exist so that a
+page that cannot even parse can never again ship green: syntax-gate the
+embedded artifact, smoke-load for console errors, and click the golden
+path in a real browser — one verifier always stands at the user boundary.
