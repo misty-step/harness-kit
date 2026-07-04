@@ -275,6 +275,17 @@ Skills may extend this core with phase-specific fields such as hardening
 survivors, design risk, persona outcome, or artifact location. They must not
 replace live evidence with a generic "tests passed" claim.
 
+## Work Ledger
+
+Powder is the backlog and kanban of record on this machine (operator ruling
+2026-07-04). Tickets, claims, status changes, and completions live as Powder
+cards — reach it through the misty-powder skill, the `powder` CLI, or the
+registered MCP server; `POWDER_API_BASE_URL`/`POWDER_API_KEY` are canonical in
+`~/.secrets`. Repo-local `backlog.d/` directories are import seeds and
+drafting space, not a parallel ledger: when they disagree, Powder wins, and
+durable work items get carded with goal + oracle. Do not run a working ticket
+solely in chat, TODO comments, or provider-native task tools.
+
 ## Agent Attribution
 
 When an agent materially authors code, durable docs, repo configuration, PR
