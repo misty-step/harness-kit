@@ -119,6 +119,7 @@ fn run_unix(options: &BootstrapOptions) -> Result<String> {
     install_system_roster(&repo, &options.home, &mut lines)?;
     install_factory_mcp_registry(&repo, &options.home, &mut lines)?;
     crate::cli_install::install_cli(&repo, &options.home, &mut lines)?;
+    crate::powder_mcp_bootstrap::ensure(&options.home, &mut lines)?;
 
     let mut installed = 0usize;
     for harness in [
@@ -676,7 +677,7 @@ pub(crate) fn green(message: impl AsRef<str>) -> String {
     format!("\x1b[0;32m{}\x1b[0m", message.as_ref())
 }
 
-fn yellow(message: impl AsRef<str>) -> String {
+pub(crate) fn yellow(message: impl AsRef<str>) -> String {
     format!("\x1b[0;33m{}\x1b[0m", message.as_ref())
 }
 

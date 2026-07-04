@@ -17,6 +17,7 @@ pub mod generate_index;
 pub mod git_hooks;
 pub mod lint_gates;
 pub mod mcp_registry;
+pub mod powder_mcp_bootstrap;
 pub mod pr_reviews;
 pub mod premise_source;
 pub mod process;
