@@ -143,6 +143,11 @@ pub(crate) fn dry_run_report(
 /// Sums the byte length of each named skill's frontmatter `description`
 /// field under `repo/<category>/<name>/SKILL.md` — a cheap proxy for the
 /// standing prompt-token tax a set of skills costs every session.
+///
+/// Skips skills with `disable-model-invocation: true`: Claude Code never
+/// shows the model that skill's description (it is reachable only by
+/// explicit user invocation), so it does not pay the standing tax this
+/// function measures. See backlog.d/134.
 fn description_bytes(repo: &Path, category: &str, names: &[String]) -> Result<usize> {
     let mut total = 0usize;
     for name in names {
@@ -150,6 +155,9 @@ fn description_bytes(repo: &Path, category: &str, names: &[String]) -> Result<us
         let Some(frontmatter) = frontmatter::load_frontmatter(&path)? else {
             continue;
         };
+        if is_model_invocation_disabled(&frontmatter) {
+            continue;
+        }
         if let Some(description) = frontmatter.get("description") {
             total += serde_yaml::to_string(description)
                 .map(|text| text.len())
@@ -157,6 +165,15 @@ fn description_bytes(repo: &Path, category: &str, names: &[String]) -> Result<us
         }
     }
     Ok(total)
+}
+
+fn is_model_invocation_disabled(
+    frontmatter: &std::collections::BTreeMap<String, serde_yaml::Value>,
+) -> bool {
+    frontmatter
+        .get("disable-model-invocation")
+        .and_then(serde_yaml::Value::as_bool)
+        .unwrap_or(false)
 }
 
 #[cfg(test)]
@@ -261,6 +278,29 @@ mod tests {
         )?;
         assert!(report.contains("full catalog: 4 skill(s)"));
         assert!(!report.contains("bundle"));
+        Ok(())
+    }
+
+    #[test]
+    fn description_bytes_excludes_disable_model_invocation_skills() -> Result<()> {
+        let temp = fixture_repo()?;
+        let all_skills = discover_skills(temp.path())?;
+        let baseline = description_bytes(temp.path(), "skills", &all_skills)?;
+
+        // "alpha" already exists from fixture_repo(); overwrite it with a much
+        // longer description plus disable-model-invocation: true, so a
+        // regression that keeps counting it would be obvious (bytes would
+        // rise, not fall, versus the pre-flag baseline).
+        fs::write(
+            temp.path().join("skills/alpha/SKILL.md"),
+            "---\nname: alpha\ndescription: alpha does a thing with a much longer description that would otherwise dominate the byte count\ndisable-model-invocation: true\n---\n",
+        )?;
+        let projected = description_bytes(temp.path(), "skills", &all_skills)?;
+
+        assert!(
+            projected < baseline,
+            "disable-model-invocation: true should drop alpha's description from the standing tax (baseline={baseline}, projected={projected})"
+        );
         Ok(())
     }
 }
