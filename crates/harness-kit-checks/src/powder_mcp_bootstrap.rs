@@ -276,12 +276,15 @@ fn powder_table_spans(text: &str) -> Vec<(usize, usize)> {
     spans
 }
 
+// Headers may carry trailing comments (`[table] # note`); requiring the line
+// to END with `]` would miss them, letting a powder span swallow the table
+// that follows during removal.
 fn is_toml_table_header(line: &str) -> bool {
-    line.starts_with('[') && line.ends_with(']')
+    line.starts_with('[') && line.contains(']')
 }
 
 fn is_powder_mcp_header(line: &str) -> bool {
-    line == "[mcp_servers.powder]" || line.starts_with("[mcp_servers.powder.")
+    line.starts_with("[mcp_servers.powder]") || line.starts_with("[mcp_servers.powder.")
 }
 
 fn trim_excess_blank_lines(text: &str) -> String {
@@ -493,6 +496,32 @@ command = "old"
         assert_eq!(text.matches("[mcp_servers.powder]").count(), 1);
         assert!(!text.contains("[mcp_servers.powder.env]"));
         assert!(!text.contains("do-not-keep"));
+        assert!(text.contains(&codex_powder_block()));
+        toml::from_str::<toml::Value>(&text)?;
+        Ok(())
+    }
+
+    #[test]
+    fn codex_toml_preserves_table_after_powder_when_its_header_has_a_comment() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let config = temp.path().join(".codex/config.toml");
+        fs::create_dir_all(config.parent().unwrap())?;
+        fs::write(
+            &config,
+            r#"[mcp_servers.powder]
+command = "old"
+
+[mcp_servers.keepme] # trailing comment must still terminate the powder span
+command = "node"
+"#,
+        )?;
+
+        assert_eq!(upsert_codex_toml(&config)?, Status::Updated);
+        let text = fs::read_to_string(&config)?;
+
+        assert!(text.contains("[mcp_servers.keepme] # trailing comment"));
+        assert!(text.contains("command = \"node\""));
+        assert_eq!(text.matches("[mcp_servers.powder]").count(), 1);
         assert!(text.contains(&codex_powder_block()));
         toml::from_str::<toml::Value>(&text)?;
         Ok(())
