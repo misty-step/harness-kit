@@ -25,7 +25,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 HOME = os.path.expanduser("~")
 BRIDGE_KEY_PATH = os.path.join(HOME, ".factory-lanes", ".powder-bridge-key")
 BRIDGE_SCRIPT = os.path.join(HOME, ".factory-lanes", "scripts", "bridge.py")
-POWDER_BASE = "http://127.0.0.1:14030"
+POWDER_BASE = "https://bastion.tail5f5eb4.ts.net:10001"
 
 
 class Handler(SimpleHTTPRequestHandler):
