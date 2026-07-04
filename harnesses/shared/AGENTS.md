@@ -85,6 +85,15 @@ code must branch on the value. Reflexive structure around AI-adjacent seams is a
 recurring failure mode — the model needs the information, not the schema. Detail:
 `harnesses/shared/references/model-native-product-primitives.md`.
 
+### Ship the application floor
+Every Misty Step application carries a standing floor: public marketing site,
+documentation, CI/quality gates, infra agnosticism, deep modularity,
+near-total test coverage across unit/integration/e2e, Rust-or-strongest-types,
+and push-button onboarding that ends at verified-live (doctor proves it), not
+installed. Grooming treats a missing item as a backlog gap; shapes name a
+per-item waiver or include it. Detail:
+`harnesses/shared/references/application-floor.md`.
+
 ### Do not lower gates
 Never disable a test, loosen a lint rule, or weaken a threshold to get green.
 That is debt with compound interest. An agent that both writes the code and runs

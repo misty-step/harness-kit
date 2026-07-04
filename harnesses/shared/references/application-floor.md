@@ -1,0 +1,48 @@
+# The Application Floor
+
+Operator standing directive (2026-07-05). Every application Misty Step
+builds ships with all of these, under any circumstances. This is the floor,
+not the ceiling; grooming sessions treat a missing item as a backlog gap,
+and `/shape` packets for new products include the floor items in scope or
+name an explicit waiver per item.
+
+## The floor
+
+1. **Marketing site.** Branded, deployed publicly. Misty Step aesthetic via
+   the shared site kit, per-repo `DESIGN.md` brand identity, strong pitch,
+   real screenshots/GIF walkthroughs, user-facing release notes (Landmark),
+   footer link contract (GitHub repo when public, mistystep.io always,
+   Weave for weave-family products). Program epic: powder `misty-step-910`;
+   kit: `aesthetic-907`. Evidence bar per `/showcase`: no public claim
+   without a screenshot, command, or demo path behind it.
+2. **Documentation.** An operator can go zero-to-productive from the repo
+   alone: README with a real quickstart, an operator walkthrough for
+   anything with a UI or serve mode, honest help text.
+3. **CI and quality gates.** The repo gate runs in CI, gates the diff, and
+   is never weakened to get green (`quality-gates.md`).
+4. **Relative infrastructure agnosticism.** No load-bearing coupling to one
+   host. Fly/Sanctum/Pages are deploy targets, not architecture.
+5. **Deep modularity.** Ousterhout: interfaces far simpler than
+   implementations; no shallow pass-throughs or speculative abstraction.
+6. **Test coverage approaching 100%, spanning unit, integration, and
+   end-to-end.** Coverage earns its number through behavior-asserting
+   tests (`verification-system-first.md`), not implementation mirrors.
+7. **Rust — or the strongest static typing the platform boundary allows.**
+   Maximize compile-time correctness guarantees. Every non-Rust surface
+   names its constraint.
+8. **Frictionless onboarding.** Push-button wherever possible: one
+   click-to-copy command from zero to fully working — including daemons,
+   agents, and indicators actually *running*, not just installed. Where
+   self-hosting is the design (e.g. Canary), containerize it, document it,
+   and ship agent-ready setup prompts. A `doctor` command that fails loudly
+   when the deployment is dead is part of onboarding, not polish.
+
+## The case study that made this doctrine
+
+Counterspell, 2026-07-05: the tool existed, was installed, configured, and
+green — and still failed the operator, because `setup` installed only the
+annotation agent (the armed watcher had no daemon), the installed binary
+was two days stale, and the menu-bar indicator's host app was never
+installed. Three "done" claims, zero live protection. Floor items 8 and 2
+exist so "installed" can never again masquerade as "running": onboarding
+ends at verified-live, and doctor is the proof.
