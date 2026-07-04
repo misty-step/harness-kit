@@ -131,6 +131,9 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "check-harness-install-paths" => print_gate_report(
             lint_gates::check_harness_install_paths(&parse_repo_arg(rest))?,
         )?,
+        "check-claude-hook-commands" => print_gate_report(lint_gates::check_claude_hook_commands(
+            &parse_settings_arg(rest),
+        )?)?,
         "check-godfiles" => {
             let (repo, write) = parse_godfile_args(rest);
             if write {
@@ -349,6 +352,17 @@ fn parse_repo_arg(args: &[String]) -> PathBuf {
     match args {
         [] => PathBuf::from("."),
         [flag, path] if flag == "--repo" => PathBuf::from(path),
+        _ => usage(),
+    }
+}
+
+fn parse_settings_arg(args: &[String]) -> PathBuf {
+    match args {
+        [] => env::var_os("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(".claude/settings.json"),
+        [flag, path] if flag == "--settings" => PathBuf::from(path),
         _ => usage(),
     }
 }

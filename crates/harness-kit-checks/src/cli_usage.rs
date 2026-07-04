@@ -10,6 +10,7 @@ pub fn usage() -> ! {
   harness-kit-checks build-docs-site [--repo PATH] [--output PATH]
   harness-kit-checks check-docs-site [--repo PATH] [--site PATH] [--self-test]
   harness-kit-checks check-exclusions|check-conflict-markers|check-portable-paths|check-no-claims|check-vendored-copies|check-harness-install-paths [--repo PATH]
+  harness-kit-checks check-claude-hook-commands [--settings PATH]
   harness-kit-checks check-godfiles [--write-baseline]|check-source-markers|check-supply-chain|check-supply-chain-advisories|check-template [--repo PATH]
   harness-kit-checks lint-external-skills [--strict]
   harness-kit-checks sync-external [--repo PATH] [--check] [--allow-floating] [--only owner/repo]

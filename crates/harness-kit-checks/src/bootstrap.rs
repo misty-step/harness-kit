@@ -367,9 +367,10 @@ fn link_harness(
                 &[],
                 lines,
             )?;
-            copy_if_present(
+            copy_claude_settings(
                 &repo.join("harnesses/claude/settings.json"),
                 &harness_dir.join("settings.json"),
+                &crate::claude_settings::installed_cli_for_claude_dir(harness_dir),
                 "settings.json (copied)",
                 lines,
             )?;
@@ -576,14 +577,18 @@ fn link_if_present(src: &Path, dest: &Path, label: &str, lines: &mut Vec<String>
     Ok(())
 }
 
-fn copy_if_present(src: &Path, dest: &Path, label: &str, lines: &mut Vec<String>) -> Result<()> {
-    if src.exists() {
-        if let Some(parent) = dest.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::copy(src, dest)?;
-        lines.push(green(format!("    {label}")));
+fn copy_claude_settings(
+    src: &Path,
+    dest: &Path,
+    installed_cli: &Path,
+    label: &str,
+    lines: &mut Vec<String>,
+) -> Result<()> {
+    if !src.exists() {
+        return Ok(());
     }
+    crate::claude_settings::install_rendered_settings(src, dest, installed_cli)?;
+    lines.push(green(format!("    {label}")));
     Ok(())
 }
 
@@ -745,6 +750,49 @@ mod tests {
             "dangling symlink itself must be removed, not just unresolvable"
         );
         assert!(hooks_dir.path().join("live.py").exists());
+        Ok(())
+    }
+
+    #[test]
+    fn bootstrap_writes_claude_hooks_with_installed_cli_path() -> Result<()> {
+        let repo = tempfile::tempdir()?;
+        fs::create_dir_all(repo.path().join("skills/demo"))?;
+        fs::write(
+            repo.path().join("skills/demo/SKILL.md"),
+            "---\nname: demo\n---\n",
+        )?;
+        fs::create_dir_all(repo.path().join("harnesses/claude"))?;
+        fs::write(
+            repo.path().join("harnesses/claude/settings.json"),
+            include_str!("../../../harnesses/claude/settings.json"),
+        )?;
+        fs::create_dir_all(repo.path().join("target/debug"))?;
+        let build = repo.path().join("target/debug/harness-kit-checks");
+        fs::write(&build, b"fake executable")?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(&build, fs::Permissions::from_mode(0o755))?;
+        }
+
+        let home_root = tempfile::tempdir()?;
+        let home = home_root.path().join("home with spaces");
+        fs::create_dir_all(home.join(".claude"))?;
+
+        let output = run(&BootstrapOptions {
+            repo: repo.path().to_path_buf(),
+            home: home.clone(),
+            bundle: None,
+            dry_run: false,
+        })?;
+        assert!(output.contains("settings.json (copied)"));
+
+        let settings_path = home.join(".claude/settings.json");
+        let settings = fs::read_to_string(&settings_path)?;
+        let installed_cli = crate::claude_settings::installed_cli_path(&home);
+        assert!(!settings.contains("\"harness-kit-checks claude-hook"));
+        assert!(settings.contains(&installed_cli.to_string_lossy().to_string()));
+        assert!(crate::claude_settings::validate_settings_file(&settings_path)?.is_empty());
         Ok(())
     }
 }
