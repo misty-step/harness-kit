@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/misty-step/harness-kit/compare/v1.16.2...v1.17.0) (2026-07-04)
+
+
+### Features
+
+* **learnings:** add compounding corpus ([c6439b5](https://github.com/misty-step/harness-kit/commit/c6439b547cad3576413780951242a9ac9402a596))
+
 ## [1.16.2](https://github.com/misty-step/harness-kit/compare/v1.16.1...v1.16.2) (2026-07-04)
 
 
