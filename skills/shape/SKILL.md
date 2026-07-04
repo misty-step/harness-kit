@@ -27,6 +27,10 @@ an architecture choice needs the full treatment.
 - **Grounded in live repo evidence.** You read the load-bearing source files,
   tests, and ADRs yourself. Subagent summaries add coverage; they do not
   replace direct reads of what the builder must understand.
+- **Learnings checked before structuring.** Grep prior repo-technical lessons
+  before locking the shape:
+  `rg -n --glob '*.md' '^(title|tags|applies_when):|<product-term>|<failure-mode-term>' docs/solutions`.
+  Open likely matches and state applies / does-not-apply in the packet.
 - **Vision-aware when strategic.** For product direction, positioning,
   long-lived workflow, or project-identity choices, read root `VISION.md` when
   present. If the shape depends on a missing or stale north star, route to
