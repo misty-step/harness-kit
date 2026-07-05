@@ -254,10 +254,130 @@ def publish(base_url, slug, doc, mtime=None):
         return False
 
 
+INDEX_SLUG = "index"
+
+
+def load_registry(root):
+    path = os.path.join(root, "a", INDEX_SLUG, "index.json")
+    try:
+        with open(path) as f:
+            data = json.load(f)
+        return {e["slug"]: e for e in data.get("artifacts", [])}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def render_index_html(entries, base_url):
+    rows = []
+    for e in sorted(entries, key=lambda x: x.get("updated", ""), reverse=True):
+        rows.append(
+            f'<tr><td><a href="{html.escape(base_url)}/a/{html.escape(e["slug"])}/">'
+            f'{html.escape(e.get("title") or e["slug"])}</a></td>'
+            f'<td>{html.escape(e.get("tag", ""))}</td>'
+            f'<td>{html.escape(e.get("summary", ""))}</td>'
+            f'<td class="mono">{html.escape((e.get("updated") or "")[:16])}</td></tr>'
+        )
+    body = (
+        "<h2>Shelf index</h2>"
+        "<p>Every artifact published through the house pipeline, newest first. "
+        "Machine-readable twin: <a href=\"index.json\">index.json</a>.</p>"
+        "<table><thead><tr><th>Artifact</th><th>Tag</th><th>Summary</th>"
+        "<th>Updated (UTC)</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
+    )
+    return wrap("Shelf Index", "Registry", f"{len(entries)} artifacts on the shelf.", body)
+
+
+def update_index(root, base_url, entry, local_only):
+    """Upsert one registry entry, rewrite index.json + index.html, publish both.
+
+    The registry is itself an artifact (slug "index"): the shelf serves static
+    files only, so the index rides the exact same PUT contract as every page.
+    Best-effort — an index failure must never fail the artifact publish itself.
+    """
+    try:
+        reg = load_registry(root)
+        prev = reg.get(entry["slug"], {})
+        entry["created"] = prev.get("created") or entry["updated"]
+        reg[entry["slug"]] = {**prev, **entry}
+        entries = [e for s, e in reg.items() if s != INDEX_SLUG]
+        idx_dir = os.path.join(root, "a", INDEX_SLUG)
+        os.makedirs(idx_dir, exist_ok=True)
+        payload = {"generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+                   "count": len(entries), "artifacts": entries}
+        with open(os.path.join(idx_dir, "index.json"), "w") as f:
+            json.dump(payload, f, indent=1)
+        doc = render_index_html(entries, base_url.rstrip("/"))
+        with open(os.path.join(idx_dir, "index.html"), "w") as f:
+            f.write(doc)
+        if not local_only:
+            publish(base_url, INDEX_SLUG, doc)
+            publish_file(base_url, INDEX_SLUG, "index.json",
+                         json.dumps(payload, indent=1))
+        return len(entries)
+    except Exception as err:  # noqa: BLE001 — index is best-effort by contract
+        print(f"index update skipped ({err})", file=sys.stderr)
+        return None
+
+
+def publish_file(base_url, slug, name, content):
+    token = os.environ.get("ARTIFACTS_API_TOKEN", "")
+    if not token:
+        return False
+    target = f"{base_url.rstrip('/')}/a/{slug}/{name}"
+    req = urllib.request.Request(target, data=content.encode(), method="PUT",
+                                 headers={"Authorization": f"Bearer {token}",
+                                          "Content-Type": "application/json"})
+    try:
+        urllib.request.urlopen(req, timeout=15)
+        return True
+    except Exception as e:  # noqa: BLE001
+        print(f"index publish failed ({e}); local copy written", file=sys.stderr)
+        return False
+
+
+def reindex(root, base_url, local_only):
+    """Backfill the registry from the local mirror (title from each page)."""
+    reg = load_registry(root)
+    a_dir = os.path.join(root, "a")
+    for slug in sorted(os.listdir(a_dir)):
+        page = os.path.join(a_dir, slug, "index.html")
+        if slug == INDEX_SLUG or not os.path.isfile(page):
+            continue
+        if slug in reg:
+            continue
+        try:
+            head = open(page, errors="ignore").read(4000)
+        except OSError:
+            continue
+        m = re.search(r"<title>(.*?)</title>", head, re.S)
+        mtime = datetime.datetime.fromtimestamp(os.path.getmtime(page), datetime.timezone.utc)
+        reg[slug] = {"slug": slug,
+                     "title": (m.group(1).strip() if m else slug),
+                     "tag": "", "summary": "",
+                     "created": mtime.isoformat(timespec="seconds"),
+                     "updated": mtime.isoformat(timespec="seconds")}
+    entries = [e for s, e in reg.items() if s != INDEX_SLUG]
+    idx_dir = os.path.join(root, "a", INDEX_SLUG)
+    os.makedirs(idx_dir, exist_ok=True)
+    payload = {"generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+               "count": len(entries), "artifacts": entries}
+    with open(os.path.join(idx_dir, "index.json"), "w") as f:
+        json.dump(payload, f, indent=1)
+    doc = render_index_html(entries, base_url.rstrip("/"))
+    with open(os.path.join(idx_dir, "index.html"), "w") as f:
+        f.write(doc)
+    if not local_only:
+        publish(base_url, INDEX_SLUG, doc)
+        publish_file(base_url, INDEX_SLUG, "index.json", json.dumps(payload, indent=1))
+    return len(entries)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--title", required=True)
-    ap.add_argument("--slug", required=True)
+    ap.add_argument("--reindex", action="store_true",
+                    help="backfill the shelf registry from the local mirror and exit")
+    ap.add_argument("--title")
+    ap.add_argument("--slug")
     ap.add_argument("--summary", default="")
     ap.add_argument("--tag", default="Artifact")
     ap.add_argument("--html-file")
@@ -267,6 +387,14 @@ def main():
     ap.add_argument("--local-only", action="store_true",
                     help="skip the remote PUT; write only the local mirror")
     a = ap.parse_args()
+
+    if a.reindex:
+        n = reindex(a.root, a.base_url, a.local_only)
+        print(json.dumps({"reindexed": n,
+                          "url": f"{a.base_url.rstrip('/')}/a/{INDEX_SLUG}/"}, indent=2))
+        return
+    if not a.title or not a.slug:
+        ap.error("--title and --slug are required (unless --reindex)")
 
     slug = re.sub(r"[^a-zA-Z0-9-]+", "-", a.slug).strip("-").lower()
     if a.html_file:
@@ -286,8 +414,13 @@ def main():
         f.write(doc)
     url = f"{a.base_url.rstrip('/')}/a/{slug}/"
     published = False if a.local_only else publish(a.base_url, slug, doc, os.path.getmtime(dest))
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    indexed = update_index(a.root, a.base_url,
+                           {"slug": slug, "title": a.title, "tag": a.tag,
+                            "summary": a.summary, "updated": now_iso},
+                           a.local_only)
     print(json.dumps({"slug": slug, "path": dest, "url": url, "bytes": len(doc),
-                      "published": published}, indent=2))
+                      "published": published, "indexed": indexed}, indent=2))
 
 
 if __name__ == "__main__":
