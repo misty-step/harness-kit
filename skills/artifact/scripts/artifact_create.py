@@ -313,8 +313,8 @@ def render_index_html(entries, base_url):
         "<h2>Shelf index</h2>"
         "<p>Every artifact published through the house pipeline, newest first. "
         "Machine-readable twin: <a href=\"index.json\">index.json</a>.</p>"
-        "<table><thead><tr><th>Artifact</th><th>Tag</th><th>Summary</th>"
-        "<th>Updated (UTC)</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>"
+        "<div class='scroll'><table><thead><tr><th>Artifact</th><th>Tag</th><th>Summary</th>"
+        "<th>Updated (UTC)</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></div>"
     )
     return wrap("Shelf Index", "Registry", f"{len(entries)} artifacts on the shelf.", body)
 
