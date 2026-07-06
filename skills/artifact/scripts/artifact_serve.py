@@ -55,7 +55,54 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/api/bridge-refresh":
             return self._bridge_refresh()
+        if self.path.startswith("/api/bridge-retro"):
+            return self._bridge_retro()
         return super().do_GET()
+
+    def _bridge_retro(self):
+        """Operator run-handle for time-based activity reports (operator ask
+        2026-07-06: 'no idea how to see or run time based activity reports').
+        Kicks weave-fleet-retro DETACHED (runs ~1-2 min: repo sweep + powder
+        + render + shelf publish + feed post) and returns immediately with
+        where the result lands. Windows: daily | weekly | custom (since/until
+        RFC3339 or YYYY-MM-DD). The finished report self-announces via the
+        tool's own feed post, so the deck's feed shows it when ready."""
+        from urllib.parse import urlparse, parse_qs
+        q = parse_qs(urlparse(self.path).query)
+        window = (q.get("window", ["daily"])[0] or "daily").strip()
+        if window not in ("daily", "weekly", "custom"):
+            return self._json(400, {"error": "window must be daily|weekly|custom"})
+        cmd = ["/Users/phaedrus/.cargo/bin/cargo", "run", "-q",
+               "-p", "weave-fleet-retro", "--", "--window", window]
+        if window == "custom":
+            since = (q.get("since", [""])[0] or "").strip()
+            if not since:
+                return self._json(400, {"error": "custom window requires since="})
+            if len(since) == 10:
+                since += "T00:00:00Z"
+            cmd += ["--since", since]
+            until = (q.get("until", [""])[0] or "").strip()
+            if until:
+                if len(until) == 10:
+                    until += "T23:59:59Z"
+                cmd += ["--until", until]
+        try:
+            subprocess.Popen(
+                cmd, cwd=os.path.expanduser("~/Development/weave"),
+                stdout=open("/tmp/bridge-retro.log", "ab"),
+                stderr=subprocess.STDOUT,
+                start_new_session=True)
+        except OSError as err:
+            return self._json(500, {"error": str(err)})
+        base = "https://bastion.tail5f5eb4.ts.net/artifacts/a/fleet-retro"
+        url = {"daily": f"{base}/daily/index.html",
+               "weekly": f"{base}/weekly/index.html"}.get(window)
+        return self._json(202, {
+            "status": "generating",
+            "eta": "~2 min",
+            "url": url,
+            "note": "the finished report also announces itself on the feed",
+        })
 
     def _bridge_answer(self):
         length = int(self.headers.get("Content-Length", 0) or 0)
