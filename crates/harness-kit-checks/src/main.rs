@@ -7,7 +7,7 @@ use harness_kit_checks::{
     backlog, bootstrap, ci_check, config_loader, docs_site, error_report, external_skill_lint,
     external_sync, factory_mcp_materializer, frontmatter, generate_index, git_hooks, lint_gates,
     pr_reviews, premise_source, quality_gates, scout_skills, skill_invocation_analytics,
-    template_check,
+    template_check, transcript_scrub,
 };
 use harness_kit_hooks::claude_hooks;
 use harness_kit_roster::{agent_roster, source_refs, summarize_delegations};
@@ -112,6 +112,8 @@ fn run(args: Vec<String>) -> anyhow::Result<()> {
         "scout-skills" => run_scout_skills(rest),
         "backlog" => run_backlog(rest),
         "claude-hook" => run_claude_hook(rest),
+        "redact-stream" => run_redact_stream()?,
+        "scan-transcripts" => run_scan_transcripts(rest)?,
         "git-hook" => run_git_hook(rest),
         "check-exclusions" => {
             print_gate_report(lint_gates::check_exclusions(&parse_repo_arg(rest))?)?
@@ -204,6 +206,9 @@ fn run_claude_hook(args: &[String]) {
         }
         "secrets-read-guard" => {
             claude_hooks::run_secrets_read_guard_from_stdin().unwrap_or_else(exit_error);
+        }
+        "secrets-redaction-rewrite" => {
+            claude_hooks::run_secrets_redaction_command_rewrite_from_stdin().unwrap_or_else(exit_error);
         }
         "github-cli-guard" => {
             claude_hooks::run_github_cli_guard_from_stdin().unwrap_or_else(exit_error);
@@ -415,6 +420,60 @@ fn parse_godfile_args(args: &[String]) -> (PathBuf, bool) {
         index += 1;
     }
     (repo, write)
+}
+
+/// harness-kit-915: reads stdin, writes shape-redacted + gitleaks-scanned
+/// output to stdout. Piped into via process substitution by
+/// `secrets_redaction_command_rewrite`'s PreToolUse rewrite, so a Bash
+/// command's own stdout/stderr are redacted before Claude Code ever
+/// captures them as the tool result -- not after, which a PostToolUse hook
+/// cannot achieve for the transcript/telemetry (see secret_redaction module
+/// docs for the live-verified reason).
+fn run_redact_stream() -> anyhow::Result<()> {
+    let mut input = String::new();
+    std::io::stdin().read_to_string(&mut input)?;
+    let shape_redacted = harness_kit_hooks::secret_redaction::redact(&input, &[]);
+    let fully_redacted = harness_kit_hooks::secret_redaction::redact_with_gitleaks(&shape_redacted);
+    print!("{fully_redacted}");
+    Ok(())
+}
+
+/// harness-kit-915, net 2: one-time read-only scan of the two QMD-indexed
+/// transcript collections named in the card, reporting a count of any
+/// secret-shaped lines already at rest -- not rewriting anything. Defaults
+/// to the two real collections; accepts `--collection NAME=PATH` to scan
+/// an arbitrary root (used for a dry run against a scratch copy before
+/// pointing at the live directories).
+fn run_scan_transcripts(args: &[String]) -> anyhow::Result<()> {
+    let mut collections: Vec<(String, PathBuf)> = Vec::new();
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--collection" => {
+                index += 1;
+                let spec = args.get(index).cloned().unwrap_or_else(|| usage());
+                let (name, path) = spec.split_once('=').unwrap_or_else(|| usage());
+                collections.push((name.to_string(), PathBuf::from(path)));
+            }
+            _ => usage(),
+        }
+        index += 1;
+    }
+    if collections.is_empty() {
+        let home = env::var_os("HOME").map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
+        collections = vec![
+            ("claude-code-transcripts".to_string(), home.join(".claude/projects")),
+            ("codex-sessions".to_string(), home.join(".codex/sessions")),
+        ];
+    }
+    let mut total_findings = 0usize;
+    for (name, root) in collections {
+        let report = transcript_scrub::scan_collection(&name, &root)?;
+        total_findings += report.total_findings;
+        println!("{}", serde_json::to_string_pretty(&report)?);
+    }
+    println!("TOTAL_FINDINGS={total_findings}");
+    Ok(())
 }
 
 fn run_check_docs_site(args: &[String]) {

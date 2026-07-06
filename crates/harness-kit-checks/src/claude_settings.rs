@@ -12,6 +12,7 @@ const EXPECTED_GENERATED_HOOKS: &[&str] = &[
     "destructive-command-guard",
     "secrets-read-guard",
     "github-cli-guard",
+    "secrets-redaction-rewrite",
     "time-context",
     "skill-invocation-tracker",
 ];

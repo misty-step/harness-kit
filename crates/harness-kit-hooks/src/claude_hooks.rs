@@ -291,6 +291,17 @@ pub fn run_secrets_read_guard_from_stdin() -> Result<()> {
     Ok(())
 }
 
+pub fn run_secrets_redaction_command_rewrite_from_stdin() -> Result<()> {
+    let mut input = String::new();
+    std::io::stdin()
+        .read_to_string(&mut input)
+        .context("failed to read stdin")?;
+    if let Some(output) = secrets_redaction_command_rewrite(&input) {
+        println!("{}", serde_json::to_string(&output)?);
+    }
+    Ok(())
+}
+
 pub fn run_github_cli_guard_from_stdin() -> Result<()> {
     let mut input = String::new();
     std::io::stdin()
@@ -929,6 +940,87 @@ pub fn fix_what_you_touch(input: &str) -> Option<Value> {
     Some(json!({
         "decision": "block",
         "reason": reason,
+    }))
+}
+
+/// PreToolUse rewrite (harness-kit-915): wraps every Bash command so its own
+/// stdout/stderr are captured to temp files, run through
+/// `harness-kit-checks redact-stream`, and printed *before* Claude Code ever
+/// captures the result as the tool response. Deliberately at PreToolUse, not
+/// PostToolUse -- confirmed against the live Claude Code hooks docs that
+/// PostToolUse's `updatedToolOutput` only changes what the model sees in
+/// future context; the raw tool result (secret included) is already written
+/// to the transcript JSONL and OTel telemetry by the time PostToolUse fires.
+/// Rewriting the command itself, before Claude Code captures its result, is
+/// the only way to keep a secret out of the transcript at rest.
+///
+/// Uses temp files, not `> >(process substitution)` -- live-verified the
+/// process-substitution version is racy: `wait` (with or without explicit
+/// PIDs, with or without an intervening `sleep`) does not reliably
+/// synchronize with a `>(...)` reader before the parent command's own exit
+/// path returns, so the redacted output was silently lost on every attempt
+/// tried during this card's build. Temp files make the redaction step a
+/// plain synchronous read with no backgrounded reader to race against.
+///
+/// Uses a real subshell `( ... )`, not a brace group `{ ... }` -- live-
+/// verified the hard way: a brace group lets an `exit N` inside the wrapped
+/// command terminate the *entire* rewritten script before the exit code is
+/// captured and propagated, silently breaking exit-code semantics for any
+/// wrapped command that calls `exit`. A subshell isolates that correctly.
+///
+/// Skips commands that already reference `redact-stream` (idempotent
+/// against double-wrapping) and skips empty commands.
+///
+/// Correctness note verified against the live Claude Code hooks docs: hooks
+/// matching the same event/matcher run in PARALLEL against the same
+/// original input, not chained -- so array ordering does not decide which
+/// hook "sees" a prior rewrite. That also means, if `destructive_command_
+/// guard`/`secrets_read_guard` deny a command in one hook while this hook
+/// concurrently returns a `modifiedToolInput` rewrite for the SAME command,
+/// the merge behavior for two hooks in one matcher both emitting a decision
+/// is genuinely undocumented (checked; not stated either way). Rather than
+/// ship on that untested assumption, this function self-suppresses: it
+/// calls the other Bash guards first and returns `None` (no-op) whenever
+/// any of them would have denied/asked, so exactly one hook ever produces a
+/// decision for a given command -- no concurrent-writer conflict is
+/// possible regardless of how Claude Code actually resolves that case.
+pub fn secrets_redaction_command_rewrite(input: &str) -> Option<Value> {
+    let data: Value = serde_json::from_str(input).ok()?;
+    if data.get("tool_name").and_then(Value::as_str) != Some("Bash") {
+        return None;
+    }
+    let tool_input = data.get("tool_input").and_then(Value::as_object)?;
+    let command = tool_input.get("command").and_then(Value::as_str)?;
+    if command.is_empty() || command.contains("redact-stream") {
+        return None;
+    }
+    let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    if destructive_command_guard(input, &cwd).is_some()
+        || secrets_read_guard(input, &home_dir()).is_some()
+        || github_cli_guard(input).is_some()
+    {
+        return None;
+    }
+    let escaped = command.replace('\'', r"'\''");
+    let rewritten = format!(
+        "__hk_out=$(mktemp); __hk_err=$(mktemp); \
+         ( eval '{escaped}' ) > \"$__hk_out\" 2> \"$__hk_err\"; __hk_rc=$?; \
+         harness-kit-checks redact-stream < \"$__hk_out\"; \
+         harness-kit-checks redact-stream < \"$__hk_err\" >&2; \
+         /usr/bin/trash \"$__hk_out\" \"$__hk_err\" 2>/dev/null; \
+         exit $__hk_rc"
+    );
+    Some(json!({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "modifiedToolInput": {
+                "command": rewritten,
+                "description": tool_input
+                    .get("description")
+                    .and_then(Value::as_str)
+                    .unwrap_or("Bash command (output redacted for secret shapes)"),
+            }
+        }
     }))
 }
 
@@ -2179,6 +2271,81 @@ mod tests {
         let output = secrets_guard_command(temp.path(), "grep POWDER_API_KEY ~/.secrets --")
             .expect("must block the exact command shape that caused a live leak");
         assert_eq!(output["hookSpecificOutput"]["permissionDecision"], "deny");
+    }
+
+    #[test]
+    fn redaction_rewrite_wraps_bash_and_references_redact_stream() {
+        let output = secrets_redaction_command_rewrite(
+            r#"{"tool_name":"Bash","tool_input":{"command":"echo hello"}}"#,
+        )
+        .unwrap();
+        let rewritten = output["hookSpecificOutput"]["modifiedToolInput"]["command"]
+            .as_str()
+            .unwrap();
+        assert!(rewritten.contains("redact-stream"));
+        assert!(rewritten.contains("echo hello"));
+        // Uses a real subshell, not a brace group -- live-verified a brace
+        // group lets a wrapped `exit N` terminate the whole rewritten
+        // script before the exit code is captured.
+        assert!(rewritten.contains("( eval"));
+        assert!(!rewritten.contains("{ eval"));
+    }
+
+    #[test]
+    fn redaction_rewrite_is_idempotent_and_ignores_non_bash_and_empty_commands() {
+        assert!(
+            secrets_redaction_command_rewrite(
+                r#"{"tool_name":"Bash","tool_input":{"command":""}}"#
+            )
+            .is_none()
+        );
+        assert!(
+            secrets_redaction_command_rewrite(
+                r#"{"tool_name":"Read","tool_input":{"file_path":"x"}}"#
+            )
+            .is_none()
+        );
+        // Already-wrapped commands (containing redact-stream) are not
+        // double-wrapped.
+        assert!(
+            secrets_redaction_command_rewrite(
+                r#"{"tool_name":"Bash","tool_input":{"command":"echo x | harness-kit-checks redact-stream"}}"#
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn redaction_rewrite_self_suppresses_when_another_bash_guard_would_deny() {
+        // Whether Claude Code lets two hooks in the same matcher both emit a
+        // decision for one command is genuinely undocumented (checked the
+        // live docs). Rather than assume, this hook self-suppresses so it
+        // never competes with destructive_command_guard / secrets_read_guard
+        // / github_cli_guard for the same command.
+        for command in [
+            "rm README.md",                    // destructive_command_guard
+            "cat ~/.secrets",                   // secrets_read_guard
+        ] {
+            let input = format!(r#"{{"tool_name":"Bash","tool_input":{{"command":"{command}"}}}}"#);
+            assert!(
+                secrets_redaction_command_rewrite(&input).is_none(),
+                "expected self-suppression for: {command}"
+            );
+        }
+    }
+
+    #[test]
+    fn redaction_rewrite_preserves_single_quotes_in_the_original_command() {
+        let output = secrets_redaction_command_rewrite(
+            r#"{"tool_name":"Bash","tool_input":{"command":"echo 'hello world' && echo done"}}"#,
+        )
+        .unwrap();
+        let rewritten = output["hookSpecificOutput"]["modifiedToolInput"]["command"]
+            .as_str()
+            .unwrap();
+        // The escaped form must round-trip through a real shell without
+        // corrupting the original command's quoting.
+        assert!(rewritten.contains(r"'\''hello world'\''"));
     }
 
     #[test]
