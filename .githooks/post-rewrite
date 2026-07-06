@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+# Roster stand-down (roster-926 cutover): once roster owns this machine's
+# harness config, hook-triggered re-links must not fight roster sync.
+if [ -f "$HOME/.roster/orchestrator/manifest.json" ] && [ "${ROSTER_ROLLBACK:-0}" != "1" ]; then
+  exit 0
+fi
 if command -v harness-kit-checks >/dev/null 2>&1; then
   exec harness-kit-checks git-hook post-rewrite "$@"
 fi
