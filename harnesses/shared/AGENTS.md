@@ -59,6 +59,19 @@ paired against a baseline. Detail: `harnesses/shared/references/verification-sys
 ### Delete before adding
 Small surface area. The best change removes code; new surface must earn itself.
 
+### Collapse toward declaration (the hundred-line koan)
+The master's program is a hundred lines because of what he refused to build —
+and today those hundred lines might be English. Every component's stable
+end-state is four layers: a tiny deterministic spine (policy, persistence,
+gates), declarations (identities, specs, schemas), model judgment at the
+semantic seams, and shared renderers. Imperative lines are the residue of
+judgment not yet moved to a declaration or a model. Prompts and skills are
+programs — prose mass is code mass. Spines carry mechanism budgets (LOC
+tripwires raised only with a named justification); workloads and judgment
+live outside them. When identities and tickets exist, briefs shrink: the
+master's dispatch is three lines. Detail:
+`harnesses/shared/references/collapse-toward-declaration.md`.
+
 ### Test behavior, not implementation
 Assert observable outputs through public interfaces. Tests that assert call
 counts or internal state break on refactor and prove nothing.
