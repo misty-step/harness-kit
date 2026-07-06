@@ -8,7 +8,15 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
 const POWDER_MCP_SOURCE: &str = "/Users/phaedrus/Development/powder/crates/powder-mcp";
-const POWDER_MCP_SCRIPT: &str = "source ~/.secrets && exec powder-mcp";
+// harness-kit-914: `op run --env-file` resolves any `op://...` reference in
+// ~/.secrets to its real value and passes any plain (non-reference) line
+// through unchanged, so this works whether ~/.secrets holds raw values or
+// op:// references, before or after the conversion completes. It also needs
+// OP_SERVICE_ACCOUNT_TOKEN to authenticate, which a sanitized MCP-bootstrap
+// context (no inherited env beyond HOME/USER/PATH) does not carry -- so the
+// keychain bootstrap line runs first, live-verified under `env -i HOME=...
+// USER=... PATH=...` with no pre-set token.
+const POWDER_MCP_SCRIPT: &str = "export OP_SERVICE_ACCOUNT_TOKEN=\"${OP_SERVICE_ACCOUNT_TOKEN:-$(security find-generic-password -a \"$USER\" -s op-agent -w 2>/dev/null)}\"; op run --env-file ~/.secrets -- powder-mcp";
 const POWDER_STAMP: &str = ".harness-kit/powder-mcp-install.sha256";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -438,6 +446,27 @@ fn harness_command(harness: &str) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn powder_mcp_script_uses_op_run_with_keychain_bootstrap_and_toml_round_trips() {
+        // harness-kit-914: consumers must resolve ~/.secrets through
+        // `op run --env-file`, not a bare `source`, so an op:// reference in
+        // the file resolves to its real value rather than the literal
+        // reference string. The keychain bootstrap line must run first,
+        // since op run itself needs OP_SERVICE_ACCOUNT_TOKEN and a sanitized
+        // MCP-bootstrap context does not carry it.
+        assert!(POWDER_MCP_SCRIPT.contains("op run --env-file ~/.secrets -- powder-mcp"));
+        assert!(POWDER_MCP_SCRIPT.contains("OP_SERVICE_ACCOUNT_TOKEN"));
+        assert!(POWDER_MCP_SCRIPT.contains("security find-generic-password"));
+        assert!(!POWDER_MCP_SCRIPT.contains("source ~/.secrets"));
+
+        // The embedded double quotes must survive a TOML round-trip
+        // unmangled (codex_powder_block embeds this string as a TOML value).
+        let block = codex_powder_block();
+        let parsed: toml::Value = toml::from_str(&block).expect("codex_powder_block must be valid TOML");
+        let args = parsed["mcp_servers"]["powder"]["args"].as_array().unwrap();
+        assert_eq!(args[1].as_str().unwrap(), POWDER_MCP_SCRIPT);
+    }
 
     #[test]
     fn claude_json_converges_powder_without_touching_other_servers() -> Result<()> {

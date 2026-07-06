@@ -218,16 +218,30 @@ def ensure_copy_button(doc: str) -> str:
     return doc
 
 
+def _resolve_op_ref(value):
+    """Resolve an `op://vault/item/field` reference via `op read`; return the
+    value unchanged if it isn't a reference. Lets callers work whether
+    ~/.secrets holds a raw value or an op:// reference (harness-kit-914)."""
+    if not value.startswith("op://"):
+        return value
+    try:
+        import subprocess
+        result = subprocess.run(["op", "read", value], capture_output=True, text=True, timeout=10)
+        return result.stdout.strip() if result.returncode == 0 else ""
+    except (OSError, ImportError):
+        return ""
+
+
 def _artifacts_token():
     tok = os.environ.get("ARTIFACTS_API_TOKEN", "")
     if tok:
-        return tok
+        return _resolve_op_ref(tok)
     try:
         with open(os.path.expanduser("~/.secrets")) as f:
             for line in f:
                 line = line.strip()
                 if line.startswith("export ARTIFACTS_API_TOKEN="):
-                    return line.split("=", 1)[1].strip().strip('"')
+                    return _resolve_op_ref(line.split("=", 1)[1].strip().strip('"'))
     except OSError:
         pass
     return ""
