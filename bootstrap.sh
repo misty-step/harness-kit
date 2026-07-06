@@ -10,6 +10,17 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# STAND-DOWN GUARD (roster-926 cutover, 2026-07-07): once roster owns this
+# machine's harness config, harness-kit bootstrap must not re-link catalogs
+# back to harness-kit — the two sync systems fight and sessions get a mixed
+# catalog. Roster ownership is detected by its sync manifest. Override only
+# for an explicit rollback: ROSTER_ROLLBACK=1 ./bootstrap.sh
+if [ -f "$HOME/.roster/orchestrator/manifest.json" ] && [ "${ROSTER_ROLLBACK:-0}" != "1" ]; then
+  printf '%s\n' "harness-kit bootstrap: standing down — this machine is roster-managed." \
+    "Use 'roster sync' (misty-step/roster). To force harness-kit anyway: ROSTER_ROLLBACK=1 ./bootstrap.sh" >&2
+  exit 0
+fi
+
 require_cargo() {
   if ! command -v cargo >/dev/null 2>&1; then
     printf '%s\n' "cargo is required for the Rust Harness Kit bootstrap." >&2
