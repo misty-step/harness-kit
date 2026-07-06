@@ -199,14 +199,21 @@ function tog(id){{fetch(API+'/toggle',{{method:'POST',headers:{{'Content-Type':'
         # -> op read); launchd context has no secrets env, and ~/.secrets does
         # not carry OPENROUTER_API_KEY. Nothing is persisted; fleet-retro still
         # fails open to tables+banner if resolution fails.
+        #
+        # harness-kit-914: `op run --env-file ~/.secrets --` replaces the bare
+        # `source ~/.secrets`, resolving its op:// references to real values
+        # for this subprocess's env (not just injecting the literal reference
+        # string) -- keeps weave's own env-first resolution path always
+        # populated so its ~/.secrets-file-parse fallback never has to fire
+        # (that fallback's own op:// awareness is weave-925, separate card).
         retro_args = ["--window", window]
         cmd = ["/bin/zsh", "-c",
                'export OP_SERVICE_ACCOUNT_TOKEN="${OP_SERVICE_ACCOUNT_TOKEN:-$('
                'security find-generic-password -a "$USER" -s op-agent -w 2>/dev/null)}"; '
                'export OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-$('
                'op read "op://Agents/OPENROUTER_API_KEY/credential" 2>/dev/null)}"; '
-               'source ~/.secrets 2>/dev/null; '
-               'exec /Users/phaedrus/.cargo/bin/cargo run -q -p weave-fleet-retro -- "$@"',
+               'exec op run --env-file ~/.secrets -- '
+               '/Users/phaedrus/.cargo/bin/cargo run -q -p weave-fleet-retro -- "$@"',
                "retro"] + retro_args
         if window == "custom":
             since = (q.get("since", [""])[0] or "").strip()
