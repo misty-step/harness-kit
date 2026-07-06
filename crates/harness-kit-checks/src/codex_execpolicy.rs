@@ -63,7 +63,8 @@ use std::path::Path;
 
 use anyhow::{Context, Result};
 
-const BEGIN_MARKER: &str = "# BEGIN harness-kit-913 secrets-read-guard (generated, do not hand-edit this block)";
+const BEGIN_MARKER: &str =
+    "# BEGIN harness-kit-913 secrets-read-guard (generated, do not hand-edit this block)";
 const END_MARKER: &str = "# END harness-kit-913 secrets-read-guard";
 
 /// Designated secret files, relative to `$HOME` — kept in lockstep with
@@ -75,7 +76,9 @@ const SECRET_FILE_HOME_SUFFIXES: &[&str] = &[".secrets"];
 /// the verb (`verb FILE`), so a `[verb, path]` prefix rule can match real
 /// usage. Deliberately excludes `grep`/`egrep`/`fgrep`/`awk` — see module
 /// docs, limitation 1.
-const SECRET_READ_VERBS: &[&str] = &["cat", "head", "tail", "less", "more", "strings", "od", "hexdump", "xxd"];
+const SECRET_READ_VERBS: &[&str] = &[
+    "cat", "head", "tail", "less", "more", "strings", "od", "hexdump", "xxd",
+];
 
 /// Verbs whose canonical shape puts a pattern/program *before* the file
 /// (`grep PATTERN FILE`), covered instead via `SECRET_KEY_NAMES` exact-match
@@ -106,7 +109,9 @@ pub fn ensure(path: &Path) -> Result<Status> {
     let text = match fs::read_to_string(path) {
         Ok(text) => text,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
-        Err(error) => return Err(error).with_context(|| format!("failed to read {}", path.display())),
+        Err(error) => {
+            return Err(error).with_context(|| format!("failed to read {}", path.display()));
+        }
     };
     let desired = desired_block();
     if is_converged(&text, &desired) {
@@ -121,10 +126,26 @@ pub fn ensure(path: &Path) -> Result<Status> {
     }
     next.push_str(&desired);
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).with_context(|| format!("failed to create {}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .with_context(|| format!("failed to create {}", parent.display()))?;
     }
     fs::write(path, next).with_context(|| format!("failed to write {}", path.display()))?;
     Ok(Status::Updated)
+}
+
+/// Bootstrap call-site helper (harness-kit-913): converges `path` and
+/// returns the bootstrap-report line for it, ready to push straight into
+/// the harness's status lines. Keeps the `Status` match colocated with the
+/// module that defines it rather than duplicated at every caller.
+pub fn ensure_and_report(path: &Path) -> Result<String> {
+    Ok(match ensure(path)? {
+        Status::Updated => {
+            crate::bootstrap::green("  rules/default.rules: secrets-read-guard block updated")
+        }
+        Status::Unchanged => {
+            crate::bootstrap::green("  rules/default.rules: secrets-read-guard block unchanged")
+        }
+    })
 }
 
 fn is_converged(text: &str, desired: &str) -> bool {
@@ -250,10 +271,14 @@ mod tests {
         let text = fs::read_to_string(&path).unwrap();
         assert!(text.contains(BEGIN_MARKER));
         assert!(text.contains(END_MARKER));
-        assert!(text.contains(r#"prefix_rule(pattern=["cat", "~/.secrets"], decision="forbidden")"#));
-        assert!(text.contains(
-            r#"prefix_rule(pattern=["head", "$HOME/.secrets"], decision="forbidden")"#
-        ));
+        assert!(
+            text.contains(r#"prefix_rule(pattern=["cat", "~/.secrets"], decision="forbidden")"#)
+        );
+        assert!(
+            text.contains(
+                r#"prefix_rule(pattern=["head", "$HOME/.secrets"], decision="forbidden")"#
+            )
+        );
         // A bare [verb, path] rule for grep/awk would be dead code (their
         // real shape puts a pattern/program before the file) -- confirm
         // that specific shape is absent even though grep/awk rules exist
@@ -341,7 +366,9 @@ mod tests {
         assert_eq!(ensure(&path).unwrap(), Status::Updated);
         let text = fs::read_to_string(&path).unwrap();
         assert!(!text.contains("old-stale-path"));
-        assert!(text.contains(r#"prefix_rule(pattern=["cat", "~/.secrets"], decision="forbidden")"#));
+        assert!(
+            text.contains(r#"prefix_rule(pattern=["cat", "~/.secrets"], decision="forbidden")"#)
+        );
         assert!(text.contains(r#"prefix_rule(pattern=["rg"], decision="allow")"#));
         assert!(text.contains(r#"prefix_rule(pattern=["gh"], decision="allow")"#));
         assert_eq!(text.matches(BEGIN_MARKER).count(), 1);

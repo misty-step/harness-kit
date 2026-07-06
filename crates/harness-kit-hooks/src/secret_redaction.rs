@@ -39,7 +39,19 @@ use std::collections::HashSet;
 /// private-key headers. JWTs are handled separately (three dot-separated
 /// base64url segments), not as a fixed prefix.
 const SECRET_PREFIXES: &[&str] = &[
-    "sk-", "ghp_", "gho_", "ghs_", "ghu_", "ghr_", "github_pat_", "AKIA", "ASIA", "xoxb-", "xoxp-", "xoxa-", "xoxr-",
+    "sk-",
+    "ghp_",
+    "gho_",
+    "ghs_",
+    "ghu_",
+    "ghr_",
+    "github_pat_",
+    "AKIA",
+    "ASIA",
+    "xoxb-",
+    "xoxp-",
+    "xoxa-",
+    "xoxr-",
 ];
 
 const PEM_HEADERS: &[&str] = &[
@@ -102,7 +114,8 @@ fn redact_tokens(text: &str) -> String {
     // alphanumeric in between) count.
     let mut dollar_ref = false;
     for ch in text.chars() {
-        if ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '+' | '/' | '=' | '.' | '~' | ':') {
+        if ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '+' | '/' | '=' | '.' | '~' | ':')
+        {
             token.push(ch);
             continue;
         }
@@ -164,7 +177,9 @@ fn find_secret_prefix_start(token: &str) -> Option<usize> {
         .filter_map(|prefix| {
             let idx = token.find(prefix)?;
             let after_prefix = &token[idx + prefix.len()..];
-            let material_len = after_prefix.find(['/', ':', '@', '=']).unwrap_or(after_prefix.len());
+            let material_len = after_prefix
+                .find(['/', ':', '@', '='])
+                .unwrap_or(after_prefix.len());
             (material_len >= 8).then_some(idx)
         })
         .min()
@@ -181,7 +196,8 @@ fn looks_like_jwt(token: &str) -> bool {
     let b64url = |s: &str| {
         !s.is_empty()
             && s.len() >= 8
-            && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+            && s.chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
     };
     b64url(parts[0]) && b64url(parts[1]) && !parts[2].is_empty()
 }
@@ -192,7 +208,10 @@ fn looks_like_fal_key(token: &str) -> bool {
         return false;
     };
     let hexish = |s: &str| !s.is_empty() && s.chars().all(|c| c.is_ascii_hexdigit() || c == '-');
-    id.len() >= 8 && hexish(id) && secret.len() >= 16 && secret.chars().all(|c| c.is_ascii_hexdigit())
+    id.len() >= 8
+        && hexish(id)
+        && secret.len() >= 16
+        && secret.chars().all(|c| c.is_ascii_hexdigit())
 }
 
 /// Runs `gitleaks stdin` (if the binary is on PATH) as a second, independent
@@ -206,7 +225,17 @@ pub fn redact_with_gitleaks(text: &str) -> String {
     use std::process::{Command, Stdio};
 
     let Ok(mut child) = Command::new("gitleaks")
-        .args(["stdin", "--report-format", "json", "--report-path", "-", "--exit-code", "0", "--log-level", "fatal"])
+        .args([
+            "stdin",
+            "--report-format",
+            "json",
+            "--report-path",
+            "-",
+            "--exit-code",
+            "0",
+            "--log-level",
+            "fatal",
+        ])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -261,7 +290,10 @@ mod tests {
 
     #[test]
     fn redacts_real_bearer_token_but_spares_shell_variable_reference() {
-        let real = redact("curl -H \"Authorization: Bearer ghp_REALTOKEN1234567890\"", &[]);
+        let real = redact(
+            "curl -H \"Authorization: Bearer ghp_REALTOKEN1234567890\"",
+            &[],
+        );
         assert!(!real.contains("ghp_REALTOKEN1234567890"), "{real}");
         assert!(real.contains(REDACTED));
 
@@ -285,7 +317,8 @@ mod tests {
 
     #[test]
     fn redacts_pem_private_key_block() {
-        let block = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BA\n-----END PRIVATE KEY-----";
+        let block =
+            "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BA\n-----END PRIVATE KEY-----";
         let text = format!("here is a key:\n{block}\ndone");
         let out = redact(&text, &[]);
         assert!(!out.contains("MIIEvQIBADANBgkqhkiG9w0BA"), "{out}");

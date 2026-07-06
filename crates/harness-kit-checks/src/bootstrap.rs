@@ -6,8 +6,10 @@ use std::process::Command;
 
 use anyhow::{Context, Result, bail};
 
-#[cfg(unix)]
-use std::os::unix::fs::symlink;
+use crate::symlink_utils::{
+    cleanup_symlinks_under_prefix, is_harness_kit_agents_target, is_symlink, link_if_present,
+    link_or_replace, points_into_harness_kit_checkout,
+};
 
 const ALLOWED_GLOBAL_AGENTS: &[&str] = &["a11y-auditor", "a11y-fixer", "a11y-critic"];
 const RETIRED_GLOBAL_AGENTS: &[&str] = &[
@@ -389,21 +391,9 @@ fn link_harness(
                 "AGENTS.md (← shared)",
                 lines,
             )?;
-            // harness-kit-913: Codex has no PreToolUse-equivalent hook; the
-            // `.rules` execpolicy file is the actual pre-exec interception
-            // point. Converge only the harness-kit-owned marker block —
-            // this file is otherwise hand-curated (accumulated per-repo
-            // allow rules) and must never be replaced wholesale.
-            let rules_status =
-                crate::codex_execpolicy::ensure(&harness_dir.join("rules/default.rules"))?;
-            lines.push(match rules_status {
-                crate::codex_execpolicy::Status::Updated => {
-                    green("  rules/default.rules: secrets-read-guard block updated")
-                }
-                crate::codex_execpolicy::Status::Unchanged => {
-                    green("  rules/default.rules: secrets-read-guard block unchanged")
-                }
-            });
+            lines.push(crate::codex_execpolicy::ensure_and_report(
+                &harness_dir.join("rules/default.rules"),
+            )?);
         }
         "pi" => {
             link_if_present(
@@ -523,42 +513,6 @@ fn cleanup_retired_agents(dir: &Path, repo: &Path, lines: &mut Vec<String>) -> R
     Ok(())
 }
 
-#[cfg(unix)]
-fn cleanup_symlinks_under_prefix(
-    dir: &Path,
-    prefix: &Path,
-    expected: &[String],
-    lines: &mut Vec<String>,
-) -> Result<()> {
-    fs::create_dir_all(dir)?;
-    let expected = expected.iter().map(String::as_str).collect::<BTreeSet<_>>();
-    for entry in fs::read_dir(dir)? {
-        let path = entry?.path();
-        if !is_symlink(&path) {
-            continue;
-        }
-        let base = path
-            .file_name()
-            .and_then(|name| name.to_str())
-            .unwrap_or("");
-        if expected.contains(base) {
-            continue;
-        }
-        let target = fs::read_link(&path).unwrap_or_default();
-        // Remove links we own: into this checkout, into any other Harness
-        // Kit checkout (old clone or worktree), or dangling. Links into
-        // non-Harness-Kit locations are user-owned and preserved.
-        let stale = target.starts_with(prefix)
-            || !path.exists()
-            || points_into_harness_kit_checkout(&target);
-        if stale {
-            fs::remove_file(&path)?;
-            lines.push(green(format!("    removed stale {base}")));
-        }
-    }
-    Ok(())
-}
-
 /// Detects a checkout living under a disposable agent worktree
 /// (`.../.codex/worktrees/...`) rather than a durable local clone —
 /// backlog.d/114, found live 2026-06-17 when an old bootstrap symlinked
@@ -570,27 +524,6 @@ fn is_disposable_worktree_path(path: &Path) -> bool {
     components
         .windows(2)
         .any(|pair| pair[0].as_os_str() == ".codex" && pair[1].as_os_str() == "worktrees")
-}
-
-#[cfg(unix)]
-fn points_into_harness_kit_checkout(target: &Path) -> bool {
-    // Managed link targets look like <checkout>/{skills,agents}/…; prompt
-    // targets are recognized here only so bootstrap can prune retired links.
-    // Walk ancestors and look for the checkout markers.
-    target.ancestors().skip(1).any(|ancestor| {
-        ancestor.join("harnesses").is_dir()
-            && ancestor.join("bootstrap.sh").is_file()
-            && ancestor.join("skills").is_dir()
-    })
-}
-
-#[cfg(unix)]
-fn link_if_present(src: &Path, dest: &Path, label: &str, lines: &mut Vec<String>) -> Result<()> {
-    if src.exists() {
-        link_or_replace(src, dest)?;
-        lines.push(green(format!("    {label}")));
-    }
-    Ok(())
 }
 
 fn copy_claude_settings(
@@ -606,36 +539,6 @@ fn copy_claude_settings(
     crate::claude_settings::install_rendered_settings(src, dest, installed_cli)?;
     lines.push(green(format!("    {label}")));
     Ok(())
-}
-
-#[cfg(unix)]
-fn link_or_replace(src: &Path, dest: &Path) -> Result<()> {
-    if let Some(parent) = dest.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    remove_any(dest)?;
-    symlink(src, dest)
-        .with_context(|| format!("failed to symlink {} -> {}", dest.display(), src.display()))
-}
-
-fn remove_any(path: &Path) -> Result<()> {
-    if is_symlink(path) || path.is_file() {
-        fs::remove_file(path)?;
-    } else if path.is_dir() {
-        fs::remove_dir_all(path)?;
-    }
-    Ok(())
-}
-
-fn is_symlink(path: &Path) -> bool {
-    fs::symlink_metadata(path)
-        .map(|metadata| metadata.file_type().is_symlink())
-        .unwrap_or(false)
-}
-
-fn is_harness_kit_agents_target(path: &Path) -> bool {
-    let text = path.to_string_lossy();
-    text.ends_with("/harness-kit/agents") || text.contains("/harness-kit/agents/")
 }
 
 fn harness_dir(home: &Path, harness: &str) -> PathBuf {
@@ -732,41 +635,6 @@ mod tests {
         assert!(!is_disposable_worktree_path(Path::new(
             "/Users/anyone/.codex/config/worktrees-backup"
         )));
-    }
-
-    // backlog.d/114: a pre-rewrite bootstrap symlinked ~/.claude/hooks/* into
-    // whatever worktree it ran from; when that worktree was deleted, the
-    // links went dangling and were never cleaned up because nothing pruned
-    // that directory. Self-healing must remove them on the next bootstrap
-    // run without touching links that still resolve.
-    #[test]
-    fn cleanup_symlinks_under_prefix_prunes_dangling_hook_links() -> Result<()> {
-        let hooks_dir = tempfile::tempdir()?;
-        let deleted_worktree_target = hooks_dir.path().join("gone-forever.py");
-        // Never created — simulates a target whose worktree was removed.
-        #[cfg(unix)]
-        symlink(&deleted_worktree_target, hooks_dir.path().join("stale.py"))?;
-
-        let live_target = hooks_dir.path().join("still-here.py");
-        fs::write(&live_target, "# still a real file")?;
-        #[cfg(unix)]
-        symlink(&live_target, hooks_dir.path().join("live.py"))?;
-
-        let mut lines = Vec::new();
-        cleanup_symlinks_under_prefix(
-            hooks_dir.path(),
-            Path::new("/does/not/matter"),
-            &[],
-            &mut lines,
-        )?;
-
-        assert!(!hooks_dir.path().join("stale.py").exists());
-        assert!(
-            fs::symlink_metadata(hooks_dir.path().join("stale.py")).is_err(),
-            "dangling symlink itself must be removed, not just unresolvable"
-        );
-        assert!(hooks_dir.path().join("live.py").exists());
-        Ok(())
     }
 
     #[test]

@@ -25,5 +25,6 @@ pub mod process;
 pub mod quality_gates;
 pub mod scout_skills;
 pub mod skill_invocation_analytics;
+mod symlink_utils;
 pub mod template_check;
 pub mod transcript_scrub;

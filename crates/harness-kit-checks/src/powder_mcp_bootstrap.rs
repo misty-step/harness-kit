@@ -463,7 +463,8 @@ mod tests {
         // The embedded double quotes must survive a TOML round-trip
         // unmangled (codex_powder_block embeds this string as a TOML value).
         let block = codex_powder_block();
-        let parsed: toml::Value = toml::from_str(&block).expect("codex_powder_block must be valid TOML");
+        let parsed: toml::Value =
+            toml::from_str(&block).expect("codex_powder_block must be valid TOML");
         let args = parsed["mcp_servers"]["powder"]["args"].as_array().unwrap();
         assert_eq!(args[1].as_str().unwrap(), POWDER_MCP_SCRIPT);
     }

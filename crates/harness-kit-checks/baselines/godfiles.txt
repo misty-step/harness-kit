@@ -3,7 +3,7 @@
 # Regenerate intentionally: harness-kit-checks check-godfiles --write-baseline
 859 crates/harness-kit-checks/src/config_loader.rs
 1883 crates/harness-kit-checks/src/docs_site.rs
-1240 crates/harness-kit-checks/src/main.rs
+1236 crates/harness-kit-checks/src/main.rs
 1014 crates/harness-kit-checks/src/skill_invocation_analytics.rs
 2465 crates/harness-kit-hooks/src/claude_hooks.rs
 1975 crates/harness-kit-roster/src/agent_roster.rs

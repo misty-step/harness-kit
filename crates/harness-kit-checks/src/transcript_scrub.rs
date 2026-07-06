@@ -16,11 +16,71 @@
 //! separate, explicit follow-on once the count is known and reviewed.
 
 use std::fs;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
 use harness_kit_hooks::secret_redaction::redact;
 use serde::Serialize;
+
+/// harness-kit-915: reads stdin, writes shape-redacted + gitleaks-scanned
+/// output to stdout. Piped into via process substitution by
+/// `secrets_redaction_command_rewrite`'s PreToolUse rewrite, so a Bash
+/// command's own stdout/stderr are redacted before Claude Code ever
+/// captures them as the tool result -- not after, which a PostToolUse hook
+/// cannot achieve for the transcript/telemetry (see secret_redaction module
+/// docs for the live-verified reason).
+pub fn run_redact_stream() -> Result<()> {
+    let mut input = String::new();
+    std::io::stdin().read_to_string(&mut input)?;
+    let shape_redacted = redact(&input, &[]);
+    let fully_redacted = harness_kit_hooks::secret_redaction::redact_with_gitleaks(&shape_redacted);
+    print!("{fully_redacted}");
+    Ok(())
+}
+
+/// harness-kit-915, net 2: one-time read-only scan of the two QMD-indexed
+/// transcript collections named in the card, reporting a count of any
+/// secret-shaped lines already at rest -- not rewriting anything. Defaults
+/// to the two real collections; accepts `--collection NAME=PATH` to scan
+/// an arbitrary root (used for a dry run against a scratch copy before
+/// pointing at the live directories).
+pub fn run_scan_transcripts(args: &[String], usage: fn() -> !) -> Result<()> {
+    let mut collections: Vec<(String, PathBuf)> = Vec::new();
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--collection" => {
+                index += 1;
+                let spec = args.get(index).cloned().unwrap_or_else(|| usage());
+                let (name, path) = spec.split_once('=').unwrap_or_else(|| usage());
+                collections.push((name.to_string(), PathBuf::from(path)));
+            }
+            _ => usage(),
+        }
+        index += 1;
+    }
+    if collections.is_empty() {
+        let home = std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| PathBuf::from("."));
+        collections = vec![
+            (
+                "claude-code-transcripts".to_string(),
+                home.join(".claude/projects"),
+            ),
+            ("codex-sessions".to_string(), home.join(".codex/sessions")),
+        ];
+    }
+    let mut total_findings = 0usize;
+    for (name, root) in collections {
+        let report = scan_collection(&name, &root)?;
+        total_findings += report.total_findings;
+        println!("{}", serde_json::to_string_pretty(&report)?);
+    }
+    println!("TOTAL_FINDINGS={total_findings}");
+    Ok(())
+}
 
 #[derive(Debug, Default, Serialize)]
 pub struct ScrubReport {
@@ -124,7 +184,11 @@ mod tests {
             "{\"key\":\"AKIAZZZZZZZZZZZZZZZZ_pad\"}\n",
         )
         .unwrap();
-        fs::write(temp.path().join("ignored.txt"), "sk-or-v1-shouldnotmatch12345").unwrap();
+        fs::write(
+            temp.path().join("ignored.txt"),
+            "sk-or-v1-shouldnotmatch12345",
+        )
+        .unwrap();
 
         let report = scan_collection("test", temp.path()).unwrap();
         assert_eq!(report.files_scanned, 1);
