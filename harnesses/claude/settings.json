@@ -71,6 +71,11 @@
           },
           {
             "type": "command",
+            "command": "harness-kit-checks claude-hook secrets-read-guard",
+            "timeout": 10
+          },
+          {
+            "type": "command",
             "command": "harness-kit-checks claude-hook github-cli-guard",
             "timeout": 5
           }

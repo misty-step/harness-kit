@@ -10,6 +10,7 @@ const BARE_HOOK_PREFIX: &str = "harness-kit-checks claude-hook ";
 const EXPECTED_GENERATED_HOOKS: &[&str] = &[
     "permission-auto-approve",
     "destructive-command-guard",
+    "secrets-read-guard",
     "github-cli-guard",
     "time-context",
     "skill-invocation-tracker",

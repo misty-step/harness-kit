@@ -202,6 +202,9 @@ fn run_claude_hook(args: &[String]) {
         "destructive-command-guard" => {
             claude_hooks::run_destructive_command_guard_from_stdin().unwrap_or_else(exit_error);
         }
+        "secrets-read-guard" => {
+            claude_hooks::run_secrets_read_guard_from_stdin().unwrap_or_else(exit_error);
+        }
         "github-cli-guard" => {
             claude_hooks::run_github_cli_guard_from_stdin().unwrap_or_else(exit_error);
         }

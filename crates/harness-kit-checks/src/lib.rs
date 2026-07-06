@@ -5,6 +5,7 @@ pub mod ci_check;
 pub mod claude_settings;
 mod cli_install;
 pub mod cli_usage;
+pub mod codex_execpolicy;
 pub mod config_loader;
 pub mod docs_site;
 pub mod error_report;

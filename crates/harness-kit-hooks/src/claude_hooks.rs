@@ -182,6 +182,20 @@ const HEAVY_COMMANDS: &[&str] = &[
 const DISK_WARN_THRESHOLD_GB: f64 = 20.0;
 const DISK_BLOCK_THRESHOLD_GB: f64 = 5.0;
 
+/// Designated secret files: reachable relative to `$HOME`, checked against
+/// both the literal `~/...` form (a model may write the tilde verbatim) and
+/// the `$HOME`-expanded absolute form. Extend this list as new flat
+/// secret-bearing files are designated (harness-kit-913).
+const SECRET_FILE_HOME_SUFFIXES: &[&str] = &[".secrets"];
+
+/// Bash verbs whose first argument is commonly a file to dump to stdout.
+/// Each is checked for a designated secret file appearing anywhere in the
+/// argument list — not just as the first arg — so `grep KEY ~/.secrets`
+/// (pattern before path) is caught, not just `cat ~/.secrets`.
+const SECRET_READ_VERBS: &[&str] = &[
+    "cat", "grep", "egrep", "fgrep", "head", "tail", "less", "more", "strings", "od", "awk", "hexdump", "xxd",
+];
+
 const ENV_SETTERS: &[&str] = &[
     "vercel env add",
     "vercel env set",
@@ -261,6 +275,17 @@ pub fn run_destructive_command_guard_from_stdin() -> Result<()> {
         .read_to_string(&mut input)
         .context("failed to read stdin")?;
     if let Some(output) = destructive_command_guard(&input, Path::new(".")) {
+        println!("{}", serde_json::to_string(&output)?);
+    }
+    Ok(())
+}
+
+pub fn run_secrets_read_guard_from_stdin() -> Result<()> {
+    let mut input = String::new();
+    std::io::stdin()
+        .read_to_string(&mut input)
+        .context("failed to read stdin")?;
+    if let Some(output) = secrets_read_guard(&input, &home_dir()) {
         println!("{}", serde_json::to_string(&output)?);
     }
     Ok(())
@@ -483,6 +508,99 @@ pub fn destructive_command_guard(input: &str, cwd: &Path) -> Option<Value> {
             "permissionDecisionReason": format!("BLOCKED: {reason}\n\nCommand: {command}\n\nRun this yourself if truly needed."),
         }
     }))
+}
+
+/// Blocks direct-read commands (`cat`, `grep`, `head`, ...) against
+/// designated secret files, while explicitly allowing `source`/`.` — the
+/// sanctioned access pattern (shared AGENTS.md red lines). Root-caused by
+/// the 2026-07-05 CANARY_API_KEY leak: a `grep` misfire against `~/.secrets`
+/// printed a live key into a QMD-indexed transcript. This is a
+/// command-string gate, not a filesystem permission: `source` and `cat` use
+/// identical syscalls, so the block must happen pre-exec, at the tool-call
+/// layer (harness-kit-913).
+pub fn secrets_read_guard(input: &str, home: &Path) -> Option<Value> {
+    let data: Value = serde_json::from_str(input).ok()?;
+    if data.get("tool_name").and_then(Value::as_str) != Some("Bash") {
+        return None;
+    }
+    let command = data
+        .get("tool_input")
+        .and_then(Value::as_object)
+        .and_then(|input| input.get("command"))
+        .and_then(Value::as_str)?;
+    if command.is_empty() {
+        return None;
+    }
+    let reason = secrets_read_reason(command, home)?;
+    Some(json!({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": format!(
+                "BLOCKED: {reason}\n\nCommand: {command}\n\nUse `source ~/{}` (or `.`) instead — the sanctioned access pattern. Never cat/grep/head/tail a secret file; its value can land in this transcript, which is QMD-indexed and permanently searchable.",
+                SECRET_FILE_HOME_SUFFIXES[0]
+            ),
+        }
+    }))
+}
+
+fn secrets_read_reason(command: &str, home: &Path) -> Option<String> {
+    let stripped = strip_quoted_content(command);
+    // `source`/`.` are the sanctioned pattern — never block those, even if a
+    // secret path also appears as a direct-read verb's argument elsewhere in
+    // a compound command (e.g. `source ~/.secrets && cat notes.txt` is fine;
+    // classification below is per verb-invocation, not per whole command).
+    for secret_path in secret_file_paths(home) {
+        for verb in SECRET_READ_VERBS {
+            // Match the verb as a standalone command word (start of string,
+            // or after a shell separator/pipe/subshell marker) followed
+            // eventually by the secret path as a standalone argument word —
+            // catches `grep KEY ~/.secrets` (path not first) and compound
+            // commands (`cat ~/.secrets; true`), not just a bare prefix.
+            let verb_pattern = format!(r"(?:^|[;&|`]|\$\()\s*{}\b", regex::escape(verb));
+            let Some(verb_match) = Regex::new(&verb_pattern).unwrap().find(&stripped) else {
+                continue;
+            };
+            let after_verb = &stripped[verb_match.end()..];
+            let path_pattern = format!(
+                "(?:^|[[:space:]'\"]){}(?:[[:space:]'\"]|$)",
+                regex::escape(&secret_path)
+            );
+            // Only look within the same simple command (up to the next
+            // separator), so `cat foo.txt; source ~/.secrets` isn't flagged.
+            let segment_end = after_verb
+                .find([';', '&', '|', '\n'])
+                .unwrap_or(after_verb.len());
+            let segment = &after_verb[..segment_end];
+            if Regex::new(&path_pattern).unwrap().is_match(segment) {
+                return Some(format!(
+                    "Direct read of a designated secret file via `{verb}`. Its value can be printed into this transcript."
+                ));
+            }
+        }
+    }
+    None
+}
+
+/// Both forms a model may write for a designated secret file: the literal
+/// `~/name` shorthand (never shell-expanded before the policy sees it) and
+/// the `$HOME`-expanded absolute path.
+fn secret_file_paths(home: &Path) -> Vec<String> {
+    SECRET_FILE_HOME_SUFFIXES
+        .iter()
+        .flat_map(|suffix| {
+            vec![
+                format!("~/{suffix}"),
+                home.join(suffix).to_string_lossy().to_string(),
+            ]
+        })
+        .collect()
+}
+
+fn home_dir() -> PathBuf {
+    env::var_os("HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("."))
 }
 
 #[derive(Debug, PartialEq)]
@@ -1973,6 +2091,94 @@ mod tests {
                 .unwrap()
                 .contains("Force-deleting main")
         );
+    }
+
+    fn secrets_guard_command(home: &Path, command: &str) -> Option<Value> {
+        secrets_read_guard(
+            &json!({"tool_name": "Bash", "tool_input": {"command": command}}).to_string(),
+            home,
+        )
+    }
+
+    #[test]
+    fn secrets_guard_blocks_cat_and_grep_against_expanded_and_tilde_paths() {
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        for command in [
+            "cat ~/.secrets",
+            &format!("cat {}", home.join(".secrets").display()),
+            "grep POWDER_API_KEY ~/.secrets",
+        ] {
+            let output = secrets_guard_command(home, command)
+                .unwrap_or_else(|| panic!("expected block for: {command}"));
+            assert_eq!(output["hookSpecificOutput"]["permissionDecision"], "deny");
+        }
+    }
+
+    #[test]
+    fn secrets_guard_blocks_read_verb_inside_compound_command() {
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        // A simulated grep-misfire against ~/.secrets as part of a larger
+        // command line, mirroring the 2026-07-05 CANARY_API_KEY leak shape.
+        let output = secrets_guard_command(
+            home,
+            "echo debug; grep CANARY_API_KEY ~/.secrets | head -1",
+        )
+        .unwrap();
+        assert_eq!(output["hookSpecificOutput"]["permissionDecision"], "deny");
+        assert!(
+            output["hookSpecificOutput"]["permissionDecisionReason"]
+                .as_str()
+                .unwrap()
+                .contains("designated secret file")
+        );
+    }
+
+    #[test]
+    fn secrets_guard_allows_source_and_dot_of_the_same_file() {
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        for command in [
+            "source ~/.secrets && exec powder-mcp",
+            &format!(". {} && run-thing", home.join(".secrets").display()),
+        ] {
+            assert!(
+                secrets_guard_command(home, command).is_none(),
+                "expected allow for: {command}"
+            );
+        }
+    }
+
+    #[test]
+    fn secrets_guard_ignores_unrelated_files_and_non_bash_tools() {
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        assert!(secrets_guard_command(home, "cat README.md").is_none());
+        assert!(secrets_guard_command(home, "grep TODO src/main.rs").is_none());
+        assert!(
+            secrets_read_guard(
+                r#"{"tool_name":"Read","tool_input":{"file_path":"~/.secrets"}}"#,
+                home,
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn secrets_guard_blocks_the_exact_shape_that_leaked_powder_api_key_2026_07_06() {
+        // Regression pin: during harness-kit-913's own Codex-side live
+        // testing (2026-07-06), `grep POWDER_API_KEY ~/.secrets --` bypassed
+        // Codex's argv-prefix execpolicy rule (grep's pattern arg sits
+        // before the path, so a [verb, path]-shaped rule never matches) and
+        // printed the live key into that transcript. Claude's hook uses a
+        // full command-string search rather than fixed argv position, so it
+        // must catch this exact shape — asserted here so it never silently
+        // regresses.
+        let temp = TempDir::new().unwrap();
+        let output = secrets_guard_command(temp.path(), "grep POWDER_API_KEY ~/.secrets --")
+            .expect("must block the exact command shape that caused a live leak");
+        assert_eq!(output["hookSpecificOutput"]["permissionDecision"], "deny");
     }
 
     #[test]

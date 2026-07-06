@@ -389,6 +389,21 @@ fn link_harness(
                 "AGENTS.md (← shared)",
                 lines,
             )?;
+            // harness-kit-913: Codex has no PreToolUse-equivalent hook; the
+            // `.rules` execpolicy file is the actual pre-exec interception
+            // point. Converge only the harness-kit-owned marker block —
+            // this file is otherwise hand-curated (accumulated per-repo
+            // allow rules) and must never be replaced wholesale.
+            let rules_status =
+                crate::codex_execpolicy::ensure(&harness_dir.join("rules/default.rules"))?;
+            lines.push(match rules_status {
+                crate::codex_execpolicy::Status::Updated => {
+                    green("  rules/default.rules: secrets-read-guard block updated")
+                }
+                crate::codex_execpolicy::Status::Unchanged => {
+                    green("  rules/default.rules: secrets-read-guard block unchanged")
+                }
+            });
         }
         "pi" => {
             link_if_present(
