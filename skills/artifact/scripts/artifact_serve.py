@@ -72,8 +72,19 @@ class Handler(SimpleHTTPRequestHandler):
         window = (q.get("window", ["daily"])[0] or "daily").strip()
         if window not in ("daily", "weekly", "custom"):
             return self._json(400, {"error": "window must be daily|weekly|custom"})
-        cmd = ["/Users/phaedrus/.cargo/bin/cargo", "run", "-q",
-               "-p", "weave-fleet-retro", "--", "--window", window]
+        # Resolve the synthesis key at run time (keychain -> op service account
+        # -> op read); launchd context has no secrets env, and ~/.secrets does
+        # not carry OPENROUTER_API_KEY. Nothing is persisted; fleet-retro still
+        # fails open to tables+banner if resolution fails.
+        retro_args = ["--window", window]
+        cmd = ["/bin/zsh", "-c",
+               'export OP_SERVICE_ACCOUNT_TOKEN="${OP_SERVICE_ACCOUNT_TOKEN:-$('
+               'security find-generic-password -a "$USER" -s op-agent -w 2>/dev/null)}"; '
+               'export OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-$('
+               'op read "op://Agents/OPENROUTER_API_KEY/credential" 2>/dev/null)}"; '
+               'source ~/.secrets 2>/dev/null; '
+               'exec /Users/phaedrus/.cargo/bin/cargo run -q -p weave-fleet-retro -- "$@"',
+               "retro"] + retro_args
         if window == "custom":
             since = (q.get("since", [""])[0] or "").strip()
             if not since:
