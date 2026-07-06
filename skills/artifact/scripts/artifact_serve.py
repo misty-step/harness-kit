@@ -92,7 +92,7 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(400, {"error": "text required"})
         import time as _t
         entry = {
-            "id": f"sp-{int(_t.time())}",
+            "id": f"sp-{int(_t.time() * 1000)}",
             "ts": _t.strftime("%Y-%m-%d %H:%M", _t.localtime()),
             "text": text[:8000],
             "by": str(body.get("by") or "operator")[:40],
