@@ -50,7 +50,130 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/api/bridge-answer":
             return self._bridge_answer()
+        if self.path == "/api/scratchpad":
+            return self._scratchpad_append()
+        if self.path == "/api/scratchpad/toggle":
+            return self._scratchpad_toggle()
         self.send_error(404)
+
+    # ------ Scratchpad: the operator's pile of conversations-to-have ------
+    # (operator ruling 2026-07-07: not powder — not specced work; not
+    # monologue — no acted-upon state. A dictation target on Sanctum that
+    # the lead chews through on request and marks discussed.)
+    SCRATCH_STORE = os.path.join(HOME, ".factory-lanes", "scratchpad.jsonl")
+
+    def _scratch_entries(self):
+        entries = []
+        try:
+            with open(self.SCRATCH_STORE) as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        entries.append(json.loads(line))
+        except OSError:
+            pass
+        return entries
+
+    def _scratch_write(self, entries):
+        tmp = self.SCRATCH_STORE + ".tmp"
+        with open(tmp, "w") as f:
+            for e in entries:
+                f.write(json.dumps(e) + "\n")
+        os.replace(tmp, self.SCRATCH_STORE)
+
+    def _scratchpad_append(self):
+        length = int(self.headers.get("Content-Length", 0) or 0)
+        try:
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except json.JSONDecodeError:
+            return self._json(400, {"error": "invalid json"})
+        text = str(body.get("text") or "").strip()
+        if not text:
+            return self._json(400, {"error": "text required"})
+        import time as _t
+        entry = {
+            "id": f"sp-{int(_t.time())}",
+            "ts": _t.strftime("%Y-%m-%d %H:%M", _t.localtime()),
+            "text": text[:8000],
+            "by": str(body.get("by") or "operator")[:40],
+            "status": "open",
+        }
+        entries = self._scratch_entries()
+        entries.append(entry)
+        self._scratch_write(entries)
+        self._scratch_render(entries)
+        return self._json(200, {"ok": True, "id": entry["id"]})
+
+    def _scratchpad_toggle(self):
+        length = int(self.headers.get("Content-Length", 0) or 0)
+        try:
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except json.JSONDecodeError:
+            return self._json(400, {"error": "invalid json"})
+        eid = str(body.get("id") or "")
+        note = str(body.get("note") or "").strip()
+        entries = self._scratch_entries()
+        hit = False
+        for e in entries:
+            if e["id"] == eid:
+                e["status"] = "discussed" if e.get("status") == "open" else "open"
+                if note:
+                    e["outcome"] = note[:2000]
+                hit = True
+        if not hit:
+            return self._json(404, {"error": "no such entry"})
+        self._scratch_write(entries)
+        self._scratch_render(entries)
+        return self._json(200, {"ok": True})
+
+    def _scratch_render(self, entries):
+        import html as _h
+        rows = []
+        for e in sorted(entries, key=lambda x: x["id"], reverse=True):
+            open_ = e.get("status") == "open"
+            outcome = (
+                f'<div class="oc">→ {_h.escape(e.get("outcome", ""))}</div>'
+                if e.get("outcome") else "")
+            rows.append(
+                f'<div class="e {"open" if open_ else "done"}">'
+                f'<div class="m"><span class="st">{"●" if open_ else "○"} '
+                f'{"open" if open_ else "discussed"}</span>'
+                f'<span>{_h.escape(e["ts"])} · {_h.escape(e.get("by", ""))}</span>'
+                f'<button onclick="tog(\'{e["id"]}\')">'
+                f'{"mark discussed" if open_ else "reopen"}</button></div>'
+                f'<div class="t">{_h.escape(e["text"])}</div>{outcome}</div>')
+        page = f"""<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scratchpad</title><style>
+*{{box-sizing:border-box;border-radius:0}}
+body{{margin:0;font:16px/1.55 -apple-system,sans-serif;background:#fafafa;color:#16181d;max-width:44rem;margin:0 auto;padding:1rem}}
+h1{{font-size:1.15rem;margin:.4rem 0 .2rem}} .sub{{font-size:13px;color:#666;margin-bottom:1rem}}
+textarea{{width:100%;min-height:5.5rem;font:inherit;padding:.6rem;border:1px solid #ccc;background:#fff}}
+button{{font:600 13px -apple-system,sans-serif;padding:.45rem .8rem;border:1px solid #16181d;background:#fff;cursor:pointer}}
+.bar{{display:flex;gap:.5rem;justify-content:flex-end;margin:.5rem 0 1.4rem}}
+.e{{border:1px solid #ddd;border-left:3px solid #0a7d5f;background:#fff;padding:.7rem .8rem;margin:.6rem 0}}
+.e.done{{border-left-color:#bbb;opacity:.62}}
+.m{{display:flex;gap:.7rem;align-items:center;font-size:13px;color:#666;margin-bottom:.35rem;flex-wrap:wrap}}
+.m button{{margin-left:auto;font-size:12px;padding:.2rem .5rem}}
+.st{{font-weight:600;color:#0a7d5f}} .done .st{{color:#999}}
+.t{{white-space:pre-wrap}} .oc{{margin-top:.4rem;font-size:14px;color:#555;border-top:1px dashed #ddd;padding-top:.35rem}}
+a.home{{font-size:13px;color:#666;text-decoration:none}}</style></head><body>
+<a class="home" href="https://bastion.tail5f5eb4.ts.net/">⌂ Sanctum</a>
+<h1>Scratchpad</h1>
+<div class="sub">The pile: things to discuss when there's bandwidth. Dictate freely — nothing here interrupts current work. Say "check the scratchpad" to chew through it.</div>
+<textarea id="tx" placeholder="Scribble, dictate, dump…"></textarea>
+<div class="bar"><button onclick="add()">Add to the pile</button></div>
+<div id="list">{"".join(rows) or '<div class="sub">Empty pile.</div>'}</div>
+<script>
+var API="https://serenity.tail5f5eb4.ts.net/artifacts/api/scratchpad";
+function add(){{var t=document.getElementById('tx').value.trim();if(!t)return;
+fetch(API,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{text:t}})}}).then(r=>r.json()).then(j=>{{if(j.ok)location.reload();else alert(j.error)}}).catch(e=>alert(e))}}
+function tog(id){{fetch(API+'/toggle',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{id:id}})}}).then(()=>location.reload())}}
+</script></body></html>"""
+        out = os.path.join(HOME, "artifacts", "public", "a", "scratchpad")
+        os.makedirs(out, exist_ok=True)
+        with open(os.path.join(out, "index.html"), "w") as f:
+            f.write(page)
 
     def do_GET(self):
         if self.path == "/api/bridge-refresh":
