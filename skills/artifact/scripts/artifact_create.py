@@ -267,11 +267,43 @@ def load_registry(root):
         return {}
 
 
+def fetch_live_stars(base_url):
+    """GET the shelf's current starred slugs. Best-effort: a stale or
+    unreachable stars store must never block an index write, so callers
+    treat None (fetch failed) as "leave prior starred flags alone"."""
+    target = f"{base_url.rstrip('/')}/stars"
+    try:
+        with urllib.request.urlopen(target, timeout=10) as resp:
+            return set(json.load(resp).get("starred", []))
+    except Exception as e:  # noqa: BLE001 — best-effort by design
+        print(f"live stars fetch skipped ({e}); starred flags left as-is", file=sys.stderr)
+        return None
+
+
+def sync_starred(entries, base_url):
+    """Stamp entry['starred'] from the live stars store. Mutates in place so
+    callers holding the same dict objects (e.g. a registry) see the update."""
+    live = fetch_live_stars(base_url)
+    if live is None:
+        return
+    for e in entries:
+        e["starred"] = e["slug"] in live
+
+
+def pin_starred(entries):
+    """Starred first, newest-first within each group (stable two-pass sort:
+    Timsort preserves the updated-time order the starred pass groups by)."""
+    entries = sorted(entries, key=lambda x: x.get("updated", ""), reverse=True)
+    return sorted(entries, key=lambda x: x.get("starred", False), reverse=True)
+
+
 def render_index_html(entries, base_url):
+    entries = pin_starred(entries)
     rows = []
-    for e in sorted(entries, key=lambda x: x.get("updated", ""), reverse=True):
+    for e in entries:
+        star = "★ " if e.get("starred") else ""
         rows.append(
-            f'<tr><td><a href="{html.escape(base_url)}/a/{html.escape(e["slug"])}/">'
+            f'<tr><td>{star}<a href="{html.escape(base_url)}/a/{html.escape(e["slug"])}/">'
             f'{html.escape(e.get("title") or e["slug"])}</a></td>'
             f'<td>{html.escape(e.get("tag", ""))}</td>'
             f'<td>{html.escape(e.get("summary", ""))}</td>'
@@ -300,6 +332,8 @@ def update_index(root, base_url, entry, local_only):
         entry["created"] = prev.get("created") or entry["updated"]
         reg[entry["slug"]] = {**prev, **entry}
         entries = [e for s, e in reg.items() if s != INDEX_SLUG]
+        sync_starred(entries, base_url)
+        entries = pin_starred(entries)
         idx_dir = os.path.join(root, "a", INDEX_SLUG)
         os.makedirs(idx_dir, exist_ok=True)
         payload = {"generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
@@ -357,6 +391,8 @@ def reindex(root, base_url, local_only):
                      "created": mtime.isoformat(timespec="seconds"),
                      "updated": mtime.isoformat(timespec="seconds")}
     entries = [e for s, e in reg.items() if s != INDEX_SLUG]
+    sync_starred(entries, base_url)
+    entries = pin_starred(entries)
     idx_dir = os.path.join(root, "a", INDEX_SLUG)
     os.makedirs(idx_dir, exist_ok=True)
     payload = {"generated": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
