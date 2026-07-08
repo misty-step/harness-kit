@@ -1,3 +1,7 @@
+## Version reset: 1.x → 0.x (2026-07-08)
+
+The fleet moved to pre-stable 0.x semantics (Powder landmark-016/017): versions below 1.0.0 use Cargo-style bumps (breaking→minor, feat/fix→patch) and never cross 1.0.0 automatically; promotion to 1.0.0 is a deliberate manual tag. The 0.x seed tag points at the same commit as the last 1.x release at reset-execution time. Earlier 1.x entries below record real history under the old numbering; their tags and GitHub releases were retired.
+
 ## [1.19.1](https://github.com/misty-step/harness-kit/compare/v1.19.0...v1.19.1) (2026-07-08)
 
 
