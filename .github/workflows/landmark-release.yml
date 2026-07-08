@@ -32,9 +32,9 @@ jobs:
           persist-credentials: false
 
       - name: Run Landmark
-        uses: misty-step/landmark@v1
+        uses: misty-step/landmark@v0
         with:
-          github-token: ${{ secrets.GH_RELEASE_TOKEN }}
+          github-token: ${{ github.token }}
           llm-api-key: ${{ secrets.OPENROUTER_API_KEY }}
           node-version: "24"
           synthesis: "true"
