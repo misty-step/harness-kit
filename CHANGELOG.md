@@ -1,3 +1,11 @@
+## [1.19.1](https://github.com/misty-step/harness-kit/compare/v1.19.0...v1.19.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* **skills:** landmark@v0 pin + workflow-token release guidance ([#174](https://github.com/misty-step/harness-kit/issues/174)) ([198335d](https://github.com/misty-step/harness-kit/commit/198335d18cc74afb7de50fa621fbf2d7790162d0))
+* **skills:** shape template pins aesthetic v0.24.0 ([#175](https://github.com/misty-step/harness-kit/issues/175)) ([f10150e](https://github.com/misty-step/harness-kit/commit/f10150efb58513b067ac20f210cfefbe32159a19))
+
 # [1.19.0](https://github.com/misty-step/harness-kit/compare/v1.18.0...v1.19.0) (2026-07-08)
 
 
