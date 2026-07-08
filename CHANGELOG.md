@@ -1,3 +1,19 @@
+# [1.19.0](https://github.com/misty-step/harness-kit/compare/v1.18.0...v1.19.0) (2026-07-08)
+
+
+### Bug Fixes
+
+* **artifact:** wrap shelf index table in the house scroll container ([c654f6e](https://github.com/misty-step/harness-kit/commit/c654f6e49c2c0694dc8492906a3003d1914920f1))
+* **relay:** bridge-retro resolves OPENROUTER_API_KEY at run time (keychain→op) ([6922854](https://github.com/misty-step/harness-kit/commit/692285440b90f98717311adb283377762f2e0dcf))
+
+
+### Features
+
+* **artifact:** add Sanctum home affordance ([5ecee19](https://github.com/misty-step/harness-kit/commit/5ecee19c40adee1642933b20d608e2fe90c390b2))
+* **artifact:** pin starred artifacts first in the shelf index ([5eb8cdd](https://github.com/misty-step/harness-kit/commit/5eb8cdd30b1450304bdb512bb93a7e576947156f))
+* **artifact:** shelf registry — every publish maintains a live index at /a/index/ ([b68cf43](https://github.com/misty-step/harness-kit/commit/b68cf43cff701212c97bb11d251526b94bfa4470))
+* **relay:** /api/bridge-retro — operator run-handle for time-window activity reports ([8a2c9ef](https://github.com/misty-step/harness-kit/commit/8a2c9efb268f94ea6278ec157a5076662ed65361))
+
 # [1.18.0](https://github.com/misty-step/harness-kit/compare/v1.17.0...v1.18.0) (2026-07-04)
 
 
