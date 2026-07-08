@@ -25,9 +25,17 @@ agent-native contracts, or release-kit producer responsibilities.
 | Dry-run release analysis | `landmark run --provider local --dry-run` |
 | Install in a repo | `landmark setup` |
 | Fleet adoption | `fleet scan`, `fleet plan`, `fleet open-prs` |
-| GitHub Action use | `misty-step/landmark@v1` |
+| GitHub Action use | `misty-step/landmark@v0` |
 | Local development | `cargo run --locked -p landmark -- ...` |
 | Full repo gate | `bin/gate` |
+
+Landmark is pre-stable (0.x): repos below 1.0.0 stay on the `@v0` major-pin
+line until Landmark itself promotes to 1.0.0. See the landmark README's
+Versioning Philosophy section. Pass the Action's `github-token` input as
+`${{ github.token }}` — the default `GITHUB_TOKEN` — under a job (or
+workflow) `permissions` block granting `contents`/`issues`/`pull-requests`
+write; a PAT-backed secret is only needed when downstream automation must
+trigger further workflow runs.
 
 ## Operating Rules
 
