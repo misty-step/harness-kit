@@ -1,3 +1,23 @@
+## [0.19.2](https://github.com/misty-step/harness-kit/compare/v0.19.1...v0.19.2) (2026-07-10)
+
+
+### Bug Fixes
+
+* **artifact:** bridge-retro invocation resolves ~/.secrets via op run (harness-kit-914) ([2a05c5d](https://github.com/misty-step/harness-kit/commit/2a05c5d0af02fcb29d2b8e4260578c32fc5b0347))
+* **scratchpad:** millisecond ids — same-second appends collided ([26ddf71](https://github.com/misty-step/harness-kit/commit/26ddf717be66f09c9c8b5574a3155cc77d941e0e))
+* **secrets:** argv-position-aware grep/awk key-name rules for Codex execpolicy (harness-kit-913 follow-up) ([4fe8dc6](https://github.com/misty-step/harness-kit/commit/4fe8dc6383e6eef27b0e7d8c26e6c8913c5e7030))
+* **secrets:** guard direct Read access to secret files ([5dbcd70](https://github.com/misty-step/harness-kit/commit/5dbcd70c1ce1213b69d9394a1165897079aa81a8))
+
+
+### Features
+
+* **bootstrap:** stand down when roster owns the machine (roster-926 cutover shim) ([9ef6375](https://github.com/misty-step/harness-kit/commit/9ef63759cb15b35bb567dc4ed140996de8bc6d94))
+* **githooks:** roster stand-down guard on post-commit/merge/rewrite re-links (roster-926 cutover shim) ([148ec5c](https://github.com/misty-step/harness-kit/commit/148ec5c002081000e263233ab78b5a6ddafd697a))
+* **relay:** operator scratchpad — the pile of conversations-to-have ([c8e0594](https://github.com/misty-step/harness-kit/commit/c8e0594c748cd723812543545f38223ccccf2e80))
+* **secrets:** migrate known ~/.secrets consumers to op://-aware resolution (harness-kit-914, part 1) ([962876c](https://github.com/misty-step/harness-kit/commit/962876c570b3fd5d91e361d3383d63317a811ba5))
+* **secrets:** PreToolUse output redaction + one-time transcript scan (harness-kit-915) ([db6bf57](https://github.com/misty-step/harness-kit/commit/db6bf57831f79a3d2ec754d797986940c1189b28))
+* **secrets:** PreToolUse/execpolicy read-guard against ~/.secrets (harness-kit-913) ([cfa55b1](https://github.com/misty-step/harness-kit/commit/cfa55b15ad96899ad2d5c4d727b52645b6cd194c))
+
 ## Version reset: 1.x → 0.x (2026-07-08)
 
 The fleet moved to pre-stable 0.x semantics (Powder landmark-016/017): versions below 1.0.0 use Cargo-style bumps (breaking→minor, feat/fix→patch) and never cross 1.0.0 automatically; promotion to 1.0.0 is a deliberate manual tag. The 0.x seed tag points at the same commit as the last 1.x release at reset-execution time. Earlier 1.x entries below record real history under the old numbering; their tags and GitHub releases were retired.
