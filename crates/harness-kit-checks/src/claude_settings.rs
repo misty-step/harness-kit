@@ -11,6 +11,7 @@ const EXPECTED_GENERATED_HOOKS: &[&str] = &[
     "permission-auto-approve",
     "destructive-command-guard",
     "secrets-read-guard",
+    "secrets-read-tool-guard",
     "github-cli-guard",
     "secrets-redaction-rewrite",
     "time-context",
@@ -275,6 +276,53 @@ mod tests {
         assert_eq!(
             first_shell_word(r#"'/tmp/O'\''Brien/harness-kit-checks' claude-hook time-context"#),
             Some("/tmp/O'Brien/harness-kit-checks".to_string())
+        );
+    }
+
+    #[test]
+    fn validate_settings_requires_the_read_tool_secrets_guard_hook() -> Result<()> {
+        // Regression pin for the 2026-07-06 leak-#5 incident: the Read tool
+        // leaked ~/.secrets directly, so every converged settings.json must
+        // carry a PreToolUse hook denying Read against it, not just the
+        // Bash-scoped secrets-read-guard.
+        let errors = validate_settings_text(
+            r#"{
+              "hooks": {
+                "PreToolUse": [{"hooks": [
+                  {"command": "harness-kit-checks claude-hook permission-auto-approve"},
+                  {"command": "harness-kit-checks claude-hook destructive-command-guard"},
+                  {"command": "harness-kit-checks claude-hook secrets-read-guard"},
+                  {"command": "harness-kit-checks claude-hook github-cli-guard"},
+                  {"command": "harness-kit-checks claude-hook secrets-redaction-rewrite"}
+                ]}],
+                "SessionStart": [{"hooks": [
+                  {"command": "harness-kit-checks claude-hook time-context"}
+                ]}],
+                "PostToolUse": [{"hooks": [
+                  {"command": "harness-kit-checks claude-hook skill-invocation-tracker"}
+                ]}]
+              }
+            }"#,
+        )?;
+        assert!(
+            errors
+                .iter()
+                .any(|error| error.contains("secrets-read-tool-guard")),
+            "expected a missing-hook error for secrets-read-tool-guard, got: {errors:?}"
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn live_settings_deny_lists_the_secrets_file_for_the_read_tool() {
+        let settings: Value =
+            serde_json::from_str(include_str!("../../../harnesses/claude/settings.json")).unwrap();
+        let deny = settings["permissions"]["deny"]
+            .as_array()
+            .expect("permissions.deny must be an array");
+        assert!(
+            deny.iter().any(|entry| entry == "Read(~/.secrets)"),
+            "expected permissions.deny to block Read(~/.secrets) as defense-in-depth alongside the PreToolUse hook"
         );
     }
 }

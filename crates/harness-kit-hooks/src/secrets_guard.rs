@@ -45,6 +45,17 @@ pub fn run_secrets_redaction_command_rewrite_from_stdin() -> Result<()> {
     Ok(())
 }
 
+pub fn run_secrets_read_tool_guard_from_stdin() -> Result<()> {
+    let mut input = String::new();
+    std::io::stdin()
+        .read_to_string(&mut input)
+        .context("failed to read stdin")?;
+    if let Some(output) = secrets_read_tool_guard(&input, &home_dir()) {
+        println!("{}", serde_json::to_string(&output)?);
+    }
+    Ok(())
+}
+
 /// Blocks direct-read commands (`cat`, `grep`, `head`, ...) against
 /// designated secret files, while explicitly allowing `source`/`.` — the
 /// sanctioned access pattern (shared AGENTS.md red lines). Root-caused by
@@ -73,6 +84,51 @@ pub fn secrets_read_guard(input: &str, home: &Path) -> Option<Value> {
             "permissionDecision": "deny",
             "permissionDecisionReason": format!(
                 "BLOCKED: {reason}\n\nCommand: {command}\n\nUse `source ~/{}` (or `.`) instead — the sanctioned access pattern. Never cat/grep/head/tail a secret file; its value can land in this transcript, which is QMD-indexed and permanently searchable.",
+                SECRET_FILE_HOME_SUFFIXES[0]
+            ),
+        }
+    }))
+}
+
+/// Blocks the Read tool against designated secret files. Root-caused by the
+/// 2026-07-06 leak-#5 incident: `secrets_read_guard` above only ever covered
+/// Bash's cat/grep/head/etc., so the model read `~/.secrets` directly via
+/// the Read tool instead and printed both live keys into the transcript.
+/// A `settings.json` permissions `deny` entry for `Read` is NOT sufficient
+/// on its own -- live-verified against the current Claude Code docs and
+/// multiple open upstream reports that deny rules are unreliable against
+/// the Read tool once it resolves a path to its absolute form, so this must
+/// be enforced here, at PreToolUse, the same way the Bash guard is.
+pub fn secrets_read_tool_guard(input: &str, home: &Path) -> Option<Value> {
+    let data: Value = serde_json::from_str(input).ok()?;
+    if data.get("tool_name").and_then(Value::as_str) != Some("Read") {
+        return None;
+    }
+    let file_path = data
+        .get("tool_input")
+        .and_then(Value::as_object)
+        .and_then(|input| input.get("file_path"))
+        .and_then(Value::as_str)?;
+    if file_path.is_empty() {
+        return None;
+    }
+    let expanded = if let Some(rest) = file_path.strip_prefix("~/") {
+        home.join(rest)
+    } else {
+        PathBuf::from(file_path)
+    };
+    let is_secret_file = SECRET_FILE_HOME_SUFFIXES
+        .iter()
+        .any(|suffix| expanded == home.join(suffix));
+    if !is_secret_file {
+        return None;
+    }
+    Some(json!({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": format!(
+                "BLOCKED: Direct Read of a designated secret file. Its value can be printed into this transcript, which is QMD-indexed and permanently searchable.\n\nFile: {file_path}\n\nUse `source ~/{}` (or `.`) in a Bash command instead — the sanctioned access pattern.",
                 SECRET_FILE_HOME_SUFFIXES[0]
             ),
         }
@@ -383,5 +439,45 @@ mod tests {
         // The escaped form must round-trip through a real shell without
         // corrupting the original command's quoting.
         assert!(rewritten.contains(r"'\''hello world'\''"));
+    }
+
+    fn read_tool_input(home: &Path, file_path: &str) -> String {
+        json!({
+            "tool_name": "Read",
+            "tool_input": {"file_path": file_path.replace("~", &home.display().to_string())},
+        })
+        .to_string()
+    }
+
+    #[test]
+    fn secrets_read_tool_guard_blocks_the_read_tool_against_designated_secret_files() {
+        // Regression pin: the 2026-07-06 leak-#5 incident used the Read tool
+        // directly against ~/.secrets (secrets_read_guard only ever covered
+        // Bash) -- settings.json permission `deny` entries are documented as
+        // unreliable for the Read tool against absolute paths, so this must
+        // be enforced at PreToolUse like the Bash guard, not left to config.
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        for file_path in ["~/.secrets", &home.join(".secrets").display().to_string()] {
+            let input = read_tool_input(home, file_path);
+            let output = secrets_read_tool_guard(&input, home)
+                .unwrap_or_else(|| panic!("expected block for: {file_path}"));
+            assert_eq!(output["hookSpecificOutput"]["permissionDecision"], "deny");
+        }
+    }
+
+    #[test]
+    fn secrets_read_tool_guard_ignores_unrelated_files_and_non_read_tools() {
+        let temp = TempDir::new().unwrap();
+        let home = temp.path();
+        assert!(secrets_read_tool_guard(&read_tool_input(home, "~/README.md"), home).is_none());
+        assert!(
+            secrets_read_tool_guard(
+                &json!({"tool_name": "Bash", "tool_input": {"command": "cat ~/.secrets"}})
+                    .to_string(),
+                home,
+            )
+            .is_none()
+        );
     }
 }

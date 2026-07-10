@@ -169,66 +169,65 @@ fn run_claude_hook(args: &[String]) {
     };
     match hook.as_str() {
         "block-master-push" => {
-            claude_hooks::run_block_master_push_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_block_master_push_from_stdin().unwrap_or_else(exit_error)
         }
         "check-todo-quality" => {
-            claude_hooks::run_check_todo_quality_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_check_todo_quality_from_stdin().unwrap_or_else(exit_error)
         }
         "codex-post-feedback" => {
-            claude_hooks::run_codex_post_feedback_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_codex_post_feedback_from_stdin().unwrap_or_else(exit_error)
         }
-        "codex-session-init" => {
-            claude_hooks::run_codex_session_init().unwrap_or_else(exit_error);
-        }
+        "codex-session-init" => claude_hooks::run_codex_session_init().unwrap_or_else(exit_error),
         "disk-space-guard" => {
-            claude_hooks::run_disk_space_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_disk_space_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "env-var-newline-guard" => {
-            claude_hooks::run_env_var_newline_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_env_var_newline_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "exa-research-reminder" => {
-            claude_hooks::run_exa_research_reminder().unwrap_or_else(exit_error);
+            claude_hooks::run_exa_research_reminder().unwrap_or_else(exit_error)
         }
         "exclusion-guard" => {
-            claude_hooks::run_exclusion_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_exclusion_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "fix-what-you-touch" => {
-            claude_hooks::run_fix_what_you_touch_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_fix_what_you_touch_from_stdin().unwrap_or_else(exit_error)
         }
         "permission-auto-approve" => {
-            claude_hooks::run_permission_auto_approve_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_permission_auto_approve_from_stdin().unwrap_or_else(exit_error)
         }
         "portable-code-guard" => {
-            claude_hooks::run_portable_code_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_portable_code_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "destructive-command-guard" => {
-            claude_hooks::run_destructive_command_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_destructive_command_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "secrets-read-guard" => {
-            secrets_guard::run_secrets_read_guard_from_stdin().unwrap_or_else(exit_error);
+            secrets_guard::run_secrets_read_guard_from_stdin().unwrap_or_else(exit_error)
+        }
+        "secrets-read-tool-guard" => {
+            secrets_guard::run_secrets_read_tool_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "secrets-redaction-rewrite" => {
             secrets_guard::run_secrets_redaction_command_rewrite_from_stdin()
-                .unwrap_or_else(exit_error);
+                .unwrap_or_else(exit_error)
         }
         "github-cli-guard" => {
-            claude_hooks::run_github_cli_guard_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_github_cli_guard_from_stdin().unwrap_or_else(exit_error)
         }
         "skill-invocation-tracker" => {
-            claude_hooks::run_skill_invocation_tracker_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_skill_invocation_tracker_from_stdin().unwrap_or_else(exit_error)
         }
         "session-health-check" => {
-            claude_hooks::run_session_health_check().unwrap_or_else(exit_error);
+            claude_hooks::run_session_health_check().unwrap_or_else(exit_error)
         }
         "shaping-ripple" => {
-            claude_hooks::run_shaping_ripple_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_shaping_ripple_from_stdin().unwrap_or_else(exit_error)
         }
         "stop-quality-gate" => {
-            claude_hooks::run_stop_quality_gate_from_stdin().unwrap_or_else(exit_error);
+            claude_hooks::run_stop_quality_gate_from_stdin().unwrap_or_else(exit_error)
         }
-        "time-context" => {
-            claude_hooks::run_time_context().unwrap_or_else(exit_error);
-        }
+        "time-context" => claude_hooks::run_time_context().unwrap_or_else(exit_error),
         _ => usage(),
     }
 }

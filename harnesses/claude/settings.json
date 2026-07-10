@@ -45,7 +45,8 @@
     "defaultMode": "bypassPermissions",
     "deny": [
       "mcp__claude_ai_Google_Drive__authenticate",
-      "mcp__claude_ai_Google_Drive__complete_authentication"
+      "mcp__claude_ai_Google_Drive__complete_authentication",
+      "Read(~/.secrets)"
     ]
   },
   "enabledMcpjsonServers": [],
@@ -82,6 +83,16 @@
           {
             "type": "command",
             "command": "harness-kit-checks claude-hook secrets-redaction-rewrite",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "harness-kit-checks claude-hook secrets-read-tool-guard",
             "timeout": 10
           }
         ]
