@@ -82,6 +82,27 @@ without requiring chat context:
 Support sections can then carry alternatives, acceptance, verification detail,
 communication cadence, risks, and reviewer instructions.
 
+## Evidence Packet Slot
+
+Use a packet when another agent, reviewer, or later loop must trust the result
+without chat context. Minimum shape:
+
+```markdown
+## Evidence Packet
+- Claim:
+- Standard / oracle:
+- Driver exercised:
+- Grader or verdict:
+- Artifacts / paths:
+- Fresh critic / reviewer:
+- Stop rule status:
+- Residual risk:
+```
+
+Keep the packet proportional. A tiny wording fix can use exact inspection plus
+the structural gate; fleet operations, harness primitives, public surfaces, and
+Mode B handoffs need artifact paths and reviewer/verifier separation.
+
 ## Failure Modes
 
 - **Checklist theater:** fields filled plausibly but no live path exercised.

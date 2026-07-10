@@ -95,6 +95,11 @@ Useful lanes:
 - Explore lane: map ownership and coupling before edits.
 - Critic lane: attack the architecture goal or a milestone diff.
 - QA lane: exercise the live surface if the lead cannot drive it cheaply.
+- Refactor-loop tick: for supervised multi-repo improvement, start from
+  `templates/refactor-loop-lane-card.md`; one repo, one pressure, one gate, one
+  milestone. If the trigger is recurring or unattended, route through
+  `harnesses/shared/references/loop-readiness.md` instead of making Harness Kit
+  run the loop.
 
 Default harsh critic: load the synced
 `thermo-nuclear-code-quality-review` skill

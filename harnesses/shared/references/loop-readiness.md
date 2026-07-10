@@ -41,6 +41,14 @@ Anything more is earned by a concrete failure.
 - Human review boundary.
 - Halt behavior for failure, no progress, and budget exhaustion.
 
+## Mode A Route
+
+Harness Kit may prepare an inspect-only dry run, a supervised one-tick lane
+card, or a handoff packet. It must not add a resident scheduler, retry loop,
+priority engine, or semantic supervisor around provider CLIs. If the work needs
+recurrence, webhooks, PR-ready triggers, incident triggers, or autonomous outer
+loops, the output is the handoff fields above and the runner lives in Mode B.
+
 ## Reject By Default
 
 Reject loops for architecture rewrites, vague "keep improving" goals,

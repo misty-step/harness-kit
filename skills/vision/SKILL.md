@@ -44,6 +44,10 @@ Conversational first. Artifact always.
 - Wire consumers, not copies. When `VISION.md` is created or materially changed,
   update relevant repo-local `AGENTS.md`, skills, prompts, or runbooks with
   pointer lines to `VISION.md`; never duplicate vision prose into them.
+- For multi-repo coverage audits, use
+  `skills/harness-engineering/references/repo-fleet-operating.md`: scan the
+  registry and live roots, emit JSON + Markdown receipts, and do not generate
+  generic VISION stubs across a fleet.
 
 ## Quality Check
 

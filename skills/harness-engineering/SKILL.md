@@ -29,6 +29,7 @@ Engineer the harness. Keep it thin.
 | convert agent/skill | `references/mode-convert.md` |
 | sync externals | `references/mode-sync.md` |
 | engineer doctrine/gates/hooks | `references/mode-engineer.md` |
+| repo-fleet registry, VISION coverage, proof contracts, or supervised refactor-loop primitives | `references/repo-fleet-operating.md` |
 | measure skill usage/health/staleness | `references/mode-audit.md` |
 | current model/provider/harness facts | the roster skill's `references/model-provider-harness-index.md` |
 | open-model defaults | `references/open-model-roster.md` |
