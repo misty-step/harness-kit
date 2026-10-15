@@ -14,7 +14,10 @@ config = json.loads(Path('cloudflare/site.json').read_text())
 def request(path, digest=None):
     url = base + '/' + urllib.parse.quote(path, safe='/')
     try:
-        response = urllib.request.urlopen(urllib.request.Request(url, headers={'Accept-Encoding': 'identity'}), timeout=30)
+        response = urllib.request.urlopen(urllib.request.Request(url, headers={
+            'Accept-Encoding': 'identity',
+            'User-Agent': 'MistyStep-static-site-parity/1.0 (+https://foundations.mistystep.io/)',
+        }), timeout=30)
     except urllib.error.HTTPError as exc:
         response = exc
     with response:
