@@ -1,0 +1,74 @@
+name: Cloudflare static site
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cloudflare-static-site
+  cancel-in-progress: false
+jobs:
+  static-site:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve reviewed adapter and identify immutable serving source
+        id: source
+        run: |
+          cp -R cloudflare "$RUNNER_TEMP/cloudflare-site-adapter"
+          printf 'revision=%s\n' "$(python3 -c 'import json; print(json.load(open("cloudflare/site.json"))["source_commit"])')" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.revision }}
+      - name: Restore adapter (not product source)
+        run: cp -R "$RUNNER_TEMP/cloudflare-site-adapter" cloudflare
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.20.2'
+      - name: Build existing Pages source and stage exact public artifact
+        env:
+          SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          RUSTUP_TOOLCHAIN=1.98.1 scripts/build-docs-site.sh
+          RUSTUP_TOOLCHAIN=1.98.1 scripts/check-docs-site.sh --self-test
+          source=docs/site
+          python3 cloudflare/stage.py "$source"
+          sha256sum --check cloudflare/files.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-static-assets
+          path: _site
+          retention-days: 90
+          include-hidden-files: true
+      - name: Use the deployment runtime without rebuilding assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.2'
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: b069014f6a46558ea9146fb6c4ff8f6c
+          wranglerVersion: '4.151.0'
+          command: deploy --config cloudflare/wrangler.json
+      - name: Verify every deployed object, homepage and refusal
+        run: |
+          name=$(python3 -c 'import json; print(json.load(open("cloudflare/wrangler.json"))["name"])')
+          python3 cloudflare/verify.py "https://$name.misty-step.workers.dev"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cloudflare-http-proof
+          path: cloudflare-http-proof.json
+          if-no-files-found: ignore
+      - name: Promote the same verified assets (enabled only after migration review)
+        if: github.event_name != 'pull_request' && vars.CLOUDFLARE_SITE_PROMOTED == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: b069014f6a46558ea9146fb6c4ff8f6c
+          wranglerVersion: '4.151.0'
+          command: deploy --config cloudflare/wrangler.json --env production
