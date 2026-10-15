@@ -1,0 +1,8 @@
+{
+  "repo": "misty-step/harness-kit",
+  "source_commit": "5dbcd70c1ce1213b69d9394a1165897079aa81a8",
+  "source_folder": "docs/site",
+  "project_prefix": "harness-kit",
+  "before_url": "https://misty-step.github.io/harness-kit/",
+  "build_kind": "rust-docs"
+}
