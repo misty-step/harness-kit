@@ -16,19 +16,23 @@ jobs:
     env:
       ROLLBACK_PROBE: __migration_rollback_probe_t_c60b5646.txt
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22.23.2'
       - name: Preserve adapter and identify immutable source
         id: source
         run: |
+          node -e 'const fs=require("node:fs"); const p="cloudflare/wrangler.json"; const c=JSON.parse(fs.readFileSync(p)); c.name += "-" + process.env.GITHUB_RUN_ID + "-" + process.env.GITHUB_RUN_ATTEMPT; fs.writeFileSync(p, JSON.stringify(c,null,2)+"\n"); console.log("Preview: https://"+c.name+".misty-step.workers.dev");'
           cp -R cloudflare "$RUNNER_TEMP/cloudflare-site-adapter"
           printf 'revision=%s\n' "$(node -p 'require("./cloudflare/site.json").source_commit')" >> "$GITHUB_OUTPUT"
           printf 'PREVIEW_BASE=https://%s.misty-step.workers.dev\n' "$(node -p 'require("./cloudflare/wrangler.json").name')" >> "$GITHUB_ENV"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ steps.source.outputs.revision }}
+          persist-credentials: false
       - run: cp -R "$RUNNER_TEMP/cloudflare-site-adapter" cloudflare
       - name: Existing Rust-owned docs build and gate
         run: |
@@ -43,12 +47,12 @@ jobs:
           done < cloudflare/files.sha256
           printf '/ /harness-kit/ 302\n' > _site/_redirects
           sha256sum --check cloudflare/files.sha256
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: verified-static-assets
           path: _site
           retention-days: 90
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: b069014f6a46558ea9146fb6c4ff8f6c
@@ -66,7 +70,7 @@ jobs:
           done
           test "$ready" = 2
           printf 'synthetic static-preview rollback probe t_c60b5646\n' > "_site/$ROLLBACK_PROBE"
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         id: synthetic_deploy
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -86,7 +90,7 @@ jobs:
           test "$ready" = 2
       - name: Native rollback to verified A
         if: always() && steps.synthetic_deploy.conclusion == 'success'
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: b069014f6a46558ea9146fb6c4ff8f6c
@@ -111,7 +115,7 @@ jobs:
             printf '%s %s\n' "$digest" "${file#_site/}" >> cloudflare-http-proof.txt
           done < cloudflare/files.sha256
           test "$(curl --silent --max-time 30 --output /dev/null --write-out '%{http_code}' "$PREVIEW_BASE/__migration_missing_t_c60b5646__")" = 404
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: cloudflare-http-proof
@@ -127,7 +131,7 @@ jobs:
         run: test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha')" = "$GITHUB_SHA"
       - name: Promote the identical verified artifact
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && vars.CLOUDFLARE_SITE_PROMOTED == 'true'
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: b069014f6a46558ea9146fb6c4ff8f6c
