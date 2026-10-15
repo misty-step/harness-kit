@@ -16,7 +16,7 @@ an explicit .html URL to the same content while retaining its query. Mutable
 application resources and new paid features are not introduced. Site-specific
 exceptions and retained defects are recorded in README.md.
 
-Each CI run/attempt has its own review Worker. It builds/stages once, verifies
+Each CI run/attempt has its own review Worker. It prepares the artifact once, verifies
 all hashes, exercises real A/B/A native rollback, and promotes the same directory
 only from the current default branch with the promotion variable enabled. That
 production Custom Domain attachment is an intentional DNS-affecting cutover.

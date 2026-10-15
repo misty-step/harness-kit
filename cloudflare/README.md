@@ -14,7 +14,7 @@ This is a public frontend artifact, not revival of its dormant application backe
 ## Build and verify
 
 The native `Cloudflare static site` workflow checks out the pinned source into
-its original repository-root layout, builds with existing locked dependencies,
+its original repository-root layout, uses the original build where needed,
 stages only the emitted allowlist, checks every SHA256, uploads the exact artifact,
 deploys a public isolated Workers-assets preview, and verifies every HTTP object,
 the homepage and a missing path. Mint's CI artifact stays private in this private
@@ -38,8 +38,9 @@ own cutover readback; never substitute a workers.dev URL as final acceptance.
 Preview deployments leave DNS unchanged. The gated production deployment
 attaches the configured Cloudflare Custom Domain and can create its DNS record;
 that attachment is the reviewed cutover, not a preview side effect. Mint has an
-existing CNAME: chief-only scoped DNS removal/restoration must precede its
-production Custom Domain attachment, after live CF proof. No DNS-write privilege
+existing CNAME: chief-only scoped removal precedes production Custom Domain
+attachment after live CF proof; restore it only on rollback, after detaching
+the Custom Domain. No DNS-write privilege
 is added to CI. No Pages deletion, archive toggle, credential or Access mutation
 is automated. Archived status is restored after the
 migration, without deleting the repository. Public sites remain public. Assets

@@ -97,6 +97,7 @@ jobs:
           wranglerVersion: '4.151.0'
           command: rollback --config cloudflare/wrangler.json --yes
       - name: Verify restored A and every public object
+        if: always() && steps.synthetic_deploy.conclusion == 'success'
         run: |
           ready=0
           for sample in $(seq 1 18); do
