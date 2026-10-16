@@ -16,8 +16,15 @@ an explicit .html URL to the same content while retaining its query. Mutable
 application resources and new paid features are not introduced. Site-specific
 exceptions and retained defects are recorded in README.md.
 
-Each CI run/attempt has its own review Worker. It prepares the artifact once, verifies
-all hashes, exercises real A/B/A native rollback, and promotes the same directory
+One preview Worker uses native immutable version URLs instead of a Worker per
+run. CI verifies every versioned object and isolates A from live synthetic B.
+Accepted migration review identity (retained unchanged):
+https://harness-kit-site-preview-38798173356-1.misty-step.workers.dev
+One-time exact Actions cleanup receipts live with task t_efbebddf. No perpetual
+pruner, TTL, cron or fleet CD service remains. Native preview URL reference:
+https://developers.cloudflare.com/workers/configuration/previews/
+CI prepares the artifact once, verifies all hashes, exercises real A/B/A native
+rollback, and promotes the same directory
 only from the current default branch with the promotion variable enabled. That
 production Custom Domain attachment is an intentional DNS-affecting cutover.
 It is not enabled by a preview or by merely merging this adapter. Repository

@@ -46,11 +46,14 @@ is automated. Archived status is restored after the
 migration, without deleting the repository. Public sites remain public. Assets
 only: no billed Worker invocation or mutable data store is introduced.
 
-Each run/attempt has a distinct preview Worker name. Reruns cannot replace a
-previous review URL. Record its URL and native version in the candidate proof;
-expiry is specified in `../SPEC.md`. CI prunes receipt-owned previews before
-allocation, retaining provider/HTTP404 and unchanged canonical/review readbacks
-in `preview-retention-proof`. Resolve cleanup failures and rerun normally. Repository
+CI reuses one preview Worker. Review the immutable native version URL from the
+Actions summary or `preview-identity.json`, never its mutable workers.dev base.
+`preview-version-proof.txt` verifies all bytes while synthetic B is live;
+`native-version-isolation.txt` proves B's marker is absent from the review URL.
+The original stable-base A/B/A rollback and canonical promotion checks remain.
+`../SPEC.md` defines the behavior; `ADR.md` records the retained migration URL.
+There is no run-specific allocator, cleanup service or retention script to operate.
+Repository
 writers are trusted with repository Actions secrets, as in the authorized CD
 binding. Fork workflows are denied; this is not a claim to sandbox a malicious
 repository administrator. Promotion requires the current default branch and

@@ -3,7 +3,7 @@
   "account_id": "b069014f6a46558ea9146fb6c4ff8f6c",
   "compatibility_date": "2026-10-15",
   "workers_dev": true,
-  "preview_urls": false,
+  "preview_urls": true,
   "assets": {
     "directory": "../_site",
     "html_handling": "auto-trailing-slash",
