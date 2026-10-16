@@ -48,7 +48,9 @@ only: no billed Worker invocation or mutable data store is introduced.
 
 Each run/attempt has a distinct preview Worker name. Reruns cannot replace a
 previous review URL. Record its URL and native version in the candidate proof;
-remove only owned superseded previews after durable release evidence. Repository
+expiry is specified in `../SPEC.md`. CI prunes receipt-owned previews before
+allocation, retaining provider/HTTP404 and unchanged canonical/review readbacks
+in `preview-retention-proof`. Resolve cleanup failures and rerun normally. Repository
 writers are trusted with repository Actions secrets, as in the authorized CD
 binding. Fork workflows are denied; this is not a claim to sandbox a malicious
 repository administrator. Promotion requires the current default branch and
